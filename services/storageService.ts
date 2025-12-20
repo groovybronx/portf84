@@ -1,15 +1,16 @@
-import { PortfolioItem } from "../types";
+import { PortfolioItem, Folder } from "../types";
 
 const DB_NAME = 'LuminaDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incremented for virtual folders support
 const STORE_HANDLES = 'handles';
 const STORE_METADATA = 'metadata';
+const STORE_FOLDERS = 'virtual_folders'; // New store
 
 interface StoredHandle {
   id: string;
   handle: FileSystemDirectoryHandle;
   timestamp: number;
-  isRoot?: boolean; // New flag: if true, used only for permissions, not content loading
+  isRoot?: boolean;
 }
 
 interface StoredMetadata {
@@ -18,6 +19,7 @@ interface StoredMetadata {
   aiTags?: string[];
   aiTagsDetailed?: any[];
   colorTag?: string;
+  folderId?: string; // Persist which folder this item belongs to
   lastModified: number;
 }
 
@@ -34,6 +36,9 @@ const openDB = (): Promise<IDBDatabase> => {
       }
       if (!db.objectStoreNames.contains(STORE_METADATA)) {
         db.createObjectStore(STORE_METADATA, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(STORE_FOLDERS)) {
+        db.createObjectStore(STORE_FOLDERS, { keyPath: 'id' });
       }
     };
   });
@@ -78,7 +83,7 @@ export const storageService = {
     tx.objectStore(STORE_HANDLES).clear();
   },
 
-  // --- Metadata (AI Tags, Colors) ---
+  // --- Metadata (AI Tags, Colors, Folder Assignment) ---
   saveMetadata: async (item: PortfolioItem, relativePath: string) => {
     const db = await openDB();
     const data: StoredMetadata = {
@@ -87,6 +92,7 @@ export const storageService = {
       aiTags: item.aiTags,
       aiTagsDetailed: item.aiTagsDetailed,
       colorTag: item.colorTag,
+      folderId: item.folderId, // Save the folder assignment
       lastModified: item.lastModified
     };
     const tx = db.transaction(STORE_METADATA, 'readwrite');
@@ -106,6 +112,38 @@ export const storageService = {
         results.forEach(meta => resultMap.set(meta.id, meta));
         resolve(resultMap);
       };
+    });
+  },
+
+  // --- Virtual Folders Persistence ---
+  saveVirtualFolder: async (folder: Folder) => {
+    const db = await openDB();
+    const tx = db.transaction(STORE_FOLDERS, 'readwrite');
+    // We store a simplified version of the folder (without items array to avoid bloat/cycles)
+    const folderData = {
+        id: folder.id,
+        name: folder.name,
+        createdAt: folder.createdAt
+    };
+    tx.objectStore(STORE_FOLDERS).put(folderData);
+  },
+
+  deleteVirtualFolder: async (id: string) => {
+    const db = await openDB();
+    const tx = db.transaction(STORE_FOLDERS, 'readwrite');
+    tx.objectStore(STORE_FOLDERS).delete(id);
+  },
+
+  getVirtualFolders: async (): Promise<Folder[]> => {
+    const db = await openDB();
+    return new Promise((resolve) => {
+        const tx = db.transaction(STORE_FOLDERS, 'readonly');
+        const request = tx.objectStore(STORE_FOLDERS).getAll();
+        request.onsuccess = () => {
+            const rawFolders = request.result || [];
+            // Re-attach empty items array
+            resolve(rawFolders.map((f: any) => ({ ...f, items: [] })));
+        };
     });
   }
 };
