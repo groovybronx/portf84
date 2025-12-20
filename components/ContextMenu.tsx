@@ -29,17 +29,20 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   // Close on click outside
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
+      // Check if click is outside the menu
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         onClose();
       }
     };
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
+    
+    // Use 'mousedown' with capture:true to detect clicks even if other components (like items) stop propagation
+    document.addEventListener('mousedown', handleClick, { capture: true });
+    return () => document.removeEventListener('mousedown', handleClick, { capture: true });
   }, [onClose]);
 
   // Adjust position if close to edge
-  const adjustedX = Math.min(x, window.innerWidth - 220);
-  const adjustedY = Math.min(y, window.innerHeight - 300);
+  const adjustedX = Math.min(x, window.innerWidth - 240); // Increased margin
+  const adjustedY = Math.min(y, window.innerHeight - 350); // Increased margin
 
   return (
     <motion.div
@@ -49,10 +52,19 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.1 }}
       style={{ top: adjustedY, left: adjustedX }}
-      className="fixed z-[100] w-56 bg-surface/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl py-2 overflow-hidden"
+      onMouseDown={(e) => e.stopPropagation()} // Prevent triggering drag selection in App background
+      onContextMenu={(e) => e.preventDefault()} // Prevent native context menu on the custom menu
+      className="fixed z-[100] w-60 bg-surface/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl py-2 overflow-hidden"
     >
-      <div className="px-4 py-2 border-b border-white/10 mb-1">
-        <p className="text-xs font-mono text-gray-500 truncate">{item.name}</p>
+      <div className="px-4 py-2 border-b border-white/10 mb-1 flex items-center justify-between">
+        <p className="text-xs font-mono text-gray-500 truncate max-w-[150px]" title={item.name}>{item.name}</p>
+        <button 
+            onClick={onClose}
+            className="p-1 -mr-2 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
+            title="Close Menu"
+        >
+            <X size={14} />
+        </button>
       </div>
 
       <button
@@ -85,6 +97,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
           <button
             onClick={() => { onColorTag(item, undefined); onClose(); }}
             className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-gray-500 hover:text-white hover:border-white"
+            title="Remove Tag"
           >
             <X size={12} />
           </button>

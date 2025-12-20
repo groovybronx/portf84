@@ -21,60 +21,48 @@ Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
     - Slider à Gauche = Max Colonnes (8) = Petites vignettes.
     - Slider à Droite = Min Colonnes (2) = Grandes vignettes.
 
-- **Support Drag-to-Select** :
-  - Le composant accepte une prop `registerItemRef`. Il attache cette référence à chaque `div` conteneur de carte.
-  - Cela permet au parent de calculer si le rectangle de sélection intersecte la carte via ses coordonnées DOM.
+## 2. TopBar
+La barre d'outils principale, repensée pour gérer les problèmes de superposition (z-index) et de responsivité.
 
-## 2. PhotoCarousel (Mode Flow 3D)
+- **Architecture Layout (3 Zones)** :
+  1.  **Zone Gauche (Fixe)** : Boutons d'épingle et de Bibliothèque. Ne scrolle jamais.
+  2.  **Zone Centrale (Scrollable)** : Contient la recherche, les filtres couleurs et les curseurs. Utilise `overflow-x-auto` pour s'adapter aux mobiles.
+  3.  **Zone Droite (Fixe)** : Contient le sélecteur de Vue (Grid/Flow) et **sorti du flux** scrollable : les Dropdowns (Tags, Tri, Sélection).
+  
+- **Correction UX** : Les menus déroulants (Tags, Sort) ont été déplacés hors du conteneur `overflow-x-auto` de la zone centrale. Cela empêche qu'ils soient coupés ("clipping") par les limites du conteneur parent lorsqu'ils sont ouverts.
+
+## 3. FolderDrawer (Gestionnaire de Dossiers)
+Le panneau latéral coulissant pour la navigation.
+
+- **Distinction Visuelle** :
+  - **Dossiers Physiques** : Icône Disque Dur Bleu (`HardDrive`). Représente un dossier réel sur le disque.
+  - **Collections Virtuelles** : Icône Dossier Violet avec Cœur/Étoile (`FolderHeart`). Représente un regroupement logique créé dans l'app.
+- **Fonctionnalités** :
+  - Importation depuis le disque.
+  - Création de collections.
+  - Suppression (Unlink pour physique, Delete pour virtuel).
+
+## 4. PhotoCarousel (Mode Flow 3D)
 Un carrousel circulaire haute performance optimisé pour maintenir 60fps même avec des images haute résolution.
 
 - **Optimisations Critiques (v2)** :
-  - **Suppression du Flou Dynamique** : Les filtres `backdrop-filter` ou `blur` ont été retirés des cartes en mouvement pour soulager le GPU.
-  - **Background Statique** : Remplacement de l'image de fond dynamique (qui changeait à chaque slide) par un dégradé fixe pour éviter les "repaints" coûteux du navigateur.
-  - **Virtualisation Stricte** : Seules les images visibles (définies par `VISIBLE_RANGE`, ex: +/- 3 items) sont rendues dans le DOM. Les autres sont démontées.
-  - **Accélération Matérielle** : Utilisation de `will-change: transform, opacity` pour forcer la promotion des calques GPU.
+  - **Background Statique** : Remplacement de l'image de fond dynamique par un dégradé fixe.
+  - **Virtualisation Stricte** : Seules les images visibles (définies par `VISIBLE_RANGE`) sont rendues.
+  - **Accélération Matérielle** : Utilisation de `will-change: transform, opacity`.
 
-- **Mathématiques 3D** :
-  - Positionnement absolu avec `transform: translate3d(x, 0, z) rotateY(deg)`.
-  - `zIndex` calculé dynamiquement (100 - distance au centre).
-  - Espacement non-linéaire : Les cartes sur les côtés se regroupent légèrement pour accentuer l'effet de profondeur.
-
-## 3. ImageViewer (Plein Écran)
+## 5. ImageViewer (Plein Écran)
 Le visualiseur modal pour une inspection détaillée.
+- Navigation clavier (Flèches).
+- Lecture des métadonnées EXIF (via `exif-js`).
+- Déclenchement de l'analyse AI.
+- Affichage des tags couleurs et modification en direct.
 
-- **Fonctionnalités** :
-  - Navigation clavier (Flèches).
-  - Lecture des métadonnées EXIF (via `exif-js`).
-  - Déclenchement de l'analyse AI.
-  - Affichage des tags couleurs et modification en direct.
-
-## 4. TopBar
-La barre d'outils principale, repensée pour la responsivité.
-
-- **Architecture Layout** : Divisée en 3 zones pour éviter les problèmes de superposition (z-index clipping) sur petits écrans :
-  1.  **Zone Gauche (Fixe)** : Boutons d'épingle et de Bibliothèque. Ne scrolle jamais.
-  2.  **Zone Centrale (Scrollable)** : Contient la recherche, les filtres couleurs et les curseurs. Utilise `overflow-x-auto`.
-  3.  **Zone Droite (Fixe)** : Le sélecteur de Vue (Dropdown).
-
-- **Fonctionnalités** :
-  - **Batch AI** : Un bouton (ou indicateur de progression) pour lancer l'analyse de tout le dossier visible.
-  - Filtres hybrides (Clic simple = Filtre, Clic en mode sélection = Tagging).
-
-## 5. ControlBar (Barre Flottante Basse)
+## 6. ControlBar (Barre Flottante Basse)
 Barre d'actions contextuelles.
+- **Mode Normal** : Affiche les onglets de vue (Grid, Flow, Detail).
+- **Mode Sélection** : Affiche les actions de masse (Déplacer, Partager, Annuler).
 
-- **Comportement Dual** :
-  - **Mode Normal** : Affiche les onglets de vue (Grid, Flow, Detail).
-  - **Mode Sélection** : Se transforme pour afficher les actions de masse (Déplacer, Partager, Annuler).
-- **Design** : Utilisation de `backdrop-blur-xl` pour l'effet "verre dépoli" moderne.
-
-## 6. ContextMenu (Nouveau)
-Menu contextuel personnalisé remplaçant le clic-droit natif du navigateur sur les items.
-
-- **Implémentation** : 
-  - Portal React ou positionnement fixe (`fixed`) basé sur les coordonnées `clientX/Y` de l'événement souris.
-  - Détection intelligente des bords d'écran pour repositionner le menu s'il déborde (ex: s'ouvre vers la gauche si trop proche du bord droit).
-- **Actions Rapides** :
-  - "Analyze with AI" sans ouvrir l'image.
-  - Palette de couleurs pour taguer en un clic.
-  - Suppression directe.
+## 7. ContextMenu (Clic-Droit)
+Menu contextuel personnalisé.
+- Portal ou positionnement fixe (`fixed`) basé sur les coordonnées `clientX/Y`.
+- Actions : Analyse AI, Tag Couleur, Suppression.
