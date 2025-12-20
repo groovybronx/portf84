@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, ArrowUpDown, CheckSquare, XCircle, Eye, EyeOff, LayoutGrid, FolderCog, Layers, LayoutList, ChevronDown, Share2, FolderInput, X, Pin, PinOff } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, CheckSquare, XCircle, Eye, EyeOff, LayoutGrid, FolderCog, Layers, LayoutList, ChevronDown, Share2, FolderInput, X, Pin, PinOff, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SortOption, SortDirection, COLOR_PALETTE, ViewMode } from '../types';
 
@@ -28,6 +28,9 @@ interface TopBarProps {
   selectedCount: number;
   onMoveSelected: () => void;
   onShareSelected: () => void;
+  onRunBatchAI: () => void;
+  isBatchAIProcessing: boolean;
+  batchAIProgress: number; // 0 to 1
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -54,7 +57,10 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenFolders,
   selectedCount,
   onMoveSelected,
-  onShareSelected
+  onShareSelected,
+  onRunBatchAI,
+  isBatchAIProcessing,
+  batchAIProgress
 }) => {
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
   const [isPinned, setIsPinned] = useState(true);
@@ -223,6 +229,24 @@ export const TopBar: React.FC<TopBarProps> = ({
                         </div>
                     ) : (
                         <div className="flex items-center gap-2 flex-shrink-0">
+                             {/* Batch AI Button */}
+                             <div className="relative">
+                                {isBatchAIProcessing ? (
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                                        <div className="w-4 h-4 rounded-full border-2 border-purple-400 border-t-transparent animate-spin"/>
+                                        <span className="text-xs font-mono text-purple-300">{(batchAIProgress * 100).toFixed(0)}%</span>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={onRunBatchAI}
+                                        className="p-2 bg-white/5 border border-white/5 rounded-lg hover:bg-purple-500/20 hover:text-purple-300 hover:border-purple-500/30 transition-all text-gray-400"
+                                        title="Auto-Analyze Visible Folder"
+                                    >
+                                        <Sparkles size={16} />
+                                    </button>
+                                )}
+                             </div>
+
                             {/* Filter Tags */}
                             <div className="relative group hidden xl:block">
                                 <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/5 cursor-pointer hover:bg-white/10 transition-colors">

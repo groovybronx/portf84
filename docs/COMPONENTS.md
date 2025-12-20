@@ -26,20 +26,18 @@ Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
   - Cela permet au parent de calculer si le rectangle de sélection intersecte la carte via ses coordonnées DOM.
 
 ## 2. PhotoCarousel (Mode Flow 3D)
-Un carrousel circulaire avec effet de profondeur 3D.
+Un carrousel circulaire haute performance optimisé pour maintenir 60fps même avec des images haute résolution.
+
+- **Optimisations Critiques (v2)** :
+  - **Suppression du Flou Dynamique** : Les filtres `backdrop-filter` ou `blur` ont été retirés des cartes en mouvement pour soulager le GPU.
+  - **Background Statique** : Remplacement de l'image de fond dynamique (qui changeait à chaque slide) par un dégradé fixe pour éviter les "repaints" coûteux du navigateur.
+  - **Virtualisation Stricte** : Seules les images visibles (définies par `VISIBLE_RANGE`, ex: +/- 3 items) sont rendues dans le DOM. Les autres sont démontées.
+  - **Accélération Matérielle** : Utilisation de `will-change: transform, opacity` pour forcer la promotion des calques GPU.
 
 - **Mathématiques 3D** :
-  - Chaque carte est positionnée absolument.
-  - `zIndex` est calculé en fonction de la distance au centre (`absOffset`).
-  - `transform: rotateY(...) translateZ(...)` crée l'effet de profondeur.
-  - **Wrap-around** : Logique circulaire pour que la dernière image mène à la première.
-
-```typescript
-// Exemple simplifié de la logique de profondeur
-z: absOffset === 0 ? 0 : -80 * absOffset, 
-rotateY: -Math.sign(offset) * 45, // Rotation max 45deg
-filter: blur(${absOffset}px) // Flou progressif pour simuler la profondeur de champ
-```
+  - Positionnement absolu avec `transform: translate3d(x, 0, z) rotateY(deg)`.
+  - `zIndex` calculé dynamiquement (100 - distance au centre).
+  - Espacement non-linéaire : Les cartes sur les côtés se regroupent légèrement pour accentuer l'effet de profondeur.
 
 ## 3. ImageViewer (Plein Écran)
 Le visualiseur modal pour une inspection détaillée.
@@ -59,8 +57,8 @@ La barre d'outils principale, repensée pour la responsivité.
   3.  **Zone Droite (Fixe)** : Le sélecteur de Vue (Dropdown).
 
 - **Fonctionnalités** :
+  - **Batch AI** : Un bouton (ou indicateur de progression) pour lancer l'analyse de tout le dossier visible.
   - Filtres hybrides (Clic simple = Filtre, Clic en mode sélection = Tagging).
-  - Feedback visuel instantané.
 
 ## 5. ControlBar (Barre Flottante Basse)
 Barre d'actions contextuelles.
@@ -69,3 +67,14 @@ Barre d'actions contextuelles.
   - **Mode Normal** : Affiche les onglets de vue (Grid, Flow, Detail).
   - **Mode Sélection** : Se transforme pour afficher les actions de masse (Déplacer, Partager, Annuler).
 - **Design** : Utilisation de `backdrop-blur-xl` pour l'effet "verre dépoli" moderne.
+
+## 6. ContextMenu (Nouveau)
+Menu contextuel personnalisé remplaçant le clic-droit natif du navigateur sur les items.
+
+- **Implémentation** : 
+  - Portal React ou positionnement fixe (`fixed`) basé sur les coordonnées `clientX/Y` de l'événement souris.
+  - Détection intelligente des bords d'écran pour repositionner le menu s'il déborde (ex: s'ouvre vers la gauche si trop proche du bord droit).
+- **Actions Rapides** :
+  - "Analyze with AI" sans ouvrir l'image.
+  - Palette de couleurs pour taguer en un clic.
+  - Suppression directe.

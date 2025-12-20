@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import Fuse from 'fuse.js';
 import { UploadZone } from './components/UploadZone';
 import { TopBar } from './components/TopBar';
 import { PhotoGrid } from './components/PhotoGrid';
@@ -6,11 +7,13 @@ import { PhotoCarousel } from './components/PhotoCarousel';
 import { PhotoList } from './components/PhotoList';
 import { ImageViewer } from './components/ImageViewer';
 import { FolderDrawer } from './components/FolderDrawer';
+import { ContextMenu } from './components/ContextMenu';
 import { CreateFolderModal, MoveToFolderModal } from './components/ActionModals';
 import { PortfolioItem, ViewMode, SortOption, SortDirection, Folder, COLOR_PALETTE } from './types';
 import { AnimatePresence, motion } from 'framer-motion';
 import { storageService } from './services/storageService';
 import { scanDirectory, verifyPermission } from './utils/fileHelpers';
+import { analyzeImage } from './services/geminiService';
 
 const App: React.FC = () => {
   // Data State
@@ -28,6 +31,14 @@ const App: React.FC = () => {
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [isFolderDrawerOpen, setIsFolderDrawerOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Context Menu State
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; item: PortfolioItem } | null>(null);
+
+  // Batch AI Processing State
+  const [aiQueue, setAiQueue] = useState<PortfolioItem[]>([]);
+  const [isBatchProcessing, setIsBatchProcessing] = useState(false);
+  const [totalBatchCount, setTotalBatchCount] = useState(0);
 
   // Ensure file input attributes are correctly set for folder selection
   useEffect(() => {
@@ -291,7 +302,10 @@ const App: React.FC = () => {
         }
         return folder;
     }));
-    setSelectedItem(updated);
+    
+    if (selectedItem?.id === updated.id) {
+        setSelectedItem(updated);
+    }
 
     // 2. Persist Metadata
     // Note: We use the item name as ID for now. 
@@ -361,12 +375,21 @@ const App: React.FC = () => {
 
   const processedItems = useMemo(() => {
     let result = [...currentItems];
+    
+    // Fuzzy Search using Fuse.js
     if (searchTerm) {
-        result = result.filter(item => 
-            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.aiDescription?.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const fuse = new Fuse(result, {
+            keys: [
+                { name: 'name', weight: 0.7 },
+                { name: 'aiDescription', weight: 0.5 },
+                { name: 'aiTags', weight: 0.3 }
+            ],
+            threshold: 0.4, // Sensitivity (0.0 = perfect match, 1.0 = match anything)
+            ignoreLocation: true
+        });
+        result = fuse.search(searchTerm).map(res => res.item);
     }
+
     if (selectedTag) result = result.filter(item => item.aiTags?.includes(selectedTag));
     if (activeColorFilter) result = result.filter(item => item.colorTag === activeColorFilter);
 
@@ -390,8 +413,9 @@ const App: React.FC = () => {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (viewMode === ViewMode.CAROUSEL) return;
     if ((e.target as HTMLElement).closest('button, input, select, a, .top-bar-area, .drawer-area')) return;
-    if (e.button !== 0) return;
+    if (e.button !== 0) return; // Only Left click for drag select
     dragStartPos.current = { x: e.clientX, y: e.clientY };
+    setContextMenu(null); // Close context menu on click
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -440,6 +464,78 @@ const App: React.FC = () => {
     }
     dragStartPos.current = null;
   };
+
+  // --- Context Menu Handler ---
+  const handleContextMenu = (e: React.MouseEvent, item: PortfolioItem) => {
+      e.preventDefault();
+      setContextMenu({ x: e.clientX, y: e.clientY, item });
+  };
+
+  const handleContextAnalyze = async (item: PortfolioItem) => {
+      // Trigger AI Analysis for single item
+      try {
+          const result = await analyzeImage(item);
+          handleUpdateItem({
+              ...item,
+              aiDescription: result.description,
+              aiTags: result.tags,
+              aiTagsDetailed: result.tagsDetailed
+          });
+      } catch (e) { console.error("Analysis failed", e); }
+  };
+
+  const handleContextDelete = (id: string) => {
+      if(confirm("Delete this item from view?")) {
+        setFolders(prev => prev.map(f => ({
+            ...f,
+            items: f.items.filter(i => i.id !== id)
+        })));
+        if (selectedItem?.id === id) setSelectedItem(null);
+      }
+  };
+
+  // --- Batch AI Processing ---
+  const handleRunBatchAI = () => {
+      const itemsToProcess = processedItems.filter(item => !item.aiDescription);
+      if (itemsToProcess.length === 0) {
+          alert("No unanalyzed items in current view.");
+          return;
+      }
+      if (confirm(`Start AI analysis for ${itemsToProcess.length} items? This may take some time.`)) {
+          setTotalBatchCount(itemsToProcess.length);
+          setAiQueue(itemsToProcess);
+          setIsBatchProcessing(true);
+      }
+  };
+
+  // Queue Processor Effect
+  useEffect(() => {
+      const processNext = async () => {
+          if (aiQueue.length === 0) {
+              setIsBatchProcessing(false);
+              return;
+          }
+
+          const item = aiQueue[0];
+          try {
+              const result = await analyzeImage(item);
+              handleUpdateItem({
+                  ...item,
+                  aiDescription: result.description,
+                  aiTags: result.tags,
+                  aiTagsDetailed: result.tagsDetailed
+              });
+          } catch (e) {
+              console.error(`Failed to analyze ${item.name}`, e);
+          } finally {
+              setAiQueue(prev => prev.slice(1));
+          }
+      };
+
+      if (isBatchProcessing && aiQueue.length > 0) {
+          processNext();
+      }
+  }, [aiQueue, isBatchProcessing]);
 
   // --- Folder Actions ---
   const handleMoveSelectedItems = (targetFolderId: string) => {
@@ -509,7 +605,8 @@ const App: React.FC = () => {
         selectedIds,
         onToggleSelect: toggleFolderSelection,
         showColorTags,
-        registerItemRef
+        registerItemRef,
+        onContextMenu: handleContextMenu
     };
 
     switch (viewMode) {
@@ -560,6 +657,9 @@ const App: React.FC = () => {
                     gridColumns={gridColumns} onGridColumnsChange={setGridColumns}
                     folderName={activeFolderName} onOpenFolders={() => setIsFolderDrawerOpen(true)}
                     selectedCount={selectedIds.size} onMoveSelected={() => setIsMoveModalOpen(true)} onShareSelected={handleShareSelected}
+                    onRunBatchAI={handleRunBatchAI}
+                    isBatchAIProcessing={isBatchProcessing}
+                    batchAIProgress={totalBatchCount > 0 ? 1 - (aiQueue.length / totalBatchCount) : 0}
                 />
             </div>
             
@@ -572,6 +672,22 @@ const App: React.FC = () => {
                     {renderView()}
                 </AnimatePresence>
             </main>
+
+            {/* Custom Context Menu */}
+            <AnimatePresence>
+              {contextMenu && (
+                <ContextMenu 
+                  x={contextMenu.x} 
+                  y={contextMenu.y} 
+                  item={contextMenu.item} 
+                  onClose={() => setContextMenu(null)}
+                  onAnalyze={handleContextAnalyze}
+                  onDelete={handleContextDelete}
+                  onColorTag={(item, color) => handleUpdateItem({...item, colorTag: color})}
+                  onOpen={setSelectedItem}
+                />
+              )}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {selectedItem && <ImageViewer item={selectedItem} onClose={() => setSelectedItem(null)} onUpdateItem={handleUpdateItem} onNext={handleNext} onPrev={handlePrev} showColorTags={showColorTags} />}

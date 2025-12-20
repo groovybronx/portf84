@@ -14,7 +14,8 @@
     "lucide-react": "^0.562.0",
     "react-dom": "^19.2.3",
     "framer-motion": "^12.23.26",
-    "exif-js": "2.3.0"
+    "exif-js": "2.3.0",
+    "fuse.js": "7.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

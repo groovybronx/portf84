@@ -80,81 +80,65 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
     return offset;
   };
 
-  // Range of items to render on each side
-  const VISIBLE_RANGE = 4;
+  // Performance: Reduce visible range to minimize DOM nodes and GPU layers
+  const VISIBLE_RANGE = 3; 
 
   return (
-    <div className="h-screen w-full flex items-center justify-center overflow-hidden relative bg-gradient-to-b from-background to-black">
+    <div className="h-screen w-full flex items-center justify-center overflow-hidden relative bg-[#050505]">
       
-      {/* Background blur */}
-      <div className="absolute inset-0 z-0 opacity-40 blur-[80px] transition-all duration-700">
-        {items[currentIndex] && (
-            <img 
-                src={items[currentIndex].url} 
-                className="w-full h-full object-cover" 
-                alt="background"
-            />
-        )}
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
+      {/* Static Background - Performance Optimization: 
+          Removed dynamic blurred image background which caused heavy repaints on every slide change.
+      */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-black to-black z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent z-0 pointer-events-none" />
 
-      {/* 3D Container with Enhanced Perspective */}
-      <div className="relative z-10 w-full h-[70vh] flex items-center justify-center perspective-[1000px]">
-        <AnimatePresence initial={false}>
+      {/* 3D Container */}
+      <div className="relative z-10 w-full h-[65vh] flex items-center justify-center perspective-[1200px]">
+        <AnimatePresence initial={false} mode='popLayout'>
             {items.map((item, index) => {
                 const offset = getOffset(index);
                 const absOffset = Math.abs(offset);
                 
-                // Don't render items far outside the visual range
+                // Strict culling of off-screen items for performance
                 if (absOffset > VISIBLE_RANGE) return null;
 
-                // Spacing Configuration
-                // BASE_GAP: Distance of first neighbor from center (in %)
-                // STACK_GAP: Distance between subsequent neighbors (in %)
-                const BASE_GAP = 55; 
-                const STACK_GAP = 30;
+                const zIndex = 100 - absOffset;
+                
+                // Optimized 3D Spacing
+                const X_SPACING = 60; // % spacing
+                const Z_DEPTH = -300; // px depth
                 
                 let xPos = 0;
+                let zPos = 0;
+                let rotateY = 0;
+                let opacity = 1;
+
                 if (offset !== 0) {
                     const sign = Math.sign(offset);
-                    xPos = sign * (BASE_GAP + (absOffset - 1) * STACK_GAP);
+                    // Non-linear spacing to bunch up items slightly in the back
+                    xPos = sign * (50 + (absOffset * 10)); 
+                    zPos = absOffset * Z_DEPTH;
+                    rotateY = -sign * 45; // Fixed rotation for side items looks cleaner than progressive
+                    opacity = Math.max(0.2, 1 - (absOffset * 0.3));
                 }
-
-                // Rotation Limit: Reduced to 45 degrees max to prevent gaps
-                const rotation = -Math.sign(offset) * Math.min(absOffset * 20, 45);
-
-                // Progressive scaling based on distance to accentuate depth
-                const scale = Math.max(0, 1 - absOffset * 0.1);
 
                 return (
                     <motion.div
                         key={item.id}
-                        className="absolute w-[60vw] sm:w-[45vw] md:w-[35vw] lg:w-[28vw] aspect-[3/4] rounded-xl bg-surface border border-white/10 cursor-pointer shadow-2xl"
+                        className="absolute w-[50vw] sm:w-[35vw] md:w-[28vw] aspect-[3/4] rounded-xl bg-surface/50 border border-white/10 cursor-pointer shadow-2xl origin-bottom"
                         initial={false}
                         animate={{ 
-                            // 3D Layout Logic
-                            opacity: absOffset > VISIBLE_RANGE - 1 ? 0 : 1,
-                            
                             x: `${xPos}%`, 
-                            
-                            // Depth: Adjusted to work with the new scaling
-                            z: absOffset === 0 ? 0 : -80 * absOffset, 
-                            
-                            rotateY: rotation,
-                            
-                            scale: scale,
-                            
-                            zIndex: 100 - absOffset,
-                            
-                            filter: absOffset === 0 
-                                ? 'brightness(1) blur(0px)' 
-                                : `brightness(${Math.max(0.3, 0.8 - absOffset * 0.1)}) blur(${Math.min(absOffset, 4)}px)`,
+                            z: zPos, 
+                            rotateY: rotateY,
+                            opacity: opacity,
+                            scale: offset === 0 ? 1 : 0.85,
                         }}
                         transition={{
+                            // Using a simpler spring for better performance than complex physics
                             type: "spring",
-                            stiffness: 180,
-                            damping: 25,
-                            mass: 1
+                            stiffness: 200,
+                            damping: 30
                         }}
                         onClick={() => {
                             if (offset === 0) onSelect(item);
@@ -164,38 +148,53 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
                             }
                         }}
                         style={{
-                            transformStyle: "preserve-3d"
+                            transformStyle: "preserve-3d",
+                            zIndex: zIndex,
+                            // Hint to browser to promote this layer
+                            willChange: "transform, opacity" 
                         }}
                     >
                         {/* Image Container */}
-                        <div className="w-full h-full rounded-xl overflow-hidden relative">
+                        <div className="w-full h-full rounded-xl overflow-hidden relative bg-[#1a1a1a]">
                             <img 
                                 src={item.url} 
                                 alt={item.name} 
-                                className="w-full h-full object-cover pointer-events-none select-none" 
+                                className="w-full h-full object-cover pointer-events-none select-none"
+                                loading="lazy" // Lazy load images
+                                style={{
+                                    // Remove blur filter for performance. 
+                                    // Instead use opacity overlay for depth perception.
+                                }} 
                             />
 
-                            {/* Color Tag (only on active item or if style permits) */}
+                            {/* Darken Overlay for side items (Cheaper than blur) */}
+                            {offset !== 0 && (
+                                <div className="absolute inset-0 bg-black/40 transition-colors" />
+                            )}
+
+                            {/* Color Tag */}
                             {showColorTags && item.colorTag && (
                                 <div 
-                                    className="absolute bottom-0 inset-x-0 h-2 z-20"
-                                    style={{ backgroundColor: item.colorTag, boxShadow: `0 -2px 10px ${item.colorTag}` }}
+                                    className="absolute bottom-0 inset-x-0 h-1.5 z-20"
+                                    style={{ backgroundColor: item.colorTag }}
                                 />
                             )}
                             
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-40 pointer-events-none" />
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 pointer-events-none" />
+                            {/* Reflection/Gloss Effect (Static CSS is cheap) */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-20 pointer-events-none" />
 
                             {/* Info Label - Only active item */}
                             {offset === 0 && (
                                 <motion.div 
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
                                     transition={{ delay: 0.2 }}
-                                    className="absolute bottom-0 left-0 right-0 p-6 translate-z-10"
+                                    className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent"
                                 >
-                                    <h2 className="text-2xl font-bold text-white mb-1 truncate drop-shadow-lg">{item.name}</h2>
-                                    <p className="text-gray-300 text-sm font-mono drop-shadow-md">{(item.size / 1024 / 1024).toFixed(2)} MB</p>
+                                    <h2 className="text-xl font-bold text-white mb-1 truncate">{item.name}</h2>
+                                    {item.aiDescription && (
+                                        <p className="text-gray-300 text-xs line-clamp-1">{item.aiDescription}</p>
+                                    )}
                                 </motion.div>
                             )}
                         </div>
@@ -207,17 +206,17 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
 
       {/* Navigation Buttons */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 sm:px-12 z-20 pointer-events-none">
-        <button onClick={prev} className="pointer-events-auto p-4 rounded-full bg-black/20 backdrop-blur-md hover:bg-white/10 text-white transition-all border border-white/5 hover:scale-110 active:scale-95 group">
-            <ChevronLeft size={32} className="group-hover:-translate-x-1 transition-transform" />
+        <button onClick={prev} className="pointer-events-auto p-3 rounded-full bg-black/40 hover:bg-white/10 text-white transition-all border border-white/5 active:scale-95">
+            <ChevronLeft size={28} />
         </button>
-        <button onClick={next} className="pointer-events-auto p-4 rounded-full bg-black/20 backdrop-blur-md hover:bg-white/10 text-white transition-all border border-white/5 hover:scale-110 active:scale-95 group">
-            <ChevronRight size={32} className="group-hover:translate-x-1 transition-transform" />
+        <button onClick={next} className="pointer-events-auto p-3 rounded-full bg-black/40 hover:bg-white/10 text-white transition-all border border-white/5 active:scale-95">
+            <ChevronRight size={28} />
         </button>
       </div>
       
-      <div className="absolute bottom-20 left-0 right-0 text-center z-10">
-          <p className="text-white/30 text-xs font-mono tracking-widest uppercase">
-            3D Flow View
+      <div className="absolute bottom-24 left-0 right-0 text-center z-10 pointer-events-none">
+          <p className="text-white/20 text-[10px] font-mono tracking-[0.2em] uppercase">
+            {currentIndex + 1} / {items.length}
           </p>
       </div>
     </div>

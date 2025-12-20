@@ -7,6 +7,7 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 ### Navigation Générale
 - **Clic Simple (Grille)** : Met le focus sur l'image (bordure blanche). Si le mode Sélection est actif, cela coche l'image.
 - **Double-Clic (Grille)** : Ouvre l'image en plein écran.
+- **Clic Droit (Grille)** : Ouvre le **Menu Contextuel Personnalisé** (Analyse AI, Tag Couleur, Suppression).
 - **Drag-to-Select (Glisser-Déposer)** :
   - Cliquez et maintenez le bouton gauche de la souris dans une zone vide de la grille.
   - Tracez un rectangle pour sélectionner plusieurs images.
@@ -15,6 +16,14 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 ### Mode Plein Écran (ImageViewer)
 - **Roulette / Clic Boutons** : Précédent / Suivant.
 - **Clic hors image** : Fermer le visualiseur.
+
+## Recherche & Filtrage
+
+- **Recherche Floue (Fuzzy Search)** :
+  - La barre de recherche utilise `Fuse.js`.
+  - Elle tolère les fautes de frappe (ex: "montgne" trouvera "montagne").
+  - Elle cherche dans le nom de fichier, la description AI et les tags AI.
+- **Tags Couleurs** : Filtrage rapide via la barre supérieure (clic sur une pastille couleur).
 
 ## Raccourcis Clavier
 

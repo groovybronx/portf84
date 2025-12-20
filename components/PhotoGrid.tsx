@@ -15,6 +15,7 @@ interface PhotoGridProps {
   focusedId?: string | null;
   onFocusChange?: (id: string | null) => void;
   registerItemRef?: (id: string, el: HTMLElement | null) => void;
+  onContextMenu?: (e: React.MouseEvent, item: PortfolioItem) => void;
 }
 
 const ITEMS_PER_PAGE = 30;
@@ -30,7 +31,8 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
     columns = 4, 
     focusedId,
     onFocusChange,
-    registerItemRef
+    registerItemRef,
+    onContextMenu
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -179,6 +181,7 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
                             transition={{ duration: 0.5 }}
                             onMouseEnter={() => onHover?.(item)}
                             onMouseLeave={() => onHover?.(null)}
+                            onContextMenu={(e) => onContextMenu?.(e, item)}
                             className={`relative group cursor-pointer overflow-hidden rounded-lg bg-surface transition-all duration-200 ${
                                 isSelected 
                                     ? 'border-2 border-blue-500 ring-2 ring-blue-500/50' 
