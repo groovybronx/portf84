@@ -80,25 +80,61 @@ export const useLibrary = () => {
         return;
       }
 
-      // We need to iterate and verify/load each handle
+      const authorizedHandles: FileSystemDirectoryHandle[] = [];
       let loadedCount = 0;
-      for (const handle of handles) {
-          const permitted = await verifyPermission(handle, true);
+
+      // Smart Restoration Loop
+      // We iterate through handles. If we successfully authorize one, 
+      // we check if subsequent handles are actually children of this one.
+      // If so, we skip the prompt for the child, as it will be loaded by the parent scan anyway.
+      
+      const handlesToProcess = [...handles];
+      
+      // Sort handles? Ideally parents first, but we can't know without permission.
+      // We rely on the user having added the parent or just simple iteration.
+
+      for (let i = 0; i < handlesToProcess.length; i++) {
+          const currentHandle = handlesToProcess[i];
+          
+          // Check if this handle is already contained in a previously authorized parent
+          let isRedundant = false;
+          for (const parentHandle of authorizedHandles) {
+              try {
+                  // resolve() returns an array of path parts if contained, or null if not.
+                  // This only works if parentHandle has permission granted.
+                  const relativePath = await parentHandle.resolve(currentHandle);
+                  if (relativePath !== null) {
+                      console.log(`Skipping permission for ${currentHandle.name} (covered by ${parentHandle.name})`);
+                      isRedundant = true;
+                      break;
+                  }
+              } catch (e) {
+                  // Ignore permission errors during check
+              }
+          }
+
+          if (isRedundant) {
+              // We don't need to load this explicitly, as the parent scan will catch it (or has caught it)
+              // However, to keep the UI consistent (sidebar items), we might want to ensure it exists.
+              // But for now, let's assume minimizing prompts is priority.
+              continue; 
+          }
+
+          // If not redundant, ask for permission
+          const permitted = await verifyPermission(currentHandle, true);
           if (permitted) {
-             await loadFromDirectoryHandle(handle);
-             loadedCount++;
+              authorizedHandles.push(currentHandle);
+              await loadFromDirectoryHandle(currentHandle);
+              loadedCount++;
           }
       }
 
       if (loadedCount === 0 && handles.length > 0) {
-          // If user denied all, or something failed
-          alert("Could not restore access to folders.");
+          alert("Could not restore access to folders. Please select them again manually if needed.");
       }
       
     } catch (e) {
       console.error("Restore failed", e);
-      // Don't clear handles automatically on partial fail, user might want to try again
-      // storageService.clearHandles(); 
     } finally {
       setIsRestoring(false);
     }
