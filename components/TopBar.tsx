@@ -132,13 +132,12 @@ export const TopBar: React.FC<TopBarProps> = ({
                     </button>
                 </div>
 
+                <div className="h-6 w-px bg-white/10 mx-2 hidden sm:block flex-shrink-0" />
 
-                {/* --- MIDDLE SECTION (Scrollable) --- */}
-                {/* This section takes available space and scrolls horizontally if needed, preventing layout break. */}
-                <div className="flex-1 flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar px-2 sm:px-4 min-w-0">
+                {/* --- MIDDLE SECTION (Scrollable: Search, Colors, Slider) --- */}
+                {/* Keeps basic controls accessible on small screens with scroll */}
+                <div className="flex-1 flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar px-1 min-w-0">
                     
-                    <div className="h-6 w-px bg-white/10 mx-1 hidden sm:block flex-shrink-0" />
-
                     {/* Search */}
                     <div className="flex items-center bg-white/5 rounded-lg px-3 py-2 border border-white/5 w-28 sm:w-48 transition-all focus-within:w-48 sm:focus-within:w-64 focus-within:border-blue-500/50 flex-shrink-0">
                         <Search size={16} className="text-gray-400 mr-2 flex-shrink-0" />
@@ -194,9 +193,12 @@ export const TopBar: React.FC<TopBarProps> = ({
                             />
                         </div>
                     )}
+                </div>
 
-                    <div className="flex-1" />
-
+                {/* --- ACTIONS SECTION (Non-Scrollable: Tags, Sort, Select) --- */}
+                {/* Moved out of the overflow container so dropdowns don't get clipped */}
+                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                    
                     {/* Action / Context Area */}
                     {selectionMode ? (
                         <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 flex-shrink-0">
@@ -229,26 +231,6 @@ export const TopBar: React.FC<TopBarProps> = ({
                         </div>
                     ) : (
                         <div className="flex items-center gap-2 flex-shrink-0">
-                             {/* Batch AI Button - TEMPORARILY DISABLED FOR COST SAFETY */}
-                             {/*
-                             <div className="relative">
-                                {isBatchAIProcessing ? (
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                                        <div className="w-4 h-4 rounded-full border-2 border-purple-400 border-t-transparent animate-spin"/>
-                                        <span className="text-xs font-mono text-purple-300">{(batchAIProgress * 100).toFixed(0)}%</span>
-                                    </div>
-                                ) : (
-                                    <button
-                                        onClick={onRunBatchAI}
-                                        className="p-2 bg-white/5 border border-white/5 rounded-lg hover:bg-purple-500/20 hover:text-purple-300 hover:border-purple-500/30 transition-all text-gray-400"
-                                        title="Auto-Analyze Visible Folder"
-                                    >
-                                        <Sparkles size={16} />
-                                    </button>
-                                )}
-                             </div>
-                             */}
-
                             {/* Filter Tags */}
                             <div className="relative group hidden xl:block">
                                 <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/5 cursor-pointer hover:bg-white/10 transition-colors">
@@ -315,9 +297,8 @@ export const TopBar: React.FC<TopBarProps> = ({
 
 
                 {/* --- RIGHT SECTION (Fixed) --- */}
-                {/* Placed outside the scrollable area to allow the Dropdown to overflow visibly */}
+                {/* View Switcher Dropdown */}
                 <div className="flex items-center gap-2 flex-shrink-0 pl-2 ml-2 border-l border-white/10 relative z-50">
-                    {/* View Mode Switcher (Expandable) */}
                     <div className="relative">
                         <button 
                             onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}

@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Folder, X, Trash2, Layers, Image as ImageIcon, UploadCloud, FolderPlus, CheckCircle2, Circle } from 'lucide-react';
+import { Folder, X, Trash2, Layers, Image as ImageIcon, UploadCloud, FolderPlus, CheckCircle2, Circle, FolderHeart, HardDrive } from 'lucide-react';
 import { Folder as FolderType } from '../types';
 
 interface FolderDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   folders: FolderType[];
-  activeFolderId: Set<string>; // Changed from string | 'all' to Set<string>
+  activeFolderId: Set<string>; 
   onSelectFolder: (id: string) => void;
   onImportFolder: () => void;
   onCreateFolder: () => void;
@@ -93,6 +93,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
               {/* Folder List */}
               {folders.map(folder => {
                   const isActive = activeFolderId.has(folder.id);
+                  const isVirtual = folder.isVirtual;
+                  
                   return (
                     <div 
                         key={folder.id} 
@@ -112,19 +114,25 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                             )}
                         </div>
 
-                        {/* Folder Preview Thumbnail */}
-                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-white/10">
-                            {folder.items.length > 0 ? (
+                        {/* Folder Icon / Preview */}
+                        <div className={`w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border border-white/10 ${isVirtual ? 'bg-purple-500/10' : 'bg-black'}`}>
+                            {folder.items.length > 0 && !isVirtual ? (
                                 <img src={folder.items[0].url} className="w-full h-full object-cover" alt="" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-white/5">
-                                    <Folder size={16} />
-                                </div>
+                                // Icon logic: Virtual gets a special folder icon, Physical gets HardDrive or normal folder
+                                isVirtual ? (
+                                    <FolderHeart size={20} className="text-purple-400" />
+                                ) : (
+                                    <HardDrive size={20} className="text-blue-400" />
+                                )
                             )}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <p className={`font-medium text-sm truncate ${isActive ? 'text-white' : ''}`}>{folder.name}</p>
+                            <div className="flex items-center gap-2">
+                                <p className={`font-medium text-sm truncate ${isActive ? 'text-white' : ''}`}>{folder.name}</p>
+                                {isVirtual && <span className="w-1.5 h-1.5 rounded-full bg-purple-500" title="Virtual Collection"></span>}
+                            </div>
                             <p className="text-xs opacity-60">{folder.items.length} items</p>
                         </div>
 
@@ -134,7 +142,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                 onDeleteFolder(folder.id);
                             }}
                             className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-all"
-                            title="Remove Collection"
+                            title={isVirtual ? "Delete Collection" : "Remove Folder"}
                         >
                             <Trash2 size={16} />
                         </button>

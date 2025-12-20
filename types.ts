@@ -25,6 +25,7 @@ export interface Folder {
   name: string;
   items: PortfolioItem[];
   createdAt: number;
+  isVirtual?: boolean; // True if created within the app, false if physical disk folder
 }
 
 export enum ViewMode {

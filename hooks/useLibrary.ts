@@ -82,7 +82,8 @@ export const useLibrary = () => {
             id: folderId,
             name: name,
             items: remainingItems,
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            isVirtual: false // Physical folder
         });
       }
     });
@@ -105,37 +106,22 @@ export const useLibrary = () => {
             id: rootFolderId,
             name: handle.name,
             items: remainingLooseItems,
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            isVirtual: false // Physical folder
         });
     }
 
     // 4. Merge Virtual Folders with content
     const finalVirtualFolders = storedVirtualFolders.map(vf => ({
         ...vf,
-        items: virtualFolderContent.get(vf.id) || []
+        items: virtualFolderContent.get(vf.id) || [],
+        isVirtual: true // Ensure flag is set
     }));
 
     // 5. Update State
     setFolders(prev => {
-        // We need to merge carefully. 
-        // 1. Keep existing virtual folders (if any) or replace with loaded ones
-        // 2. Append new physical folders
-        
-        // Simple strategy: Filter out old matching virtual folders from prev, keep others, add new ones
         const prevVirtualIds = new Set(storedVirtualFolders.map(f => f.id));
-        const keptPrev = prev.filter(f => !prevVirtualIds.has(f.id)); // Actually, we probably want to replace everything on a restore
-        
-        // If this is a fresh load (folders is empty), it's easy. 
-        // If appending (multiple roots), we need to ensure we don't duplicate virtual folders.
-        
-        const mergedVirtual = [...finalVirtualFolders]; // Start with loaded virtuals
-        
-        // If we already had virtual folders in state, we might have just overwritten their content with the new scan.
-        // But since virtual folders are global, the "DB load" version is the source of truth for structure,
-        // and the "current scan" provided the file blobs.
-        
-        // However, if we loaded Root A, got some virtual items. Then Load Root B, get more virtual items.
-        // We need to merge the items into the virtual folders.
+        const keptPrev = prev.filter(f => !prevVirtualIds.has(f.id)); 
         
         const existingVirtualMap = new Map(prev.filter(f => virtualFolderIds.has(f.id)).map(f => [f.id, f]));
         
@@ -147,7 +133,6 @@ export const useLibrary = () => {
             return vf;
         });
 
-        // Remove virtual folders from prev to avoid duplication, then append new physical
         const cleanPrev = prev.filter(f => !virtualFolderIds.has(f.id));
         
         return [...cleanPrev, ...mergedVirtualFolders, ...physicalFolders];
@@ -189,7 +174,7 @@ export const useLibrary = () => {
 
       // Pre-load virtual folders structure into state so empty folders appear even if files are missing
       const vFolders = await storageService.getVirtualFolders();
-      setFolders(vFolders);
+      setFolders(vFolders); // vFolders already have isVirtual: true from service
 
       for (let i = 0; i < storedItems.length; i++) {
           const item = storedItems[i];
@@ -280,11 +265,11 @@ export const useLibrary = () => {
     const newFolders: Folder[] = [];
     folderGroups.forEach((items, name) => {
         const folderId = Math.random().toString(36).substring(2, 9);
-        newFolders.push({ id: folderId, name, items: items.map(i => ({...i, folderId})), createdAt: Date.now() });
+        newFolders.push({ id: folderId, name, items: items.map(i => ({...i, folderId})), createdAt: Date.now(), isVirtual: false });
     });
     if (looseItems.length > 0) {
         const folderId = Math.random().toString(36).substring(2, 9);
-        newFolders.push({ id: folderId, name: 'Import', items: looseItems.map(i => ({...i, folderId})), createdAt: Date.now() });
+        newFolders.push({ id: folderId, name: 'Import', items: looseItems.map(i => ({...i, folderId})), createdAt: Date.now(), isVirtual: false });
     }
     setFolders(prev => [...prev, ...newFolders]);
     setActiveFolderIds(new Set(['all']));
@@ -308,7 +293,8 @@ export const useLibrary = () => {
       id: Math.random().toString(36).substring(2, 9),
       name,
       items: [],
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      isVirtual: true // Mark as virtual
     };
     setFolders(prev => [...prev, newFolder]);
     setActiveFolderIds(new Set([newFolder.id]));
