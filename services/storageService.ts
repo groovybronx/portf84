@@ -5,6 +5,13 @@ const DB_VERSION = 1;
 const STORE_HANDLES = 'handles';
 const STORE_METADATA = 'metadata';
 
+interface StoredHandle {
+  id: string;
+  handle: FileSystemDirectoryHandle;
+  timestamp: number;
+  isRoot?: boolean; // New flag: if true, used only for permissions, not content loading
+}
+
 interface StoredMetadata {
   id: string; // usually relative path
   aiDescription?: string;
@@ -34,28 +41,32 @@ const openDB = (): Promise<IDBDatabase> => {
 
 export const storageService = {
   // --- Handles (Root Directory Access) ---
-  addDirectoryHandle: async (handle: FileSystemDirectoryHandle) => {
+  addDirectoryHandle: async (handle: FileSystemDirectoryHandle, isRoot: boolean = false) => {
     const db = await openDB();
     return new Promise<void>((resolve, reject) => {
       const tx = db.transaction(STORE_HANDLES, 'readwrite');
       const store = tx.objectStore(STORE_HANDLES);
-      // Use handle.name as key. Overwrites if exists (update timestamp).
-      store.put({ id: handle.name, handle, timestamp: Date.now() });
+      const data: StoredHandle = { 
+        id: handle.name, 
+        handle, 
+        timestamp: Date.now(),
+        isRoot 
+      };
+      store.put(data);
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
   },
 
-  getDirectoryHandles: async (): Promise<FileSystemDirectoryHandle[]> => {
+  getDirectoryHandles: async (): Promise<StoredHandle[]> => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_HANDLES, 'readonly');
       const store = tx.objectStore(STORE_HANDLES);
       const request = store.getAll();
       request.onsuccess = () => {
-        // request.result is an array of objects { id, handle, timestamp }
         const results = request.result || [];
-        resolve(results.map((r: any) => r.handle));
+        resolve(results);
       };
       request.onerror = () => reject(request.error);
     });

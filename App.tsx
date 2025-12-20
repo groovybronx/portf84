@@ -22,7 +22,7 @@ const App: React.FC = () => {
   // --- 1. Library & Data Layer ---
   const { 
     folders, activeFolderIds, hasStoredSession, isRestoring,
-    loadFromDirectoryHandle, restoreSession, importFiles, 
+    loadFromDirectoryHandle, restoreSession, setLibraryRoot, importFiles, 
     updateItem, createFolder, deleteFolder, toggleFolderSelection, moveItemsToFolder
   } = useLibrary();
 
@@ -100,6 +100,13 @@ const App: React.FC = () => {
     try {
         const handle = await (window as any).showDirectoryPicker();
         await loadFromDirectoryHandle(handle);
+    } catch (e) { console.log("Cancelled", e); }
+  };
+
+  const handleSetRoot = async () => {
+    try {
+        const handle = await (window as any).showDirectoryPicker();
+        await setLibraryRoot(handle);
     } catch (e) { console.log("Cancelled", e); }
   };
 
@@ -188,6 +195,7 @@ const App: React.FC = () => {
         <UploadZone 
             onFilesSelected={importFiles} 
             onDirectoryPicker={handleDirectoryPicker}
+            onSetRoot={handleSetRoot}
             hasStoredSession={hasStoredSession}
             onRestoreSession={restoreSession}
         />

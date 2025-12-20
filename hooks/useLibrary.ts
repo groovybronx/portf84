@@ -13,8 +13,8 @@ export const useLibrary = () => {
   useEffect(() => {
     const checkStorage = async () => {
       try {
-        const handles = await storageService.getDirectoryHandles();
-        if (handles.length > 0) setHasStoredSession(true);
+        const storedItems = await storageService.getDirectoryHandles();
+        if (storedItems.length > 0) setHasStoredSession(true);
       } catch (e) { console.error("Storage check failed", e); }
     };
     checkStorage();
@@ -58,79 +58,96 @@ export const useLibrary = () => {
       const folderId = Math.random().toString(36).substring(2, 9);
       newFolders.push({
         id: folderId,
-        name: handle.name, // Use the handle name (Folder Name) instead of generic "Root Collection"
+        name: handle.name,
         items: looseFiles.map(hydrateItem).map(i => ({...i, folderId})),
         createdAt: Date.now()
       });
     }
 
-    setFolders(prev => [...prev, ...newFolders]); // Append instead of replace
+    setFolders(prev => [...prev, ...newFolders]);
     if (newFolders.length > 0) setActiveFolderIds(new Set(['all']));
-    await storageService.addDirectoryHandle(handle); // Add to persistence list
+    
+    // Default isRoot=false when loading content
+    await storageService.addDirectoryHandle(handle, false); 
   };
+
+  // --- New: Link Root Folder (Permission Only) ---
+  const setLibraryRoot = async (handle: FileSystemDirectoryHandle) => {
+    // We only verify/store it. We do NOT scan it.
+    await verifyPermission(handle, true);
+    await storageService.addDirectoryHandle(handle, true);
+    setHasStoredSession(true);
+    alert(`Root "${handle.name}" linked! Future subfolders will load without prompts.`);
+  };
+
 
   // --- Public Actions ---
 
   const restoreSession = async () => {
     try {
       setIsRestoring(true);
-      const handles = await storageService.getDirectoryHandles();
-      if (handles.length === 0) {
+      const storedItems = await storageService.getDirectoryHandles();
+      if (storedItems.length === 0) {
         setHasStoredSession(false);
         return;
       }
 
+      // Prioritize explicit roots for permission request
       const authorizedHandles: FileSystemDirectoryHandle[] = [];
       let loadedCount = 0;
 
-      // Smart Restoration Loop
-      // We iterate through handles. If we successfully authorize one, 
-      // we check if subsequent handles are actually children of this one.
-      // If so, we skip the prompt for the child, as it will be loaded by the parent scan anyway.
-      
-      const handlesToProcess = [...handles];
-      
-      // Sort handles? Ideally parents first, but we can't know without permission.
-      // We rely on the user having added the parent or just simple iteration.
+      // Sort: Roots first, then others. This increases chance of early hit.
+      storedItems.sort((a, b) => (a.isRoot === b.isRoot) ? 0 : a.isRoot ? -1 : 1);
 
-      for (let i = 0; i < handlesToProcess.length; i++) {
-          const currentHandle = handlesToProcess[i];
-          
-          // Check if this handle is already contained in a previously authorized parent
-          let isRedundant = false;
+      for (let i = 0; i < storedItems.length; i++) {
+          const item = storedItems[i];
+          let handleToUse = item.handle;
+          let isAuthorized = false;
+
+          // 1. Try to resolve via already authorized parents
           for (const parentHandle of authorizedHandles) {
               try {
-                  // resolve() returns an array of path parts if contained, or null if not.
-                  // This only works if parentHandle has permission granted.
-                  const relativePath = await parentHandle.resolve(currentHandle);
-                  if (relativePath !== null) {
-                      console.log(`Skipping permission for ${currentHandle.name} (covered by ${parentHandle.name})`);
-                      isRedundant = true;
+                  const path = await parentHandle.resolve(handleToUse);
+                  if (path) {
+                      // Found it! It is a child of an authorized parent.
+                      // Traverse to get a "fresh" permitted handle.
+                      let freshHandle = parentHandle;
+                      for (const name of path) {
+                          freshHandle = await freshHandle.getDirectoryHandle(name);
+                      }
+                      handleToUse = freshHandle;
+                      isAuthorized = true;
+                      console.log(`Auto-authorized ${item.id} via ${parentHandle.name}`);
                       break;
                   }
-              } catch (e) {
-                  // Ignore permission errors during check
+              } catch (e) { /* ignore */ }
+          }
+
+          // 2. If not covered, ask permission explicitly
+          if (!isAuthorized) {
+              const permitted = await verifyPermission(handleToUse, true);
+              if (permitted) {
+                  authorizedHandles.push(handleToUse);
+                  isAuthorized = true;
               }
           }
 
-          if (isRedundant) {
-              // We don't need to load this explicitly, as the parent scan will catch it (or has caught it)
-              // However, to keep the UI consistent (sidebar items), we might want to ensure it exists.
-              // But for now, let's assume minimizing prompts is priority.
-              continue; 
-          }
-
-          // If not redundant, ask for permission
-          const permitted = await verifyPermission(currentHandle, true);
-          if (permitted) {
-              authorizedHandles.push(currentHandle);
-              await loadFromDirectoryHandle(currentHandle);
-              loadedCount++;
+          // 3. Action based on type
+          if (isAuthorized) {
+              if (item.isRoot) {
+                  // If it's just a permission root, we just keep it in authorizedHandles (done above)
+                  // We don't load its content.
+              } else {
+                  // It's a content folder, load it.
+                  await loadFromDirectoryHandle(handleToUse);
+                  loadedCount++;
+              }
           }
       }
 
-      if (loadedCount === 0 && handles.length > 0) {
-          alert("Could not restore access to folders. Please select them again manually if needed.");
+      if (loadedCount === 0 && storedItems.some(i => !i.isRoot)) {
+         // If we had content folders but failed to load any
+         alert("Could not restore folders. Please try linking the Root folder first.");
       }
       
     } catch (e) {
@@ -248,6 +265,7 @@ export const useLibrary = () => {
     isRestoring,
     loadFromDirectoryHandle,
     restoreSession,
+    setLibraryRoot,
     importFiles,
     updateItem,
     createFolder,
