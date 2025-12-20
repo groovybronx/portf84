@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OpenMemory - IDE/Assistant specific rules
+.agent/rules/openmemory.md
