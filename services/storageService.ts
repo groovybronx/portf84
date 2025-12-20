@@ -77,6 +77,12 @@ export const storageService = {
     });
   },
 
+  removeDirectoryHandle: async (id: string) => {
+    const db = await openDB();
+    const tx = db.transaction(STORE_HANDLES, 'readwrite');
+    tx.objectStore(STORE_HANDLES).delete(id);
+  },
+
   clearHandles: async () => {
     const db = await openDB();
     const tx = db.transaction(STORE_HANDLES, 'readwrite');
