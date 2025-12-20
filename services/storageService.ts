@@ -123,7 +123,8 @@ export const storageService = {
     const folderData = {
         id: folder.id,
         name: folder.name,
-        createdAt: folder.createdAt
+        createdAt: folder.createdAt,
+        isVirtual: true // Mark as virtual
     };
     tx.objectStore(STORE_FOLDERS).put(folderData);
   },
@@ -141,8 +142,8 @@ export const storageService = {
         const request = tx.objectStore(STORE_FOLDERS).getAll();
         request.onsuccess = () => {
             const rawFolders = request.result || [];
-            // Re-attach empty items array
-            resolve(rawFolders.map((f: any) => ({ ...f, items: [] })));
+            // Re-attach empty items array and ensure isVirtual is true
+            resolve(rawFolders.map((f: any) => ({ ...f, items: [], isVirtual: true })));
         };
     });
   }

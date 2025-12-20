@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Folder, PortfolioItem } from '../types';
-import { storageService } from '../services/storageService';
-import { scanDirectory, verifyPermission } from '../utils/fileHelpers';
+import { useState, useEffect, useCallback } from "react";
+import { Folder, PortfolioItem } from "../types";
+import { storageService } from "../services/storageService";
+import { scanDirectory, verifyPermission } from "../utils/fileHelpers";
 
 export const useLibrary = () => {
   const [folders, setFolders] = useState<Folder[]>([]);
-  const [activeFolderIds, setActiveFolderIds] = useState<Set<string>>(new Set(['all']));
+  const [activeFolderIds, setActiveFolderIds] = useState<Set<string>>(
+    new Set(["all"])
+  );
   const [hasStoredSession, setHasStoredSession] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [restorationProgress, setRestorationProgress] = useState(0);
@@ -90,6 +92,7 @@ export const useLibrary = () => {
           name: name,
           items: remainingItems,
           createdAt: Date.now(),
+          isVirtual: false, // Physical folder
         });
       }
     });
@@ -116,6 +119,7 @@ export const useLibrary = () => {
         name: handle.name,
         items: remainingLooseItems,
         createdAt: Date.now(),
+        isVirtual: false, // Physical folder
       });
     }
 
@@ -123,29 +127,13 @@ export const useLibrary = () => {
     const finalVirtualFolders = storedVirtualFolders.map((vf) => ({
       ...vf,
       items: virtualFolderContent.get(vf.id) || [],
+      isVirtual: true, // Ensure flag is set
     }));
 
     // 5. Update State
     setFolders((prev) => {
-      // We need to merge carefully.
-      // 1. Keep existing virtual folders (if any) or replace with loaded ones
-      // 2. Append new physical folders
-
-      // Simple strategy: Filter out old matching virtual folders from prev, keep others, add new ones
       const prevVirtualIds = new Set(storedVirtualFolders.map((f) => f.id));
-      const keptPrev = prev.filter((f) => !prevVirtualIds.has(f.id)); // Actually, we probably want to replace everything on a restore
-
-      // If this is a fresh load (folders is empty), it's easy.
-      // If appending (multiple roots), we need to ensure we don't duplicate virtual folders.
-
-      const mergedVirtual = [...finalVirtualFolders]; // Start with loaded virtuals
-
-      // If we already had virtual folders in state, we might have just overwritten their content with the new scan.
-      // But since virtual folders are global, the "DB load" version is the source of truth for structure,
-      // and the "current scan" provided the file blobs.
-
-      // However, if we loaded Root A, got some virtual items. Then Load Root B, get more virtual items.
-      // We need to merge the items into the virtual folders.
+      const keptPrev = prev.filter((f) => !prevVirtualIds.has(f.id));
 
       const existingVirtualMap = new Map(
         prev.filter((f) => virtualFolderIds.has(f.id)).map((f) => [f.id, f])
@@ -159,7 +147,6 @@ export const useLibrary = () => {
         return vf;
       });
 
-      // Remove virtual folders from prev to avoid duplication, then append new physical
       const cleanPrev = prev.filter((f) => !virtualFolderIds.has(f.id));
 
       return [...cleanPrev, ...mergedVirtualFolders, ...physicalFolders];
@@ -206,7 +193,7 @@ export const useLibrary = () => {
 
       // Pre-load virtual folders structure into state so empty folders appear even if files are missing
       const vFolders = await storageService.getVirtualFolders();
-      setFolders(vFolders);
+      setFolders(vFolders); // vFolders already have isVirtual: true from service
 
       for (let i = 0; i < storedItems.length; i++) {
         const item = storedItems[i];
@@ -269,18 +256,20 @@ export const useLibrary = () => {
 
   const importFiles = (fileList: FileList) => {
     // Basic import logic (kept simple, mostly for non-FS usage)
-    const files = Array.from(fileList).filter((file) => file.type.startsWith('image/'));
+    const files = Array.from(fileList).filter((file) =>
+      file.type.startsWith("image/")
+    );
     if (files.length === 0) return;
 
     // ... (Existing import logic largely similar, but ideally should hook into persistence if we wanted to support imports properly)
     // For now, imports are ephemeral as they don't have file handles.
-    
+
     // Existing logic copy:
     const folderGroups = new Map<string, PortfolioItem[]>();
     const looseItems: PortfolioItem[] = [];
 
-    files.forEach(file => {
-      const pathParts = file.webkitRelativePath.split('/');
+    files.forEach((file) => {
+      const pathParts = file.webkitRelativePath.split("/");
       const folderTag = pathParts.length > 1 ? pathParts[0] : undefined;
       const item: PortfolioItem = {
         id: Math.random().toString(36).substring(2, 9),
@@ -290,7 +279,7 @@ export const useLibrary = () => {
         type: file.type,
         size: file.size,
         lastModified: file.lastModified,
-        aiTags: folderTag ? [folderTag] : []
+        aiTags: folderTag ? [folderTag] : [],
       };
       if (pathParts.length > 1) {
         const folderName = pathParts[0];
@@ -303,27 +292,43 @@ export const useLibrary = () => {
     // ... creating folders ...
     const newFolders: Folder[] = [];
     folderGroups.forEach((items, name) => {
-        const folderId = Math.random().toString(36).substring(2, 9);
-        newFolders.push({ id: folderId, name, items: items.map(i => ({...i, folderId})), createdAt: Date.now() });
+      const folderId = Math.random().toString(36).substring(2, 9);
+      newFolders.push({
+        id: folderId,
+        name,
+        items: items.map((i) => ({ ...i, folderId })),
+        createdAt: Date.now(),
+        isVirtual: false,
+      });
     });
     if (looseItems.length > 0) {
-        const folderId = Math.random().toString(36).substring(2, 9);
-        newFolders.push({ id: folderId, name: 'Import', items: looseItems.map(i => ({...i, folderId})), createdAt: Date.now() });
+      const folderId = Math.random().toString(36).substring(2, 9);
+      newFolders.push({
+        id: folderId,
+        name: "Import",
+        items: looseItems.map((i) => ({ ...i, folderId })),
+        createdAt: Date.now(),
+        isVirtual: false,
+      });
     }
-    setFolders(prev => [...prev, ...newFolders]);
-    setActiveFolderIds(new Set(['all']));
+    setFolders((prev) => [...prev, ...newFolders]);
+    setActiveFolderIds(new Set(["all"]));
   };
 
   const updateItem = useCallback((updated: PortfolioItem) => {
-    setFolders(prev => prev.map(folder => {
+    setFolders((prev) =>
+      prev.map((folder) => {
         if (!updated.folderId || folder.id === updated.folderId) {
-            return {
-                ...folder,
-                items: folder.items.map(item => item.id === updated.id ? updated : item)
-            };
+          return {
+            ...folder,
+            items: folder.items.map((item) =>
+              item.id === updated.id ? updated : item
+            ),
+          };
         }
         return folder;
-    }));
+      })
+    );
     storageService.saveMetadata(updated, updated.name);
   }, []);
 
@@ -332,58 +337,79 @@ export const useLibrary = () => {
       id: Math.random().toString(36).substring(2, 9),
       name,
       items: [],
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      isVirtual: true, // Mark as virtual
     };
-    setFolders(prev => [...prev, newFolder]);
+    setFolders((prev) => [...prev, newFolder]);
     setActiveFolderIds(new Set([newFolder.id]));
-    
+
     // Persist new folder
     storageService.saveVirtualFolder(newFolder);
-    
+
     return newFolder.id;
   };
 
   const deleteFolder = (id: string) => {
-    setFolders(prev => prev.filter(f => f.id !== id));
-    setActiveFolderIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(id);
-        return newSet.size === 0 ? new Set(['all']) : newSet;
+    setFolders((prev) => prev.filter((f) => f.id !== id));
+    setActiveFolderIds((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(id);
+      return newSet.size === 0 ? new Set(["all"]) : newSet;
     });
-    
+
     // Remove persistence
     storageService.deleteVirtualFolder(id);
   };
 
   const toggleFolderSelection = (id: string) => {
-    setActiveFolderIds(prev => {
-        if (id === 'all') return new Set(['all']);
-        const newSet = new Set(prev);
-        if (newSet.has('all')) { newSet.clear(); newSet.add(id); return newSet; }
-        if (newSet.has(id)) { newSet.delete(id); if (newSet.size === 0) return new Set(['all']); } 
-        else { newSet.add(id); }
+    setActiveFolderIds((prev) => {
+      if (id === "all") return new Set(["all"]);
+      const newSet = new Set(prev);
+      if (newSet.has("all")) {
+        newSet.clear();
+        newSet.add(id);
         return newSet;
+      }
+      if (newSet.has(id)) {
+        newSet.delete(id);
+        if (newSet.size === 0) return new Set(["all"]);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
     });
   };
 
-  const moveItemsToFolder = (itemIds: Set<string>, targetFolderId: string, allItemsFlat: PortfolioItem[]) => {
+  const moveItemsToFolder = (
+    itemIds: Set<string>,
+    targetFolderId: string,
+    allItemsFlat: PortfolioItem[]
+  ) => {
     if (itemIds.size === 0) return;
-    
-    const itemsToMove = allItemsFlat.filter(i => itemIds.has(i.id));
 
-    setFolders(prev => prev.map(folder => {
+    const itemsToMove = allItemsFlat.filter((i) => itemIds.has(i.id));
+
+    setFolders((prev) =>
+      prev.map((folder) => {
         if (folder.id === targetFolderId) {
-             const itemsToAdd = itemsToMove.map(i => ({...i, folderId: targetFolderId}));
-             return { ...folder, items: [...folder.items, ...itemsToAdd] };
+          const itemsToAdd = itemsToMove.map((i) => ({
+            ...i,
+            folderId: targetFolderId,
+          }));
+          return { ...folder, items: [...folder.items, ...itemsToAdd] };
         }
         // Remove from source folders
-        return { ...folder, items: folder.items.filter(i => !itemIds.has(i.id)) };
-    }));
-    
+        return {
+          ...folder,
+          items: folder.items.filter((i) => !itemIds.has(i.id)),
+        };
+      })
+    );
+
     // Persist the move (Folder ID assignment) for each item
-    itemsToMove.forEach(item => {
-        const updatedItem = { ...item, folderId: targetFolderId };
-        storageService.saveMetadata(updatedItem, updatedItem.name);
+    itemsToMove.forEach((item) => {
+      const updatedItem = { ...item, folderId: targetFolderId };
+      storageService.saveMetadata(updatedItem, updatedItem.name);
     });
 
     setActiveFolderIds(new Set([targetFolderId]));
