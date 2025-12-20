@@ -306,6 +306,8 @@ export const useLibrary = () => {
   };
 
   const deleteFolder = (id: string) => {
+    const folderToDelete = folders.find(f => f.id === id);
+    
     setFolders(prev => prev.filter(f => f.id !== id));
     setActiveFolderIds(prev => {
         const newSet = new Set(prev);
@@ -314,7 +316,12 @@ export const useLibrary = () => {
     });
     
     // Remove persistence
-    storageService.deleteVirtualFolder(id);
+    storageService.deleteVirtualFolder(id); // Remove virtual definition if it exists
+
+    // Also attempt to remove Physical Handle if the folder name matches a stored handle
+    if (folderToDelete) {
+        storageService.removeDirectoryHandle(folderToDelete.name);
+    }
   };
 
   const toggleFolderSelection = (id: string) => {
