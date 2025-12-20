@@ -85,7 +85,6 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
 
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden relative bg-[#050505]">
-      
       {/* Static Background - Performance Optimization: 
           Removed dynamic blurred image background which caused heavy repaints on every slide change.
       */}
@@ -94,130 +93,143 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
 
       {/* 3D Container */}
       <div className="relative z-10 w-full h-[65vh] flex items-center justify-center perspective-[1200px]">
-        <AnimatePresence initial={false} mode='popLayout'>
-            {items.map((item, index) => {
-                const offset = getOffset(index);
-                const absOffset = Math.abs(offset);
-                
-                // Strict culling of off-screen items for performance
-                if (absOffset > VISIBLE_RANGE) return null;
+        <AnimatePresence initial={false} mode="popLayout">
+          {items.map((item, index) => {
+            const offset = getOffset(index);
+            const absOffset = Math.abs(offset);
 
-                const zIndex = 100 - absOffset;
-                
-                // Optimized 3D Spacing
-                const X_SPACING = 60; // % spacing
-                const Z_DEPTH = -300; // px depth
-                
-                let xPos = 0;
-                let zPos = 0;
-                let rotateY = 0;
-                let opacity = 1;
+            // Strict culling of off-screen items for performance
+            if (absOffset > VISIBLE_RANGE) return null;
 
-                if (offset !== 0) {
-                    const sign = Math.sign(offset);
-                    // Non-linear spacing to bunch up items slightly in the back
-                    xPos = sign * (50 + (absOffset * 10)); 
-                    zPos = absOffset * Z_DEPTH;
-                    rotateY = -sign * 45; // Fixed rotation for side items looks cleaner than progressive
-                    opacity = Math.max(0.2, 1 - (absOffset * 0.3));
-                }
+            const zIndex = 100 - absOffset;
 
-                return (
+            // Optimized 3D Spacing
+            const X_SPACING = 60; // % spacing
+            const Z_DEPTH = -300; // px depth
+
+            let xPos = 0;
+            let zPos = 0;
+            let rotateY = 0;
+            let opacity = 1;
+
+            if (offset !== 0) {
+              const sign = Math.sign(offset);
+              // Non-linear spacing to bunch up items slightly in the back
+              xPos = sign * (50 + absOffset * 10);
+              zPos = absOffset * Z_DEPTH;
+              rotateY = -sign * 45; // Fixed rotation for side items looks cleaner than progressive
+              opacity = Math.max(0.2, 1 - absOffset * 0.3);
+            }
+
+            return (
+              <motion.div
+                key={item.id}
+                className="absolute w-[50vw] sm:w-[35vw] md:w-[28vw] aspect-[3/4] rounded-xl glass-surface border border-glass-border cursor-pointer shadow-2xl origin-bottom"
+                initial={false}
+                animate={{
+                  x: `${xPos}%`,
+                  z: zPos,
+                  rotateY: rotateY,
+                  opacity: opacity,
+                  scale: offset === 0 ? 1 : 0.85,
+                }}
+                transition={{
+                  // Using a simpler spring for better performance than complex physics
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 30,
+                }}
+                onClick={() => {
+                  if (offset === 0) onSelect(item);
+                  else {
+                    const newIndex =
+                      (currentIndex + offset + items.length) % items.length;
+                    setCurrentIndex(newIndex);
+                  }
+                }}
+                style={{
+                  transformStyle: "preserve-3d",
+                  zIndex: zIndex,
+                  // Hint to browser to promote this layer
+                  willChange: "transform, opacity",
+                }}
+              >
+                {/* Image Container */}
+                <div className="w-full h-full rounded-xl overflow-hidden relative bg-[#1a1a1a]">
+                  <img
+                    src={item.url}
+                    alt={item.name}
+                    className="w-full h-full object-cover pointer-events-none select-none"
+                    loading="lazy" // Lazy load images
+                    style={
+                      {
+                        // Remove blur filter for performance.
+                        // Instead use opacity overlay for depth perception.
+                      }
+                    }
+                  />
+
+                  {/* Darken Overlay for side items (Cheaper than blur) */}
+                  {offset !== 0 && (
+                    <div className="absolute inset-0 bg-black/40 transition-colors" />
+                  )}
+
+                  {/* Color Tag */}
+                  {showColorTags && item.colorTag && (
+                    <div
+                      className="absolute bottom-0 inset-x-0 h-1.5 z-20"
+                      style={{ backgroundColor: item.colorTag }}
+                    />
+                  )}
+
+                  {/* Reflection/Gloss Effect (Static CSS is cheap) */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-20 pointer-events-none" />
+
+                  {/* Info Label - Only active item */}
+                  {offset === 0 && (
                     <motion.div
-                        key={item.id}
-                        className="absolute w-[50vw] sm:w-[35vw] md:w-[28vw] aspect-[3/4] rounded-xl bg-surface/50 border border-white/10 cursor-pointer shadow-2xl origin-bottom"
-                        initial={false}
-                        animate={{ 
-                            x: `${xPos}%`, 
-                            z: zPos, 
-                            rotateY: rotateY,
-                            opacity: opacity,
-                            scale: offset === 0 ? 1 : 0.85,
-                        }}
-                        transition={{
-                            // Using a simpler spring for better performance than complex physics
-                            type: "spring",
-                            stiffness: 200,
-                            damping: 30
-                        }}
-                        onClick={() => {
-                            if (offset === 0) onSelect(item);
-                            else {
-                                const newIndex = (currentIndex + offset + items.length) % items.length;
-                                setCurrentIndex(newIndex);
-                            }
-                        }}
-                        style={{
-                            transformStyle: "preserve-3d",
-                            zIndex: zIndex,
-                            // Hint to browser to promote this layer
-                            willChange: "transform, opacity" 
-                        }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent"
                     >
-                        {/* Image Container */}
-                        <div className="w-full h-full rounded-xl overflow-hidden relative bg-[#1a1a1a]">
-                            <img 
-                                src={item.url} 
-                                alt={item.name} 
-                                className="w-full h-full object-cover pointer-events-none select-none"
-                                loading="lazy" // Lazy load images
-                                style={{
-                                    // Remove blur filter for performance. 
-                                    // Instead use opacity overlay for depth perception.
-                                }} 
-                            />
-
-                            {/* Darken Overlay for side items (Cheaper than blur) */}
-                            {offset !== 0 && (
-                                <div className="absolute inset-0 bg-black/40 transition-colors" />
-                            )}
-
-                            {/* Color Tag */}
-                            {showColorTags && item.colorTag && (
-                                <div 
-                                    className="absolute bottom-0 inset-x-0 h-1.5 z-20"
-                                    style={{ backgroundColor: item.colorTag }}
-                                />
-                            )}
-                            
-                            {/* Reflection/Gloss Effect (Static CSS is cheap) */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-20 pointer-events-none" />
-
-                            {/* Info Label - Only active item */}
-                            {offset === 0 && (
-                                <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.2 }}
-                                    className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent"
-                                >
-                                    <h2 className="text-xl font-bold text-white mb-1 truncate">{item.name}</h2>
-                                    {item.aiDescription && (
-                                        <p className="text-gray-300 text-xs line-clamp-1">{item.aiDescription}</p>
-                                    )}
-                                </motion.div>
-                            )}
-                        </div>
+                      <h2 className="text-xl font-bold text-white mb-1 truncate">
+                        {item.name}
+                      </h2>
+                      {item.aiDescription && (
+                        <p className="text-gray-300 text-xs line-clamp-1">
+                          {item.aiDescription}
+                        </p>
+                      )}
                     </motion.div>
-                );
-            })}
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
 
       {/* Navigation Buttons */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 sm:px-12 z-20 pointer-events-none">
-        <button onClick={prev} className="pointer-events-auto p-3 rounded-full bg-black/40 hover:bg-white/10 text-white transition-all border border-white/5 active:scale-95">
-            <ChevronLeft size={28} />
+        <button
+          onClick={prev}
+          className="pointer-events-auto p-3 rounded-full bg-glass-bg hover:bg-glass-bg-active text-white transition-all border border-glass-border active:scale-95"
+        >
+          <ChevronLeft size={28} />
         </button>
-        <button onClick={next} className="pointer-events-auto p-3 rounded-full bg-black/40 hover:bg-white/10 text-white transition-all border border-white/5 active:scale-95">
-            <ChevronRight size={28} />
+        <button
+          onClick={next}
+          className="pointer-events-auto p-3 rounded-full bg-glass-bg hover:bg-glass-bg-active text-white transition-all border border-glass-border active:scale-95"
+        >
+          <ChevronRight size={28} />
         </button>
       </div>
-      
+
       <div className="absolute bottom-24 left-0 right-0 text-center z-10 pointer-events-none">
-          <p className="text-white/20 text-[10px] font-mono tracking-[0.2em] uppercase">
-            {currentIndex + 1} / {items.length}
-          </p>
+        <p className="text-white/20 text-[10px] font-mono tracking-[0.2em] uppercase">
+          {currentIndex + 1} / {items.length}
+        </p>
       </div>
     </div>
   );

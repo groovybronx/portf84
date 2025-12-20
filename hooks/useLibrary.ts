@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Folder, PortfolioItem } from "../types";
 import { storageService } from "../services/storageService";
 import { scanDirectory, verifyPermission } from "../utils/fileHelpers";
+import { useProgress } from "../contexts/ProgressContext";
 
 export const useLibrary = () => {
   const [folders, setFolders] = useState<Folder[]>([]);
@@ -9,8 +10,7 @@ export const useLibrary = () => {
     new Set(["all"])
   );
   const [hasStoredSession, setHasStoredSession] = useState(false);
-  const [isRestoring, setIsRestoring] = useState(false);
-  const [restorationProgress, setRestorationProgress] = useState(0);
+  const { addTask, updateTask, removeTask } = useProgress();
 
   // --- Persistence Check ---
   useEffect(() => {
@@ -37,7 +37,14 @@ export const useLibrary = () => {
     const { folders: diskFolderMap, looseFiles } = await scanDirectory(handle);
 
     // 2. Load Persistence Data
-    const metaMap = await storageService.getMetadataBatch([]);
+    const allFileNames = [
+      ...Array.from(diskFolderMap.values()).flatMap((items) =>
+        items.map((i) => i.name)
+      ),
+      ...looseFiles.map((i) => i.name),
+    ];
+    const metaMap = await storageService.getMetadataBatch(allFileNames);
+
     const storedVirtualFolders = await storageService.getVirtualFolders();
     const virtualFolderIds = new Set(storedVirtualFolders.map((f) => f.id));
 
@@ -53,6 +60,7 @@ export const useLibrary = () => {
           aiTags: meta.aiTags,
           aiTagsDetailed: meta.aiTagsDetailed,
           colorTag: meta.colorTag,
+          manualTags: meta.manualTags,
           folderId: meta.folderId || item.folderId, // Prefer saved folderId
         };
 
@@ -75,7 +83,7 @@ export const useLibrary = () => {
     // Process Disk Folders
     diskFolderMap.forEach((items, name) => {
       const remainingItems: PortfolioItem[] = [];
-      const folderId = Math.random().toString(36).substring(2, 9); // Physical ID is ephemeral
+      const folderId = `phys-${btoa(name).substring(0, 12)}`; // Deterministic ID for physical folders
 
       items.forEach((rawItem) => {
         const { item, targetFolderId } = processItem({ ...rawItem, folderId });
@@ -99,7 +107,7 @@ export const useLibrary = () => {
 
     // Process Loose Files (Root)
     const remainingLooseItems: PortfolioItem[] = [];
-    const rootFolderId = Math.random().toString(36).substring(2, 9);
+    const rootFolderId = `phys-${btoa(handle.name).substring(0, 12)}`;
 
     looseFiles.forEach((rawItem) => {
       const { item, targetFolderId } = processItem({
@@ -173,9 +181,10 @@ export const useLibrary = () => {
   // --- Public Actions ---
 
   const restoreSession = async () => {
+    const taskId = "restore-library";
     try {
-      setIsRestoring(true);
-      setRestorationProgress(0);
+      addTask({ id: taskId, label: "Restoring Library" });
+
       const storedItems = await storageService.getDirectoryHandles();
       if (storedItems.length === 0) {
         setHasStoredSession(false);
@@ -236,9 +245,9 @@ export const useLibrary = () => {
             loadedCount++;
           }
         }
-        setRestorationProgress(
-          Math.round(((i + 1) / storedItems.length) * 100)
-        );
+        updateTask(taskId, {
+          progress: Math.round(((i + 1) / storedItems.length) * 100),
+        });
       }
 
       if (loadedCount === 0 && storedItems.some((i) => !i.isRoot)) {
@@ -249,8 +258,9 @@ export const useLibrary = () => {
     } catch (e) {
       console.error("Restore failed", e);
     } finally {
-      setIsRestoring(false);
-      setRestorationProgress(0);
+      updateTask(taskId, { status: "completed", progress: 100 });
+      // Auto-remove after a delay if success
+      setTimeout(() => removeTask(taskId), 3000);
     }
   };
 
@@ -426,8 +436,7 @@ export const useLibrary = () => {
     folders,
     activeFolderIds,
     hasStoredSession,
-    isRestoring,
-    restorationProgress,
+
     loadFromDirectoryHandle,
     restoreSession,
     setLibraryRoot,

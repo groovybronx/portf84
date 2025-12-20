@@ -18,6 +18,7 @@ export interface PortfolioItem {
   aiTagsDetailed?: AiTagDetailed[];
   folderId?: string;
   colorTag?: string; // Hex code for the color tag
+  manualTags?: string[];
 }
 
 export interface Folder {

@@ -9,17 +9,17 @@ export async function scanDirectory(
   const folderMap = new Map<string, PortfolioItem[]>();
   const looseFiles: PortfolioItem[] = [];
 
-  for await (const entry of dirHandle.values()) {
+  for await (const entry of (dirHandle as any).values()) {
     const relativePath = path ? `${path}/${entry.name}` : entry.name;
 
-    if (entry.kind === 'file') {
+    if (entry.kind === "file") {
       const fileHandle = entry as FileSystemFileHandle;
       const file = await fileHandle.getFile();
-      
-      if (file.type.startsWith('image/')) {
+
+      if (file.type.startsWith("image/")) {
         // Auto-tag based on folder structure
-        const folderTag = path.split('/').pop();
-        
+        const folderTag = path.split("/").pop();
+
         const item: PortfolioItem = {
           id: Math.random().toString(36).substring(2, 9),
           file: file, // Keep file reference for upload/analysis
@@ -28,7 +28,7 @@ export async function scanDirectory(
           type: file.type,
           size: file.size,
           lastModified: file.lastModified,
-          aiTags: folderTag ? [folderTag] : []
+          aiTags: folderTag ? [folderTag] : [],
           // Metadata will be merged later from IndexedDB
         };
 
@@ -36,29 +36,28 @@ export async function scanDirectory(
         // If it's in root (path is empty), it goes to looseFiles
         // If it's in a subfolder, we use the direct parent name
         if (path) {
-            const parentFolder = path.split('/').pop() || 'Unknown';
-            // We use the full path as key to ensure uniqueness of folders with same name in different subtrees
-            // But for display we might want just name. For now let's group by immediate parent name.
-            if (!folderMap.has(parentFolder)) {
-                folderMap.set(parentFolder, []);
-            }
-            folderMap.get(parentFolder)?.push(item);
+          const parentFolder = path.split("/").pop() || "Unknown";
+          // We use the full path as key to ensure uniqueness of folders with same name in different subtrees
+          // But for display we might want just name. For now let's group by immediate parent name.
+          if (!folderMap.has(parentFolder)) {
+            folderMap.set(parentFolder, []);
+          }
+          folderMap.get(parentFolder)?.push(item);
         } else {
-            looseFiles.push(item);
+          looseFiles.push(item);
         }
       }
-
-    } else if (entry.kind === 'directory') {
+    } else if (entry.kind === "directory") {
       const subDirHandle = entry as FileSystemDirectoryHandle;
       const result = await scanDirectory(subDirHandle, relativePath);
-      
+
       // Merge results
       result.folders.forEach((items, name) => {
-         if (folderMap.has(name)) {
-             folderMap.get(name)?.push(...items);
-         } else {
-             folderMap.set(name, items);
-         }
+        if (folderMap.has(name)) {
+          folderMap.get(name)?.push(...items);
+        } else {
+          folderMap.set(name, items);
+        }
       });
       looseFiles.push(...result.looseFiles);
     }
