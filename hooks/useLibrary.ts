@@ -8,6 +8,7 @@ export const useLibrary = () => {
   const [activeFolderIds, setActiveFolderIds] = useState<Set<string>>(new Set(['all']));
   const [hasStoredSession, setHasStoredSession] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [restorationProgress, setRestorationProgress] = useState(0);
 
   // --- Persistence Check ---
   useEffect(() => {
@@ -15,12 +16,16 @@ export const useLibrary = () => {
       try {
         const storedItems = await storageService.getDirectoryHandles();
         if (storedItems.length > 0) setHasStoredSession(true);
-      } catch (e) { console.error("Storage check failed", e); }
+      } catch (e) {
+        console.error("Storage check failed", e);
+      }
     };
     checkStorage();
-    
+
     return () => {
-      folders.forEach(f => f.items.forEach(i => URL.revokeObjectURL(i.url)));
+      folders.forEach((f) =>
+        f.items.forEach((i) => URL.revokeObjectURL(i.url))
+      );
     };
   }, []); // Run once on mount
 
@@ -28,14 +33,16 @@ export const useLibrary = () => {
   const loadFromDirectoryHandle = async (handle: FileSystemDirectoryHandle) => {
     // 1. Scan Disk
     const { folders: diskFolderMap, looseFiles } = await scanDirectory(handle);
-    
+
     // 2. Load Persistence Data
-    const metaMap = await storageService.getMetadataBatch([]); 
+    const metaMap = await storageService.getMetadataBatch([]);
     const storedVirtualFolders = await storageService.getVirtualFolders();
-    const virtualFolderIds = new Set(storedVirtualFolders.map(f => f.id));
+    const virtualFolderIds = new Set(storedVirtualFolders.map((f) => f.id));
 
     // Helper to hydrate and check for virtual folder assignment
-    const processItem = (item: PortfolioItem): { item: PortfolioItem, targetFolderId: string | null } => {
+    const processItem = (
+      item: PortfolioItem
+    ): { item: PortfolioItem; targetFolderId: string | null } => {
       const meta = metaMap.get(item.name); // Using Name/Path as key
       if (meta) {
         const hydrated = {
@@ -44,12 +51,12 @@ export const useLibrary = () => {
           aiTags: meta.aiTags,
           aiTagsDetailed: meta.aiTagsDetailed,
           colorTag: meta.colorTag,
-          folderId: meta.folderId || item.folderId // Prefer saved folderId
+          folderId: meta.folderId || item.folderId, // Prefer saved folderId
         };
-        
+
         // If the item belongs to a known virtual folder, return that ID
         if (hydrated.folderId && virtualFolderIds.has(hydrated.folderId)) {
-            return { item: hydrated, targetFolderId: hydrated.folderId };
+          return { item: hydrated, targetFolderId: hydrated.folderId };
         }
         return { item: hydrated, targetFolderId: null };
       }
@@ -59,7 +66,7 @@ export const useLibrary = () => {
     // 3. Distribute Items
     // We create a map for virtual folders to populate them
     const virtualFolderContent = new Map<string, PortfolioItem[]>();
-    storedVirtualFolders.forEach(f => virtualFolderContent.set(f.id, []));
+    storedVirtualFolders.forEach((f) => virtualFolderContent.set(f.id, []));
 
     const physicalFolders: Folder[] = [];
 
@@ -68,21 +75,21 @@ export const useLibrary = () => {
       const remainingItems: PortfolioItem[] = [];
       const folderId = Math.random().toString(36).substring(2, 9); // Physical ID is ephemeral
 
-      items.forEach(rawItem => {
-         const { item, targetFolderId } = processItem({...rawItem, folderId});
-         if (targetFolderId) {
-             virtualFolderContent.get(targetFolderId)?.push(item);
-         } else {
-             remainingItems.push(item);
-         }
+      items.forEach((rawItem) => {
+        const { item, targetFolderId } = processItem({ ...rawItem, folderId });
+        if (targetFolderId) {
+          virtualFolderContent.get(targetFolderId)?.push(item);
+        } else {
+          remainingItems.push(item);
+        }
       });
 
       if (remainingItems.length > 0) {
         physicalFolders.push({
-            id: folderId,
-            name: name,
-            items: remainingItems,
-            createdAt: Date.now()
+          id: folderId,
+          name: name,
+          items: remainingItems,
+          createdAt: Date.now(),
         });
       }
     });
@@ -90,73 +97,79 @@ export const useLibrary = () => {
     // Process Loose Files (Root)
     const remainingLooseItems: PortfolioItem[] = [];
     const rootFolderId = Math.random().toString(36).substring(2, 9);
-    
-    looseFiles.forEach(rawItem => {
-        const { item, targetFolderId } = processItem({...rawItem, folderId: rootFolderId});
-        if (targetFolderId) {
-            virtualFolderContent.get(targetFolderId)?.push(item);
-        } else {
-            remainingLooseItems.push(item);
-        }
+
+    looseFiles.forEach((rawItem) => {
+      const { item, targetFolderId } = processItem({
+        ...rawItem,
+        folderId: rootFolderId,
+      });
+      if (targetFolderId) {
+        virtualFolderContent.get(targetFolderId)?.push(item);
+      } else {
+        remainingLooseItems.push(item);
+      }
     });
 
     if (remainingLooseItems.length > 0) {
-        physicalFolders.push({
-            id: rootFolderId,
-            name: handle.name,
-            items: remainingLooseItems,
-            createdAt: Date.now()
-        });
+      physicalFolders.push({
+        id: rootFolderId,
+        name: handle.name,
+        items: remainingLooseItems,
+        createdAt: Date.now(),
+      });
     }
 
     // 4. Merge Virtual Folders with content
-    const finalVirtualFolders = storedVirtualFolders.map(vf => ({
-        ...vf,
-        items: virtualFolderContent.get(vf.id) || []
+    const finalVirtualFolders = storedVirtualFolders.map((vf) => ({
+      ...vf,
+      items: virtualFolderContent.get(vf.id) || [],
     }));
 
     // 5. Update State
-    setFolders(prev => {
-        // We need to merge carefully. 
-        // 1. Keep existing virtual folders (if any) or replace with loaded ones
-        // 2. Append new physical folders
-        
-        // Simple strategy: Filter out old matching virtual folders from prev, keep others, add new ones
-        const prevVirtualIds = new Set(storedVirtualFolders.map(f => f.id));
-        const keptPrev = prev.filter(f => !prevVirtualIds.has(f.id)); // Actually, we probably want to replace everything on a restore
-        
-        // If this is a fresh load (folders is empty), it's easy. 
-        // If appending (multiple roots), we need to ensure we don't duplicate virtual folders.
-        
-        const mergedVirtual = [...finalVirtualFolders]; // Start with loaded virtuals
-        
-        // If we already had virtual folders in state, we might have just overwritten their content with the new scan.
-        // But since virtual folders are global, the "DB load" version is the source of truth for structure,
-        // and the "current scan" provided the file blobs.
-        
-        // However, if we loaded Root A, got some virtual items. Then Load Root B, get more virtual items.
-        // We need to merge the items into the virtual folders.
-        
-        const existingVirtualMap = new Map(prev.filter(f => virtualFolderIds.has(f.id)).map(f => [f.id, f]));
-        
-        const mergedVirtualFolders = finalVirtualFolders.map(vf => {
-            const existing = existingVirtualMap.get(vf.id);
-            if (existing) {
-                return { ...vf, items: [...existing.items, ...vf.items] };
-            }
-            return vf;
-        });
+    setFolders((prev) => {
+      // We need to merge carefully.
+      // 1. Keep existing virtual folders (if any) or replace with loaded ones
+      // 2. Append new physical folders
 
-        // Remove virtual folders from prev to avoid duplication, then append new physical
-        const cleanPrev = prev.filter(f => !virtualFolderIds.has(f.id));
-        
-        return [...cleanPrev, ...mergedVirtualFolders, ...physicalFolders];
+      // Simple strategy: Filter out old matching virtual folders from prev, keep others, add new ones
+      const prevVirtualIds = new Set(storedVirtualFolders.map((f) => f.id));
+      const keptPrev = prev.filter((f) => !prevVirtualIds.has(f.id)); // Actually, we probably want to replace everything on a restore
+
+      // If this is a fresh load (folders is empty), it's easy.
+      // If appending (multiple roots), we need to ensure we don't duplicate virtual folders.
+
+      const mergedVirtual = [...finalVirtualFolders]; // Start with loaded virtuals
+
+      // If we already had virtual folders in state, we might have just overwritten their content with the new scan.
+      // But since virtual folders are global, the "DB load" version is the source of truth for structure,
+      // and the "current scan" provided the file blobs.
+
+      // However, if we loaded Root A, got some virtual items. Then Load Root B, get more virtual items.
+      // We need to merge the items into the virtual folders.
+
+      const existingVirtualMap = new Map(
+        prev.filter((f) => virtualFolderIds.has(f.id)).map((f) => [f.id, f])
+      );
+
+      const mergedVirtualFolders = finalVirtualFolders.map((vf) => {
+        const existing = existingVirtualMap.get(vf.id);
+        if (existing) {
+          return { ...vf, items: [...existing.items, ...vf.items] };
+        }
+        return vf;
+      });
+
+      // Remove virtual folders from prev to avoid duplication, then append new physical
+      const cleanPrev = prev.filter((f) => !virtualFolderIds.has(f.id));
+
+      return [...cleanPrev, ...mergedVirtualFolders, ...physicalFolders];
     });
 
-    if (physicalFolders.length > 0 || finalVirtualFolders.length > 0) setActiveFolderIds(new Set(['all']));
-    
+    if (physicalFolders.length > 0 || finalVirtualFolders.length > 0)
+      setActiveFolderIds(new Set(["all"]));
+
     // Default isRoot=false when loading content
-    await storageService.addDirectoryHandle(handle, false); 
+    await storageService.addDirectoryHandle(handle, false);
   };
 
   // --- New: Link Root Folder (Permission Only) ---
@@ -165,15 +178,17 @@ export const useLibrary = () => {
     await verifyPermission(handle, true);
     await storageService.addDirectoryHandle(handle, true);
     setHasStoredSession(true);
-    alert(`Root "${handle.name}" linked! Future subfolders will load without prompts.`);
+    alert(
+      `Root "${handle.name}" linked! Future subfolders will load without prompts.`
+    );
   };
-
 
   // --- Public Actions ---
 
   const restoreSession = async () => {
     try {
       setIsRestoring(true);
+      setRestorationProgress(0);
       const storedItems = await storageService.getDirectoryHandles();
       if (storedItems.length === 0) {
         setHasStoredSession(false);
@@ -185,61 +200,70 @@ export const useLibrary = () => {
       let loadedCount = 0;
 
       // Sort: Roots first, then others.
-      storedItems.sort((a, b) => (a.isRoot === b.isRoot) ? 0 : a.isRoot ? -1 : 1);
+      storedItems.sort((a, b) =>
+        a.isRoot === b.isRoot ? 0 : a.isRoot ? -1 : 1
+      );
 
       // Pre-load virtual folders structure into state so empty folders appear even if files are missing
       const vFolders = await storageService.getVirtualFolders();
       setFolders(vFolders);
 
       for (let i = 0; i < storedItems.length; i++) {
-          const item = storedItems[i];
-          let handleToUse = item.handle;
-          let isAuthorized = false;
+        const item = storedItems[i];
+        let handleToUse = item.handle;
+        let isAuthorized = false;
 
-          // 1. Try to resolve via already authorized parents
-          for (const parentHandle of authorizedHandles) {
-              try {
-                  const path = await parentHandle.resolve(handleToUse);
-                  if (path) {
-                      let freshHandle = parentHandle;
-                      for (const name of path) {
-                          freshHandle = await freshHandle.getDirectoryHandle(name);
-                      }
-                      handleToUse = freshHandle;
-                      isAuthorized = true;
-                      break;
-                  }
-              } catch (e) { /* ignore */ }
-          }
-
-          // 2. If not covered, ask permission explicitly
-          if (!isAuthorized) {
-              const permitted = await verifyPermission(handleToUse, true);
-              if (permitted) {
-                  authorizedHandles.push(handleToUse);
-                  isAuthorized = true;
+        // 1. Try to resolve via already authorized parents
+        for (const parentHandle of authorizedHandles) {
+          try {
+            const path = await parentHandle.resolve(handleToUse);
+            if (path) {
+              let freshHandle = parentHandle;
+              for (const name of path) {
+                freshHandle = await freshHandle.getDirectoryHandle(name);
               }
+              handleToUse = freshHandle;
+              isAuthorized = true;
+              break;
+            }
+          } catch (e) {
+            /* ignore */
           }
+        }
 
-          // 3. Action based on type
-          if (isAuthorized) {
-              if (item.isRoot) {
-                  // Permission root only
-              } else {
-                  await loadFromDirectoryHandle(handleToUse);
-                  loadedCount++;
-              }
+        // 2. If not covered, ask permission explicitly
+        if (!isAuthorized) {
+          const permitted = await verifyPermission(handleToUse, true);
+          if (permitted) {
+            authorizedHandles.push(handleToUse);
+            isAuthorized = true;
           }
+        }
+
+        // 3. Action based on type
+        if (isAuthorized) {
+          if (item.isRoot) {
+            // Permission root only
+          } else {
+            await loadFromDirectoryHandle(handleToUse);
+            loadedCount++;
+          }
+        }
+        setRestorationProgress(
+          Math.round(((i + 1) / storedItems.length) * 100)
+        );
       }
 
-      if (loadedCount === 0 && storedItems.some(i => !i.isRoot)) {
-         alert("Could not restore folders. Please try linking the Root folder first.");
+      if (loadedCount === 0 && storedItems.some((i) => !i.isRoot)) {
+        alert(
+          "Could not restore folders. Please try linking the Root folder first."
+        );
       }
-      
     } catch (e) {
       console.error("Restore failed", e);
     } finally {
       setIsRestoring(false);
+      setRestorationProgress(0);
     }
   };
 
@@ -370,6 +394,7 @@ export const useLibrary = () => {
     activeFolderIds,
     hasStoredSession,
     isRestoring,
+    restorationProgress,
     loadFromDirectoryHandle,
     restoreSession,
     setLibraryRoot,
@@ -378,6 +403,6 @@ export const useLibrary = () => {
     createFolder,
     deleteFolder,
     toggleFolderSelection,
-    moveItemsToFolder
+    moveItemsToFolder,
   };
 };

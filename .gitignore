@@ -25,3 +25,4 @@ dist-ssr
 
 # OpenMemory - IDE/Assistant specific rules
 .agent/rules/openmemory.md
+

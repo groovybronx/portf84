@@ -20,10 +20,21 @@ import { useBatchAI } from './hooks/useBatchAI';
 
 const App: React.FC = () => {
   // --- 1. Library & Data Layer ---
-  const { 
-    folders, activeFolderIds, hasStoredSession, isRestoring,
-    loadFromDirectoryHandle, restoreSession, setLibraryRoot, importFiles, 
-    updateItem, createFolder, deleteFolder, toggleFolderSelection, moveItemsToFolder
+  const {
+    folders,
+    activeFolderIds,
+    hasStoredSession,
+    isRestoring,
+    restorationProgress,
+    loadFromDirectoryHandle,
+    restoreSession,
+    setLibraryRoot,
+    importFiles,
+    updateItem,
+    createFolder,
+    deleteFolder,
+    toggleFolderSelection,
+    moveItemsToFolder,
   } = useLibrary();
 
   // --- 2. View & Filter Layer ---
@@ -181,91 +192,198 @@ const App: React.FC = () => {
   const activeFolderName = activeFolderIds.has('all') ? 'All Photos' : (activeFolderIds.size === 1 ? folders.find(f => f.id === Array.from(activeFolderIds)[0])?.name : 'Collection');
 
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-blue-500/30" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
+    <div
+      className="min-h-screen bg-background text-white selection:bg-blue-500/30"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
       {/* Drag Selection Box */}
-      {isDragSelecting && dragBox && <div className="fixed border border-blue-500 bg-blue-500/20 z-50 pointer-events-none" style={{ left: dragBox.x, top: dragBox.y, width: dragBox.w, height: dragBox.h }} />}
-      
+      {isDragSelecting && dragBox && (
+        <div
+          className="fixed border border-blue-500 bg-blue-500/20 z-50 pointer-events-none"
+          style={{
+            left: dragBox.x,
+            top: dragBox.y,
+            width: dragBox.w,
+            height: dragBox.h,
+          }}
+        />
+      )}
+
       {/* Hidden File Input */}
-      <input type="file" ref={fileInputRef} className="hidden" multiple {...({ webkitdirectory: "", directory: "" } as any)} onChange={(e) => e.target.files && importFiles(e.target.files)} />
-      
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        multiple
+        {...({ webkitdirectory: "", directory: "" } as any)}
+        onChange={(e) => e.target.files && importFiles(e.target.files)}
+      />
+
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
 
       {folders.length === 0 ? (
-        <UploadZone 
-            onFilesSelected={importFiles} 
-            onDirectoryPicker={handleDirectoryPicker}
-            onSetRoot={handleSetRoot}
-            hasStoredSession={hasStoredSession}
-            onRestoreSession={restoreSession}
+        <UploadZone
+          onFilesSelected={importFiles}
+          onDirectoryPicker={handleDirectoryPicker}
+          onSetRoot={handleSetRoot}
+          hasStoredSession={hasStoredSession}
+          onRestoreSession={restoreSession}
         />
       ) : (
         <>
-            <div className="top-bar-area relative z-40">
-                <TopBar 
-                    searchTerm={searchTerm} onSearchChange={setSearchTerm}
-                    sortOption={sortOption} sortDirection={sortDirection} onSortChange={setSortOption} onSortDirectionChange={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
-                    selectedTag={selectedTag} availableTags={availableTags} onTagSelect={setSelectedTag}
-                    selectionMode={selectionMode} onToggleSelectionMode={() => { if(selectionMode) clearSelection(); else setSelectionMode(true); }}
-                    showColorTags={true} onToggleColorTags={() => {}}
-                    activeColorFilter={activeColorFilter} onColorAction={handleTopBarColorAction}
-                    currentViewMode={viewMode} onModeChange={setViewMode}
-                    gridColumns={gridColumns} onGridColumnsChange={setGridColumns}
-                    folderName={activeFolderName} onOpenFolders={() => setIsFolderDrawerOpen(true)}
-                    selectedCount={selectedIds.size} onMoveSelected={() => setIsMoveModalOpen(true)} 
-                    onShareSelected={async () => { /* Share Logic */ }}
-                    onRunBatchAI={handleRunBatchAI}
-                    isBatchAIProcessing={isBatchProcessing}
-                    batchAIProgress={batchProgress}
-                />
-            </div>
-            
-            <div className="drawer-area relative z-50">
-                <FolderDrawer 
-                    isOpen={isFolderDrawerOpen} onClose={() => setIsFolderDrawerOpen(false)} 
-                    folders={folders} activeFolderId={activeFolderIds} 
-                    onSelectFolder={toggleFolderSelection} 
-                    onImportFolder={() => { if ('showDirectoryPicker' in window) handleDirectoryPicker(); else fileInputRef.current?.click(); }} 
-                    onCreateFolder={() => setIsCreateFolderModalOpen(true)} 
-                    onDeleteFolder={deleteFolder} 
-                />
-            </div>
+          <div className="top-bar-area relative z-40">
+            <TopBar
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              sortOption={sortOption}
+              sortDirection={sortDirection}
+              onSortChange={setSortOption}
+              onSortDirectionChange={() =>
+                setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
+              }
+              selectedTag={selectedTag}
+              availableTags={availableTags}
+              onTagSelect={setSelectedTag}
+              selectionMode={selectionMode}
+              onToggleSelectionMode={() => {
+                if (selectionMode) clearSelection();
+                else setSelectionMode(true);
+              }}
+              showColorTags={true}
+              onToggleColorTags={() => {}}
+              activeColorFilter={activeColorFilter}
+              onColorAction={handleTopBarColorAction}
+              currentViewMode={viewMode}
+              onModeChange={setViewMode}
+              gridColumns={gridColumns}
+              onGridColumnsChange={setGridColumns}
+              folderName={activeFolderName}
+              onOpenFolders={() => setIsFolderDrawerOpen(true)}
+              selectedCount={selectedIds.size}
+              onMoveSelected={() => setIsMoveModalOpen(true)}
+              onShareSelected={async () => {
+                /* Share Logic */
+              }}
+              onRunBatchAI={handleRunBatchAI}
+              isBatchAIProcessing={isBatchProcessing}
+              batchAIProgress={batchProgress}
+            />
+          </div>
 
-            <main className="relative z-10">
-                <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
-            </main>
+          <div className="drawer-area relative z-50">
+            <FolderDrawer
+              isOpen={isFolderDrawerOpen}
+              onClose={() => setIsFolderDrawerOpen(false)}
+              folders={folders}
+              activeFolderId={activeFolderIds}
+              onSelectFolder={toggleFolderSelection}
+              onImportFolder={() => {
+                if ("showDirectoryPicker" in window) handleDirectoryPicker();
+                else fileInputRef.current?.click();
+              }}
+              onCreateFolder={() => setIsCreateFolderModalOpen(true)}
+              onDeleteFolder={deleteFolder}
+            />
+          </div>
 
-            <AnimatePresence>
-              {contextMenu && (
-                <ContextMenu 
-                  x={contextMenu.x} y={contextMenu.y} item={contextMenu.item} 
-                  onClose={() => setContextMenu(null)}
-                  onAnalyze={handleContextAnalyze}
-                  onDelete={(id) => updateItem({...contextMenu.item, folderId: 'trash'}) /* Pseudo delete */}
-                  onColorTag={(item, color) => updateItem({...item, colorTag: color})}
-                  onOpen={setSelectedItem}
-                />
-              )}
-            </AnimatePresence>
+          <main className="relative z-10">
+            <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
+          </main>
 
-            <AnimatePresence>
-                {selectedItem && <ImageViewer item={selectedItem} onClose={() => setSelectedItem(null)} onUpdateItem={updateItem} onNext={handleNext} onPrev={handlePrev} showColorTags={true} />}
-            </AnimatePresence>
-            
-            <CreateFolderModal isOpen={isCreateFolderModalOpen} onClose={() => setIsCreateFolderModalOpen(false)} onCreate={createFolder} />
-            <MoveToFolderModal isOpen={isMoveModalOpen} onClose={() => setIsMoveModalOpen(false)} folders={folders} onMove={handleMoveAction} onCreateAndMove={handleCreateAndMove} selectedCount={selectedIds.size} />
+          <AnimatePresence>
+            {contextMenu && (
+              <ContextMenu
+                x={contextMenu.x}
+                y={contextMenu.y}
+                item={contextMenu.item}
+                onClose={() => setContextMenu(null)}
+                onAnalyze={handleContextAnalyze}
+                onDelete={
+                  (id) =>
+                    updateItem({
+                      ...contextMenu.item,
+                      folderId: "trash",
+                    }) /* Pseudo delete */
+                }
+                onColorTag={(item, color) =>
+                  updateItem({ ...item, colorTag: color })
+                }
+                onOpen={setSelectedItem}
+              />
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {selectedItem && (
+              <ImageViewer
+                item={selectedItem}
+                onClose={() => setSelectedItem(null)}
+                onUpdateItem={updateItem}
+                onNext={handleNext}
+                onPrev={handlePrev}
+                showColorTags={true}
+              />
+            )}
+          </AnimatePresence>
+
+          <CreateFolderModal
+            isOpen={isCreateFolderModalOpen}
+            onClose={() => setIsCreateFolderModalOpen(false)}
+            onCreate={createFolder}
+          />
+          <MoveToFolderModal
+            isOpen={isMoveModalOpen}
+            onClose={() => setIsMoveModalOpen(false)}
+            folders={folders}
+            onMove={handleMoveAction}
+            onCreateAndMove={handleCreateAndMove}
+            selectedCount={selectedIds.size}
+          />
         </>
       )}
 
       <AnimatePresence>
-          {isRestoring && (
-              <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center backdrop-blur-md">
-                  <div className="flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                      <p className="text-xl font-medium text-white">Restoring Library...</p>
-                  </div>
-              </motion.div>
-          )}
+        {isRestoring && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center backdrop-blur-xl"
+          >
+            <div className="flex flex-col items-center gap-6 p-8 rounded-3xl bg-surface/80 border border-white/10 shadow-2xl max-w-sm w-full">
+              <div className="relative w-16 h-16">
+                <div className="absolute inset-0 border-4 border-blue-500/20 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <div className="flex flex-col items-center gap-2 text-center">
+                <p className="text-2xl font-semibold text-white tracking-tight">
+                  Restoring Library
+                </p>
+                <p className="text-white/60 text-sm">
+                  Please keep this tab focused...
+                </p>
+              </div>
+
+              <div className="w-full space-y-2">
+                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-blue-500"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${restorationProgress}%` }}
+                    transition={{ type: "spring", bounce: 0, duration: 0.5 }}
+                  />
+                </div>
+                <div className="flex justify-between text-[10px] font-medium uppercase tracking-wider text-white/40">
+                  <span>Progress</span>
+                  <span>{restorationProgress}%</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
