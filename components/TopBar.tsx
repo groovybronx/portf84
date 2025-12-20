@@ -229,7 +229,8 @@ export const TopBar: React.FC<TopBarProps> = ({
                         </div>
                     ) : (
                         <div className="flex items-center gap-2 flex-shrink-0">
-                             {/* Batch AI Button */}
+                             {/* Batch AI Button - TEMPORARILY DISABLED FOR COST SAFETY */}
+                             {/*
                              <div className="relative">
                                 {isBatchAIProcessing ? (
                                     <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
@@ -246,6 +247,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                                     </button>
                                 )}
                              </div>
+                             */}
 
                             {/* Filter Tags */}
                             <div className="relative group hidden xl:block">

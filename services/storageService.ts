@@ -34,25 +34,29 @@ const openDB = (): Promise<IDBDatabase> => {
 
 export const storageService = {
   // --- Handles (Root Directory Access) ---
-  saveDirectoryHandle: async (handle: FileSystemDirectoryHandle) => {
+  addDirectoryHandle: async (handle: FileSystemDirectoryHandle) => {
     const db = await openDB();
     return new Promise<void>((resolve, reject) => {
       const tx = db.transaction(STORE_HANDLES, 'readwrite');
       const store = tx.objectStore(STORE_HANDLES);
-      // We only support one root for now, id='root'
-      store.put({ id: 'root', handle, timestamp: Date.now() });
+      // Use handle.name as key. Overwrites if exists (update timestamp).
+      store.put({ id: handle.name, handle, timestamp: Date.now() });
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
   },
 
-  getDirectoryHandle: async (): Promise<FileSystemDirectoryHandle | null> => {
+  getDirectoryHandles: async (): Promise<FileSystemDirectoryHandle[]> => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_HANDLES, 'readonly');
       const store = tx.objectStore(STORE_HANDLES);
-      const request = store.get('root');
-      request.onsuccess = () => resolve(request.result?.handle || null);
+      const request = store.getAll();
+      request.onsuccess = () => {
+        // request.result is an array of objects { id, handle, timestamp }
+        const results = request.result || [];
+        resolve(results.map((r: any) => r.handle));
+      };
       request.onerror = () => reject(request.error);
     });
   },
@@ -85,8 +89,6 @@ export const storageService = {
       const store = tx.objectStore(STORE_METADATA);
       const resultMap = new Map<string, StoredMetadata>();
       
-      // Efficiently getting all might be better if keys are many, 
-      // but let's do a cursor or get all for simplicity in this context
       const request = store.getAll();
       request.onsuccess = () => {
         const results: StoredMetadata[] = request.result;
