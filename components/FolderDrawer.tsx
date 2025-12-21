@@ -36,7 +36,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 z-[var(--z-drawer-overlay)] backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
           />
 
           {/* Drawer */}
@@ -45,7 +45,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-[var(--z-drawer)] p-6 flex flex-col shadow-2xl"
+            className="fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
           >
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -120,7 +120,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                   >
                     {/* Checkbox (Visual Selection) */}
                     <div
-                      className="flex-shrink-0"
+                      className="shrink-0"
                       onClick={(e) => {
                         e.stopPropagation();
                         onSelectFolder(folder.id);
@@ -138,7 +138,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 
                     {/* Folder Icon / Preview */}
                     <div
-                      className={`w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border border-glass-border-light ${
+                      className={`w-10 h-10 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light ${
                         isVirtual ? "bg-purple-500/10" : "bg-black"
                       }`}
                     >

@@ -25,7 +25,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
     registerItemRef
 }) => {
   return (
-    <div className="w-full max-w-5xl mx-auto pt-[var(--layout-pt)] pb-10 px-4 sm:px-8">
+    <div className="w-full max-w-5xl mx-auto pt-(--layout-pt) pb-10 px-4 sm:px-8">
       <div className="space-y-2">
         {items.map((item, index) => {
           const isSelected = selectedIds?.has(item.id);
@@ -64,7 +64,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 
               {/* Selection Checkbox */}
               {selectionMode && (
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {isSelected ? (
                     <CheckCircle2
                       size={24}
@@ -80,7 +80,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                 </div>
               )}
 
-              <div className="w-24 h-24 sm:w-32 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden bg-surface relative">
+              <div className="w-24 h-24 sm:w-32 sm:h-24 shrink-0 rounded-lg overflow-hidden bg-surface relative">
                 <img
                   src={item.url}
                   alt={item.name}

@@ -88,11 +88,11 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
       {/* Static Background - Performance Optimization: 
           Removed dynamic blurred image background which caused heavy repaints on every slide change.
       */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-black to-black z-0 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-gray-900/20 via-black to-black z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent z-0 pointer-events-none" />
 
       {/* 3D Container */}
-      <div className="relative z-10 w-full h-[65vh] flex items-center justify-center perspective-[1200px]">
+      <div className="relative z-10 w-full h-[65vh] flex items-center justify-center perspective-distant">
         <AnimatePresence initial={false} mode="popLayout">
           {items.map((item, index) => {
             const offset = getOffset(index);
@@ -124,7 +124,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
             return (
               <motion.div
                 key={item.id}
-                className="absolute w-[50vw] sm:w-[35vw] md:w-[28vw] aspect-[3/4] rounded-xl glass-surface border border-glass-border cursor-pointer shadow-2xl origin-bottom"
+                className="absolute w-[50vw] sm:w-[35vw] md:w-[28vw] aspect-3/4 rounded-xl glass-surface border border-glass-border cursor-pointer shadow-2xl origin-bottom"
                 initial={false}
                 animate={{
                   x: `${xPos}%`,
@@ -183,7 +183,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
                   )}
 
                   {/* Reflection/Gloss Effect (Static CSS is cheap) */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-tr from-white/10 to-transparent opacity-20 pointer-events-none" />
 
                   {/* Info Label - Only active item */}
                   {offset === 0 && (
@@ -191,7 +191,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.2 }}
-                      className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent"
+                      className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black/80 to-transparent"
                     >
                       <h2 className="text-xl font-bold text-white mb-1 truncate">
                         {item.name}

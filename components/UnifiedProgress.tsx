@@ -9,7 +9,7 @@ export const UnifiedProgress: React.FC = () => {
   if (tasks.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[var(--z-overlay)] flex flex-col gap-3 w-80 pointer-events-none">
+    <div className="fixed bottom-6 right-6 z-(--z-overlay) flex flex-col gap-3 w-80 pointer-events-none">
       <AnimatePresence mode="popLayout">
         {tasks.map((task) => (
           <TaskItem
@@ -90,7 +90,7 @@ const TaskItem: React.FC<{ task: ProgressTask; onRemove: () => void }> = ({
       </div>
 
       {/* Glossy overlay effect */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-0 bg-linear-to-tr from-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
     </motion.div>
   );
 };

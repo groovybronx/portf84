@@ -24,6 +24,4 @@ dist-ssr
 *.sw?
 
 # OpenMemory - IDE/Assistant specific rules
-.agent/rules/openmemory.md
 
-!.agent/rules/openmemory.md

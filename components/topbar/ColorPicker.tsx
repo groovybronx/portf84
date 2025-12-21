@@ -18,7 +18,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   selectionMode,
 }) => {
   return (
-    <div className="hidden lg:flex items-center gap-2 bg-glass-bg-accent px-3 py-1.5 rounded-xl border border-glass-border-light flex-shrink-0">
+    <div className="hidden lg:flex items-center gap-2 bg-glass-bg-accent px-3 py-1.5 rounded-xl border border-glass-border-light shrink-0">
       {Object.entries(COLOR_PALETTE).map(([key, hex]) => (
         <button
           key={key}

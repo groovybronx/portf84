@@ -156,7 +156,7 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
 
   return (
     <div
-      className="p-4 sm:p-8 pb-10 pt-[var(--layout-pt)] w-full min-h-screen"
+      className="p-4 sm:p-8 pb-10 pt-(--layout-pt) w-full min-h-screen"
       ref={containerRef}
     >
       {/* Flex container holding the columns */}
@@ -231,7 +231,7 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
 
                   {!selectionMode && (
                     <div
-                      className={`absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity duration-300 flex flex-col justify-end p-4 ${
+                      className={`absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent transition-opacity duration-300 flex flex-col justify-end p-4 ${
                         isFocused
                           ? "opacity-100"
                           : "opacity-0 group-hover:opacity-100"

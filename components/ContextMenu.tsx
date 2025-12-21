@@ -57,7 +57,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       style={{ top: adjustedY, left: adjustedX }}
       onMouseDown={(e) => e.stopPropagation()} // Prevent triggering drag selection in App background
       onContextMenu={(e) => e.preventDefault()} // Prevent native context menu on the custom menu
-      className="fixed z-[var(--z-context-menu)] w-60 glass-surface border border-glass-border rounded-xl shadow-2xl py-2 overflow-hidden"
+      className="fixed z-(--z-context-menu) w-60 glass-surface border border-glass-border rounded-xl shadow-2xl py-2 overflow-hidden"
     >
       <div className="px-4 py-2 border-b border-glass-border/10 mb-1 flex items-center justify-between">
         <p

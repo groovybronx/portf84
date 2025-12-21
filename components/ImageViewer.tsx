@@ -118,7 +118,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[var(--z-image-viewer)] flex glass-surface-lg"
+      className="fixed inset-0 z-(--z-image-viewer) flex glass-surface-lg"
     >
       {/* Main Image Area */}
       <div
@@ -131,7 +131,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
             e.stopPropagation();
             onPrev();
           }}
-          className="absolute left-4 p-4 rounded-full bg-glass-bg text-white/50 hover:text-white transition-all z-[var(--z-carousel)] hidden sm:flex border border-glass-border"
+          className="absolute left-4 p-4 rounded-full bg-glass-bg text-white/50 hover:text-white transition-all z-(--z-carousel) hidden sm:flex border border-glass-border"
         >
           <ChevronLeft size={32} />
         </button>
@@ -140,12 +140,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
             e.stopPropagation();
             onNext();
           }}
-          className="absolute right-4 p-4 rounded-full bg-glass-bg text-white/50 hover:text-white transition-all z-[var(--z-carousel)] hidden sm:flex border border-glass-border"
+          className="absolute right-4 p-4 rounded-full bg-glass-bg text-white/50 hover:text-white transition-all z-(--z-carousel) hidden sm:flex border border-glass-border"
         >
           <ChevronRight size={32} />
         </button>
 
-        <div className="relative z-[var(--z-grid-item)] w-full h-full flex items-center justify-center">
+        <div className="relative z-(--z-grid-item) w-full h-full flex items-center justify-center">
           <motion.img
             key={item.id} // Ensure framer motion detects the image change for animation
             layoutId={`card-${item.id}`}
@@ -173,7 +173,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
         <button
           onClick={onClose}
-          className="absolute top-6 left-6 p-3 bg-glass-bg hover:bg-glass-bg-active rounded-full text-white transition-colors z-[var(--z-carousel)] border border-glass-border"
+          className="absolute top-6 left-6 p-3 bg-glass-bg hover:bg-glass-bg-active rounded-full text-white transition-colors z-(--z-carousel) border border-glass-border"
         >
           <X size={24} />
         </button>
@@ -185,12 +185,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="w-[350px] sm:w-[400px] h-full glass-surface border-l border-glass-border p-8 flex flex-col gap-6 shadow-2xl overflow-y-auto z-[var(--z-drawer)]"
+        className="w-[350px] sm:w-[400px] h-full glass-surface border-l border-glass-border p-8 flex flex-col gap-6 shadow-2xl overflow-y-auto z-(--z-drawer)"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between">
           <div className="overflow-hidden">
-            <h2 className="text-2xl font-bold text-white mb-2 break-words truncate">
+            <h2 className="text-2xl font-bold text-white mb-2 wrap-break-word truncate">
               {item.name}
             </h2>
             <div className="flex flex-wrap gap-4 text-sm text-gray-500 font-mono items-center">
@@ -320,7 +320,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                 {!item.aiDescription && !analyzing ? (
                   <button
                     onClick={handleAnalyze}
-                    className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
+                    className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
                   >
                     <Sparkles
                       size={16}

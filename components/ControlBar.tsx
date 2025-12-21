@@ -38,7 +38,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[var(--z-controlbar)] max-w-[90vw]"
+      className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-(--z-controlbar) max-w-[90vw]"
     >
       <div className="glass-surface border border-glass-border rounded-full shadow-2xl shadow-black/50 overflow-hidden">
         <AnimatePresence mode="wait">

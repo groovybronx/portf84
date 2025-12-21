@@ -57,7 +57,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-background relative overflow-hidden">
       {/* Abstract Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-[var(--z-base)]">
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-(--z-base)">
         <motion.div
           animate={{ x: [0, 100, 0], y: [0, -50, 0], opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -74,10 +74,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="z-[var(--z-grid-item)] text-center space-y-6 max-w-2xl px-6"
+        className="z-(--z-grid-item) text-center space-y-6 max-w-2xl px-6"
       >
         <div className="space-y-2">
-          <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 tracking-tighter">
+          <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white via-gray-200 to-gray-500 tracking-tighter">
             Lumina Portfolio
           </h1>
           <p className="text-xl text-gray-400 font-light">

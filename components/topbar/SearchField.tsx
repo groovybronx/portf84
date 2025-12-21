@@ -62,14 +62,14 @@ export const SearchField: React.FC<SearchFieldProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex items-center bg-glass-bg-accent rounded-lg border transition-all flex-shrink-0 ${
+      className={`relative flex items-center bg-glass-bg-accent rounded-lg border transition-all shrink-0 ${
         isFocused
           ? "w-48 sm:w-72 border-blue-500/50 ring-1 ring-blue-500/20"
           : "w-32 sm:w-48 border-glass-border-light"
       }`}
     >
       <div className="flex items-center w-full px-3 py-2">
-        <Search size={16} className="text-gray-400 mr-2 flex-shrink-0" />
+        <Search size={16} className="text-gray-400 mr-2 shrink-0" />
 
         {/* Active Tag Chip */}
         {selectedTag && (
@@ -99,7 +99,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
       {/* Autocomplete Dropdown */}
       {isFocused && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-glass-border rounded-xl shadow-2xl overflow-hidden z-[100]">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
           <div className="px-3 py-2 text-xs text-gray-500 font-medium uppercase tracking-wider border-b border-white/5">
             Suggestions
           </div>
