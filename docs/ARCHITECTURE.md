@@ -68,7 +68,7 @@ L'application utilise **Vitest** pour garantir la fiabilité du cœur logique.
 
 ### Structure
 - **`tests/`** : Dossier racine contenant tous les tests unitaires.
-  - `geminiService.test.ts` : Mock le SDK Google GenAI pour vérifier les appels et l'utilisation stricte du modèle 3.0.
+  - `geminiService.test.ts` : Mock le SDK Google GenAI pour vérifier les appels et l'utilisation stricte du modèle `gemini-3-flash-preview`.
   - `fileHelpers.test.ts` : Vérifie la récursivité du scan de fichiers et la détection des types MIME.
 
 ### Exécution

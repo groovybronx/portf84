@@ -34,3 +34,4 @@ src-tauri/gen/schemas
 *.sqlite
 *.db-shm
 *.db-wal
+.agent/rules/openmemory.md

@@ -59,7 +59,7 @@ export const analyzeImage = async (
     const base64Data = await processFileToBase64(item.file);
 
     // Using a known model that supports JSON schema or structured prompt
-    // 'gemini-1.5-flash' is a good default for images
+
     const modelId = "gemini-3-flash-preview";
 
     const response = await ai.models.generateContent({

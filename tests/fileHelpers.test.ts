@@ -1,61 +1,80 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { scanDirectory } from "../utils/fileHelpers";
 
-// Mock FileSystemDirectoryHandle and FileSystemFileHandle
-const createMockFileHandle = (name: string, type = "image/jpeg") => ({
-  kind: "file" as const,
-  name,
-  getFile: vi.fn().mockResolvedValue(new File([""], name, { type })),
-});
+// Mock Tauri APIs
+vi.mock("@tauri-apps/plugin-fs", () => ({
+  readDir: vi.fn(),
+  stat: vi.fn(),
+}));
 
-const createMockDirectoryHandle = (name: string, entries: any[] = []) => ({
-  kind: "directory" as const,
-  name,
-  values: vi.fn().mockReturnValue({
-    [Symbol.asyncIterator]: async function* () {
-      for (const entry of entries) {
-        yield entry;
-      }
-    },
-  }),
-});
+vi.mock("@tauri-apps/api/core", () => ({
+  convertFileSrc: vi.fn((path) => `asset://${path}`),
+}));
+
+vi.mock("@tauri-apps/api/path", () => ({
+  join: vi.fn((...args) => Promise.resolve(args.join("/"))),
+}));
+
+import { readDir, stat } from "@tauri-apps/plugin-fs";
 
 describe("fileHelpers", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+
+    // Default mocks
+    (stat as any).mockResolvedValue({
+      size: 1024,
+      mtime: new Date(),
+    });
+  });
+
   describe("scanDirectory", () => {
     it("should load images from a flat directory", async () => {
-      const mockFiles = [
-        createMockFileHandle("image1.jpg"),
-        createMockFileHandle("image2.png"),
-        createMockFileHandle("document.txt", "text/plain"), // Should be ignored
-      ];
-      const rootHandle = createMockDirectoryHandle("root", mockFiles);
+      // Setup mock file system structure
+      // scanDirectory calls readDir(basePath)
+      (readDir as any).mockImplementation(async (path: string) => {
+        if (path === "root") {
+          return [
+            { name: "image1.jpg", isFile: true, isDirectory: false },
+            { name: "image2.png", isFile: true, isDirectory: false },
+            { name: "document.txt", isFile: true, isDirectory: false }, // Should be ignored
+          ];
+        }
+        return [];
+      });
 
-      // Mock URL.createObjectURL
-      global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
+      const result = await scanDirectory("root");
 
-      const result = await scanDirectory(rootHandle as any);
-
-      // Access main map or loose files
-      // scanDirectory returns { folders: Map<string, Array>, looseFiles: Array }
       expect(result.looseFiles).toHaveLength(2);
-      expect(result.looseFiles[0].name).toBe("image1.jpg");
-      expect(result.looseFiles[1].name).toBe("image2.png");
+      // Note: scanDirectory logic pushes items, order depends on readDir order
+      const names = result.looseFiles.map((f) => f.name);
+      expect(names).toContain("image1.jpg");
+      expect(names).toContain("image2.png");
+      expect(names).not.toContain("document.txt");
     });
 
     it("should load images from nested directories", async () => {
-      const nestedFiles = [createMockFileHandle("nested.jpg")];
-      const nestedDir = createMockDirectoryHandle("subfolder", nestedFiles);
-      const rootFiles = [createMockFileHandle("root.jpg")];
+      // Setup nested structure
+      // root -> root.jpg, subfolder/
+      // subfolder -> nested.jpg
+      (readDir as any).mockImplementation(async (path: string) => {
+        console.log("Mock readDir called for:", path);
+        if (path === "root") {
+          return [
+            { name: "root.jpg", isFile: true, isDirectory: false },
+            { name: "subfolder", isFile: false, isDirectory: true },
+          ];
+        }
+        if (path === "root/subfolder" || path === "subfolder") {
+          // The join mock joins simply with '/', so "root" + "subfolder" -> "root/subfolder"
+          return [{ name: "nested.jpg", isFile: true, isDirectory: false }];
+        }
+        return [];
+      });
 
-      const rootHandle = createMockDirectoryHandle("root", [
-        ...rootFiles,
-        nestedDir,
-      ]);
-      global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
+      const result = await scanDirectory("root");
 
-      const result = await scanDirectory(rootHandle as any);
-
-      // Check loose files
+      // Check loose files (root level)
       expect(result.looseFiles).toHaveLength(1);
       expect(result.looseFiles[0].name).toBe("root.jpg");
 

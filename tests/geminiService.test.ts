@@ -45,7 +45,7 @@ describe("geminiService", () => {
     lastModified: Date.now(),
   };
 
-  it("should use basic gemini-1.5-flash model (Updated per rule to 3.0)", async () => {
+  it("should use basic gemini-3-flash-preview model", async () => {
     localStorage.setItem("gemini_api_key", "fake-key");
 
     await analyzeImage(mockItem);
