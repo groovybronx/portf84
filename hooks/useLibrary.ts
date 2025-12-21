@@ -12,84 +12,78 @@ export const useLibrary = () => {
   );
 
   // --- Core Loading Logic (Refactored) ---
-  const loadFromDirectoryHandle = useCallback(
-    async (handle: FileSystemDirectoryHandle) => {
-      // 1. Get current virtual structure to preserve it
-      // Note: We access state inside callback, so we rely on functional updates or ref logic if needed.
-      // Ideally, we should fetch fresh virtual folders from DB or trust state.
-      // libraryLoader uses storedVirtualFolders from DB + input.
-      // For consistency, let's fetch 'em fresh or pass current state if we trust it.
-      // But `libraryLoader` signature accepts `storedVirtualFolders`.
-      // Let's grab them from state (via a functional update pattern in setFolders).
-      // Since we can't easily access "current state" async before setFolders,
-      // we'll fetch from DB which is the source of truth for Virtual Folders structure.
-      const storedVirtual = await storageService.getVirtualFolders();
+  const loadFromPath = useCallback(async (path: string) => {
+    // 1. Get current virtual structure to preserve it
+    // Note: We access state inside callback, so we rely on functional updates or ref logic if needed.
+    // Ideally, we should fetch fresh virtual folders from DB or trust state.
+    // libraryLoader uses storedVirtualFolders from DB + input.
+    // For consistency, let's fetch 'em fresh or pass current state if we trust it.
+    // But `libraryLoader` signature accepts `storedVirtualFolders`.
+    // Let's grab them from state (via a functional update pattern in setFolders).
+    // Since we can't easily access "current state" async before setFolders,
+    // we'll fetch from DB which is the source of truth for Virtual Folders structure.
+    const storedVirtual = await storageService.getVirtualFolders();
 
-      // 2. Delegate to Service
-      const { foldersToAdd, virtualFoldersMap } =
-        await libraryLoader.loadAndMerge(handle, storedVirtual);
-      // Wait, loadAndMerge returns `foldersToAdd` (Physical) and `virtualFoldersMap` (Map of ID -> Items).
+    // 2. Delegate to Service
+    const { foldersToAdd, virtualFoldersMap } =
+      await libraryLoader.loadAndMerge(path, storedVirtual);
+    // Wait, loadAndMerge returns `foldersToAdd` (Physical) and `virtualFoldersMap` (Map of ID -> Items).
 
-      // 3. Update State
-      setFolders((prev) => {
-        // A. Update Virtual Folders (Merge new items into existing ones)
-        const updatedVirtualFolders = storedVirtual.map((vf) => {
-          // New items from this load
-          const newItems = virtualFoldersMap.get(vf.id) || [];
+    // 3. Update State
+    setFolders((prev) => {
+      // A. Update Virtual Folders (Merge new items into existing ones)
+      const updatedVirtualFolders = storedVirtual.map((vf) => {
+        // New items from this load
+        const newItems = virtualFoldersMap.get(vf.id) || [];
 
-          // Old items (from previous loads of OTHER handles) are in `prev`.
-          // We need to find the previous version of this virtual folder.
-          const prevVF = prev.find((p) => p.id === vf.id);
-          const prevItems = prevVF ? prevVF.items : [];
+        // Old items (from previous loads of OTHER handles) are in `prev`.
+        // We need to find the previous version of this virtual folder.
+        const prevVF = prev.find((p) => p.id === vf.id);
+        const prevItems = prevVF ? prevVF.items : [];
 
-          // Deduplicate if necessary?
-          // Since physical folders are distinct handles, their items should be distinct (unless same handle loaded twice).
-          // We'll just concat for now, or use a Set map by ID if strict dedup needed.
-          // Simple concat:
-          return {
-            ...vf,
-            items: [...prevItems, ...newItems],
-            isVirtual: true,
-          };
-        });
-
-        // B. Add Physical Folders
-        // Filter out any physical folder that might already exist (e.g. re-loading same root).
-        // `foldersToAdd` are physical folders from THIS handle.
-        const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
-        const keptPhysical = prev.filter(
-          (f) => !f.isVirtual && !newPhysicalIds.has(f.id)
-        );
-
-        return [...updatedVirtualFolders, ...keptPhysical, ...foldersToAdd];
+        // Deduplicate if necessary?
+        // Since physical folders are distinct handles, their items should be distinct (unless same handle loaded twice).
+        // We'll just concat for now, or use a Set map by ID if strict dedup needed.
+        // Simple concat:
+        return {
+          ...vf,
+          items: [...prevItems, ...newItems],
+          isVirtual: true,
+        };
       });
 
-      if (foldersToAdd.length > 0 || virtualFoldersMap.size > 0)
-        setActiveFolderIds(new Set(["all"]));
+      // B. Add Physical Folders
+      // Filter out any physical folder that might already exist (e.g. re-loading same root).
+      // `foldersToAdd` are physical folders from THIS handle.
+      const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
+      const keptPhysical = prev.filter(
+        (f) => !f.isVirtual && !newPhysicalIds.has(f.id)
+      );
 
-      // Default isRoot=false when loading content manually
-      await storageService.addDirectoryHandle(handle, false);
-    },
-    []
-  );
+      return [...updatedVirtualFolders, ...keptPhysical, ...foldersToAdd];
+    });
+
+    if (foldersToAdd.length > 0 || virtualFoldersMap.size > 0)
+      setActiveFolderIds(new Set(["all"]));
+
+    // Default isRoot=false when loading content manually
+    await storageService.addDirectoryHandle(path, false);
+  }, []);
 
   // --- Session Management (Delegated) ---
   const { hasStoredSession, restoreSession } = useSessionRestore(
-    loadFromDirectoryHandle,
+    loadFromPath,
     setFolders // Callback to set initial structure
   );
 
   // --- New: Link Root Folder (Permission Only) ---
-  const setLibraryRoot = async (handle: FileSystemDirectoryHandle) => {
+  const setLibraryRoot = async (path: string) => {
     // We only verify/store it. We do NOT scan it.
-    await verifyPermission(handle, true);
-    await storageService.addDirectoryHandle(handle, true);
+    await verifyPermission(path);
+    await storageService.addDirectoryHandle(path, true);
     // setHasStoredSession(true); // Handled by hook internal state or reload?
-    // Actually useSessionRestore exposes setHasStoredSession, we might need it?
     // Simplify: just alert user. Restart will pick it up.
-    alert(
-      `Root "${handle.name}" linked! Future subfolders will load without prompts.`
-    );
+    alert(`Root folder linked! Future subfolders will load without prompts.`);
   };
 
   // --- Public Actions (Mostly unchanged, just state manipulation) ---
@@ -168,7 +162,7 @@ export const useLibrary = () => {
         return folder;
       })
     );
-    storageService.saveMetadata(updated, updated.name);
+    storageService.saveMetadata(updated, updated.path || updated.name);
   }, []);
 
   const createFolder = (name: string) => {
@@ -194,8 +188,8 @@ export const useLibrary = () => {
       return newSet.size === 0 ? new Set(["all"]) : newSet;
     });
     storageService.deleteVirtualFolder(id);
-    if (folderToDelete) {
-      storageService.removeDirectoryHandle(folderToDelete.name);
+    if (folderToDelete && folderToDelete.path) {
+      storageService.removeDirectoryHandle(folderToDelete.path);
     }
   };
 
@@ -244,7 +238,10 @@ export const useLibrary = () => {
 
     itemsToMove.forEach((item) => {
       const updatedItem = { ...item, folderId: targetFolderId };
-      storageService.saveMetadata(updatedItem, updatedItem.name);
+      storageService.saveMetadata(
+        updatedItem,
+        updatedItem.path || updatedItem.name
+      );
     });
 
     setActiveFolderIds(new Set([targetFolderId]));
@@ -254,7 +251,7 @@ export const useLibrary = () => {
     folders,
     activeFolderIds,
     hasStoredSession,
-    loadFromDirectoryHandle,
+    loadFromPath,
     restoreSession,
     setLibraryRoot,
     importFiles,

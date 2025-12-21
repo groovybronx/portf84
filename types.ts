@@ -5,7 +5,8 @@ export interface AiTagDetailed {
 
 export interface PortfolioItem {
   id: string;
-  file: File;
+  file?: File;
+  path?: string;
   url: string;
   name: string;
   type: string;
@@ -27,6 +28,7 @@ export interface Folder {
   items: PortfolioItem[];
   createdAt: number;
   isVirtual?: boolean; // True if created within the app, false if physical disk folder
+  path?: string; // Absolute path for physical folders
 }
 
 export enum ViewMode {

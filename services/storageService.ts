@@ -1,194 +1,163 @@
-import { PortfolioItem, Folder } from "../types";
+import Database from "@tauri-apps/plugin-sql";
 
-const DB_NAME = 'LuminaDB';
-const DB_VERSION = 2; // Incremented for virtual folders support
-const STORE_HANDLES = 'handles';
-const STORE_METADATA = 'metadata';
-const STORE_FOLDERS = 'virtual_folders'; // New store
+const DB_PATH = "sqlite:lumina.db";
+let dbInstance: Database | null = null;
 
-interface StoredHandle {
-  id: string;
-  handle: FileSystemDirectoryHandle;
-  timestamp: number;
-  isRoot?: boolean;
-}
+const getDB = async (): Promise<Database> => {
+  if (dbInstance) return dbInstance;
+  console.log("Initializing SQLite database...");
+  dbInstance = await Database.load(DB_PATH);
 
-interface StoredMetadata {
-  id: string; // usually relative path
-  aiDescription?: string;
-  aiTags?: string[];
-  aiTagsDetailed?: any[];
-  colorTag?: string;
-  manualTags?: string[];
-  folderId?: string; // Persist which folder this item belongs to
-  lastModified: number;
-}
+  // Initialize Schema separately to ensure compatibility
+  try {
+    await dbInstance.execute(`
+      CREATE TABLE IF NOT EXISTS handles (
+        id TEXT PRIMARY KEY,
+        path TEXT NOT NULL,
+        timestamp INTEGER NOT NULL,
+        isRoot INTEGER DEFAULT 0
+      )
+    `);
+    await dbInstance.execute(`
+      CREATE TABLE IF NOT EXISTS metadata (
+        id TEXT PRIMARY KEY,
+        aiDescription TEXT,
+        aiTags TEXT,
+        aiTagsDetailed TEXT,
+        colorTag TEXT,
+        manualTags TEXT,
+        folderId TEXT,
+        lastModified INTEGER NOT NULL
+      )
+    `);
+    await dbInstance.execute(`
+      CREATE TABLE IF NOT EXISTS virtual_folders (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        createdAt INTEGER NOT NULL,
+        isVirtual INTEGER DEFAULT 1
+      )
+    `);
+    console.log("Schema initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize schema:", error);
+  }
 
-// Simple Promise wrapper for IndexedDB with connection pooling
-let dbInstance: IDBDatabase | null = null;
-
-const openDB = (): Promise<IDBDatabase> => {
-  if (dbInstance) return Promise.resolve(dbInstance);
-
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      dbInstance = request.result;
-      resolve(dbInstance);
-    };
-    request.onupgradeneeded = (e) => {
-      const db = (e.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(STORE_HANDLES)) {
-        db.createObjectStore(STORE_HANDLES, { keyPath: "id" });
-      }
-      if (!db.objectStoreNames.contains(STORE_METADATA)) {
-        db.createObjectStore(STORE_METADATA, { keyPath: "id" });
-      }
-      if (!db.objectStoreNames.contains(STORE_FOLDERS)) {
-        db.createObjectStore(STORE_FOLDERS, { keyPath: "id" });
-      }
-    };
-  });
+  return dbInstance;
 };
 
 export const storageService = {
   // --- Handles (Root Directory Access) ---
-  addDirectoryHandle: async (
-    handle: FileSystemDirectoryHandle,
-    isRoot: boolean = false
-  ) => {
-    const db = await openDB();
-    return new Promise<void>((resolve, reject) => {
-      const tx = db.transaction(STORE_HANDLES, "readwrite");
-      const store = tx.objectStore(STORE_HANDLES);
-      const data: StoredHandle = {
-        id: handle.name,
-        handle,
-        timestamp: Date.now(),
-        isRoot,
-      };
-      store.put(data);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+  addDirectoryHandle: async (path: string, isRoot: boolean = false) => {
+    const db = await getDB();
+    console.log(`[Storage] Adding handle: ${path} (isRoot: ${isRoot})`);
+    try {
+      await db.execute(
+        "INSERT OR REPLACE INTO handles (id, path, timestamp, isRoot) VALUES (?, ?, ?, ?)",
+        [path, path, Date.now(), isRoot ? 1 : 0]
+      );
+      console.log(`[Storage] Handle saved successfully.`);
+    } catch (e) {
+      console.error(`[Storage] Failed to save handle:`, e);
+    }
   },
 
-  getDirectoryHandles: async (): Promise<StoredHandle[]> => {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_HANDLES, "readonly");
-      const store = tx.objectStore(STORE_HANDLES);
-      const request = store.getAll();
-      request.onsuccess = () => {
-        const results = request.result || [];
-        resolve(results);
-      };
-      request.onerror = () => reject(request.error);
-    });
+  getDirectoryHandles: async (): Promise<any[]> => {
+    const db = await getDB();
+    const results = await db.select<any[]>("SELECT * FROM handles");
+    return results.map((h) => ({
+      ...h,
+      isRoot: h.isRoot === 1,
+    }));
   },
 
   removeDirectoryHandle: async (id: string) => {
-    const db = await openDB();
-    const tx = db.transaction(STORE_HANDLES, "readwrite");
-    tx.objectStore(STORE_HANDLES).delete(id);
+    const db = await getDB();
+    await db.execute("DELETE FROM handles WHERE id = ?", [id]);
   },
 
   clearHandles: async () => {
-    const db = await openDB();
-    const tx = db.transaction(STORE_HANDLES, "readwrite");
-    tx.objectStore(STORE_HANDLES).clear();
+    const db = await getDB();
+    await db.execute("DELETE FROM handles");
   },
 
   // --- Metadata (AI Tags, Colors, Folder Assignment) ---
-  saveMetadata: async (item: PortfolioItem, relativePath: string) => {
-    const db = await openDB();
-    const data: StoredMetadata = {
-      id: relativePath,
-      aiDescription: item.aiDescription,
-      aiTags: item.aiTags,
-      aiTagsDetailed: item.aiTagsDetailed,
-      colorTag: item.colorTag,
-      manualTags: item.manualTags,
-      folderId: item.folderId, // Save the folder assignment
-      lastModified: item.lastModified,
-    };
-    const tx = db.transaction(STORE_METADATA, "readwrite");
-    tx.objectStore(STORE_METADATA).put(data);
+  saveMetadata: async (item: any, relativePath: string) => {
+    const db = await getDB();
+    console.log(`[Storage] Saving metadata for: ${relativePath}`);
+    try {
+      await db.execute(
+        `INSERT OR REPLACE INTO metadata 
+        (id, aiDescription, aiTags, aiTagsDetailed, colorTag, manualTags, folderId, lastModified) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          relativePath,
+          item.aiDescription,
+          JSON.stringify(item.aiTags || []),
+          JSON.stringify(item.aiTagsDetailed || []),
+          item.colorTag,
+          JSON.stringify(item.manualTags || []),
+          item.folderId,
+          item.lastModified,
+        ]
+      );
+      console.log(`[Storage] Metadata saved.`);
+    } catch (e) {
+      console.error(`[Storage] Failed to save metadata:`, e);
+    }
   },
 
-  getMetadataBatch: async (
-    keys: string[]
-  ): Promise<Map<string, StoredMetadata>> => {
-    const db = await openDB();
-    return new Promise((resolve) => {
-      const tx = db.transaction(STORE_METADATA, "readonly");
-      const store = tx.objectStore(STORE_METADATA);
-      const resultMap = new Map<string, StoredMetadata>();
+  getMetadataBatch: async (keys: string[]): Promise<Map<string, any>> => {
+    const db = await getDB();
+    const resultMap = new Map<string, any>();
 
-      if (keys.length === 0) {
-        // Safe-guard: Don't load everything if not requested, but provide a way to if keys is empty and we really need "all"
-        // Actually, the current logic for keys.length === 0 is "getAll", which might be slow.
-        // Let's keep it but add a cap or warning if we were strictly scaling.
-        const request = store.getAll();
-        request.onsuccess = () => {
-          const results: StoredMetadata[] = request.result;
-          results.forEach((meta) => resultMap.set(meta.id, meta));
-          resolve(resultMap);
-        };
-      } else {
-        // Individual point lookups in a transaction are highly optimized in IDB.
-        // However, we wrap them in a loop. For truly huge sets, we might use a cursor if keys were ranges.
-        // Since they are likely disjoint relative paths, point lookups are best.
-        let completed = 0;
-        let failed = 0;
-
-        keys.forEach((key) => {
-          const request = store.get(key);
-          request.onsuccess = () => {
-            if (request.result) resultMap.set(key, request.result);
-            if (++completed + failed === keys.length) resolve(resultMap);
-          };
-          request.onerror = () => {
-            if (++failed + completed === keys.length) resolve(resultMap);
-          };
-        });
+    let results: any[] = [];
+    if (keys.length === 0) {
+      results = await db.select<any[]>("SELECT * FROM metadata");
+    } else {
+      // For heavy batches, we'd use IN (...) but $ parameters are safer.
+      // SQLite handles multiple queries well.
+      for (const key of keys) {
+        const row = await db.select<any[]>(
+          "SELECT * FROM metadata WHERE id = ?",
+          [key]
+        );
+        if (row.length > 0) results.push(row[0]);
       }
+    }
+
+    results.forEach((meta) => {
+      resultMap.set(meta.id, {
+        ...meta,
+        aiTags: JSON.parse(meta.aiTags || "[]"),
+        aiTagsDetailed: JSON.parse(meta.aiTagsDetailed || "[]"),
+        manualTags: JSON.parse(meta.manualTags || "[]"),
+      });
     });
+    return resultMap;
   },
 
   // --- Virtual Folders Persistence ---
-  saveVirtualFolder: async (folder: Folder) => {
-    const db = await openDB();
-    const tx = db.transaction(STORE_FOLDERS, "readwrite");
-    // We store a simplified version of the folder (without items array to avoid bloat/cycles)
-    const folderData = {
-      id: folder.id,
-      name: folder.name,
-      createdAt: folder.createdAt,
-      isVirtual: true, // Mark as virtual
-    };
-    tx.objectStore(STORE_FOLDERS).put(folderData);
+  saveVirtualFolder: async (folder: any) => {
+    const db = await getDB();
+    await db.execute(
+      "INSERT OR REPLACE INTO virtual_folders (id, name, createdAt, isVirtual) VALUES (?, ?, ?, ?)",
+      [folder.id, folder.name, folder.createdAt, 1]
+    );
   },
 
   deleteVirtualFolder: async (id: string) => {
-    const db = await openDB();
-    const tx = db.transaction(STORE_FOLDERS, "readwrite");
-    tx.objectStore(STORE_FOLDERS).delete(id);
+    const db = await getDB();
+    await db.execute("DELETE FROM virtual_folders WHERE id = ?", [id]);
   },
 
-  getVirtualFolders: async (): Promise<Folder[]> => {
-    const db = await openDB();
-    return new Promise((resolve) => {
-      const tx = db.transaction(STORE_FOLDERS, "readonly");
-      const request = tx.objectStore(STORE_FOLDERS).getAll();
-      request.onsuccess = () => {
-        const rawFolders = request.result || [];
-        // Re-attach empty items array and ensure isVirtual is true
-        resolve(
-          rawFolders.map((f: any) => ({ ...f, items: [], isVirtual: true }))
-        );
-      };
-    });
+  getVirtualFolders: async (): Promise<any[]> => {
+    const db = await getDB();
+    const rawFolders = await db.select<any[]>("SELECT * FROM virtual_folders");
+    return rawFolders.map((f: any) => ({
+      ...f,
+      items: [],
+      isVirtual: f.isVirtual === 1,
+    }));
   },
 };

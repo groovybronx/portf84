@@ -21,8 +21,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 
   useEffect(() => {
     if (fileInputRef.current) {
-      fileInputRef.current.setAttribute('webkitdirectory', '');
-      fileInputRef.current.setAttribute('directory', '');
+      fileInputRef.current.setAttribute("webkitdirectory", "");
+      fileInputRef.current.setAttribute("directory", "");
     }
   }, []);
 
@@ -39,19 +39,20 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
     }
   };
 
-  const supportsFileSystem = 'showDirectoryPicker' in window;
+  // In Tauri, we always support the native directory picker via the dialog plugin
+  const supportsFileSystem = true;
 
   const handleMainClick = () => {
-      if (supportsFileSystem) {
-          onDirectoryPicker();
-      } else {
-          fileInputRef.current?.click();
-      }
+    if (supportsFileSystem) {
+      onDirectoryPicker();
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleLegacyClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
-      fileInputRef.current?.click();
+    e.stopPropagation();
+    fileInputRef.current?.click();
   };
 
   return (

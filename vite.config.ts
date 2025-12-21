@@ -7,10 +7,25 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "");
   return {
     server: {
-      port: 3000,
+      port: 1420,
+      strictPort: true,
       host: "0.0.0.0",
     },
     plugins: [react(), tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("framer-motion")) return "vendor-framer";
+              if (id.includes("lucide-react")) return "vendor-lucide";
+              if (id.includes("react")) return "vendor-react";
+              return "vendor";
+            }
+          },
+        },
+      },
+    },
     define: {
       "process.env.API_KEY": JSON.stringify(env.GEMINI_API_KEY),
       "process.env.GEMINI_API_KEY": JSON.stringify(env.GEMINI_API_KEY),

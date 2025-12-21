@@ -25,3 +25,12 @@ dist-ssr
 
 # OpenMemory - IDE/Assistant specific rules
 
+# Tauri / Rust
+src-tauri/target
+src-tauri/gen/schemas
+
+# Databases
+*.db
+*.sqlite
+*.db-shm
+*.db-wal

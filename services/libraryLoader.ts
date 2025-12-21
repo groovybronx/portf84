@@ -7,23 +7,35 @@ export const libraryLoader = {
    * Scans a directory handle and merges it with stored metadata and virtual folders.
    */
   loadAndMerge: async (
-    handle: FileSystemDirectoryHandle,
+    basePath: string,
     storedVirtualFolders: Folder[]
   ): Promise<{
     foldersToAdd: Folder[];
     virtualFoldersMap: Map<string, PortfolioItem[]>;
   }> => {
     // 1. Scan Disk
-    const { folders: diskFolderMap, looseFiles } = await scanDirectory(handle);
+    console.log(`[LibraryLoader] Scanning: ${basePath}`);
+    const { folders: diskFolderMap, looseFiles } = await scanDirectory(
+      basePath
+    );
+    console.log(
+      `[LibraryLoader] Scan complete. Found ${diskFolderMap.size} folders and ${looseFiles.length} loose files.`
+    );
 
     // 2. Load Persistence Data
-    const allFileNames = [
+    const allFilePaths = [
       ...Array.from(diskFolderMap.values()).flatMap((items) =>
-        items.map((i) => i.name)
+        items.map((i) => i.path || i.name)
       ),
-      ...looseFiles.map((i) => i.name),
+      ...looseFiles.map((i) => i.path || i.name),
     ];
-    const metaMap = await storageService.getMetadataBatch(allFileNames);
+    console.log(
+      `[LibraryLoader] Fetching metadata for ${allFilePaths.length} items...`
+    );
+    const metaMap = await storageService.getMetadataBatch(allFilePaths);
+    console.log(
+      `[LibraryLoader] Metadata fetched: ${metaMap.size} entries found in DB.`
+    );
 
     const virtualFolderIds = new Set(storedVirtualFolders.map((f) => f.id));
 
@@ -31,7 +43,7 @@ export const libraryLoader = {
     const processItem = (
       item: PortfolioItem
     ): { item: PortfolioItem; targetFolderId: string | null } => {
-      const meta = metaMap.get(item.name); // Using Name/Path as key
+      const meta = metaMap.get(item.path || item.name); // Using Path as key
       if (meta) {
         const hydrated = {
           ...item,
@@ -61,7 +73,8 @@ export const libraryLoader = {
     // Process Disk Folders
     diskFolderMap.forEach((items, name) => {
       const remainingItems: PortfolioItem[] = [];
-      const folderId = `phys-${btoa(name).substring(0, 12)}`; // Deterministic ID
+      const safeName = name.replace(/[^a-z0-9]/gi, "_");
+      const folderId = `phys-${safeName}-${items.length}`; // Deterministic ID without btoa
 
       items.forEach((rawItem) => {
         const { item, targetFolderId } = processItem({ ...rawItem, folderId });
@@ -81,13 +94,15 @@ export const libraryLoader = {
           items: remainingItems,
           createdAt: Date.now(),
           isVirtual: false,
+          path: basePath, // Store base path to allow removal later
         });
       }
     });
 
     // Process Loose Files (Root)
     const remainingLooseItems: PortfolioItem[] = [];
-    const rootFolderId = `phys-${btoa(handle.name).substring(0, 12)}`;
+    const rootSafeName = basePath.replace(/[^a-z0-9]/gi, "_");
+    const rootFolderId = `phys-root-${rootSafeName.slice(-10)}`;
 
     looseFiles.forEach((rawItem) => {
       const { item, targetFolderId } = processItem({
@@ -106,10 +121,11 @@ export const libraryLoader = {
     if (remainingLooseItems.length > 0) {
       physicalFolders.push({
         id: rootFolderId,
-        name: handle.name,
+        name: basePath.split("/").pop() || "Root",
         items: remainingLooseItems,
         createdAt: Date.now(),
         isVirtual: false,
+        path: basePath,
       });
     }
 

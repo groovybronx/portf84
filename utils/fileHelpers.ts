@@ -1,44 +1,52 @@
-import { PortfolioItem, Folder } from "../types";
+import { PortfolioItem } from "../types";
+import { readDir, stat } from "@tauri-apps/plugin-fs";
+import { convertFileSrc } from "@tauri-apps/api/core";
+import { join } from "@tauri-apps/api/path";
 
-// Recursive function to walk directory handle
+// Recursive function to walk directory path using Tauri FS
 export async function scanDirectory(
-  dirHandle: FileSystemDirectoryHandle, 
-  path: string = ''
-): Promise<{ folders: Map<string, PortfolioItem[]>, looseFiles: PortfolioItem[] }> {
-  
+  basePath: string,
+  currentPath: string = ""
+): Promise<{
+  folders: Map<string, PortfolioItem[]>;
+  looseFiles: PortfolioItem[];
+}> {
   const folderMap = new Map<string, PortfolioItem[]>();
   const looseFiles: PortfolioItem[] = [];
 
-  for await (const entry of (dirHandle as any).values()) {
-    const relativePath = path ? `${path}/${entry.name}` : entry.name;
+  const fullPath = currentPath ? await join(basePath, currentPath) : basePath;
+  const entries = await readDir(fullPath);
 
-    if (entry.kind === "file") {
-      const fileHandle = entry as FileSystemFileHandle;
-      const file = await fileHandle.getFile();
+  for (const entry of entries) {
+    const relativePath = currentPath
+      ? await join(currentPath, entry.name)
+      : entry.name;
+    const entryFullPath = await join(basePath, relativePath);
 
-      if (file.type.startsWith("image/")) {
-        // Auto-tag based on folder structure
-        const folderTag = path.split("/").pop();
+    if (entry.isFile) {
+      if (entry.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        const fileStat = await stat(entryFullPath);
+
+        const assetUrl = convertFileSrc(entryFullPath);
+        console.log(
+          `[FileHelpers] Generated URL for ${entry.name}: ${assetUrl}`
+        );
 
         const item: PortfolioItem = {
           id: Math.random().toString(36).substring(2, 9),
-          file: file, // Keep file reference for upload/analysis
-          url: URL.createObjectURL(file),
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          lastModified: file.lastModified,
-          aiTags: folderTag ? [folderTag] : [],
-          // Metadata will be merged later from IndexedDB
+          path: entryFullPath,
+          url: assetUrl,
+          name: entry.name,
+          type: `image/${entry.name.split(".").pop()}`,
+          size: fileStat.size,
+          lastModified: fileStat.mtime
+            ? new Date(fileStat.mtime).getTime()
+            : Date.now(),
+          aiTags: currentPath ? [currentPath.split("/").pop() || ""] : [],
         };
 
-        // Determine "Folder Name" for grouping
-        // If it's in root (path is empty), it goes to looseFiles
-        // If it's in a subfolder, we use the direct parent name
-        if (path) {
-          const parentFolder = path.split("/").pop() || "Unknown";
-          // We use the full path as key to ensure uniqueness of folders with same name in different subtrees
-          // But for display we might want just name. For now let's group by immediate parent name.
+        if (currentPath) {
+          const parentFolder = currentPath.split("/").pop() || "Unknown";
           if (!folderMap.has(parentFolder)) {
             folderMap.set(parentFolder, []);
           }
@@ -47,9 +55,8 @@ export async function scanDirectory(
           looseFiles.push(item);
         }
       }
-    } else if (entry.kind === "directory") {
-      const subDirHandle = entry as FileSystemDirectoryHandle;
-      const result = await scanDirectory(subDirHandle, relativePath);
+    } else if (entry.isDirectory) {
+      const result = await scanDirectory(basePath, relativePath);
 
       // Merge results
       result.folders.forEach((items, name) => {
@@ -66,19 +73,11 @@ export async function scanDirectory(
   return { folders: folderMap, looseFiles };
 }
 
-// Using any for FileSystemDirectoryHandle here to avoid experimental type issues in environment
-export async function verifyPermission(fileHandle: any, readWrite: boolean = false) {
-  const options = {
-    mode: readWrite ? 'readwrite' : 'read',
-  };
-  
-  // Check if permission was already granted.
-  if ((await fileHandle.queryPermission(options)) === 'granted') {
-    return true;
-  }
-  // Request permission.
-  if ((await fileHandle.requestPermission(options)) === 'granted') {
-    return true;
-  }
-  return false;
+// In Tauri, permission is handled via capabilities and dialogs.
+// We assume that if we have the path from a dialog, we have permission.
+export async function verifyPermission(
+  _path: string,
+  _readWrite: boolean = false
+) {
+  return true;
 }

@@ -11,6 +11,7 @@ import { CreateFolderModal, MoveToFolderModal } from './components/ActionModals'
 import { AddTagModal } from "./components/AddTagModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { UnifiedProgress } from "./components/UnifiedProgress";
+import { open } from "@tauri-apps/plugin-dialog";
 
 import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./types";
 import { AnimatePresence, motion } from "framer-motion";
@@ -34,7 +35,7 @@ const App: React.FC = () => {
     folders,
     activeFolderIds,
     hasStoredSession,
-    loadFromDirectoryHandle,
+    loadFromPath,
     restoreSession,
 
     setLibraryRoot,
@@ -158,6 +159,13 @@ const App: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedItem, selectionMode, selectedIds, focusedId, hoveredItem]);
 
+  // Auto-restore session when detected
+  useEffect(() => {
+    if (hasStoredSession && folders.length === 0) {
+      restoreSession();
+    }
+  }, [hasStoredSession, folders.length]);
+
   // Apply color to Focused/Selected items
   const applyColorTagToSelection = (color: string | undefined) => {
     let itemsToUpdate: PortfolioItem[] = [];
@@ -181,8 +189,14 @@ const App: React.FC = () => {
 
   const handleDirectoryPicker = async () => {
     try {
-      const handle = await(window as any).showDirectoryPicker();
-      await loadFromDirectoryHandle(handle);
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: "Select Photo Folder",
+      });
+      if (selected && typeof selected === "string") {
+        await loadFromPath(selected);
+      }
     } catch (e) {
       console.log("Cancelled", e);
     }
@@ -190,8 +204,14 @@ const App: React.FC = () => {
 
   const handleSetRoot = async () => {
     try {
-      const handle = await(window as any).showDirectoryPicker();
-      await setLibraryRoot(handle);
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: "Select Root Library Folder",
+      });
+      if (selected && typeof selected === "string") {
+        await setLibraryRoot(selected);
+      }
     } catch (e) {
       console.log("Cancelled", e);
     }
