@@ -55,7 +55,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
         onNext();
       } else if (e.key === "ArrowLeft") {
         onPrev();
-      } else if (e.key === "Escape") {
+      } else if (e.key === "Escape" || e.key === " ") {
         onClose();
       }
     };

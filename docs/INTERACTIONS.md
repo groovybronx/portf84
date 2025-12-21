@@ -7,8 +7,10 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 ### Navigation Générale
 - **Clic Simple (Grille)** : Met le focus sur l'image (bordure blanche). Si le mode Sélection est actif, cela coche l'image.
 - **Double-Clic (Grille)** : Ouvre l'image en plein écran.
+- **Bouton Info (Grille)** : Retourne la vignette pour afficher les métadonnées (Flip Card 3D).
+- **Clic sur Tag (Verso Carte)** : Filtre instantanément la collection par ce tag.
 - **Clic Droit (Grille)** : Ouvre le **Menu Contextuel Personnalisé**. 
-  - *Actions* : Analyse AI, **Add Tag** (Ouvre modale), Tag Couleur, Suppression.
+  - *Actions* : Analyse AI, **Add Tag**, **Move to Collection**, Tag Couleur, Suppression.
 - **Drag-to-Select (Glisser-Déposer)** :
   - Cliquez et maintenez le bouton gauche de la souris dans une zone vide de la grille.
   - Tracez un rectangle pour sélectionner plusieurs images.
@@ -44,7 +46,7 @@ L'application écoute les événements clavier globaux (sauf lors de la saisie d
 |--------|--------|----------|
 | `Flèches (Haut/Bas)` | Monter/Descendre d'une rangée (tient compte du nombre de colonnes) | Grille |
 | `Flèches (Gauche/Droite)` | Image précédente / suivante | Grille, Flow, Viewer |
-| `Entrée` | Ouvrir l'image sélectionnée | Grille, Flow |
+| `Espace` | Ouvrir / Fermer le plein écran | Grille, Flow, Viewer |
 | `Echap` | Fermer le visualiseur / Annuler la sélection / Fermer les tiroirs | Global |
 
 ### Gestion & Organisation

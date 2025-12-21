@@ -248,6 +248,14 @@ const App: React.FC = () => {
     }
   };
 
+  const handleContextMove = (item: PortfolioItem) => {
+    if (!selectedIds.has(item.id)) {
+      clearSelection();
+      setSelectedIds(new Set([item.id]));
+    }
+    setIsMoveModalOpen(true);
+  };
+
   // --- RENDER ---
 
   const renderView = () => {
@@ -262,6 +270,8 @@ const App: React.FC = () => {
         e.preventDefault();
         setContextMenu({ x: e.clientX, y: e.clientY, item });
       },
+      onTagClick: setSelectedTag,
+      selectedTag,
     };
 
     switch (viewMode) {
@@ -438,6 +448,7 @@ const App: React.FC = () => {
                   setIsAddTagModalOpen(true);
                 }}
                 onOpen={setSelectedItem}
+                onMove={handleContextMove}
               />
             )}
           </AnimatePresence>

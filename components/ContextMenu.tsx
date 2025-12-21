@@ -1,6 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Trash2, Eye, Palette, Copy, X, Tag } from "lucide-react";
+import {
+  Sparkles,
+  Trash2,
+  Eye,
+  Palette,
+  Copy,
+  X,
+  Tag,
+  FolderInput,
+} from "lucide-react";
 import { PortfolioItem, COLOR_PALETTE } from "../types";
 
 interface ContextMenuProps {
@@ -13,6 +22,7 @@ interface ContextMenuProps {
   onColorTag: (item: PortfolioItem, color: string | undefined) => void;
   onAddTags: (item: PortfolioItem) => void;
   onOpen: (item: PortfolioItem) => void;
+  onMove: (item: PortfolioItem) => void;
 }
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -25,6 +35,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   onColorTag,
   onAddTags,
   onOpen,
+  onMove,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -103,6 +114,16 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-glass-bg-accent hover:text-white flex items-center gap-3 transition-colors"
       >
         <Tag size={16} className="text-green-400" /> Add Tag
+      </button>
+
+      <button
+        onClick={() => {
+          onMove(item);
+          onClose();
+        }}
+        className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-glass-bg-accent hover:text-white flex items-center gap-3 transition-colors"
+      >
+        <FolderInput size={16} className="text-blue-400" /> Move to Collection
       </button>
 
       <div className="my-1 border-t border-glass-border/10" />

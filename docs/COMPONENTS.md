@@ -10,9 +10,15 @@ Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
   - *Solution* : Le composant utilise un algorithme JavaScript pour distribuer les items dans les colonnes une par une (Item 1 -> Col 1, Item 2 -> Col 2...).
   - **Résultat** : On conserve l'imbrication verticale compacte ("Masonry") tout en gardant un ordre de lecture visuel horizontal de gauche à droite.
 
-- **Interaction Double-Clic**
-  - **Clic Simple** : Sélectionne / Focus l'image (affiche les infos au survol, permet la navigation clavier).
-  - **Double-Clic** : Ouvre l'image en plein écran (`ImageViewer`).
+- **PhotoCard (Vignette Interactive)**
+  - Chaque image est encapsulée dans une `PhotoCard` gérant son propre état 3D.
+  - **Flip Animation** : Utilise `framer-motion` pour un retournement à 180° révélant les métadonnées au verso.
+  - **Optimisation 3D** : Utilisation de `preserve-3d` et `backface-visibility` pour des performances fluides.
+
+- **Interaction Clavier & Souris**
+  - **Clic Simple** : Sélectionne / Focus l'image.
+  - **Barre d'Espace** : Ouvre l'image en plein écran (replaces 'Entrée').
+  - **Info Button** : Déclenche le retournement (flip) de la carte pour voir les infos.
   - **Mode Sélection** : En mode sélection, le clic simple ajoute/retire l'image de la sélection.
 
 - **Feature Clé : Slider de Colonnes**
@@ -67,7 +73,8 @@ Barre d'actions contextuelles.
 ## 7. ContextMenu (Clic-Droit)
 Menu contextuel personnalisé.
 - Portal ou positionnement fixe (`fixed`) basé sur les coordonnées `clientX/Y`.
-- Actions : Analyse AI, **Add Tags** (Multi-sélection), Tag Couleur, Suppression.
+- Actions : Analyse AI, **Add Tags** (Multi-sélection), Tag Couleur, **Move to Collection** (Déplacement physique ou virtuel), Suppression.
+- **Intelligence Contextuelle** : Si on clique-droit sur un item non sélectionné, il devient l'unique sélection avant d'ouvrir l'action demandée.
 
 ## 8. TagManager & Autosuggestion
 Nouveau composant dédié à la gestion des tags manuels.
@@ -82,3 +89,10 @@ Modale de configuration globale.
 - **Accès** : Via l'icône "Roue crantée" dans la TopBar (Zone Gauche).
 - **Fonction** : Permet de définir la **Clé API Gemini**.
 - **Sécurité** : La clé est sauvegardée dans le `localStorage` du navigateur.
+
+## 10. PhotoCard BackFace (Fiche Métadonnées)
+La face arrière de la vignette interactive affiche les informations structurées :
+- **Nom & Color Tag** : Identification rapide.
+- **Description IA** : Synthèse textuelle de l'analyse visuelle.
+- **Tags Interactifs** : Tags manuels et AI cliquables pour déclencher un filtrage instantané.
+- **Infos Techniques** : Format, taille et résolution en bas de fiche.
