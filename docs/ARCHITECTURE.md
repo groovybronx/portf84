@@ -31,7 +31,7 @@ Nous utilisons une couche d'abstraction légère sur IndexedDB (Stores) pour sto
 
 - **Métadonnées (`metadata`)** : Les enrichissements (AI, Tags, Couleurs) et les liaisons.
   - *Clé* : Chemin relatif du fichier ou nom unique.
-  - *Valeur* : JSON (Description, Tags, **folderId**).
+  - *Valeur* : JSON (Description, Tags AI, **manualTags**, **folderId**).
   - *Logique* : Le `folderId` dans les métadonnées détermine l'appartenance d'un fichier à une collection virtuelle.
 
 ## Optimisation des Performances
@@ -61,3 +61,16 @@ Le rendu de milliers d'éléments DOM (`div`, `img`) est le goulot d'étrangleme
 5. **Suppression** :
    - *Virtuel* : Supprime l'entrée dans `virtual_folders`.
    - *Physique* : Supprime le Handle dans `handles` et révoque l'accès au prochain démarrage.
+
+## Stratégie de Tests
+
+L'application utilise **Vitest** pour garantir la fiabilité du cœur logique.
+
+### Structure
+- **`tests/`** : Dossier racine contenant tous les tests unitaires.
+  - `geminiService.test.ts` : Mock le SDK Google GenAI pour vérifier les appels et l'utilisation stricte du modèle 3.0.
+  - `fileHelpers.test.ts` : Vérifie la récursivité du scan de fichiers et la détection des types MIME.
+
+### Exécution
+- Commande : `npm run test`
+- Environnement : `jsdom` (simulation browser pour les APIs FileSystem).

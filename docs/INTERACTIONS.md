@@ -7,7 +7,8 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 ### Navigation Générale
 - **Clic Simple (Grille)** : Met le focus sur l'image (bordure blanche). Si le mode Sélection est actif, cela coche l'image.
 - **Double-Clic (Grille)** : Ouvre l'image en plein écran.
-- **Clic Droit (Grille)** : Ouvre le **Menu Contextuel Personnalisé** (Analyse AI, Tag Couleur, Suppression).
+- **Clic Droit (Grille)** : Ouvre le **Menu Contextuel Personnalisé**. 
+  - *Actions* : Analyse AI, **Add Tag** (Ouvre modale), Tag Couleur, Suppression.
 - **Drag-to-Select (Glisser-Déposer)** :
   - Cliquez et maintenez le bouton gauche de la souris dans une zone vide de la grille.
   - Tracez un rectangle pour sélectionner plusieurs images.
@@ -17,12 +18,21 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 - **Roulette / Clic Boutons** : Précédent / Suivant.
 - **Clic hors image** : Fermer le visualiseur.
 
+## Configuration & Paramètres
+
+- **Gestion Clé API** :
+  - Cliquez sur l'icône **Réglages** (Roue crantée) en haut à gauche.
+  - Entrez votre clé Gemini API.
+  - Validez par "Entrée" ou en fermant la modale.
+  - La clé est persistée pour les prochaines sessions.
+
 ## Recherche & Filtrage
 
 - **Recherche Floue (Fuzzy Search)** :
   - La barre de recherche utilise `Fuse.js`.
   - Elle tolère les fautes de frappe (ex: "montgne" trouvera "montagne").
-  - Elle cherche dans le nom de fichier, la description AI et les tags AI.
+  - Elle cherche dans le nom de fichier, la description AI, les tags AI et les **tags manuels**.
+  - **Autosuggestion** : Propose dynamiquement les tags existants lors de la frappe.
 - **Tags Couleurs** : Filtrage rapide via la barre supérieure (clic sur une pastille couleur).
 
 ## Raccourcis Clavier

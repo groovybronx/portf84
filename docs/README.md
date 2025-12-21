@@ -29,9 +29,10 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 L'application utilise une structure sans build-step complexe (via Import Maps), mais les dépendances sont standards :
 
 - **React 19**: Framework UI
-- **Tailwind CSS**: Styling (via CDN script pour prototypage rapide)
+- **Tailwind CSS v4**: Styling (via `@tailwindcss/vite` plugin)
 - **Framer Motion**: Animations
-- **Google GenAI SDK**: Analyse d'images
+- **Google GenAI SDK**: (`@google/genai`) Analyse d'images
+- **Vitest**: Tests Unitaires
 
 ## Conventions de Code
 

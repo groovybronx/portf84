@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderCog, Pin, PinOff } from "lucide-react";
+import { FolderCog, Pin, PinOff, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 import { SortOption, SortDirection, ViewMode } from "../types";
 
@@ -38,6 +38,7 @@ interface TopBarProps {
   onRunBatchAI: () => void;
   isBatchAIProcessing: boolean;
   batchAIProgress: number;
+  onOpenSettings: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -68,6 +69,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onRunBatchAI,
   isBatchAIProcessing,
   batchAIProgress,
+  onOpenSettings,
 }) => {
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
   const [isPinned, setIsPinned] = useState(true);
@@ -88,7 +90,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-[var(--z-topbar)] h-24 flex flex-col items-center pointer-events-auto"
+      className="fixed top-0 left-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center pointer-events-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -103,7 +105,7 @@ export const TopBar: React.FC<TopBarProps> = ({
       >
         <div className="glass-surface rounded-2xl shadow-xl p-2 sm:p-3 flex items-center max-w-[95vw]">
           {/* --- LEFT SECTION --- */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setIsPinned(!isPinned)}
               className={`p-2 rounded-lg transition-colors ${
@@ -129,9 +131,16 @@ export const TopBar: React.FC<TopBarProps> = ({
                 {folderName || "Library"}
               </span>
             </button>
+            <button
+              onClick={onOpenSettings}
+              className="p-2 rounded-lg hover:bg-glass-bg-accent text-gray-500 hover:text-white transition-colors"
+              title="Settings"
+            >
+              <Settings size={18} />
+            </button>
           </div>
 
-          <div className="h-6 w-px bg-glass-border/10 mx-2 hidden sm:block flex-shrink-0" />
+          <div className="h-6 w-px bg-glass-border/10 mx-2 hidden sm:block shrink-0" />
 
           {/* --- MIDDLE SECTION (Search, Colors, Slider) --- */}
           <div className="flex-1 flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar px-1 min-w-0">
@@ -152,7 +161,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             />
 
             {currentViewMode === ViewMode.GRID && onGridColumnsChange && (
-              <div className="hidden sm:flex items-center gap-2 bg-glass-bg-accent px-3 py-2 rounded-xl border border-glass-border-light mx-2 flex-shrink-0">
+              <div className="hidden sm:flex items-center gap-2 bg-glass-bg-accent px-3 py-2 rounded-xl border border-glass-border-light mx-2 shrink-0">
                 <input
                   type="range"
                   min={2}
@@ -167,7 +176,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           </div>
 
           {/* --- ACTIONS SECTION (Tags, Sort, Select) --- */}
-          <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+          <div className="flex items-center gap-2 shrink-0 ml-2">
             <BatchActions
               selectionMode={selectionMode}
               selectedCount={selectedCount}
@@ -205,7 +214,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           </div>
 
           {/* --- RIGHT SECTION (View Toggle) --- */}
-          <div className="flex items-center gap-2 flex-shrink-0 pl-2 ml-2 border-l border-glass-border/10 relative z-50">
+          <div className="flex items-center gap-2 shrink-0 pl-2 ml-2 border-l border-glass-border/10 relative z-50">
             <ViewToggle
               currentViewMode={currentViewMode}
               onModeChange={onModeChange}

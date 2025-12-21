@@ -25,11 +25,12 @@ Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
 La barre d'outils principale, repensée pour gérer les problèmes de superposition (z-index) et de responsivité.
 
 - **Architecture Layout (3 Zones)** :
-  1.  **Zone Gauche (Fixe)** : Boutons d'épingle et de Bibliothèque. Ne scrolle jamais.
-  2.  **Zone Centrale (Scrollable)** : Contient la recherche, les filtres couleurs et les curseurs. Utilise `overflow-x-auto` pour s'adapter aux mobiles.
-  3.  **Zone Droite (Fixe)** : Contient le sélecteur de Vue (Grid/Flow) et **sorti du flux** scrollable : les Dropdowns (Tags, Tri, Sélection).
-  
-- **Correction UX** : Les menus déroulants (Tags, Sort) ont été déplacés hors du conteneur `overflow-x-auto` de la zone centrale. Cela empêche qu'ils soient coupés ("clipping") par les limites du conteneur parent lorsqu'ils sont ouverts.
+  1.  **Zone Gauche (Fixe)** : Boutons d'épingle, de Bibliothèque et **Paramètres**. Ne scrolle jamais.
+  2.  **Zone Centrale (Scrollable)** : Contient la **Smart Search (Recherche Intelligente)** avec autosuggestion, les filtres couleurs et les curseurs.
+  3.  **Zone Droite (Fixe)** : Contient le sélecteur de Vue (Grid/Flow) et **sorti du flux** scrollable : les Dropdowns (Tri, Sélection).
+
+- **Correction UX** : Les menus déroulants (Sort) ont été déplacés hors du conteneur `overflow-x-auto`.
+- **Smart Search** : Remplace l'ancien menu "Tags". Intègre une barre de recherche unifiée qui propose les tags disponibles (AI + Manuels) en autosuggestion.
 
 ## 3. FolderDrawer (Gestionnaire de Dossiers)
 Le panneau latéral coulissant pour la navigation.
@@ -54,6 +55,7 @@ Un carrousel circulaire haute performance optimisé pour maintenir 60fps même a
 Le visualiseur modal pour une inspection détaillée.
 - Navigation clavier (Flèches).
 - Lecture des métadonnées EXIF (via `exif-js`).
+- **TagManager intégré** : Ajout/Suppression rapide de tags manuels directement sous l'analyse AI.
 - Déclenchement de l'analyse AI.
 - Affichage des tags couleurs et modification en direct.
 
@@ -65,4 +67,18 @@ Barre d'actions contextuelles.
 ## 7. ContextMenu (Clic-Droit)
 Menu contextuel personnalisé.
 - Portal ou positionnement fixe (`fixed`) basé sur les coordonnées `clientX/Y`.
-- Actions : Analyse AI, Tag Couleur, Suppression.
+- Actions : Analyse AI, **Add Tags** (Multi-sélection), Tag Couleur, Suppression.
+
+## 8. TagManager & Autosuggestion
+Nouveau composant dédié à la gestion des tags manuels.
+- **Autosuggestion** : Propose les tags existants (`availableTags`) lors de la saisie.
+- **Persistance** : Sauvegarde immédiate dans IndexedDB via `storageService`.
+- **Contextes d'utilisation** :
+  - *Sidebar ImageViewer* : Pour l'image active.
+  - *AddTagModal* : Pour le taguage par lot via clic-droit.
+
+## 9. SettingsModal (Paramètres)
+Modale de configuration globale.
+- **Accès** : Via l'icône "Roue crantée" dans la TopBar (Zone Gauche).
+- **Fonction** : Permet de définir la **Clé API Gemini**.
+- **Sécurité** : La clé est sauvegardée dans le `localStorage` du navigateur.

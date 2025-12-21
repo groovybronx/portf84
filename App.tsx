@@ -9,6 +9,7 @@ import { FolderDrawer } from './components/FolderDrawer';
 import { ContextMenu } from './components/ContextMenu';
 import { CreateFolderModal, MoveToFolderModal } from './components/ActionModals';
 import { AddTagModal } from "./components/AddTagModal";
+import { SettingsModal } from "./components/SettingsModal";
 import { UnifiedProgress } from "./components/UnifiedProgress";
 
 import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./types";
@@ -98,6 +99,7 @@ const App: React.FC = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Context Menu
   const [contextMenu, setContextMenu] = useState<{
@@ -315,7 +317,7 @@ const App: React.FC = () => {
       {/* Drag Selection Box */}
       {isDragSelecting && dragBox && (
         <div
-          className="fixed border border-blue-500 bg-blue-500/20 z-[var(--z-controlbar)] pointer-events-none"
+          className="fixed border border-blue-500 bg-blue-500/20 z-(--z-controlbar) pointer-events-none"
           style={{
             left: dragBox.x,
             top: dragBox.y,
@@ -336,7 +338,7 @@ const App: React.FC = () => {
       />
 
       {/* Background */}
-      <div className="fixed inset-0 pointer-events-none z-[var(--z-base)] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
+      <div className="fixed inset-0 pointer-events-none z-(--z-base) bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
 
       {folders.length === 0 ? (
         <UploadZone
@@ -348,7 +350,7 @@ const App: React.FC = () => {
         />
       ) : (
         <>
-          <div className="top-bar-area relative z-[var(--z-topbar)]">
+          <div className="top-bar-area relative z-(--z-topbar)">
             <TopBar
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
@@ -384,10 +386,11 @@ const App: React.FC = () => {
               onRunBatchAI={handleRunBatchAI}
               isBatchAIProcessing={isBatchProcessing}
               batchAIProgress={batchProgress}
+              onOpenSettings={() => setIsSettingsOpen(true)}
             />
           </div>
 
-          <div className="drawer-area relative z-[var(--z-drawer-overlay)]">
+          <div className="drawer-area relative z-(--z-drawer-overlay)">
             <FolderDrawer
               isOpen={isFolderDrawerOpen}
               onClose={() => setIsFolderDrawerOpen(false)}
@@ -403,7 +406,7 @@ const App: React.FC = () => {
             />
           </div>
 
-          <main className="relative z-[var(--z-grid-item)]">
+          <main className="relative z-(--z-grid-item)">
             <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
           </main>
 
@@ -472,6 +475,10 @@ const App: React.FC = () => {
             onAddTag={handleAddTagsToSelection}
             selectedCount={selectedIds.size > 0 ? selectedIds.size : 1}
             availableTags={availableTags}
+          />
+          <SettingsModal
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
           />
         </>
       )}

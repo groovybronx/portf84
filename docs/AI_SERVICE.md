@@ -5,8 +5,12 @@ L'application utilise le SDK `@google/genai` pour analyser les images localement
 ## Configuration
 
 Le service est isolé dans `services/geminiService.ts`.
-- **Modèle** : `gemini-3-flash-preview` (Optimisé pour la vitesse et la vision multimodale).
-- **Format de réponse** : JSON structuré (`responseMimeType: "application/json"`).
+- **Modèle** : `gemini-3-flash-preview` (Strictement imposé).
+- **Format de réponse** : JSON structuré.
+- **Authentification** : Clé API stockée dans le `localStorage` du navigateur (sécurité accrue, pas de backend).
+
+> [!IMPORTANT]
+> L'utilisation du modèle **`gemini-3-flash-preview`** est obligatoire. Tout downgrade est interdit par règle projet.
 
 ## Workflow d'Analyse (Image Unique)
 
@@ -39,7 +43,7 @@ Pour analyser de grands dossiers sans intervention manuelle répétée :
 
 ## Gestion des Erreurs
 
-- Si la clé API est manquante (`process.env.API_KEY`), une erreur explicite est levée.
+- Si la clé API est manquante (ni dans `localStorage`, ni dans les variables d'env), une erreur explicite demande à l'utilisateur de la configurer via les Paramètres.
 - Le service gère les cas où le JSON retourné serait malformé.
 - En mode Batch, une erreur sur une image ne stoppe pas le processus pour les suivantes.
 
