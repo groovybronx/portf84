@@ -54,6 +54,10 @@ export const analyzeImage = async (
 }> => {
   const apiKey = getApiKey();
 
+  if (!item.file) {
+    throw new Error("Cannot analyze image: File object not available.");
+  }
+
   try {
     const ai = new GoogleGenAI({ apiKey });
     const base64Data = await processFileToBase64(item.file);

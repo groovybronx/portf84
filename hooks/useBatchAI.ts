@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { PortfolioItem } from "../types";
 
 import { analyzeImage } from "../services/geminiService";
@@ -28,6 +28,8 @@ export const useBatchAI = (updateItem: (item: PortfolioItem) => void) => {
       }
 
       const item = aiQueue[0];
+      if (!item) return;
+
       try {
         const result = await analyzeImage(item);
         updateItem({

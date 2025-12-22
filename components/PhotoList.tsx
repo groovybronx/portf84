@@ -1,7 +1,7 @@
-import React from 'react';
-import { PortfolioItem } from '../types';
-import { motion } from 'framer-motion';
-import { FileImage, Info, Tag, CheckCircle2, Circle } from 'lucide-react';
+import React from "react";
+import { PortfolioItem } from "../types";
+import { motion } from "framer-motion";
+import { FileImage, Info, Tag, CheckCircle2, Circle } from "lucide-react";
 
 interface PhotoListProps {
   items: PortfolioItem[];
@@ -14,15 +14,15 @@ interface PhotoListProps {
   registerItemRef?: (id: string, el: HTMLElement | null) => void;
 }
 
-export const PhotoList: React.FC<PhotoListProps> = ({ 
-    items, 
-    onSelect, 
-    showColorTags, 
-    onHover,
-    selectionMode,
-    selectedIds,
-    onToggleSelect,
-    registerItemRef
+export const PhotoList: React.FC<PhotoListProps> = ({
+  items,
+  onSelect,
+  showColorTags,
+  onHover,
+  selectionMode,
+  selectedIds,
+  onToggleSelect,
+  registerItemRef,
 }) => {
   return (
     <div className="w-full max-w-5xl mx-auto pt-(--layout-pt) pb-10 px-4 sm:px-8">
@@ -101,7 +101,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                 <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 font-mono">
                   <span className="flex items-center gap-1">
                     <FileImage size={14} />{" "}
-                    {item.type.split("/")[1].toUpperCase()}
+                    {item.type.split("/")[1]?.toUpperCase() || "UNKNOWN"}
                   </span>
                   <span>•</span>
                   <span>{(item.size / 1024 / 1024).toFixed(2)} MB</span>

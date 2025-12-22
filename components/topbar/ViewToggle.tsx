@@ -29,7 +29,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
   setIsViewMenuOpen,
 }) => {
   const currentModeData =
-    viewModes.find((m) => m.id === currentViewMode) || viewModes[0];
+    viewModes.find((m) => m.id === currentViewMode) || viewModes[0]!;
 
   return (
     <div className="relative">

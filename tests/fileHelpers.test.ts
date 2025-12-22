@@ -76,13 +76,14 @@ describe("fileHelpers", () => {
 
       // Check loose files (root level)
       expect(result.looseFiles).toHaveLength(1);
-      expect(result.looseFiles[0].name).toBe("root.jpg");
+      expect(result.looseFiles[0]?.name).toBe("root.jpg");
 
       // Check folders
       expect(result.folders.size).toBe(1);
       expect(result.folders.has("subfolder")).toBe(true);
-      expect(result.folders.get("subfolder")).toHaveLength(1);
-      expect(result.folders.get("subfolder")![0].name).toBe("nested.jpg");
+      const subfolderItems = result.folders.get("subfolder");
+      expect(subfolderItems).toHaveLength(1);
+      expect(subfolderItems?.[0]?.name).toBe("nested.jpg");
     });
   });
 });

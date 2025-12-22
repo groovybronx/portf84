@@ -266,7 +266,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
                 Type
               </span>
               <span className="text-gray-300">
-                {item.type.split("/")[1].toUpperCase()}
+                {item.type.split("/")[1]?.toUpperCase() || "UNKNOWN"}
               </span>
             </div>
             <div className="flex flex-col gap-0.5">

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react';
-import { PortfolioItem } from '../types';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useMemo, useState } from "react";
+import { PortfolioItem } from "../types";
+import { motion } from "framer-motion";
 import { PhotoCard } from "./PhotoCard";
 
 interface PhotoGridProps {
@@ -57,7 +57,8 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && visibleCount < items.length) {
+        const firstEntry = entries[0];
+        if (firstEntry?.isIntersecting && visibleCount < items.length) {
           setVisibleCount((prev) =>
             Math.min(prev + ITEMS_PER_PAGE, items.length)
           );
@@ -84,7 +85,8 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
   const distributedColumns = useMemo(() => {
     const cols: PortfolioItem[][] = Array.from({ length: columns }, () => []);
     displayedItems.forEach((item, index) => {
-      cols[index % columns].push(item);
+      const targetCol = cols[index % columns];
+      if (targetCol) targetCol.push(item);
     });
     return cols;
   }, [displayedItems, columns]);
@@ -109,8 +111,9 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
         currentIndex === -1 &&
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)
       ) {
-        if (items.length > 0) {
-          onFocusChange?.(items[0].id);
+        const firstItem = items[0];
+        if (items.length > 0 && firstItem) {
+          onFocusChange?.(firstItem.id);
         }
         return;
       }
@@ -137,7 +140,10 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
         case " ":
           e.preventDefault();
           if (currentIndex !== -1) {
-            onSelect(items[currentIndex]);
+            const currentItem = items[currentIndex];
+            if (currentItem) {
+              onSelect(currentItem);
+            }
           }
           break;
         default:
@@ -145,22 +151,28 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
       }
 
       if (nextIndex !== currentIndex && items[nextIndex]) {
-        onFocusChange?.(items[nextIndex].id);
+        const nextItem = items[nextIndex];
+        if (nextItem) {
+          onFocusChange?.(nextItem.id);
 
-        // Auto-scroll logic needs to check if item is in DOM (rendered)
-        // If the item is outside the visible range (virtualized), we might need to force load more
-        // For simplicity in this implementation, infinite scroll handles "down",
-        // but "jumping" way ahead is tricky.
-        if (nextIndex >= visibleCount) {
-          setVisibleCount((prev) => nextIndex + ITEMS_PER_PAGE);
+          // Auto-scroll logic needs to check if item is in DOM (rendered)
+          // If the item is outside the visible range (virtualized), we might need to force load more
+          // For simplicity in this implementation, infinite scroll handles "down",
+          // but "jumping" way ahead is tricky.
+          if (nextIndex >= visibleCount) {
+            setVisibleCount((prev) => nextIndex + ITEMS_PER_PAGE);
+          }
+
+          setTimeout(() => {
+            const nextItem = items[nextIndex];
+            if (nextItem) {
+              const element = document.getElementById(
+                `grid-item-${nextItem.id}`
+              );
+              element?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          }, 50);
         }
-
-        setTimeout(() => {
-          const element = document.getElementById(
-            `grid-item-${items[nextIndex].id}`
-          );
-          element?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }, 50);
       }
     };
 

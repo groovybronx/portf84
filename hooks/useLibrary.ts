@@ -135,8 +135,10 @@ export const useLibrary = (activeCollectionId: string | null) => {
       };
       if (pathParts.length > 1) {
         const folderName = pathParts[0];
-        if (!folderGroups.has(folderName)) folderGroups.set(folderName, []);
-        folderGroups.get(folderName)?.push(item);
+        if (folderName) {
+          if (!folderGroups.has(folderName)) folderGroups.set(folderName, []);
+          folderGroups.get(folderName)?.push(item);
+        }
       } else {
         looseItems.push(item);
       }

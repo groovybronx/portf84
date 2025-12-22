@@ -264,13 +264,18 @@ const App: React.FC = () => {
   const handleNext = () => {
     if (!selectedItem) return;
     const idx = processedItems.findIndex((i) => i.id === selectedItem.id);
-    if (idx !== -1 && idx < processedItems.length - 1)
-      setSelectedItem(processedItems[idx + 1]);
+    if (idx !== -1 && idx < processedItems.length - 1) {
+      const nextItem = processedItems[idx + 1];
+      if (nextItem) setSelectedItem(nextItem);
+    }
   };
   const handlePrev = () => {
     if (!selectedItem) return;
     const idx = processedItems.findIndex((i) => i.id === selectedItem.id);
-    if (idx > 0) setSelectedItem(processedItems[idx - 1]);
+    if (idx > 0) {
+      const prevItem = processedItems[idx - 1];
+      if (prevItem) setSelectedItem(prevItem);
+    }
   };
 
   const handleContextAnalyze = async (item: PortfolioItem) => {

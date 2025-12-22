@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { PortfolioItem } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { PortfolioItem } from "../types";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PhotoCarouselProps {
   items: PortfolioItem[];
@@ -10,64 +10,73 @@ interface PhotoCarouselProps {
   onFocusedItem?: (item: PortfolioItem) => void;
 }
 
-export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, showColorTags, onFocusedItem }) => {
+export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
+  items,
+  onSelect,
+  showColorTags,
+  onFocusedItem,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Safety check for index when items change
   useEffect(() => {
-      if (items.length > 0 && currentIndex >= items.length) {
-          setCurrentIndex(0);
-      }
+    if (items.length > 0 && currentIndex >= items.length) {
+      setCurrentIndex(0);
+    }
   }, [items.length]);
 
   // Notify parent about the currently focused item
   useEffect(() => {
     if (items.length > 0 && items[currentIndex] && onFocusedItem) {
-        onFocusedItem(items[currentIndex]);
+      onFocusedItem(items[currentIndex]);
     }
   }, [currentIndex, items, onFocusedItem]);
 
   const next = () => {
-      if (items.length === 0) return;
-      setCurrentIndex((prev) => (prev + 1) % items.length);
+    if (items.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % items.length);
   };
 
   const prev = () => {
-      if (items.length === 0) return;
-      setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+    if (items.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
   };
 
   // Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-            return;
-        }
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
 
-        if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            next();
-        } else if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            prev();
-        } else if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            if (items.length > 0) {
-                onSelect(items[currentIndex]);
-            }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        const currentItem = items[currentIndex];
+        if (items.length > 0 && currentItem) {
+          onSelect(currentItem);
         }
+      }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [items, currentIndex, onSelect]);
 
   if (items.length === 0) {
-      return (
-          <div className="h-screen w-full flex items-center justify-center text-gray-500">
-              No items to display
-          </div>
-      );
+    return (
+      <div className="h-screen w-full flex items-center justify-center text-gray-500">
+        No items to display
+      </div>
+    );
   }
 
   // Calculate the shortest visual distance for circular wrapping
@@ -81,7 +90,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ items, onSelect, s
   };
 
   // Performance: Reduce visible range to minimize DOM nodes and GPU layers
-  const VISIBLE_RANGE = 3; 
+  const VISIBLE_RANGE = 3;
 
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden relative bg-[#050505]">

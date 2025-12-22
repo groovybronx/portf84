@@ -1,9 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { PortfolioItem } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Loader, Tag, Share2, Download, Info, Calendar, Maximize2, FileText, ChevronLeft, ChevronRight, Palette } from 'lucide-react';
-import { analyzeImage } from '../services/geminiService';
-import { ImageMetadataView } from './ImageMetadataView';
+import React, { useState, useEffect } from "react";
+import { PortfolioItem } from "../types";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  Sparkles,
+  Loader,
+  Tag,
+  Share2,
+  Download,
+  Info,
+  Calendar,
+  Maximize2,
+  FileText,
+  ChevronLeft,
+  ChevronRight,
+  Palette,
+} from "lucide-react";
+import { analyzeImage } from "../services/geminiService";
+import { ImageMetadataView } from "./ImageMetadataView";
 import { TagManager } from "./TagManager";
 
 interface ImageViewerProps {
@@ -83,18 +97,24 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: item.name,
-          text: item.aiDescription || `Check out ${item.name}`,
-          files: [item.file],
-        });
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    } else {
+    if (!navigator.share) {
       alert("Web Share API not supported on this device/browser.");
+      return;
+    }
+
+    if (!item.file) {
+      alert("Cannot share: File object not available.");
+      return;
+    }
+
+    try {
+      await navigator.share({
+        title: item.name,
+        text: item.aiDescription || `Check out ${item.name}`,
+        files: [item.file],
+      });
+    } catch (error) {
+      console.error("Error sharing:", error);
     }
   };
 
