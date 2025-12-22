@@ -12,10 +12,9 @@ import {
 	ViewMode,
 	SortOption,
 	SortDirection,
-} from "../types";
+} from "../shared/types";
 import { useCollections } from "./CollectionsContext";
 import { storageService } from "../services/storageService";
-import { scanDirectory } from "../utils/fileHelpers";
 import { libraryLoader } from "../services/libraryLoader";
 
 // Types
