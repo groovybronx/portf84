@@ -14,6 +14,7 @@ import {
 	EmptyState,
 	SettingsModal,
 	UnifiedProgress,
+	ErrorBoundary,
 } from "./shared/components";
 import { open } from "@tauri-apps/plugin-dialog";
 
@@ -386,56 +387,62 @@ const App: React.FC = () => {
 			<div className="fixed inset-0 pointer-events-none z-(--z-base) bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
 
 			{/* TopBar - Always visible */}
-			<div className="top-bar-area relative z-(--z-topbar)">
-				<TopBar
-					folderName={activeFolderName}
-					onOpenFolders={() => setIsFolderDrawerOpen(true)}
-					onMoveSelected={() => setIsMoveModalOpen(true)}
-					onShareSelected={handleShareSelected}
-					onRunBatchAI={handleRunBatchAI}
-					isBatchAIProcessing={isBatchProcessing}
-					batchAIProgress={batchProgress}
-					onOpenSettings={() => setIsSettingsOpen(true)}
-					showColorTags={showColorTags}
-					onToggleColorTags={toggleColorTags}
-				/>
-			</div>
+			<ErrorBoundary featureName="navigation">
+				<div className="top-bar-area relative z-(--z-topbar)">
+					<TopBar
+						folderName={activeFolderName}
+						onOpenFolders={() => setIsFolderDrawerOpen(true)}
+						onMoveSelected={() => setIsMoveModalOpen(true)}
+						onShareSelected={handleShareSelected}
+						onRunBatchAI={handleRunBatchAI}
+						isBatchAIProcessing={isBatchProcessing}
+						batchAIProgress={batchProgress}
+						onOpenSettings={() => setIsSettingsOpen(true)}
+						showColorTags={showColorTags}
+						onToggleColorTags={toggleColorTags}
+					/>
+				</div>
+			</ErrorBoundary>
 
 			{/* Folder Drawer - Updated with Collection support */}
-			<div className="drawer-area relative z-(--z-drawer-overlay)">
-				<FolderDrawer
-					isOpen={isFolderDrawerOpen}
-					onClose={() => setIsFolderDrawerOpen(false)}
-					folders={folders}
-					activeFolderId={activeFolderIds}
-					onSelectFolder={toggleFolderSelection}
-					onImportFolder={handleDirectoryPicker} // SAME as EmptyState button
-					onCreateFolder={() => setIsCreateFolderModalOpen(true)}
-					onDeleteFolder={deleteFolder}
-					activeCollection={activeCollection}
-					sourceFolders={sourceFolders}
-					onManageCollections={() => setIsCollectionManagerOpen(true)}
-					onRemoveSourceFolder={async (path) => {
-						await removeSourceFolder(path);
-						// Optionally reload library here
-					}}
-				/>
-			</div>
+			<ErrorBoundary featureName="collections">
+				<div className="drawer-area relative z-(--z-drawer-overlay)">
+					<FolderDrawer
+						isOpen={isFolderDrawerOpen}
+						onClose={() => setIsFolderDrawerOpen(false)}
+						folders={folders}
+						activeFolderId={activeFolderIds}
+						onSelectFolder={toggleFolderSelection}
+						onImportFolder={handleDirectoryPicker} // SAME as EmptyState button
+						onCreateFolder={() => setIsCreateFolderModalOpen(true)}
+						onDeleteFolder={deleteFolder}
+						activeCollection={activeCollection}
+						sourceFolders={sourceFolders}
+						onManageCollections={() => setIsCollectionManagerOpen(true)}
+						onRemoveSourceFolder={async (path) => {
+							await removeSourceFolder(path);
+							// Optionally reload library here
+						}}
+					/>
+				</div>
+			</ErrorBoundary>
 
 			{/* Main Content Area - EmptyState or View */}
-			<main className="relative z-(--z-grid-item)">
-				{currentItems.length === 0 ? (
-					<div className="flex items-center justify-center h-full min-h-[60vh]">
-						<p className="text-gray-500 text-center">
-							{!activeCollection
-								? "Ouvrez le tiroir (icône en haut à gauche) pour créer une Collection"
-								: "Aucune image. Ajoutez un dossier source depuis le tiroir."}
-						</p>
-					</div>
-				) : (
-					<AnimatePresence mode="wait">{renderView()}</AnimatePresence>
-				)}
-			</main>
+			<ErrorBoundary featureName="library">
+				<main className="relative z-(--z-grid-item)">
+					{currentItems.length === 0 ? (
+						<div className="flex items-center justify-center h-full min-h-[60vh]">
+							<p className="text-gray-500 text-center">
+								{!activeCollection
+									? "Ouvrez le tiroir (icône en haut à gauche) pour créer une Collection"
+									: "Aucune image. Ajoutez un dossier source depuis le tiroir."}
+							</p>
+						</div>
+					) : (
+						<AnimatePresence mode="wait">{renderView()}</AnimatePresence>
+					)}
+				</main>
+			</ErrorBoundary>
 
 			{/* Context Menu */}
 			<AnimatePresence>
@@ -471,15 +478,17 @@ const App: React.FC = () => {
 			{/* Image Viewer */}
 			<AnimatePresence>
 				{selectedItem && (
-					<ImageViewer
-						item={selectedItem}
-						onClose={() => setSelectedItem(null)}
-						onUpdateItem={updateItem}
-						onNext={handleNext}
-						onPrev={handlePrev}
-						showColorTags={true}
-						availableTags={availableTags}
-					/>
+					<ErrorBoundary featureName="vision">
+						<ImageViewer
+							item={selectedItem}
+							onClose={() => setSelectedItem(null)}
+							onUpdateItem={updateItem}
+							onNext={handleNext}
+							onPrev={handlePrev}
+							showColorTags={true}
+							availableTags={availableTags}
+						/>
+					</ErrorBoundary>
 				)}
 			</AnimatePresence>
 
