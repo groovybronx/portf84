@@ -25,21 +25,23 @@ export async function scanDirectory(
 
     if (entry.isFile) {
       if (entry.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+      if (entry.name.match(/\.(png|jpe?g|gif|webp|svg)$/i)) {
         const fileStat = await stat(entryFullPath);
 
         const assetUrl = convertFileSrc(entryFullPath);
         // Removed noisy log: console.log(`[FileHelpers] Generated URL for ${entry.name}: ${assetUrl}`);
 
+        const ext = entry.name.split('.').pop()?.toLowerCase();
+        const mimeType = ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : `image/${ext}`;
+
         const item: PortfolioItem = {
-          id: Math.random().toString(36).substring(2, 9),
+          id: entryFullPath, // Using full path as ID
           path: entryFullPath,
           url: assetUrl,
           name: entry.name,
-          type: `image/${entry.name.split(".").pop()}`,
+          type: mimeType,
           size: fileStat.size,
-          lastModified: fileStat.mtime
-            ? new Date(fileStat.mtime).getTime()
-            : Date.now(),
+          lastModified: fileStat.mtime?.getTime() || Date.now(),
           aiTags: currentPath ? [currentPath.split("/").pop() || ""] : [],
         };
 
