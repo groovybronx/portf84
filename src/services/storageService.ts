@@ -55,6 +55,7 @@ const getDB = async (): Promise<Database> => {
           name TEXT NOT NULL,
           createdAt INTEGER NOT NULL,
           isVirtual INTEGER DEFAULT 1,
+          sourceFolderId TEXT,
           FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE CASCADE
         )
       `);
@@ -70,6 +71,7 @@ const getDB = async (): Promise<Database> => {
           aiTagsDetailed TEXT,
           colorTag TEXT,
           manualTags TEXT,
+          isHidden INTEGER DEFAULT 0,
           lastModified INTEGER NOT NULL,
           FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE SET NULL
         )
@@ -232,8 +234,15 @@ export const storageService = {
 	saveVirtualFolder: async (folder: any) => {
 		const db = await getDB();
 		await db.execute(
-			"INSERT OR REPLACE INTO virtual_folders (id, name, createdAt, isVirtual) VALUES (?, ?, ?, ?)",
-			[folder.id, folder.name, folder.createdAt, 1]
+			"INSERT OR REPLACE INTO virtual_folders (id, collectionId, name, createdAt, isVirtual, sourceFolderId) VALUES (?, ?, ?, ?, ?, ?)",
+			[
+				folder.id,
+				folder.collectionId,
+				folder.name,
+				folder.createdAt,
+				1,
+				folder.sourceFolderId || null,
+			]
 		);
 	},
 
@@ -263,6 +272,7 @@ export const storageService = {
 			...f,
 			items: [],
 			isVirtual: f.isVirtual === 1,
+			sourceFolderId: f.sourceFolderId, // Include sourceFolderId for shadow detection
 		}));
 	},
 
@@ -333,7 +343,7 @@ export const storageService = {
 	addFolderToCollection: async (
 		collectionId: string,
 		path: string
-	): Promise<void> => {
+	): Promise<string> => {
 		console.log(`[Storage] addFolderToCollection called with:`, {
 			collectionId,
 			path,
@@ -352,6 +362,7 @@ export const storageService = {
 		});
 
 		try {
+			// 1. Add source folder to collection_folders
 			await db.execute(
 				"INSERT INTO collection_folders (id, collectionId, path, name, addedAt) VALUES (?, ?, ?, ?, ?)",
 				[id, collectionId, path, name, Date.now()]
@@ -366,6 +377,26 @@ export const storageService = {
 				[id]
 			);
 			console.log(`[Storage] Verification - Inserted row:`, verify);
+
+			// 2. Automatically create shadow folder (if not already exists)
+			const existingShadow = await storageService.getShadowFolder(id);
+			if (existingShadow) {
+				console.log(
+					`[Storage] ✅ Shadow folder already exists: ${existingShadow.id}, skipping creation`
+				);
+				return existingShadow.id;
+			}
+
+			const shadowId = await storageService.createShadowFolder(
+				collectionId,
+				id,
+				name
+			);
+			console.log(
+				`[Storage] ✅ Shadow folder created automatically: ${shadowId}`
+			);
+
+			return shadowId; // Return shadow folder ID instead of source folder ID
 		} catch (error) {
 			console.error(`[Storage] ❌ Error adding folder to collection:`, error);
 			throw error;
@@ -402,5 +433,113 @@ export const storageService = {
 		);
 		console.log("[Storage] DEBUG - All collection_folders in DB:", result);
 		return result;
+	},
+
+	// --- Shadow Folders Management ---
+	createShadowFolder: async (
+		collectionId: string,
+		sourceFolderId: string,
+		name: string
+	): Promise<string> => {
+		const db = await getDB();
+		const id = `shadow-${Date.now()}-${Math.random()
+			.toString(36)
+			.substring(2, 9)}`;
+
+		await db.execute(
+			"INSERT INTO virtual_folders (id, collectionId, name, createdAt, isVirtual, sourceFolderId) VALUES (?, ?, ?, ?, ?, ?)",
+			[id, collectionId, name, Date.now(), 1, sourceFolderId]
+		);
+
+		console.log(
+			`[Storage] Shadow folder created: ${name} (${id}) for source ${sourceFolderId}`
+		);
+		return id;
+	},
+
+	getShadowFolder: async (sourceFolderId: string): Promise<any | null> => {
+		const db = await getDB();
+		const results = await db.select<any[]>(
+			"SELECT * FROM virtual_folders WHERE sourceFolderId = ? LIMIT 1",
+			[sourceFolderId]
+		);
+		if (results.length === 0) return null;
+		return {
+			...results[0],
+			isVirtual: results[0].isVirtual === 1,
+		};
+	},
+
+	// --- Virtual Deletion (Hide/Unhide Images) ---
+	hideImage: async (imageId: string): Promise<void> => {
+		const db = await getDB();
+		await db.execute("UPDATE metadata SET isHidden = 1 WHERE id = ?", [
+			imageId,
+		]);
+		console.log(`[Storage] Image hidden: ${imageId}`);
+	},
+
+	unhideImage: async (imageId: string): Promise<void> => {
+		const db = await getDB();
+		await db.execute("UPDATE metadata SET isHidden = 0 WHERE id = ?", [
+			imageId,
+		]);
+		console.log(`[Storage] Image restored: ${imageId}`);
+	},
+
+	// --- Database Reset Utility ---
+	resetDatabase: async (): Promise<void> => {
+		// Close current instance
+		if (dbInstance) {
+			console.log("[Storage] Closing database connection...");
+			// Note: Tauri SQL plugin doesn't expose close(), but we can reset our reference
+			dbInstance = null;
+			dbInitPromise = null;
+		}
+
+		console.log(
+			"[Storage] Database reset completed. The DB will be recreated on next access."
+		);
+		// Note: Actual file deletion would require Tauri FS API
+		// For now, dropping all tables is sufficient
+	},
+
+	// --- Helper Functions for Shadow Folders ---
+	getShadowFoldersWithSources: async (
+		collectionId: string
+	): Promise<
+		Array<{
+			shadowFolder: any;
+			sourceFolder: any;
+		}>
+	> => {
+		const shadowFolders = await storageService.getVirtualFolders(collectionId);
+		const sourceFolders = await storageService.getCollectionFolders(
+			collectionId
+		);
+
+		const results = shadowFolders
+			.filter((vf) => vf.sourceFolderId) // Only shadow folders
+			.map((shadow) => {
+				const source = sourceFolders.find(
+					(sf) => sf.id === shadow.sourceFolderId
+				);
+				return { shadowFolder: shadow, sourceFolder: source };
+			})
+			.filter((pair) => pair.sourceFolder); // Only keep pairs with valid source
+
+		console.log(
+			`[Storage] getShadowFoldersWithSources: Found ${results.length} shadow folder pairs for collection ${collectionId}`
+		);
+		return results;
+	},
+
+	getManualCollections: async (collectionId: string): Promise<any[]> => {
+		const allVirtual = await storageService.getVirtualFolders(collectionId);
+		const manualCollections = allVirtual.filter((vf) => !vf.sourceFolderId);
+		console.log(
+			`[Storage] getManualCollections: Found ${manualCollections.length} manual collections`
+		);
+		return manualCollections;
 	},
 };

@@ -278,11 +278,29 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 	// Computed: Filter items by active folders
 	const filteredByFolder = useMemo(() => {
 		if (state.activeFolderIds.has("all")) return allItems;
+
+		// Get items from selected folders
+		const selectedFolders = state.folders.filter((f) =>
+			state.activeFolderIds.has(f.id)
+		);
+
+		// Collect item IDs that are in the selected folders
+		const itemsInSelectedFolders = new Set<string>();
+		selectedFolders.forEach((folder) => {
+			folder.items.forEach((item) => {
+				itemsInSelectedFolders.add(item.id);
+			});
+		});
+
+		// Filter items: either by virtualFolderId OR by being in folder's items array
 		return allItems.filter(
 			(item) =>
-				item.virtualFolderId && state.activeFolderIds.has(item.virtualFolderId)
+				(item.virtualFolderId &&
+					state.activeFolderIds.has(item.virtualFolderId)) ||
+				(item.folderId && state.activeFolderIds.has(item.folderId)) ||
+				itemsInSelectedFolders.has(item.id)
 		);
-	}, [allItems, state.activeFolderIds]);
+	}, [allItems, state.activeFolderIds, state.folders]);
 
 	// Computed: Apply search, tag, color filters
 	const processedItems = useMemo(() => {

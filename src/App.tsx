@@ -26,6 +26,7 @@ import { useCollections } from "./contexts/CollectionsContext";
 import { useLibrary } from "./contexts/LibraryContext";
 import { useSelection } from "./contexts/SelectionContext";
 import { useBatchAI } from "./shared/hooks";
+import { storageService } from "./services/storageService";
 
 const App: React.FC = () => {
 	// --- 0. Local State (Moved up for dependencies) ---
@@ -270,19 +271,30 @@ const App: React.FC = () => {
 
 	// Clear library and reload when collection changes
 	useEffect(() => {
-		if (!collectionsLoading) {
-			console.log("[App] Collection changed, clearing library");
-			clearLibrary();
+		const loadCollectionData = async () => {
+			if (!collectionsLoading && activeCollection) {
+				console.log("[App] Collection changed, clearing and reloading library");
+				clearLibrary();
 
-			if (activeCollection && sourceFolders.length > 0) {
-				console.log("[App] Auto-loading source folders:", sourceFolders);
-				sourceFolders.forEach((folder) => {
-					console.log("[App] Loading folder:", folder.path);
-					loadFromPath(folder.path);
+				// Load shadow folders (auto-created for each source folder)
+				const shadowPairs = await storageService.getShadowFoldersWithSources(
+					activeCollection.id
+				);
+
+				console.log(`[App] Found ${shadowPairs.length} shadow folders to load`);
+
+				// Load each shadow folder's source path
+				shadowPairs.forEach(({ shadowFolder, sourceFolder }) => {
+					console.log(
+						`[App] Loading shadow folder "${shadowFolder.name}" from source: ${sourceFolder.path}`
+					);
+					loadFromPath(sourceFolder.path);
 				});
 			}
-		}
-	}, [activeCollection?.id, collectionsLoading, sourceFolders]); // Added sourceFolders to deps
+		};
+
+		loadCollectionData();
+	}, [activeCollection?.id, collectionsLoading]); // Removed sourceFolders dependency
 
 	// ...
 

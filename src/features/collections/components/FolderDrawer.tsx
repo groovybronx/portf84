@@ -53,10 +53,16 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 	onRemoveSourceFolder,
 }) => {
 	const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
-	const virtualFolders = folders.filter((f) => f.isVirtual);
-	const physicalFolders = folders.filter((f) => !f.isVirtual);
 
-	// DEBUG: Log sourceFolders when they change
+	// Separate shadow folders (linked to source) from manual collections
+	const shadowFolders = folders.filter((f) => f.isVirtual && f.sourceFolderId);
+	const manualCollections = folders.filter(
+		(f) => f.isVirtual && !f.sourceFolderId
+	);
+
+	console.log(
+		`[FolderDrawer] Shadow folders: ${shadowFolders.length}, Manual: ${manualCollections.length}`
+	);
 
 	return (
 		<AnimatePresence>
@@ -171,75 +177,75 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 
 							<div className="h-px bg-glass-border/10" />
 
-							{/* SOURCE FOLDERS SECTION */}
-							<div
-								key={`sources-${activeCollection?.id}-${sourceFolders.length}`}
-							>
+							{/* SHADOW FOLDERS SECTION */}
+							<div>
 								<div className="flex items-center justify-between mb-2 px-2">
 									<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
 										<HardDrive size={12} />
-										<span>Dossiers Sources</span>
+										<span>Dossiers de Travail</span>
 									</p>
 									<span className="text-[10px] text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded-full">
-										{sourceFolders.length}
+										{shadowFolders.length}
 									</span>
 								</div>
 
-								{sourceFolders.length === 0 ? (
+								{shadowFolders.length === 0 ? (
 									<p className="text-xs text-gray-600 text-center py-3 italic">
-										Aucun dossier source
+										Aucun dossier de travail
 									</p>
 								) : (
 									<div className="space-y-1">
-										{sourceFolders.map((sourceFolder) => {
-											const matchingPhysical = physicalFolders.find(
-												(f) => f.path === sourceFolder.path
-											);
-											const isActive =
-												matchingPhysical &&
-												activeFolderId.has(matchingPhysical.id);
+										{shadowFolders.map((folder) => {
+											const isActive = activeFolderId.has(folder.id);
 
 											return (
 												<div
-													key={sourceFolder.id}
+													key={folder.id}
 													className={`group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
 														isActive
-															? "bg-glass-bg-active text-white"
-															: "text-gray-400 hover:bg-glass-bg-accent hover:text-white"
+															? "bg-glass-bg-active text-white border border-glass-border"
+															: "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
 													}`}
-													onClick={() =>
-														matchingPhysical &&
-														onSelectFolder(matchingPhysical.id)
-													}
+													onClick={() => onSelectFolder(folder.id)}
 												>
-													<ChevronRight
-														size={14}
-														className={
-															isActive ? "text-blue-400" : "text-gray-600"
-														}
-													/>
+													<div
+														className="shrink-0"
+														onClick={(e) => {
+															e.stopPropagation();
+															onSelectFolder(folder.id);
+														}}
+													>
+														{isActive ? (
+															<CheckCircle2
+																size={16}
+																className="text-blue-500"
+															/>
+														) : (
+															<Circle
+																size={16}
+																className="text-gray-600 group-hover:text-gray-400"
+															/>
+														)}
+													</div>
+
+													<div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-blue-500/10 border border-glass-border-light">
+														<HardDrive size={16} className="text-blue-400" />
+													</div>
+
 													<div className="flex-1 min-w-0">
-														<p className="font-medium truncate">
-															{sourceFolder.name}
-														</p>
-														<p className="text-[10px] opacity-60 truncate">
-															{sourceFolder.path}
+														<div className="flex items-center gap-2">
+															<p
+																className={`font-medium text-sm truncate ${
+																	isActive ? "text-white" : ""
+																}`}
+															>
+																{folder.name}
+															</p>
+														</div>
+														<p className="text-xs opacity-60">
+															{folder.items.length} items
 														</p>
 													</div>
-													{onRemoveSourceFolder && (
-														<Button
-															variant="ghost"
-															size="icon"
-															onClick={(e: React.MouseEvent) => {
-																e.stopPropagation();
-																onRemoveSourceFolder(sourceFolder.path);
-															}}
-															className="opacity-0 group-hover:opacity-100 h-6 w-6 text-gray-500 hover:text-red-400 hover:bg-red-500/20"
-															title="Retirer ce dossier"
-														>
-															<Trash2 size={12} />
-														</Button>
-													)}
 												</div>
 											);
 										})}
@@ -249,12 +255,12 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 
 							<div className="h-px bg-glass-border/10" />
 
-							{/* VIRTUAL FOLDERS SECTION */}
+							{/* MANUAL COLLECTIONS SECTION */}
 							<div>
 								<div className="flex items-center justify-between mb-2 px-2">
 									<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
 										<FolderHeart size={12} />
-										<span>Collections Virtuelles</span>
+										<span>Collections</span>
 									</p>
 									{activeFolderId.size > 1 && !activeFolderId.has("all") && (
 										<span className="text-blue-400 text-[10px] bg-blue-500/10 px-2 py-0.5 rounded-full">
@@ -263,13 +269,13 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 									)}
 								</div>
 
-								{virtualFolders.length === 0 ? (
+								{manualCollections.length === 0 ? (
 									<p className="text-xs text-gray-600 text-center py-3 italic">
 										Aucune collection créée
 									</p>
 								) : (
 									<div className="space-y-1">
-										{virtualFolders.map((folder) => {
+										{manualCollections.map((folder) => {
 											const isActive = activeFolderId.has(folder.id);
 
 											return (

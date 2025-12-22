@@ -102,9 +102,27 @@ L'application organise les fichiers via des "Collections" isolées :
 
 - **Collection** = Workspace indépendant (bibliothèque)
 - Chaque collection possède ses propres :
-  - **Dossiers sources** (liens vers disque)
-  - **Dossiers virtuels** (albums logiques)
+  - **Dossiers sources** (liens vers disque, lecture seule)
+  - **Shadow folders** (clones virtuels auto-créés, modifiables)
+  - **Dossiers virtuels** (albums manuels)
   - **Métadonnées** (tags AI, couleurs)
+
+#### Shadow Folders (Nouveau)
+
+Pour chaque dossier source ajouté, un **shadow folder** est automatiquement créé. Ce dossier virtuel :
+
+- Contient les mêmes items que le dossier source
+- Permet des modifications **non-destructives** (tags, déplacement, "suppression")
+- N'affecte jamais les fichiers sources originaux
+- Support la suppression virtuelle via flag `isHidden`
+
+```
+Dossier Source (/Photos/Vacances) [lecture seule]
+    ↓ auto-création
+Shadow Folder "Vacances" [modifiable]
+    → Contient copies virtuelles des items
+    → Modifications isolées
+```
 
 ### 2. Base de Données Locale (SQLite)
 
@@ -130,13 +148,14 @@ CREATE TABLE collection_folders (
   FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE CASCADE
 );
 
--- Dossiers virtuels (albums)
+-- Dossiers virtuels (albums + shadow folders)
 CREATE TABLE virtual_folders (
   id TEXT PRIMARY KEY,
   collectionId TEXT NOT NULL,
   name TEXT NOT NULL,
   createdAt INTEGER NOT NULL,
   isVirtual INTEGER DEFAULT 1,
+  sourceFolderId TEXT,  -- NEW: Lien vers source (shadow folders uniquement)
   FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE CASCADE
 );
 
@@ -150,6 +169,7 @@ CREATE TABLE metadata (
   aiTagsDetailed TEXT,   -- JSON avec confidence
   colorTag TEXT,
   manualTags TEXT,       -- JSON array
+  isHidden INTEGER DEFAULT 0,  -- NEW: Suppression virtuelle
   lastModified INTEGER NOT NULL,
   FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE SET NULL
 );
