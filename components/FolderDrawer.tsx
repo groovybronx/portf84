@@ -52,11 +52,6 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   const physicalFolders = folders.filter((f) => !f.isVirtual);
 
   // DEBUG: Log sourceFolders when they change
-  console.log("[FolderDrawer] Rendering with:", {
-    activeCollection: activeCollection?.name,
-    sourceFoldersCount: sourceFolders.length,
-    sourceFolders: sourceFolders,
-  });
 
   return (
     <AnimatePresence>
