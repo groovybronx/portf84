@@ -1,17 +1,36 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Folder, X, Trash2, Layers, Image as ImageIcon, UploadCloud, FolderPlus, CheckCircle2, Circle, FolderHeart, HardDrive } from 'lucide-react';
-import { Folder as FolderType } from '../types';
+import {
+  Folder,
+  X,
+  Trash2,
+  Layers,
+  Image as ImageIcon,
+  UploadCloud,
+  FolderPlus,
+  CheckCircle2,
+  Circle,
+  FolderHeart,
+  HardDrive,
+  Settings,
+  ChevronRight,
+} from "lucide-react";
+import { Folder as FolderType, Collection, SourceFolder } from "../types";
 
 interface FolderDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   folders: FolderType[];
-  activeFolderId: Set<string>; 
+  activeFolderId: Set<string>;
   onSelectFolder: (id: string) => void;
   onImportFolder: () => void;
   onCreateFolder: () => void;
   onDeleteFolder: (id: string) => void;
+  // NEW: Collection management
+  activeCollection: Collection | null;
+  sourceFolders: SourceFolder[];
+  onManageCollections: () => void;
+  onRemoveSourceFolder?: (path: string) => void;
 }
 
 export const FolderDrawer: React.FC<FolderDrawerProps> = ({
@@ -22,9 +41,22 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   onSelectFolder,
   onImportFolder,
   onCreateFolder,
-  onDeleteFolder
+  onDeleteFolder,
+  activeCollection,
+  sourceFolders,
+  onManageCollections,
+  onRemoveSourceFolder,
 }) => {
   const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
+  const virtualFolders = folders.filter((f) => f.isVirtual);
+  const physicalFolders = folders.filter((f) => !f.isVirtual);
+
+  // DEBUG: Log sourceFolders when they change
+  console.log("[FolderDrawer] Rendering with:", {
+    activeCollection: activeCollection?.name,
+    sourceFoldersCount: sourceFolders.length,
+    sourceFolders: sourceFolders,
+  });
 
   return (
     <AnimatePresence>
@@ -47,7 +79,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
           >
-            <div className="flex items-center justify-between mb-8">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <Layers className="text-blue-500" /> Library
               </h2>
@@ -59,7 +92,45 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+            {/* Active Collection Banner */}
+            {activeCollection && (
+              <div className="mb-4 p-3 bg-blue-600/10 border border-blue-500/30 rounded-xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-xs text-blue-400 font-medium uppercase tracking-wide">
+                      Collection Active
+                    </p>
+                    <p className="text-sm text-white font-semibold truncate">
+                      {activeCollection.name}
+                    </p>
+                  </div>
+                  <button
+                    onClick={onManageCollections}
+                    className="p-2 hover:bg-blue-500/20 rounded-lg text-blue-400 hover:text-blue-300 transition-colors"
+                    title="Gérer les Collections"
+                  >
+                    <Settings size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* No Collection State */}
+            {!activeCollection && (
+              <div className="mb-4 p-4 bg-yellow-600/10 border border-yellow-500/30 rounded-xl text-center">
+                <p className="text-xs text-yellow-400 mb-2">
+                  Aucune Collection active
+                </p>
+                <button
+                  onClick={onManageCollections}
+                  className="text-sm text-yellow-300 hover:text-yellow-200 underline"
+                >
+                  Créer ou sélectionner une Collection
+                </button>
+              </div>
+            )}
+
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               {/* All Photos Option */}
               <button
                 onClick={() => onSelectFolder("all")}
@@ -79,10 +150,9 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                   <ImageIcon size={20} />
                 </div>
                 <div className="flex-1 text-left">
-                  <p className="font-medium text-sm">All Photos</p>
+                  <p className="font-medium text-sm">Toutes les Photos</p>
                   <p className="text-xs opacity-60">{totalItems} items</p>
                 </div>
-                {/* Visual Indicator */}
                 {activeFolderId.has("all") ? (
                   <CheckCircle2 size={18} className="text-blue-500" />
                 ) : (
@@ -93,123 +163,194 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                 )}
               </button>
 
-              <div className="h-px bg-glass-border/10 my-4" />
-              <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-2 px-2 flex justify-between items-center">
-                <span>Collections</span>
-                {activeFolderId.size > 1 && !activeFolderId.has("all") && (
-                  <span className="text-blue-400 text-[10px] bg-blue-500/10 px-2 py-0.5 rounded-full">
-                    {activeFolderId.size} Selected
+              <div className="h-px bg-glass-border/10" />
+
+              {/* SOURCE FOLDERS SECTION */}
+              <div
+                key={`sources-${activeCollection?.id}-${sourceFolders.length}`}
+              >
+                <div className="flex items-center justify-between mb-2 px-2">
+                  <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+                    <HardDrive size={12} />
+                    <span>Dossiers Sources</span>
+                  </p>
+                  <span className="text-[10px] text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded-full">
+                    {sourceFolders.length}
                   </span>
-                )}
-              </p>
+                </div>
 
-              {/* Folder List */}
-              {folders.map((folder) => {
-                const isActive = activeFolderId.has(folder.id);
-                const isVirtual = folder.isVirtual;
+                {sourceFolders.length === 0 ? (
+                  <p className="text-xs text-gray-600 text-center py-3 italic">
+                    Aucun dossier source
+                  </p>
+                ) : (
+                  <div className="space-y-1">
+                    {sourceFolders.map((sourceFolder) => {
+                      const matchingPhysical = physicalFolders.find(
+                        (f) => f.path === sourceFolder.path
+                      );
+                      const isActive =
+                        matchingPhysical &&
+                        activeFolderId.has(matchingPhysical.id);
 
-                return (
-                  <div
-                    key={folder.id}
-                    className={`group relative flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${
-                      isActive
-                        ? "bg-glass-bg-active text-white border-glass-border"
-                        : "text-gray-400 hover:bg-glass-bg-accent hover:text-white border-transparent"
-                    }`}
-                    onClick={() => onSelectFolder(folder.id)}
-                  >
-                    {/* Checkbox (Visual Selection) */}
-                    <div
-                      className="shrink-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectFolder(folder.id);
-                      }}
-                    >
-                      {isActive ? (
-                        <CheckCircle2 size={18} className="text-blue-500" />
-                      ) : (
-                        <Circle
-                          size={18}
-                          className="text-gray-600 group-hover:text-gray-400"
-                        />
-                      )}
-                    </div>
-
-                    {/* Folder Icon / Preview */}
-                    <div
-                      className={`w-10 h-10 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light ${
-                        isVirtual ? "bg-purple-500/10" : "bg-black"
-                      }`}
-                    >
-                      {folder.items.length > 0 && !isVirtual ? (
-                        <img
-                          src={folder.items[0].url}
-                          className="w-full h-full object-cover"
-                          alt=""
-                        />
-                      ) : // Icon logic: Virtual gets a special folder icon, Physical gets HardDrive or normal folder
-                      isVirtual ? (
-                        <FolderHeart size={20} className="text-purple-400" />
-                      ) : (
-                        <HardDrive size={20} className="text-blue-400" />
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p
-                          className={`font-medium text-sm truncate ${
-                            isActive ? "text-white" : ""
+                      return (
+                        <div
+                          key={sourceFolder.id}
+                          className={`group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
+                            isActive
+                              ? "bg-glass-bg-active text-white"
+                              : "text-gray-400 hover:bg-glass-bg-accent hover:text-white"
                           }`}
+                          onClick={() =>
+                            matchingPhysical &&
+                            onSelectFolder(matchingPhysical.id)
+                          }
                         >
-                          {folder.name}
-                        </p>
-                        {isVirtual && (
-                          <span
-                            className="w-1.5 h-1.5 rounded-full bg-purple-500"
-                            title="Virtual Collection"
-                          ></span>
-                        )}
-                      </div>
-                      <p className="text-xs opacity-60">
-                        {folder.items.length} items
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteFolder(folder.id);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-all"
-                      title={isVirtual ? "Delete Collection" : "Remove Folder"}
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                          <ChevronRight
+                            size={14}
+                            className={
+                              isActive ? "text-blue-400" : "text-gray-600"
+                            }
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">
+                              {sourceFolder.name}
+                            </p>
+                            <p className="text-[10px] opacity-60 truncate">
+                              {sourceFolder.path}
+                            </p>
+                          </div>
+                          {onRemoveSourceFolder && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onRemoveSourceFolder(sourceFolder.path);
+                              }}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-500/20 hover:text-red-400 rounded transition-all"
+                              title="Retirer ce dossier"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
+                )}
+              </div>
 
-              {folders.length === 0 && (
-                <p className="text-sm text-gray-500 text-center py-4 italic">
-                  No collections created yet.
-                </p>
-              )}
+              <div className="h-px bg-glass-border/10" />
+
+              {/* VIRTUAL FOLDERS SECTION */}
+              <div>
+                <div className="flex items-center justify-between mb-2 px-2">
+                  <p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+                    <FolderHeart size={12} />
+                    <span>Collections Virtuelles</span>
+                  </p>
+                  {activeFolderId.size > 1 && !activeFolderId.has("all") && (
+                    <span className="text-blue-400 text-[10px] bg-blue-500/10 px-2 py-0.5 rounded-full">
+                      {activeFolderId.size} Sélectionnées
+                    </span>
+                  )}
+                </div>
+
+                {virtualFolders.length === 0 ? (
+                  <p className="text-xs text-gray-600 text-center py-3 italic">
+                    Aucune collection créée
+                  </p>
+                ) : (
+                  <div className="space-y-1">
+                    {virtualFolders.map((folder) => {
+                      const isActive = activeFolderId.has(folder.id);
+
+                      return (
+                        <div
+                          key={folder.id}
+                          className={`group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all ${
+                            isActive
+                              ? "bg-glass-bg-active text-white border border-glass-border"
+                              : "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
+                          }`}
+                          onClick={() => onSelectFolder(folder.id)}
+                        >
+                          <div
+                            className="shrink-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectFolder(folder.id);
+                            }}
+                          >
+                            {isActive ? (
+                              <CheckCircle2
+                                size={16}
+                                className="text-blue-500"
+                              />
+                            ) : (
+                              <Circle
+                                size={16}
+                                className="text-gray-600 group-hover:text-gray-400"
+                              />
+                            )}
+                          </div>
+
+                          <div
+                            className={`w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-purple-500/10 border border-glass-border-light`}
+                          >
+                            <FolderHeart
+                              size={16}
+                              className="text-purple-400"
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p
+                                className={`font-medium text-sm truncate ${
+                                  isActive ? "text-white" : ""
+                                }`}
+                              >
+                                {folder.name}
+                              </p>
+                            </div>
+                            <p className="text-xs opacity-60">
+                              {folder.items.length} items
+                            </p>
+                          </div>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteFolder(folder.id);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-all"
+                            title="Supprimer cette collection"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
+            {/* Action Buttons */}
             <div className="mt-4 pt-4 border-t border-glass-border/10 space-y-2">
               <button
                 onClick={onImportFolder}
-                className="w-full py-3 border border-dashed border-glass-border/20 rounded-xl text-gray-400 hover:text-white hover:border-blue-500 hover:bg-blue-500/5 transition-all flex items-center justify-center gap-2 text-sm font-medium"
+                disabled={!activeCollection}
+                className="w-full py-3 border border-dashed border-glass-border/20 rounded-xl text-gray-400 hover:text-white hover:border-blue-500 hover:bg-blue-500/5 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm font-medium"
               >
-                <UploadCloud size={16} /> Import from Disk
+                <UploadCloud size={16} /> Ajouter un Dossier Source
               </button>
               <button
                 onClick={onCreateFolder}
-                className="w-full py-3 bg-glass-bg-accent rounded-xl text-gray-300 hover:text-white hover:bg-glass-bg-active transition-all flex items-center justify-center gap-2 text-sm font-medium"
+                disabled={!activeCollection}
+                className="w-full py-3 bg-glass-bg-accent rounded-xl text-gray-300 hover:text-white hover:bg-glass-bg-active disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm font-medium"
               >
-                <FolderPlus size={16} /> Create Collection
+                <FolderPlus size={16} /> Nouvelle Collection Virtuelle
               </button>
             </div>
           </motion.div>

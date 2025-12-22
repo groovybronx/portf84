@@ -2,97 +2,174 @@
 
 L'interface repose sur une séparation stricte entre les composants de présentation ("Dumb Components") et le conteneur logique (`App.tsx`).
 
+## Architecture Générale
+
+```
+components/
+├── PhotoGrid.tsx       # Vue grille avec masonry
+├── PhotoCarousel.tsx   # Vue carrousel 3D
+├── PhotoList.tsx       # Vue liste détaillée
+├── PhotoCard.tsx       # Vignette interactive (flip)
+├── ImageViewer.tsx     # Plein écran + métadonnées
+├── TopBar.tsx          # Barre d'outils principale
+├── FolderDrawer.tsx    # Panneau latéral navigation
+├── ContextMenu.tsx     # Menu clic-droit
+├── TagManager.tsx      # Gestion tags manuels
+├── AddTagModal.tsx     # Modal ajout tags
+├── SettingsModal.tsx   # Configuration API key
+└── topbar/             # Sous-composants TopBar
+```
+
+---
+
 ## 1. PhotoGrid (Mode Grille)
+
 Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
 
-- **Architecture : Maçonnerie Distribuée (JS-Distributed Masonry)**
-  - *Problème du CSS pur (`column-count`)* : Il remplit les colonnes verticalement (A, B, C sont l'un sous l'autre), ce qui casse l'ordre chronologique visuel.
-  - *Solution* : Le composant utilise un algorithme JavaScript pour distribuer les items dans les colonnes une par une (Item 1 -> Col 1, Item 2 -> Col 2...).
-  - **Résultat** : On conserve l'imbrication verticale compacte ("Masonry") tout en gardant un ordre de lecture visuel horizontal de gauche à droite.
+### Architecture : Maçonnerie Distribuée (JS-Distributed Masonry)
 
-- **PhotoCard (Vignette Interactive)**
-  - Chaque image est encapsulée dans une `PhotoCard` gérant son propre état 3D.
-  - **Flip Animation** : Utilise `framer-motion` pour un retournement à 180° révélant les métadonnées au verso.
-  - **Optimisation 3D** : Utilisation de `preserve-3d` et `backface-visibility` pour des performances fluides.
+- *Problème du CSS pur (`column-count`)* : Il remplit les colonnes verticalement, ce qui casse l'ordre chronologique.
+- *Solution* : Algorithme JavaScript pour distribuer les items horizontalement (Item 1 → Col 1, Item 2 → Col 2...).
 
-- **Interaction Clavier & Souris**
-  - **Clic Simple** : Sélectionne / Focus l'image.
-  - **Barre d'Espace** : Ouvre l'image en plein écran (replaces 'Entrée').
-  - **Info Button** : Déclenche le retournement (flip) de la carte pour voir les infos.
-  - **Mode Sélection** : En mode sélection, le clic simple ajoute/retire l'image de la sélection.
+### PhotoCard (Vignette Interactive)
 
-- **Feature Clé : Slider de Colonnes**
-  - Le slider dans la `TopBar` contrôle dynamiquement le nombre de tableaux de colonnes générés par le script.
-  - **Logique Inversée** : 
-    - Slider à Gauche = Max Colonnes (8) = Petites vignettes.
-    - Slider à Droite = Min Colonnes (2) = Grandes vignettes.
+- **Flip Animation** : `framer-motion` pour un retournement à 180° révélant les métadonnées.
+- **Optimisation 3D** : `preserve-3d` et `backface-visibility` pour performances fluides.
+
+### Slider de Colonnes
+
+| Position Slider | Colonnes | Résultat |
+|-----------------|----------|----------|
+| Gauche | 8 | Petites vignettes |
+| Droite | 2 | Grandes vignettes |
+
+---
 
 ## 2. TopBar
-La barre d'outils principale, repensée pour gérer les problèmes de superposition (z-index) et de responsivité.
 
-- **Architecture Layout (3 Zones)** :
-  1.  **Zone Gauche (Fixe)** : Boutons d'épingle, de Bibliothèque et **Paramètres**. Ne scrolle jamais.
-  2.  **Zone Centrale (Scrollable)** : Contient la **Smart Search (Recherche Intelligente)** avec autosuggestion, les filtres couleurs et les curseurs.
-  3.  **Zone Droite (Fixe)** : Contient le sélecteur de Vue (Grid/Flow) et **sorti du flux** scrollable : les Dropdowns (Tri, Sélection).
+La barre d'outils principale avec trois zones distinctes :
 
-- **Correction UX** : Les menus déroulants (Sort) ont été déplacés hors du conteneur `overflow-x-auto`.
-- **Smart Search** : Remplace l'ancien menu "Tags". Intègre une barre de recherche unifiée qui propose les tags disponibles (AI + Manuels) en autosuggestion.
+| Zone | Contenu | Comportement |
+|------|---------|--------------|
+| **Gauche** | Bibliothèque, Paramètres | Fixe |
+| **Centre** | Recherche, Filtres couleurs, Curseurs | Scrollable |
+| **Droite** | Sélecteur Vue, Dropdowns | Fixe |
+
+### Smart Search
+
+Remplace l'ancien menu "Tags". Barre de recherche unifiée avec autosuggestion basée sur :
+- Tags AI
+- Tags manuels
+- Noms de fichiers
+
+---
 
 ## 3. FolderDrawer (Gestionnaire de Dossiers)
-Le panneau latéral coulissant pour la navigation.
 
-- **Distinction Visuelle** :
-  - **Dossiers Physiques** : Icône Disque Dur Bleu (`HardDrive`). Représente un dossier réel sur le disque.
-  - **Collections Virtuelles** : Icône Dossier Violet avec Cœur/Étoile (`FolderHeart`). Représente un regroupement logique créé dans l'app.
-- **Fonctionnalités** :
-  - Importation depuis le disque.
-  - Création de collections.
-  - Suppression (Unlink pour physique, Delete pour virtuel).
+Panneau latéral coulissant pour la navigation.
+
+### Sélection de Dossier
+
+Utilise `@tauri-apps/plugin-dialog` pour le sélecteur natif :
+
+```typescript
+import { open } from "@tauri-apps/plugin-dialog";
+
+const selected = await open({
+  directory: true,
+  multiple: false,
+  title: "Select Photo Folder",
+});
+```
+
+### Distinction Visuelle
+
+| Type | Icône | Description |
+|------|-------|-------------|
+| **Physique** | 💾 HardDrive (Bleu) | Dossier réel sur disque |
+| **Virtuel** | 💜 FolderHeart | Collection logique créée dans l'app |
+
+---
 
 ## 4. PhotoCarousel (Mode Flow 3D)
-Un carrousel circulaire haute performance optimisé pour maintenir 60fps même avec des images haute résolution.
 
-- **Optimisations Critiques (v2)** :
-  - **Background Statique** : Remplacement de l'image de fond dynamique par un dégradé fixe.
-  - **Virtualisation Stricte** : Seules les images visibles (définies par `VISIBLE_RANGE`) sont rendues.
-  - **Accélération Matérielle** : Utilisation de `will-change: transform, opacity`.
+Carrousel circulaire haute performance optimisé pour 60fps.
+
+### Optimisations
+
+- **Background Statique** : Dégradé fixe au lieu d'image dynamique
+- **Virtualisation Stricte** : Seules les images visibles (`VISIBLE_RANGE`) sont rendues
+- **Accélération Matérielle** : `will-change: transform, opacity`
+
+---
 
 ## 5. ImageViewer (Plein Écran)
-Le visualiseur modal pour une inspection détaillée.
-- Navigation clavier (Flèches).
-- Lecture des métadonnées EXIF (via `exif-js`).
-- **TagManager intégré** : Ajout/Suppression rapide de tags manuels directement sous l'analyse AI.
-- Déclenchement de l'analyse AI.
-- Affichage des tags couleurs et modification en direct.
 
-## 6. ControlBar (Barre Flottante Basse)
-Barre d'actions contextuelles.
-- **Mode Normal** : Affiche les onglets de vue (Grid, Flow, Detail).
-- **Mode Sélection** : Affiche les actions de masse (Déplacer, Partager, Annuler).
+Visualiseur modal pour inspection détaillée.
 
-## 7. ContextMenu (Clic-Droit)
-Menu contextuel personnalisé.
-- Portal ou positionnement fixe (`fixed`) basé sur les coordonnées `clientX/Y`.
-- Actions : Analyse AI, **Add Tags** (Multi-sélection), Tag Couleur, **Move to Collection** (Déplacement physique ou virtuel), Suppression.
-- **Intelligence Contextuelle** : Si on clique-droit sur un item non sélectionné, il devient l'unique sélection avant d'ouvrir l'action demandée.
+### Fonctionnalités
 
-## 8. TagManager & Autosuggestion
-Nouveau composant dédié à la gestion des tags manuels.
-- **Autosuggestion** : Propose les tags existants (`availableTags`) lors de la saisie.
-- **Persistance** : Sauvegarde immédiate dans IndexedDB via `storageService`.
-- **Contextes d'utilisation** :
-  - *Sidebar ImageViewer* : Pour l'image active.
-  - *AddTagModal* : Pour le taguage par lot via clic-droit.
+- Navigation clavier (Flèches Gauche/Droite)
+- Lecture métadonnées EXIF (via `exif-js`)
+- **TagManager intégré** : Ajout/Suppression rapide de tags
+- Déclenchement analyse AI
+- Tags couleurs modifiables
 
-## 9. SettingsModal (Paramètres)
+---
+
+## 6. ContextMenu (Clic-Droit)
+
+Menu contextuel personnalisé avec positionnement `fixed`.
+
+### Actions Disponibles
+
+| Action | Description |
+|--------|-------------|
+| **Analyze (AI)** | Lance l'analyse Gemini |
+| **Add Tags** | Ouvre modal taguage |
+| **Move to Collection** | Déplace vers dossier virtuel |
+| **Color Tag** | Applique couleur (1-6) |
+| **Delete** | Suppression logique |
+
+### Intelligence Contextuelle
+
+Si on clique-droit sur un item non sélectionné, il devient l'unique sélection avant d'exécuter l'action.
+
+---
+
+## 7. TagManager & Autosuggestion
+
+Composant dédié à la gestion des tags manuels.
+
+- **Autosuggestion** : Propose les tags existants lors de la saisie
+- **Persistance** : Sauvegarde immédiate dans SQLite
+- **Contextes** : ImageViewer sidebar, AddTagModal (batch)
+
+---
+
+## 8. SettingsModal (Paramètres)
+
 Modale de configuration globale.
-- **Accès** : Via l'icône "Roue crantée" dans la TopBar (Zone Gauche).
-- **Fonction** : Permet de définir la **Clé API Gemini**.
-- **Sécurité** : La clé est sauvegardée dans le `localStorage` du navigateur.
 
-## 10. PhotoCard BackFace (Fiche Métadonnées)
-La face arrière de la vignette interactive affiche les informations structurées :
-- **Nom & Color Tag** : Identification rapide.
-- **Description IA** : Synthèse textuelle de l'analyse visuelle.
-- **Tags Interactifs** : Tags manuels et AI cliquables pour déclencher un filtrage instantané.
-- **Infos Techniques** : Format, taille et résolution en bas de fiche.
+- **Accès** : Icône "Roue crantée" dans la TopBar
+- **Fonction** : Définir la **Clé API Gemini**
+- **Persistance** : `localStorage` (survit aux sessions)
+
+---
+
+## 9. URLs d'Images
+
+Les images locales utilisent le protocol `asset://` de Tauri :
+
+```typescript
+import { convertFileSrc } from "@tauri-apps/api/core";
+
+// Chemin local → URL asset
+const url = convertFileSrc("/Users/john/photo.jpg");
+// → "asset://localhost/Users/john/photo.jpg"
+```
+
+Cette approche :
+- Évite le chargement en mémoire (streaming natif)
+- Respecte les permissions Tauri ACL
+- Fonctionne offline sans serveur

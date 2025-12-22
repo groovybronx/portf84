@@ -5,10 +5,14 @@ import { scanDirectory } from "../utils/fileHelpers";
 export const libraryLoader = {
   /**
    * Scans a directory handle and merges it with stored metadata and virtual folders.
+   * @param basePath - The filesystem path to scan
+   * @param storedVirtualFolders - Virtual folders from the active collection
+   * @param collectionId - The active collection ID (required for proper isolation)
    */
   loadAndMerge: async (
     basePath: string,
-    storedVirtualFolders: Folder[]
+    storedVirtualFolders: Folder[],
+    collectionId: string // NEW: Required for collection isolation
   ): Promise<{
     foldersToAdd: Folder[];
     virtualFoldersMap: Map<string, PortfolioItem[]>;
@@ -32,7 +36,10 @@ export const libraryLoader = {
     console.log(
       `[LibraryLoader] Fetching metadata for ${allFilePaths.length} items...`
     );
-    const metaMap = await storageService.getMetadataBatch(allFilePaths);
+    const metaMap = await storageService.getMetadataBatch(
+      allFilePaths,
+      collectionId
+    );
     console.log(
       `[LibraryLoader] Metadata fetched: ${metaMap.size} entries found in DB.`
     );
@@ -47,21 +54,27 @@ export const libraryLoader = {
       if (meta) {
         const hydrated = {
           ...item,
+          collectionId, // NEW: Assign collection ID to all items
           aiDescription: meta.aiDescription,
           aiTags: meta.aiTags,
           aiTagsDetailed: meta.aiTagsDetailed,
           colorTag: meta.colorTag,
           manualTags: meta.manualTags,
-          folderId: meta.folderId || item.folderId, // Prefer saved folderId
+          virtualFolderId: meta.virtualFolderId || meta.folderId, // Prefer virtualFolderId
+          folderId: meta.virtualFolderId || meta.folderId, // Backward compat
         };
 
         // If the item belongs to a known virtual folder, return that ID
-        if (hydrated.folderId && virtualFolderIds.has(hydrated.folderId)) {
-          return { item: hydrated, targetFolderId: hydrated.folderId };
+        if (
+          hydrated.virtualFolderId &&
+          virtualFolderIds.has(hydrated.virtualFolderId)
+        ) {
+          return { item: hydrated, targetFolderId: hydrated.virtualFolderId };
         }
         return { item: hydrated, targetFolderId: null };
       }
-      return { item, targetFolderId: null };
+      // No metadata: still assign collectionId
+      return { item: { ...item, collectionId }, targetFolderId: null };
     };
 
     // 3. Distribute Items
@@ -94,7 +107,8 @@ export const libraryLoader = {
           items: remainingItems,
           createdAt: Date.now(),
           isVirtual: false,
-          path: basePath, // Store base path to allow removal later
+          path: basePath,
+          collectionId, // NEW: Assign collection ID to folder
         });
       }
     });
@@ -126,6 +140,7 @@ export const libraryLoader = {
         createdAt: Date.now(),
         isVirtual: false,
         path: basePath,
+        collectionId, // NEW: Assign collection ID to folder
       });
     }
 

@@ -1,41 +1,96 @@
 # Lumina Portfolio - Documentation Technique
 
-Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance "Local-First" construite avec React, TypeScript et Tailwind CSS, intégrant l'intelligence artificielle Google Gemini.
+Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
+
+## Stack Technologique
+
+| Technologie | Version | Rôle |
+|-------------|---------|------|
+| **React** | 19.x | Framework UI |
+| **Tailwind CSS** | 4.x | Styling (@theme syntax) |
+| **Tauri** | 2.x | Runtime natif |
+| **SQLite** | via plugin | Persistance locale |
+| **Framer Motion** | 12.x | Animations |
+| **Gemini AI** | @google/genai | Analyse d'images |
+| **Vitest** | 4.x | Tests unitaires |
+
+---
 
 ## Sommaire
 
 1. [Architecture & Données](ARCHITECTURE.md)
-   - Structure globale
-   - Modèle de données (Types)
-   - Gestion de la mémoire (Object URLs)
+   - Stack technologique Tauri v2
+   - Base de données SQLite
+   - Asset Protocol & permissions
+   - Déploiement & CI/CD
    
 2. [Composants UI & UX](COMPONENTS.md)
    - Système de vues (Grid, Flow, List)
-   - Moteur d'animation (Framer Motion)
-   - Logique du Slider et de la Navigation
+   - Dialog natif Tauri
+   - Moteur d'animation
    
 3. [Service AI (Gemini)](AI_SERVICE.md)
    - Intégration de l'API
    - Ingénierie du Prompt
-   - Traitement des images
+   - Batch processing
    
 4. [Interactions & Raccourcis](INTERACTIONS.md)
    - Gestion du clavier
    - Système de tagging couleur
    - Drag & Drop
 
+---
+
 ## Installation Rapide
 
-L'application utilise une structure sans build-step complexe (via Import Maps), mais les dépendances sont standards :
+### Prérequis
 
-- **React 19**: Framework UI
-- **Tailwind CSS v4**: Styling (via `@tailwindcss/vite` plugin)
-- **Framer Motion**: Animations
-- **Google GenAI SDK**: (`@google/genai`) Analyse d'images
-- **Vitest**: Tests Unitaires
+- **Node.js** (LTS recommandé)
+- **Rust** (stable toolchain)
+- **macOS** 10.15+ (pour le build natif)
+
+### Développement
+
+```bash
+# Installer les dépendances
+npm install
+
+# Lancer en mode développement (Frontend + Tauri)
+npm run tauri:dev
+
+# Lancer uniquement le frontend (web)
+npm run dev
+```
+
+### Build Production
+
+```bash
+# Générer l'application native (.dmg pour macOS)
+npm run tauri:build
+```
+
+---
 
 ## Conventions de Code
 
-- **State Lifting**: L'état global est centralisé dans `App.tsx` pour orchestrer les vues.
-- **Glassmorphism**: Utilisation intensive de `backdrop-blur` et de couleurs semi-transparentes (`bg-white/5`).
-- **Performance**: Utilisation de `useMemo` pour les tris/filtres lourds et nettoyage des `URL.createObjectURL`.
+| Convention | Description |
+|------------|-------------|
+| **Hooks-based** | État global dans `App.tsx` via hooks custom |
+| **Glassmorphism** | `backdrop-blur` + couleurs semi-transparentes |
+| **Performance** | `useMemo` pour tris/filtres, lazy loading images |
+| **Persistance** | SQLite via `@tauri-apps/plugin-sql` |
+
+---
+
+## Configuration
+
+### Clé API Gemini
+
+Deux méthodes :
+
+1. **Via l'interface** : Settings → Entrer la clé
+2. **Via environnement** : Créer `.env.local` avec `VITE_GEMINI_API_KEY=your_key`
+
+### Tauri Capabilities
+
+Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir [ARCHITECTURE.md](ARCHITECTURE.md) pour les détails.

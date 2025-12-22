@@ -1,16 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { UploadZone } from './components/UploadZone';
-import { TopBar } from './components/TopBar';
-import { PhotoGrid } from './components/PhotoGrid';
-import { PhotoCarousel } from './components/PhotoCarousel';
-import { PhotoList } from './components/PhotoList';
-import { ImageViewer } from './components/ImageViewer';
-import { FolderDrawer } from './components/FolderDrawer';
-import { ContextMenu } from './components/ContextMenu';
-import { CreateFolderModal, MoveToFolderModal } from './components/ActionModals';
+import React, { useState, useRef, useEffect } from "react";
+import { TopBar } from "./components/TopBar";
+import { PhotoGrid } from "./components/PhotoGrid";
+import { PhotoCarousel } from "./components/PhotoCarousel";
+import { PhotoList } from "./components/PhotoList";
+import { ImageViewer } from "./components/ImageViewer";
+import { FolderDrawer } from "./components/FolderDrawer";
+import { ContextMenu } from "./components/ContextMenu";
+import {
+  CreateFolderModal,
+  MoveToFolderModal,
+} from "./components/ActionModals";
 import { AddTagModal } from "./components/AddTagModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { UnifiedProgress } from "./components/UnifiedProgress";
+import { EmptyState } from "./components/EmptyState";
+import { CollectionManager } from "./components/CollectionManager";
 import { open } from "@tauri-apps/plugin-dialog";
 
 import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./types";
@@ -18,6 +22,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { analyzeImage } from "./services/geminiService";
 
 // Hooks
+import { useCollections } from "./hooks/useCollections";
 import { useLibrary } from "./hooks/useLibrary";
 import { useViewOptions } from "./hooks/useViewOptions";
 import { useSelection } from "./hooks/useSelection";
@@ -30,22 +35,32 @@ const App: React.FC = () => {
   const [hoveredItem, setHoveredItem] = useState<PortfolioItem | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // --- 1. Library & Data Layer ---
+  // --- 1. Collections Layer (NEW) ---
+  const {
+    collections,
+    activeCollection,
+    sourceFolders,
+    isLoading: collectionsLoading,
+    createCollection,
+    switchCollection,
+    deleteCollection,
+    addSourceFolder,
+    removeSourceFolder,
+  } = useCollections();
+
+  // --- 2. Library & Data Layer ---
   const {
     folders,
     activeFolderIds,
-    hasStoredSession,
     loadFromPath,
-    restoreSession,
-
-    setLibraryRoot,
     importFiles,
     updateItem: libraryUpdateItem,
-    createFolder,
+    createFolder: createVirtualFolder,
     deleteFolder,
     toggleFolderSelection,
     moveItemsToFolder,
-  } = useLibrary();
+    clearLibrary,
+  } = useLibrary(activeCollection?.id ?? null); // Pass collection ID for isolation
 
   // Wrapper to keep selectedItem in sync with library updates
   const updateItem = (item: PortfolioItem) => {
@@ -101,6 +116,7 @@ const App: React.FC = () => {
   const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
 
   // Context Menu
   const [contextMenu, setContextMenu] = useState<{
@@ -159,12 +175,22 @@ const App: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedItem, selectionMode, selectedIds, focusedId, hoveredItem]);
 
-  // Auto-restore session when detected
+  // Clear library and reload when collection changes
   useEffect(() => {
-    if (hasStoredSession && folders.length === 0) {
-      restoreSession();
+    if (!collectionsLoading) {
+      console.log("[App] Collection changed, clearing library");
+      clearLibrary();
+
+      if (activeCollection && sourceFolders.length > 0) {
+        console.log("[App] Auto-loading source folders:", sourceFolders);
+        sourceFolders.forEach((folder) => {
+          console.log("[App] Loading folder:", folder.path);
+          loadFromPath(folder.path);
+        });
+      }
     }
-  }, [hasStoredSession, folders.length]);
+  }, [activeCollection?.id, collectionsLoading]);
+  // ^ Only watch activeCollection.id - sourceFolders is fetched by useCollections
 
   // Apply color to Focused/Selected items
   const applyColorTagToSelection = (color: string | undefined) => {
@@ -189,28 +215,20 @@ const App: React.FC = () => {
 
   const handleDirectoryPicker = async () => {
     try {
-      const selected = await open({
-        directory: true,
-        multiple: false,
-        title: "Select Photo Folder",
-      });
-      if (selected && typeof selected === "string") {
-        await loadFromPath(selected);
+      if (!activeCollection) {
+        alert("Veuillez d'abord créer ou sélectionner une Collection");
+        setIsCollectionManagerOpen(true);
+        return;
       }
-    } catch (e) {
-      console.log("Cancelled", e);
-    }
-  };
 
-  const handleSetRoot = async () => {
-    try {
       const selected = await open({
         directory: true,
         multiple: false,
-        title: "Select Root Library Folder",
+        title: "Sélectionner un Dossier Source",
       });
       if (selected && typeof selected === "string") {
-        await setLibraryRoot(selected);
+        await addSourceFolder(selected);
+        await loadFromPath(selected);
       }
     } catch (e) {
       console.log("Cancelled", e);
@@ -235,7 +253,8 @@ const App: React.FC = () => {
   };
 
   const handleCreateAndMove = (name: string) => {
-    const newId = createFolder(name);
+    if (!activeCollection) return;
+    const newId = createVirtualFolder(name);
     moveItemsToFolder(selectedIds, newId, currentItems);
     clearSelection();
     setIsMoveModalOpen(false);
@@ -370,149 +389,177 @@ const App: React.FC = () => {
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none z-(--z-base) bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
 
-      {folders.length === 0 ? (
-        <UploadZone
-          onFilesSelected={importFiles}
-          onDirectoryPicker={handleDirectoryPicker}
-          onSetRoot={handleSetRoot}
-          hasStoredSession={hasStoredSession}
-          onRestoreSession={restoreSession}
+      {/* TopBar - Always visible */}
+      <div className="top-bar-area relative z-(--z-topbar)">
+        <TopBar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          sortOption={sortOption}
+          sortDirection={sortDirection}
+          onSortChange={setSortOption}
+          onSortDirectionChange={() =>
+            setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
+          }
+          selectedTag={selectedTag}
+          availableTags={availableTags}
+          onTagSelect={setSelectedTag}
+          selectionMode={selectionMode}
+          onToggleSelectionMode={() => {
+            if (selectionMode) clearSelection();
+            else setSelectionMode(true);
+          }}
+          showColorTags={true}
+          onToggleColorTags={() => {}}
+          activeColorFilter={activeColorFilter}
+          onColorAction={handleTopBarColorAction}
+          currentViewMode={viewMode}
+          onModeChange={setViewMode}
+          gridColumns={gridColumns}
+          onGridColumnsChange={setGridColumns}
+          folderName={activeFolderName}
+          onOpenFolders={() => setIsFolderDrawerOpen(true)}
+          selectedCount={selectedIds.size}
+          onMoveSelected={() => setIsMoveModalOpen(true)}
+          onShareSelected={async () => {
+            /* Share Logic */
+          }}
+          onRunBatchAI={handleRunBatchAI}
+          isBatchAIProcessing={isBatchProcessing}
+          batchAIProgress={batchProgress}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
-      ) : (
-        <>
-          <div className="top-bar-area relative z-(--z-topbar)">
-            <TopBar
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              sortOption={sortOption}
-              sortDirection={sortDirection}
-              onSortChange={setSortOption}
-              onSortDirectionChange={() =>
-                setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
+      </div>
+
+      {/* Folder Drawer - Updated with Collection support */}
+      <div className="drawer-area relative z-(--z-drawer-overlay)">
+        <FolderDrawer
+          isOpen={isFolderDrawerOpen}
+          onClose={() => setIsFolderDrawerOpen(false)}
+          folders={folders}
+          activeFolderId={activeFolderIds}
+          onSelectFolder={toggleFolderSelection}
+          onImportFolder={handleDirectoryPicker} // SAME as EmptyState button
+          onCreateFolder={() => setIsCreateFolderModalOpen(true)}
+          onDeleteFolder={deleteFolder}
+          activeCollection={activeCollection}
+          sourceFolders={sourceFolders}
+          onManageCollections={() => setIsCollectionManagerOpen(true)}
+          onRemoveSourceFolder={async (path) => {
+            await removeSourceFolder(path);
+            // Optionally reload library here
+          }}
+        />
+      </div>
+
+      {/* Main Content Area - EmptyState or View */}
+      <main className="relative z-(--z-grid-item)">
+        {!activeCollection ? (
+          <EmptyState
+            title="Aucune Collection Active"
+            description="Créez une Collection pour commencer à organiser vos images"
+            onAction={() => setIsCollectionManagerOpen(true)}
+            actionLabel="Créer une Collection"
+          />
+        ) : currentItems.length === 0 ? (
+          <EmptyState
+            title="Collection Vide"
+            description="Ajoutez des dossiers sources ou importez des images"
+            onAction={handleDirectoryPicker}
+            actionLabel="Ajouter un Dossier"
+          />
+        ) : (
+          <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
+        )}
+      </main>
+
+      {/* Context Menu */}
+      <AnimatePresence>
+        {contextMenu && (
+          <ContextMenu
+            x={contextMenu.x}
+            y={contextMenu.y}
+            item={contextMenu.item}
+            onClose={() => setContextMenu(null)}
+            onAnalyze={handleContextAnalyze}
+            onDelete={
+              (id) =>
+                updateItem({
+                  ...contextMenu.item,
+                  folderId: "trash",
+                }) /* Pseudo delete */
+            }
+            onColorTag={(item, color) =>
+              updateItem({ ...item, colorTag: color })
+            }
+            onAddTags={(item) => {
+              if (selectedIds.size <= 1) {
+                // Optional: could force select the context item here if desired
               }
-              selectedTag={selectedTag}
-              availableTags={availableTags}
-              onTagSelect={setSelectedTag}
-              selectionMode={selectionMode}
-              onToggleSelectionMode={() => {
-                if (selectionMode) clearSelection();
-                else setSelectionMode(true);
-              }}
-              showColorTags={true}
-              onToggleColorTags={() => {}}
-              activeColorFilter={activeColorFilter}
-              onColorAction={handleTopBarColorAction}
-              currentViewMode={viewMode}
-              onModeChange={setViewMode}
-              gridColumns={gridColumns}
-              onGridColumnsChange={setGridColumns}
-              folderName={activeFolderName}
-              onOpenFolders={() => setIsFolderDrawerOpen(true)}
-              selectedCount={selectedIds.size}
-              onMoveSelected={() => setIsMoveModalOpen(true)}
-              onShareSelected={async () => {
-                /* Share Logic */
-              }}
-              onRunBatchAI={handleRunBatchAI}
-              isBatchAIProcessing={isBatchProcessing}
-              batchAIProgress={batchProgress}
-              onOpenSettings={() => setIsSettingsOpen(true)}
-            />
-          </div>
-
-          <div className="drawer-area relative z-(--z-drawer-overlay)">
-            <FolderDrawer
-              isOpen={isFolderDrawerOpen}
-              onClose={() => setIsFolderDrawerOpen(false)}
-              folders={folders}
-              activeFolderId={activeFolderIds}
-              onSelectFolder={toggleFolderSelection}
-              onImportFolder={() => {
-                if ("showDirectoryPicker" in window) handleDirectoryPicker();
-                else fileInputRef.current?.click();
-              }}
-              onCreateFolder={() => setIsCreateFolderModalOpen(true)}
-              onDeleteFolder={deleteFolder}
-            />
-          </div>
-
-          <main className="relative z-(--z-grid-item)">
-            <AnimatePresence mode="wait">{renderView()}</AnimatePresence>
-          </main>
-
-          <AnimatePresence>
-            {contextMenu && (
-              <ContextMenu
-                x={contextMenu.x}
-                y={contextMenu.y}
-                item={contextMenu.item}
-                onClose={() => setContextMenu(null)}
-                onAnalyze={handleContextAnalyze}
-                onDelete={
-                  (id) =>
-                    updateItem({
-                      ...contextMenu.item,
-                      folderId: "trash",
-                    }) /* Pseudo delete */
-                }
-                onColorTag={(item, color) =>
-                  updateItem({ ...item, colorTag: color })
-                }
-                onAddTags={(item) => {
-                  // If no selection, ensure we operate on the clicked item naturally
-                  // logic inside Modal handler will check selection or context item
-                  if (selectedIds.size <= 1) {
-                    // Optional: could force select the context item here if desired
-                    // keeping implementation flexible
-                  }
-                  setIsAddTagModalOpen(true);
-                }}
-                onOpen={setSelectedItem}
-                onMove={handleContextMove}
-              />
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {selectedItem && (
-              <ImageViewer
-                item={selectedItem}
-                onClose={() => setSelectedItem(null)}
-                onUpdateItem={updateItem}
-                onNext={handleNext}
-                onPrev={handlePrev}
-                showColorTags={true}
-                availableTags={availableTags}
-              />
-            )}
-          </AnimatePresence>
-
-          <CreateFolderModal
-            isOpen={isCreateFolderModalOpen}
-            onClose={() => setIsCreateFolderModalOpen(false)}
-            onCreate={createFolder}
+              setIsAddTagModalOpen(true);
+            }}
+            onOpen={setSelectedItem}
+            onMove={handleContextMove}
           />
-          <MoveToFolderModal
-            isOpen={isMoveModalOpen}
-            onClose={() => setIsMoveModalOpen(false)}
-            folders={folders}
-            onMove={handleMoveAction}
-            onCreateAndMove={handleCreateAndMove}
-            selectedCount={selectedIds.size}
-          />
-          <AddTagModal
-            isOpen={isAddTagModalOpen}
-            onClose={() => setIsAddTagModalOpen(false)}
-            onAddTag={handleAddTagsToSelection}
-            selectedCount={selectedIds.size > 0 ? selectedIds.size : 1}
+        )}
+      </AnimatePresence>
+
+      {/* Image Viewer */}
+      <AnimatePresence>
+        {selectedItem && (
+          <ImageViewer
+            item={selectedItem}
+            onClose={() => setSelectedItem(null)}
+            onUpdateItem={updateItem}
+            onNext={handleNext}
+            onPrev={handlePrev}
+            showColorTags={true}
             availableTags={availableTags}
           />
-          <SettingsModal
-            isOpen={isSettingsOpen}
-            onClose={() => setIsSettingsOpen(false)}
-          />
-        </>
-      )}
+        )}
+      </AnimatePresence>
+
+      {/* Collection Manager Modal */}
+      <CollectionManager
+        isOpen={isCollectionManagerOpen}
+        onClose={() => setIsCollectionManagerOpen(false)}
+        collections={collections}
+        activeCollection={activeCollection}
+        onCreateCollection={async (name) => {
+          await createCollection(name);
+          setIsCollectionManagerOpen(false);
+        }}
+        onSwitchCollection={async (id) => {
+          await switchCollection(id);
+          setIsCollectionManagerOpen(false);
+        }}
+        onDeleteCollection={deleteCollection}
+      />
+
+      {/* Modals */}
+      <CreateFolderModal
+        isOpen={isCreateFolderModalOpen}
+        onClose={() => setIsCreateFolderModalOpen(false)}
+        onCreate={createVirtualFolder}
+      />
+      <MoveToFolderModal
+        isOpen={isMoveModalOpen}
+        onClose={() => setIsMoveModalOpen(false)}
+        folders={folders}
+        onMove={handleMoveAction}
+        onCreateAndMove={handleCreateAndMove}
+        selectedCount={selectedIds.size}
+      />
+      <AddTagModal
+        isOpen={isAddTagModalOpen}
+        onClose={() => setIsAddTagModalOpen(false)}
+        onAddTag={handleAddTagsToSelection}
+        selectedCount={selectedIds.size > 0 ? selectedIds.size : 1}
+        availableTags={availableTags}
+      />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
 
       <UnifiedProgress />
     </div>

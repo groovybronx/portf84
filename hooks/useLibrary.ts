@@ -1,74 +1,93 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { Folder, PortfolioItem } from "../types";
 import { storageService } from "../services/storageService";
 import { verifyPermission } from "../utils/fileHelpers";
 import { useSessionRestore } from "./useSessionRestore"; // New Hook
 import { libraryLoader } from "../services/libraryLoader"; // New Service
 
-export const useLibrary = () => {
+export const useLibrary = (activeCollectionId: string | null) => {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [activeFolderIds, setActiveFolderIds] = useState<Set<string>>(
     new Set(["all"])
   );
 
+  // Auto-clear when collection changes to null
+  useEffect(() => {
+    if (!activeCollectionId) {
+      console.log("[useLibrary] No active collection, clearing state");
+      setFolders([]);
+      setActiveFolderIds(new Set(["all"]));
+    }
+  }, [activeCollectionId]);
+
   // --- Core Loading Logic (Refactored) ---
-  const loadFromPath = useCallback(async (path: string) => {
-    // 1. Get current virtual structure to preserve it
-    // Note: We access state inside callback, so we rely on functional updates or ref logic if needed.
-    // Ideally, we should fetch fresh virtual folders from DB or trust state.
-    // libraryLoader uses storedVirtualFolders from DB + input.
-    // For consistency, let's fetch 'em fresh or pass current state if we trust it.
-    // But `libraryLoader` signature accepts `storedVirtualFolders`.
-    // Let's grab them from state (via a functional update pattern in setFolders).
-    // Since we can't easily access "current state" async before setFolders,
-    // we'll fetch from DB which is the source of truth for Virtual Folders structure.
-    const storedVirtual = await storageService.getVirtualFolders();
+  const loadFromPath = useCallback(
+    async (path: string) => {
+      // CRITICAL: Validate collection
+      if (!activeCollectionId) {
+        console.warn("[useLibrary] No active collection, skipping load");
+        return;
+      }
 
-    // 2. Delegate to Service
-    const { foldersToAdd, virtualFoldersMap } =
-      await libraryLoader.loadAndMerge(path, storedVirtual);
-    // Wait, loadAndMerge returns `foldersToAdd` (Physical) and `virtualFoldersMap` (Map of ID -> Items).
-
-    // 3. Update State
-    setFolders((prev) => {
-      // A. Update Virtual Folders (Merge new items into existing ones)
-      const updatedVirtualFolders = storedVirtual.map((vf) => {
-        // New items from this load
-        const newItems = virtualFoldersMap.get(vf.id) || [];
-
-        // Old items (from previous loads of OTHER handles) are in `prev`.
-        // We need to find the previous version of this virtual folder.
-        const prevVF = prev.find((p) => p.id === vf.id);
-        const prevItems = prevVF ? prevVF.items : [];
-
-        // Deduplicate if necessary?
-        // Since physical folders are distinct handles, their items should be distinct (unless same handle loaded twice).
-        // We'll just concat for now, or use a Set map by ID if strict dedup needed.
-        // Simple concat:
-        return {
-          ...vf,
-          items: [...prevItems, ...newItems],
-          isVirtual: true,
-        };
-      });
-
-      // B. Add Physical Folders
-      // Filter out any physical folder that might already exist (e.g. re-loading same root).
-      // `foldersToAdd` are physical folders from THIS handle.
-      const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
-      const keptPhysical = prev.filter(
-        (f) => !f.isVirtual && !newPhysicalIds.has(f.id)
+      // 1. Fetch virtual folders for ACTIVE COLLECTION ONLY
+      const storedVirtual = await storageService.getVirtualFolders(
+        activeCollectionId
+      );
+      console.log(
+        `[useLibrary] Loaded ${storedVirtual.length} virtual folders for collection ${activeCollectionId}`
       );
 
-      return [...updatedVirtualFolders, ...keptPhysical, ...foldersToAdd];
-    });
+      // 2. Delegate to Service with collectionId
+      const { foldersToAdd, virtualFoldersMap } =
+        await libraryLoader.loadAndMerge(
+          path,
+          storedVirtual,
+          activeCollectionId
+        );
+      // Wait, loadAndMerge returns `foldersToAdd` (Physical) and `virtualFoldersMap` (Map of ID -> Items).
 
-    if (foldersToAdd.length > 0 || virtualFoldersMap.size > 0)
-      setActiveFolderIds(new Set(["all"]));
+      // 3. Update State
+      setFolders((prev) => {
+        // A. Update Virtual Folders (Merge new items into existing ones)
+        const updatedVirtualFolders = storedVirtual.map((vf) => {
+          // New items from this load
+          const newItems = virtualFoldersMap.get(vf.id) || [];
 
-    // Default isRoot=false when loading content manually
-    await storageService.addDirectoryHandle(path, false);
-  }, []);
+          // Old items (from previous loads of OTHER handles) are in `prev`.
+          // We need to find the previous version of this virtual folder.
+          const prevVF = prev.find((p) => p.id === vf.id);
+          const prevItems = prevVF ? prevVF.items : [];
+
+          // Deduplicate if necessary?
+          // Since physical folders are distinct handles, their items should be distinct (unless same handle loaded twice).
+          // We'll just concat for now, or use a Set map by ID if strict dedup needed.
+          // Simple concat:
+          return {
+            ...vf,
+            items: [...prevItems, ...newItems],
+            isVirtual: true,
+          };
+        });
+
+        // B. Add Physical Folders
+        // Filter out any physical folder that might already exist (e.g. re-loading same root).
+        // `foldersToAdd` are physical folders from THIS handle.
+        const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
+        const keptPhysical = prev.filter(
+          (f) => !f.isVirtual && !newPhysicalIds.has(f.id)
+        );
+
+        return [...updatedVirtualFolders, ...keptPhysical, ...foldersToAdd];
+      });
+
+      if (foldersToAdd.length > 0 || virtualFoldersMap.size > 0)
+        setActiveFolderIds(new Set(["all"]));
+
+      // Default isRoot=false when loading content manually
+      await storageService.addDirectoryHandle(path, false);
+    },
+    [activeCollectionId]
+  ); // CRITICAL: Must include activeCollectionId!
 
   // --- Session Management (Delegated) ---
   const { hasStoredSession, restoreSession } = useSessionRestore(
@@ -132,6 +151,7 @@ export const useLibrary = () => {
         items: items.map((i) => ({ ...i, folderId })),
         createdAt: Date.now(),
         isVirtual: false,
+        collectionId: "unknown", // TODO: Pass activeCollection.id to useLibrary
       });
     });
     if (looseItems.length > 0) {
@@ -142,6 +162,7 @@ export const useLibrary = () => {
         items: looseItems.map((i) => ({ ...i, folderId })),
         createdAt: Date.now(),
         isVirtual: false,
+        collectionId: "unknown", // TODO: Pass activeCollection.id to useLibrary
       });
     }
     setFolders((prev) => [...prev, ...newFolders]);
@@ -172,6 +193,7 @@ export const useLibrary = () => {
       items: [],
       createdAt: Date.now(),
       isVirtual: true,
+      collectionId: "unknown", // TODO: Pass activeCollection.id to useLibrary
     };
     setFolders((prev) => [...prev, newFolder]);
     setActiveFolderIds(new Set([newFolder.id]));
@@ -247,18 +269,23 @@ export const useLibrary = () => {
     setActiveFolderIds(new Set([targetFolderId]));
   };
 
+  // Clear library (used when switching collections)
+  const clearLibrary = useCallback(() => {
+    console.log("[useLibrary] Clearing library state");
+    setFolders([]);
+    setActiveFolderIds(new Set(["all"]));
+  }, []);
+
   return {
     folders,
     activeFolderIds,
-    hasStoredSession,
     loadFromPath,
-    restoreSession,
-    setLibraryRoot,
     importFiles,
     updateItem,
     createFolder,
     deleteFolder,
     toggleFolderSelection,
     moveItemsToFolder,
+    clearLibrary,
   };
 };

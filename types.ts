@@ -3,6 +3,23 @@ export interface AiTagDetailed {
   confidence: number;
 }
 
+export interface Collection {
+  id: string;
+  name: string;
+  createdAt: number;
+  lastOpenedAt?: number;
+  isActive: boolean;
+}
+
+export interface SourceFolder {
+  id: string;
+  collectionId: string;
+  path: string;
+  name: string;
+  addedAt: number;
+  itemCount?: number; // Computed at runtime
+}
+
 export interface PortfolioItem {
   id: string;
   file?: File;
@@ -17,9 +34,12 @@ export interface PortfolioItem {
   aiDescription?: string;
   aiTags?: string[];
   aiTagsDetailed?: AiTagDetailed[];
-  folderId?: string;
+  collectionId?: string; // NEW: Link to parent Collection
+  virtualFolderId?: string; // RENAMED from folderId for clarity
   colorTag?: string; // Hex code for the color tag
   manualTags?: string[];
+  // Legacy support
+  folderId?: string; // @deprecated - use virtualFolderId instead
 }
 
 export interface Folder {
@@ -29,6 +49,7 @@ export interface Folder {
   createdAt: number;
   isVirtual?: boolean; // True if created within the app, false if physical disk folder
   path?: string; // Absolute path for physical folders
+  collectionId: string; // NEW: Link to parent Collection
 }
 
 export enum ViewMode {

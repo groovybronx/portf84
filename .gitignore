@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+!node_modules/@google/genai 
 dist
 dist-ssr
 *.local
@@ -34,4 +35,4 @@ src-tauri/gen/schemas
 *.sqlite
 *.db-shm
 *.db-wal
-.agent/rules/openmemory.md
+

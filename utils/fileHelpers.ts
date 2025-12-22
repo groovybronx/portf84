@@ -28,9 +28,7 @@ export async function scanDirectory(
         const fileStat = await stat(entryFullPath);
 
         const assetUrl = convertFileSrc(entryFullPath);
-        console.log(
-          `[FileHelpers] Generated URL for ${entry.name}: ${assetUrl}`
-        );
+        // Removed noisy log: console.log(`[FileHelpers] Generated URL for ${entry.name}: ${assetUrl}`);
 
         const item: PortfolioItem = {
           id: Math.random().toString(36).substring(2, 9),
