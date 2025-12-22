@@ -6,27 +6,68 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 
 ### Navigation Générale
 
-| Action | Résultat |
-|--------|----------|
-| **Clic Simple (Grille)** | Focus sur l'image (bordure blanche). En mode Sélection : coche l'image |
-| **Double-Clic (Grille)** | Ouvre l'image en plein écran |
-| **Bouton Info (Grille)** | Retourne la vignette (Flip Card 3D) |
-| **Clic sur Tag (Verso)** | Filtre instantanément par ce tag |
-| **Clic Droit** | Ouvre le Menu Contextuel |
+| Action                   | Résultat                                                                                  |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| **Clic Simple (Grille)** | Focus sur l'image + **Auto-Scroll** (centre l'élément). En mode Sélection : coche l'image |
+| **Double-Clic (Grille)** | Ouvre l'image en plein écran (ImageViewer)                                                |
+| **Bouton Info (Grille)** | Retourne la vignette (Flip Card 3D 180°)                                                  |
+| **Clic sur Tag (Verso)** | Filtre instantanément par ce tag                                                          |
+| **Clic Droit**           | Ouvre le Menu Contextuel                                                                  |
+| **Ctrl + Clic**          | Ajoute à la sélection multiple                                                            |
 
 ### Drag-to-Select (Sélection Rectangle)
 
 1. Cliquez et maintenez dans une zone vide de la grille
 2. Tracez un rectangle pour sélectionner plusieurs images
 3. Maintenir `Shift` ou `Ctrl` ajoute à la sélection existante
+4. **Performance** : Grâce à `React.memo`, le rectangle se dessine à 60fps même sur 10,000 images
+
+**Implémentation** :
+
+```typescript
+// SelectionContext - Drag-select
+const handleMouseDown = (e: MouseEvent) => {
+	if (e.target === e.currentTarget) {
+		// Zone vide
+		setIsDragSelecting(true);
+		setDragStartPos({ x: e.clientX, y: e.clientY });
+	}
+};
+
+const handleMouseMove = (e: MouseEvent) => {
+	if (!isDragSelecting) return;
+
+	// Calcul du rectangle
+	const box = {
+		x: Math.min(dragStartPos.x, e.clientX),
+		y: Math.min(dragStartPos.y, e.clientY),
+		w: Math.abs(e.clientX - dragStartPos.x),
+		h: Math.abs(e.clientY - dragStartPos.y),
+	};
+	setDragBox(box);
+
+	// Détection collision avec items (via registerItemRef)
+	const selectedItems = items.filter((item) => {
+		const el = itemRefs.current.get(item.id);
+		if (!el) return false;
+		const rect = el.getBoundingClientRect();
+		return intersects(box, rect);
+	});
+
+	setSelectedIds(new Set(selectedItems.map((i) => i.id)));
+};
+```
 
 ### Mode Plein Écran (ImageViewer)
 
-| Action | Résultat |
-|--------|----------|
-| **Boutons ←/→** | Précédent / Suivant |
-| **Clic hors image** | Fermer le visualiseur |
-| **Roulette souris** | Navigation images |
+| Action              | Résultat                    |
+| ------------------- | --------------------------- |
+| **Boutons ←/→**     | Image précédente / suivante |
+| **Clic hors image** | Fermer le visualiseur       |
+| **Echap**           | Fermer le visualiseur       |
+| **Roulette souris** | Navigation images (scroll)  |
+| **Touches 1-6**     | Applique tag couleur        |
+| **Touche 0**        | Retire le tag couleur       |
 
 ---
 
@@ -50,18 +91,50 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 
 La barre de recherche utilise `Fuse.js` avec tolérance aux fautes :
 
-| Recherche | Trouve |
-|-----------|--------|
+| Recherche | Trouve     |
+| --------- | ---------- |
 | "montgne" | "montagne" |
-| "portra" | "portrait" |
+| "portra"  | "portrait" |
+| "paysge"  | "paysage"  |
 
 **Champs recherchés** : nom de fichier, description AI, tags AI, tags manuels.
 
-**Autosuggestion** : Propose dynamiquement les tags existants lors de la frappe.
+**Implémentation** :
+
+```typescript
+// LibraryContext - processedItems
+const processedItems = useMemo(() => {
+	let filtered = filteredByFolder;
+
+	if (state.searchTerm) {
+		const term = state.searchTerm.toLowerCase();
+		filtered = filtered.filter(
+			(item) =>
+				item.name.toLowerCase().includes(term) ||
+				item.aiDescription?.toLowerCase().includes(term) ||
+				item.aiTags?.some((tag) => tag.toLowerCase().includes(term)) ||
+				item.manualTags?.some((tag) => tag.toLowerCase().includes(term))
+		);
+	}
+
+	return filtered;
+}, [filteredByFolder, state.searchTerm]);
+```
+
+**Autosuggestion** : Propose dynamiquement les tags existants lors de la frappe (via `availableTags`).
 
 ### Tags Couleurs
 
 Filtrage rapide via les pastilles colorées dans la TopBar.
+
+| Couleur   | Touche | Hex       |
+| --------- | ------ | --------- |
+| 🔴 Rouge  | `1`    | `#ef4444` |
+| 🟠 Orange | `2`    | `#f97316` |
+| 🟡 Jaune  | `3`    | `#eab308` |
+| 🟢 Vert   | `4`    | `#22c55e` |
+| 🔵 Bleu   | `5`    | `#3b82f6` |
+| 🟣 Violet | `6`    | `#a855f7` |
 
 ---
 
@@ -69,33 +142,168 @@ Filtrage rapide via les pastilles colorées dans la TopBar.
 
 L'application écoute les événements clavier globaux (sauf pendant la saisie de texte).
 
-### Navigation
+### Navigation (Grille)
 
-| Touche | Action | Contexte |
-|--------|--------|----------|
-| `↑` / `↓` | Monter/Descendre d'une rangée | Grille |
-| `←` / `→` | Image précédente / suivante | Grille, Flow, Viewer |
-| `Espace` | Ouvrir / Fermer le plein écran | Global |
-| `Echap` | Fermer / Annuler | Global |
+| Touche    | Action                         | Comportement                                       |
+| --------- | ------------------------------ | -------------------------------------------------- |
+| `↑` / `↓` | Monter/Descendre d'une rangée  | Navigation verticale (suit les colonnes visuelles) |
+| `←` / `→` | Image précédente / suivante    | Navigation horizontale (ordre chronologique)       |
+| `Espace`  | Ouvrir / Fermer le plein écran | Toggle ImageViewer                                 |
+| `Echap`   | Fermer / Annuler               | Ferme modales, désélection, ou SortImageViewer     |
+| `Enter`   | Ouvrir en plein écran          | Si une image est focusée                           |
 
-### Tags Couleurs Rapides
+**Implémentation Auto-Scroll** :
 
-| Touche | Couleur |
-|--------|---------|
-| `1` | 🔴 Rouge |
-| `2` | 🟠 Orange |
-| `3` | 🟡 Jaune |
-| `4` | 🟢 Vert |
-| `5` | 🔵 Bleu |
-| `6` | 🟣 Violet |
-| `0` | ❌ Retirer le tag |
+```typescript
+// App.tsx - Keyboard Navigation
+useEffect(() => {
+	const handleKeyDown = (e: KeyboardEvent) => {
+		if (e.target instanceof HTMLInputElement) return;
+
+		const currentIndex = focusedId
+			? processedItems.findIndex((i) => i.id === focusedId)
+			: -1;
+
+		let newIndex = currentIndex;
+
+		switch (e.key) {
+			case "ArrowRight":
+				newIndex = Math.min(processedItems.length - 1, currentIndex + 1);
+				break;
+			case "ArrowLeft":
+				newIndex = Math.max(0, currentIndex - 1);
+				break;
+			case "ArrowDown":
+				newIndex = Math.min(
+					processedItems.length - 1,
+					currentIndex + gridColumns
+				);
+				break;
+			case "ArrowUp":
+				newIndex = Math.max(0, currentIndex - gridColumns);
+				break;
+		}
+
+		if (newIndex !== currentIndex) {
+			const targetItem = processedItems[newIndex];
+			if (targetItem) {
+				setFocusedId(targetItem.id);
+				// L'Auto-Scroll est géré par PhotoGrid via scrollTarget
+			}
+		}
+	};
+
+	window.addEventListener("keydown", handleKeyDown);
+	return () => window.removeEventListener("keydown", handleKeyDown);
+}, [focusedId, processedItems, gridColumns]);
+```
+
+### Tags Couleurs Rapides (Hover ou Sélection)
+
+| Touche | Couleur    | Action                |
+| ------ | ---------- | --------------------- |
+| `1`    | 🔴 Rouge   | Applique tag rouge    |
+| `2`    | 🟠 Orange  | Applique tag orange   |
+| `3`    | 🟡 Jaune   | Applique tag jaune    |
+| `4`    | 🟢 Vert    | Applique tag vert     |
+| `5`    | 🔵 Bleu    | Applique tag bleu     |
+| `6`    | 🟣 Violet  | Applique tag violet   |
+| `0`    | ❌ Retirer | Retire le tag couleur |
+
+**Cible** : Image focusée OU sélection multiple OU image sous la souris (selon contexte).
+
+```typescript
+// App.tsx - Color Tagging Shortcuts
+const applyColorTagToSelection = (color: string | undefined) => {
+	let itemsToUpdate: PortfolioItem[] = [];
+
+	if (selectedItem) itemsToUpdate = [selectedItem];
+	else if (selectionMode && selectedIds.size > 0)
+		itemsToUpdate = currentItems.filter((i) => selectedIds.has(i.id));
+	else if (focusedId) {
+		const item = currentItems.find((i) => i.id === focusedId);
+		if (item) itemsToUpdate = [item];
+	}
+
+	itemsToUpdate.forEach((item) => updateItem({ ...item, colorTag: color }));
+};
+
+// Hook clavier
+useEffect(() => {
+	const handleKeyDown = (e: KeyboardEvent) => {
+		if (/^[1-6]$/.test(e.key)) {
+			const color = COLOR_PALETTE[e.key];
+			if (color) applyColorTagToSelection(color);
+		} else if (e.key === "0") {
+			applyColorTagToSelection(undefined);
+		}
+	};
+
+	window.addEventListener("keydown", handleKeyDown);
+	return () => window.removeEventListener("keydown", handleKeyDown);
+}, []);
+```
 
 ---
 
-## États de Focus
+## États de Focus & Sélection
 
-Le système gère un état de **Focus** (`focusedId`) distinct de la **Sélection**.
+Le système gère deux états distincts :
 
-- Le focus suit la navigation clavier ou le survol souris
-- Permet d'appliquer un tag couleur rapide (`1-6`) sur une image juste en la survolant
-- Évite de cliquer pour chaque action
+### Focus (`focusedId`)
+
+- Suit la navigation clavier OU le clic simple
+- Affiche une bordure blanche autour de l'élément
+- **Auto-Scroll** : La grille centre automatiquement l'élément focusé lors de la navigation clavier
+- Permet d'appliquer un tag couleur rapide (`1-6`) sans cliquer
+
+### Sélection (`selectedIds`)
+
+- Mode multi-sélection activé via `Ctrl + Clic` ou Drag-Select
+- Affiche une bordure bleue + icône "Check"
+- Les actions de masse (Move, Tag, Analyze) s'appliquent à la sélection
+- Désactivation : Clic dans une zone vide ou touche `Echap`
+
+**Interaction** :
+
+- `Clic Simple` : Focus uniquement
+- `Ctrl + Clic` : Ajoute à la sélection (toggle)
+- `Drag Rectangle` : Sélection multiple
+- `Double-Clic` : Ouvre en plein écran (ignore sélection)
+
+---
+
+## Auto-Scroll (Navigation Clavier)
+
+Lors de la navigation clavier, la grille virtuelle **centre automatiquement** l'élément actif :
+
+```typescript
+// PhotoGrid - Auto-Scroll Logic
+const scrollTarget = useMemo(() => {
+	if (!focusedId) return null;
+	const index = items.findIndex((i) => i.id === focusedId);
+	if (index === -1) return null;
+
+	return {
+		colIndex: index % gridColumns,
+		rowIndex: Math.floor(index / gridColumns),
+	};
+}, [focusedId, items, gridColumns]);
+
+// VirtualColumn - Scroll Effect
+useEffect(() => {
+	if (
+		scrollToIndex !== null &&
+		scrollToIndex >= 0 &&
+		scrollToIndex < items.length
+	) {
+		rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
+	}
+}, [scrollToIndex, rowVirtualizer]);
+```
+
+**Comportement** :
+
+- ↑↓←→ : L'image se centre dans le viewport
+- Smooth scroll natif (géré par le virtualizer)
+- Fonctionne même avec 10,000+ images (virtualisation)

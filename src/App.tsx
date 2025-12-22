@@ -1,11 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TopBar } from "./features/navigation";
-import {
-	PhotoGrid,
-	PhotoGridVirtual,
-	PhotoCarousel,
-	PhotoList,
-} from "./features/library";
+import { PhotoGrid, PhotoCarousel, PhotoList } from "./features/library";
 import { ImageViewer, analyzeImage } from "./features/vision";
 import {
 	FolderDrawer,
@@ -384,7 +379,7 @@ const App: React.FC = () => {
 		switch (viewMode) {
 			case ViewMode.GRID:
 				return (
-					<PhotoGridVirtual
+					<PhotoGrid
 						onSelect={setSelectedItem}
 						onHover={(i) => {
 							setHoveredItem(i);

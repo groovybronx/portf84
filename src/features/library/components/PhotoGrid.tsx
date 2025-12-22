@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { PortfolioItem } from "../../../shared/types";
-import { motion } from "framer-motion";
 import { PhotoCard } from "./PhotoCard";
 import { useLibrary } from "../../../contexts/LibraryContext";
 import { useSelection } from "../../../contexts/SelectionContext";
@@ -14,7 +14,114 @@ interface PhotoGridProps {
 	onFocusChange?: (id: string | null) => void;
 }
 
-const ITEMS_PER_PAGE = 30;
+const GAP = 16;
+// PADDING is 56px (px-7) based on PhotoGrid styling inspection or just allow measuring rect
+// Actually we can just let the column width calculation handle it if we measure the container.
+
+const VirtualColumn = ({
+	items,
+	scrollElement,
+	columnWidth,
+	colIndex,
+	onSelect,
+	onHover,
+	onContextMenu,
+	onTagClick,
+	focusedId,
+	onFocusChange,
+	toggleSelection,
+	selectionMode,
+	selectedIds,
+	registerItemRef,
+	selectedTag,
+	scrollToIndex, // New prop
+}: any) => {
+	const rowVirtualizer = useVirtualizer({
+		count: items.length,
+		getScrollElement: () => scrollElement.current,
+		estimateSize: (i) => {
+			const item = items[i];
+			// Calculate height based on aspect ratio
+			if (item.width && item.height && columnWidth > 0) {
+				const aspectRatio = item.width / item.height;
+				// Height = Width / AspectRatio
+				return columnWidth / aspectRatio + GAP;
+			}
+			return 300 + GAP; // Fallback
+		},
+		overscan: 5,
+	});
+
+	// Ref to track previous column width to prevent duplicate updates
+	const prevWidthRef = useRef(columnWidth);
+
+	useEffect(() => {
+		// If column width changes significantly, re-measure all items using the new estimateSize logic
+		// 'measure()' forces the virtualizer to recalculate sizes based on the current estimateSize function
+		if (Math.abs(columnWidth - prevWidthRef.current) > 1) {
+			rowVirtualizer.measure();
+			prevWidthRef.current = columnWidth;
+		}
+	}, [columnWidth, rowVirtualizer]);
+
+	// Handle auto-scrolling
+	useEffect(() => {
+		if (
+			scrollToIndex !== null &&
+			scrollToIndex !== undefined &&
+			scrollToIndex >= 0 &&
+			scrollToIndex < items.length
+		) {
+			rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
+		}
+	}, [scrollToIndex, rowVirtualizer]);
+
+	return (
+		<div
+			className="flex-1 min-w-0" // Flex-1 ensures equal width columns
+			style={{
+				height: `${rowVirtualizer.getTotalSize()}px`,
+				position: "relative",
+			}}
+		>
+			{rowVirtualizer.getVirtualItems().map((virtualRow) => {
+				const item = items[virtualRow.index];
+				const isSelected = selectedIds.has(item.id);
+				const isFocused = focusedId === item.id;
+
+				return (
+					<div
+						key={item.id}
+						style={{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							width: "100%",
+							height: `${virtualRow.size - GAP}px`, // Subtract GAP for visual separation
+							transform: `translateY(${virtualRow.start}px)`,
+						}}
+					>
+						<PhotoCard
+							item={item}
+							isSelected={isSelected}
+							isFocused={isFocused}
+							selectionMode={selectionMode}
+							showColorTags={true}
+							onSelect={onSelect}
+							onToggleSelect={toggleSelection}
+							onFocus={(id) => onFocusChange?.(id)}
+							onContextMenu={onContextMenu || (() => {})}
+							onHover={onHover || (() => {})}
+							registerItemRef={registerItemRef}
+							onTagClick={onTagClick}
+							selectedTag={selectedTag}
+						/>
+					</div>
+				);
+			})}
+		</div>
+	);
+};
 
 export const PhotoGrid: React.FC<PhotoGridProps> = ({
 	onSelect,
@@ -24,178 +131,106 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
 	focusedId,
 	onFocusChange,
 }) => {
-	// Context consumption
 	const { processedItems: items, gridColumns, selectedTag } = useLibrary();
-
 	const { selectionMode, selectedIds, toggleSelection, registerItemRef } =
 		useSelection();
 
-	// Local config
-	const showColorTags = true;
-
 	const containerRef = useRef<HTMLDivElement>(null);
-	const observerTarget = useRef<HTMLDivElement>(null);
+	const [containerWidth, setContainerWidth] = useState(0);
 
-	// Infinite Scroll State
-	const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
-
-	// Reset count when source items change significantly (e.g. folder change)
+	// Measure container width for correct aspect ratio math
 	useEffect(() => {
-		setVisibleCount(ITEMS_PER_PAGE);
-		// Scroll to top when items are completely swapped out (folder change)
-		if (containerRef.current) {
-			containerRef.current.scrollTop = 0;
-		}
-	}, [items]);
+		if (!containerRef.current) return;
 
-	// Intersection Observer for infinite scroll
-	useEffect(() => {
-		const target = observerTarget.current;
-		if (!target) return;
+		const observer = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				setContainerWidth(entry.contentRect.width);
+			}
+		});
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0]?.isIntersecting) {
-					setVisibleCount((prev: number) =>
-						Math.min(prev + ITEMS_PER_PAGE, items.length)
-					);
-				}
-			},
-			{ threshold: 0.1 }
-		);
-
-		observer.observe(target);
+		observer.observe(containerRef.current);
 		return () => observer.disconnect();
-	}, [items.length]);
+	}, []);
 
-	// Slice items for display
-	const displayedItems = useMemo(() => {
-		return items.slice(0, visibleCount);
-	}, [items, visibleCount]);
+	// Calculate target column and row for auto-scroll
+	const scrollTarget = useMemo(() => {
+		if (!focusedId) return null;
+		const index = items.findIndex((i) => i.id === focusedId);
+		if (index === -1) return null;
 
-	// --- Logic: Distributed Masonry ---
-	const distributedgridColumns = useMemo(() => {
-		const cols: PortfolioItem[][] = Array.from(
+		return {
+			colIndex: index % gridColumns,
+			rowIndex: Math.floor(index / gridColumns),
+		};
+	}, [focusedId, items, gridColumns]);
+
+	// Distribute items into columns (Masonry-style)
+	// Important: To keep stable order, we must use a deterministic distribution
+	// or standard modular distribution `index % columns`
+	// `index % columns` is visually balanced enough for fixed columns and stable.
+	const cols = useMemo(() => {
+		const columns: PortfolioItem[][] = Array.from(
 			{ length: gridColumns },
 			() => []
 		);
-		displayedItems.forEach((item, index) => {
-			const targetCol = cols[index % gridColumns];
-			if (targetCol) targetCol.push(item);
+		items.forEach((item, index) => {
+			const colIndex = index % gridColumns;
+			const targetColumn = columns[colIndex];
+			if (targetColumn) {
+				targetColumn.push(item);
+			}
 		});
-		return cols;
-	}, [displayedItems, gridColumns]);
+		return columns;
+	}, [items, gridColumns]);
 
-	// Keyboard Navigation Effect
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (!items || items.length === 0) return;
-			if (
-				document.activeElement?.tagName === "INPUT" ||
-				document.activeElement?.tagName === "TEXTAREA"
-			)
-				return;
+	const columnWidth = useMemo(() => {
+		if (containerWidth === 0) return 0;
+		// Width - (gaps) / columns
+		// We have 'gridColumns' columns with 'gridColumns - 1' gaps
+		// The container has padding px-8 (32px * 2 = 64px)
+		// Wait, containerWidth includes padding if using border-box? Result of contentRect excludes padding.
+		// Let's assume contentRect is the inner width available for content.
 
-			let currentIndex = -1;
-			if (focusedId) {
-				currentIndex = items.findIndex((item) => item.id === focusedId);
-			}
+		// The container has 'flex gap-4' aka 16px gap between columns
+		const totalGapSpace = (gridColumns - 1) * GAP;
+		const availableWidth = containerWidth - totalGapSpace;
 
-			let nextIndex = currentIndex;
-
-			switch (e.key) {
-				case "ArrowRight":
-					e.preventDefault();
-					if (currentIndex < items.length - 1) {
-						nextIndex = currentIndex + 1;
-					} else {
-						nextIndex = 0;
-					}
-					break;
-				case "ArrowLeft":
-					e.preventDefault();
-					if (currentIndex > 0) {
-						nextIndex = currentIndex - 1;
-					} else {
-						nextIndex = items.length - 1;
-					}
-					break;
-				case "ArrowUp":
-					e.preventDefault();
-					nextIndex = Math.max(0, currentIndex - gridColumns);
-					break;
-				case "ArrowDown":
-					e.preventDefault();
-					nextIndex = Math.min(items.length - 1, currentIndex + gridColumns);
-					break;
-				case "Enter":
-					e.preventDefault();
-					if (currentIndex >= 0) {
-						const item = items[currentIndex];
-						if (item) {
-							onSelect(item);
-						}
-					}
-					break;
-				default:
-					return;
-			}
-
-			if (nextIndex !== currentIndex && nextIndex >= 0) {
-				const nextItem = items[nextIndex];
-				if (nextItem) {
-					onFocusChange?.(nextItem.id);
-
-					// Lazy load if needed
-					if (nextIndex >= visibleCount - 5) {
-						setVisibleCount((prev: number) => nextIndex + ITEMS_PER_PAGE);
-					}
-				}
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [items, focusedId, gridColumns, onFocusChange, onSelect, visibleCount]);
+		return availableWidth / gridColumns;
+	}, [containerWidth, gridColumns]);
 
 	return (
-		<div ref={containerRef} className="h-full overflow-y-auto px-8 py-6">
-			<motion.div layout className="w-full">
-				{/* Flex container holding the gridColumns */}
+		<div
+			ref={containerRef}
+			className="h-full w-full overflow-y-auto px-8 py-6 custom-scrollbar"
+		>
+			{/* Only render columns if we have a valid width, otherwise we can't calculate height */}
+			{containerWidth > 0 && (
 				<div className="flex gap-4 items-start w-full">
-					{distributedgridColumns.map((colItems, colIndex) => (
-						<div key={colIndex} className="flex flex-col gap-4 flex-1 min-w-0">
-							{colItems.map((item) => {
-								const isSelected = selectedIds.has(item.id);
-								const isFocused = focusedId === item.id;
-
-								return (
-									<PhotoCard
-										key={item.id}
-										item={item}
-										isSelected={isSelected}
-										isFocused={isFocused}
-										selectionMode={selectionMode}
-										showColorTags={showColorTags}
-										onSelect={onSelect}
-										onToggleSelect={toggleSelection}
-										onFocus={(id) => onFocusChange?.(id)}
-										onContextMenu={onContextMenu || (() => {})}
-										onHover={onHover || (() => {})}
-										registerItemRef={registerItemRef}
-										onTagClick={onTagClick}
-										selectedTag={selectedTag}
-									/>
-								);
-							})}
-						</div>
+					{cols.map((colItems, index) => (
+						<VirtualColumn
+							key={index}
+							colIndex={index}
+							items={colItems}
+							scrollElement={containerRef}
+							columnWidth={columnWidth}
+							scrollToIndex={
+								scrollTarget?.colIndex === index ? scrollTarget.rowIndex : null
+							}
+							// Pass props
+							onSelect={onSelect}
+							onHover={onHover}
+							onContextMenu={onContextMenu}
+							onTagClick={onTagClick}
+							focusedId={focusedId}
+							onFocusChange={onFocusChange}
+							toggleSelection={toggleSelection}
+							selectionMode={selectionMode}
+							selectedIds={selectedIds}
+							registerItemRef={registerItemRef}
+							selectedTag={selectedTag}
+						/>
 					))}
 				</div>
-			</motion.div>
-
-			{/* Observer target for infinite scroll */}
-			{visibleCount < items.length && (
-				<div ref={observerTarget} className="h-10" />
 			)}
 		</div>
 	);

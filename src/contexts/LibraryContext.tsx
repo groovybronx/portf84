@@ -204,8 +204,44 @@ function libraryReducer(
 	}
 }
 
-// Context
-const LibraryContext = createContext<LibraryContextType | undefined>(undefined);
+// Contexts
+const LibraryStateContext = createContext<LibraryContextState | undefined>(
+	undefined
+);
+const LibraryDispatchContext = createContext<LibraryContextActions | undefined>(
+	undefined
+);
+
+// Types Split
+interface LibraryContextState extends LibraryState {
+	availableTags: string[];
+	processedItems: PortfolioItem[];
+	currentItems: PortfolioItem[];
+}
+
+interface LibraryContextActions {
+	loadFromPath: (path: string) => Promise<void>;
+	importFiles: (fileList: FileList) => void;
+	updateItem: (item: PortfolioItem) => void;
+	createFolder: (name: string) => string;
+	deleteFolder: (id: string) => void;
+	removeFolderByPath: (path: string) => void;
+	toggleFolderSelection: (id: string) => void;
+	moveItemsToFolder: (
+		itemIds: Set<string>,
+		targetFolderId: string,
+		allItemsFlat: PortfolioItem[]
+	) => void;
+	clearLibrary: () => void;
+	setViewMode: (mode: ViewMode) => void;
+	setGridColumns: (columns: number) => void;
+	setSearchTerm: (term: string) => void;
+	setSelectedTag: (tag: string | null) => void;
+	setActiveColorFilter: (color: string | null) => void;
+	setSortOption: (option: SortOption) => void;
+	setSortDirection: (direction: SortDirection) => void;
+	setAutoAnalyze: (enabled: boolean) => void;
+}
 
 // Provider
 export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -459,7 +495,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 				payload: new Set([targetFolderId]),
 			});
 		},
-		[]
+		[state.folders]
 	);
 
 	const clearLibrary = useCallback(() => {
@@ -500,40 +536,93 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		dispatch({ type: "SET_AUTO_ANALYZE", payload: enabled });
 	}, []);
 
-	const value: LibraryContextType = {
-		...state,
-		availableTags,
-		processedItems,
-		currentItems: processedItems, // Alias for backward compatibility
-		loadFromPath,
-		importFiles,
-		updateItem,
-		createFolder,
-		deleteFolder,
-		removeFolderByPath,
-		toggleFolderSelection,
-		moveItemsToFolder,
-		clearLibrary,
-		setViewMode,
-		setGridColumns,
-		setSearchTerm,
-		setSelectedTag,
-		setActiveColorFilter,
-		setSortOption,
-		setSortDirection,
-		setAutoAnalyze,
-	};
+	// --- 1. State Value (Memoized separately) ---
+	const stateValue: LibraryContextState = useMemo(
+		() => ({
+			...state,
+			availableTags,
+			processedItems,
+			currentItems: processedItems,
+		}),
+		[state, availableTags, processedItems]
+	);
+
+	// --- 2. Dispatch Value (Memoized separately) ---
+	const dispatchValue: LibraryContextActions = useMemo(
+		() => ({
+			loadFromPath,
+			importFiles,
+			updateItem,
+			createFolder,
+			deleteFolder,
+			removeFolderByPath,
+			toggleFolderSelection,
+			moveItemsToFolder,
+			clearLibrary,
+			setViewMode,
+			setGridColumns,
+			setSearchTerm,
+			setSelectedTag,
+			setActiveColorFilter,
+			setSortOption,
+			setSortDirection,
+			setAutoAnalyze,
+		}),
+		[
+			loadFromPath,
+			importFiles,
+			updateItem,
+			createFolder,
+			deleteFolder,
+			removeFolderByPath,
+			toggleFolderSelection,
+			moveItemsToFolder,
+			clearLibrary,
+			setViewMode,
+			setGridColumns,
+			setSearchTerm,
+			setSelectedTag,
+			setActiveColorFilter,
+			setSortOption,
+			setSortDirection,
+			setAutoAnalyze,
+		]
+	);
 
 	return (
-		<LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>
+		<LibraryStateContext.Provider value={stateValue}>
+			<LibraryDispatchContext.Provider value={dispatchValue}>
+				{children}
+			</LibraryDispatchContext.Provider>
+		</LibraryStateContext.Provider>
 	);
 };
 
-// Hook
-export const useLibrary = () => {
-	const context = useContext(LibraryContext);
-	if (!context) {
-		throw new Error("useLibrary must be used within a LibraryProvider");
+// Hooks
+
+export const useLibraryState = () => {
+	const context = useContext(LibraryStateContext);
+	if (context === undefined) {
+		throw new Error(
+			"useLibraryState must be used within a LibraryStateContext.Provider"
+		);
 	}
 	return context;
+};
+
+export const useLibraryActions = () => {
+	const context = useContext(LibraryDispatchContext);
+	if (context === undefined) {
+		throw new Error(
+			"useLibraryActions must be used within a LibraryDispatchContext.Provider"
+		);
+	}
+	return context;
+};
+
+// Legacy hook (Wrapper)
+export const useLibrary = () => {
+	const state = useLibraryState();
+	const actions = useLibraryActions();
+	return { ...state, ...actions };
 };

@@ -27,7 +27,7 @@ interface PhotoCardProps {
 	selectedTag?: string | null;
 }
 
-export const PhotoCard: React.FC<PhotoCardProps> = ({
+const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 	item,
 	isSelected,
 	isFocused,
@@ -42,6 +42,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 	onTagClick,
 	selectedTag,
 }) => {
+	const [isLoaded, setIsLoaded] = useState(false);
 	const [isFlipped, setIsFlipped] = useState(false);
 
 	const handleFlip = (e: React.MouseEvent) => {
@@ -90,13 +91,18 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 				}`}
 			>
 				<GlassCard
-					className="backface-hidden overflow-hidden h-full group border-0" // Added border-0 to remove default glass border
+					className="backface-hidden overflow-hidden h-full group border-0 bg-gray-900/50" // gray background for skeleton base
 					variant="accent"
 					style={{
 						backfaceVisibility: "hidden",
 						WebkitBackfaceVisibility: "hidden",
 					}}
 				>
+					{/* Skeleton Loader */}
+					{!isLoaded && (
+						<div className="absolute inset-0 bg-white/5 animate-pulse z-0" />
+					)}
+
 					<motion.img
 						src={item.url}
 						alt={item.name}
@@ -104,6 +110,10 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 							!selectionMode ? "group-hover:scale-105" : ""
 						}`}
 						loading="lazy"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: isLoaded ? 1 : 0 }}
+						transition={{ duration: 0.4 }}
+						onLoad={() => setIsLoaded(true)}
 					/>
 
 					{showColorTags && item.colorTag && (
@@ -296,3 +306,15 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 		</div>
 	);
 };
+
+export const PhotoCard = React.memo(PhotoCardComponent, (prev, next) => {
+	// Custom comparison to ignore function prop changes
+	return (
+		prev.item === next.item &&
+		prev.isSelected === next.isSelected &&
+		prev.isFocused === next.isFocused &&
+		prev.selectionMode === next.selectionMode &&
+		prev.showColorTags === next.showColorTags &&
+		prev.selectedTag === next.selectedTag
+	);
+});

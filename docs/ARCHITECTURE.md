@@ -1,4 +1,4 @@
-# Architecture Technique
+# Architecture Technique - Lumina Portfolio V2
 
 ## Vue d'Ensemble
 
@@ -15,68 +15,147 @@ graph TD
 
 ## Stack Technologique
 
-| Layer | Technologie | Rôle |
-|-------|-------------|------|
-| **Frontend** | React 19 + Tailwind CSS v4 | Interface utilisateur |
-| **Runtime** | Tauri v2 | Bridge natif, sécurité, bundle |
-| **Persistance** | SQLite (`@tauri-apps/plugin-sql`) | Base de données locale |
-| **Fichiers** | `@tauri-apps/plugin-fs` | Accès système de fichiers |
-| **UI Native** | `@tauri-apps/plugin-dialog` | Sélecteur de dossiers natif |
+| Layer              | Technologie                       | Rôle                           |
+| ------------------ | --------------------------------- | ------------------------------ |
+| **Frontend**       | React 19 + Tailwind CSS v4        | Interface utilisateur          |
+| **Runtime**        | Tauri v2                          | Bridge natif, sécurité, bundle |
+| **Persistance**    | SQLite (`@tauri-apps/plugin-sql`) | Base de données locale         |
+| **Fichiers**       | `@tauri-apps/plugin-fs`           | Accès système de fichiers      |
+| **UI Native**      | `@tauri-apps/plugin-dialog`       | Sélecteur de dossiers natif    |
+| **Virtualisation** | `@tanstack/react-virtual` 3.13    | Rendu UI optimisé              |
+
+---
+
+## Architecture de Code (Feature-Based)
+
+Le projet suit une architecture **fractal modulaire** pour maximiser la maintenabilité.
+
+```
+src/
+├── features/           # Domaines fonctionnels
+│   ├── library/        # Grille photos, cartes, sélection
+│   ├── navigation/     # TopBar et composants associés
+│   ├── collections/    # Gestionnaire dossiers, Collections
+│   ├── vision/         # AI Analysis, ImageViewer
+│   └── tags/           # Système de tagging
+├── shared/             # Ressources transverses
+│   ├── components/     # UI Kit (Button, Modal, GlassCard)
+│   ├── hooks/          # Hooks réutilisables
+│   ├── types/          # Types globaux (PortfolioItem)
+│   ├── utils/          # Fonctions utilitaires
+│   └── theme/          # Design Tokens
+├── contexts/           # État global optimisé
+│   ├── CollectionsContext.tsx
+│   ├── LibraryContext.tsx    # Split en State/Dispatch
+│   ├── SelectionContext.tsx
+│   └── ProgressContext.tsx
+├── services/           # Logique métier externe
+│   ├── geminiService.ts
+│   ├── libraryLoader.ts
+│   └── storageService.ts
+└── App.tsx             # Point d'entrée, composition
+```
+
+---
+
+## État Global (Contexts Optimisés)
+
+### Pattern "Context Split" (Performance)
+
+Pour éviter les re-rendus globaux, `LibraryContext` est séparé en deux :
+
+```typescript
+// Contexte READ-ONLY (données)
+const LibraryStateContext = createContext<LibraryContextState>();
+
+// Contexte WRITE-ONLY (actions)
+const LibraryDispatchContext = createContext<LibraryContextActions>();
+
+// Hooks ciblés
+export const useLibraryState = () => useContext(LibraryStateContext);
+export const useLibraryActions = () => useContext(LibraryDispatchContext);
+
+// Hook legacy (API compatible)
+export const useLibrary = () => ({
+	...useLibraryState(),
+	...useLibraryActions(),
+});
+```
+
+**Avantage** : Un composant utilisant uniquement `useLibraryActions()` ne se re-rend PAS lors des changements de données.
+
+### Autres Contexts
+
+| Contexte               | Responsabilité                             |
+| ---------------------- | ------------------------------------------ |
+| **CollectionsContext** | Gestion des workspaces multi-bibliothèques |
+| **SelectionContext**   | Sélection multiple, drag-select            |
+| **ProgressContext**    | Indicateurs de progression asynchrones     |
 
 ---
 
 ## Approche "Local-First" & Persistance
 
-### 1. Système de Fichiers Hybride
+### 1. Collections (Workspaces)
 
-L'application gère deux types de sources de données unifiées dans l'interface :
+L'application organise les fichiers via des "Collections" isolées :
 
-1. **Dossiers Physiques (Physical Folders)** : 
-   - Provenance : Disque dur local via `@tauri-apps/plugin-fs`.
-   - Accès : `readDir()`, `stat()` pour scanner les fichiers.
-   - URLs : Transformées via `convertFileSrc()` → protocol `asset://`.
-   - Persistance : Le chemin absolu est stocké en base SQLite.
-    
-2. **Dossiers Virtuels (Collections)** :
-   - Provenance : Création interne à l'application.
-   - Comportement : Structure purement logique stockée en base de données.
-   - Persistance : La définition du dossier est stockée dans SQLite.
+- **Collection** = Workspace indépendant (bibliothèque)
+- Chaque collection possède ses propres :
+  - **Dossiers sources** (liens vers disque)
+  - **Dossiers virtuels** (albums logiques)
+  - **Métadonnées** (tags AI, couleurs)
 
 ### 2. Base de Données Locale (SQLite)
 
-Nous utilisons `@tauri-apps/plugin-sql` avec une base SQLite pour stocker **trois** tables :
+SQLite via `@tauri-apps/plugin-sql` avec **4 tables** :
 
 ```sql
--- Table: handles (références aux dossiers scannés)
-CREATE TABLE handles (
-  id TEXT PRIMARY KEY,
-  path TEXT NOT NULL,
-  timestamp INTEGER NOT NULL,
-  isRoot INTEGER DEFAULT 0
-);
-
--- Table: metadata (enrichissements AI, tags, couleurs)
-CREATE TABLE metadata (
-  id TEXT PRIMARY KEY,
-  aiDescription TEXT,
-  aiTags TEXT,           -- JSON array
-  aiTagsDetailed TEXT,   -- JSON array with confidence
-  colorTag TEXT,
-  manualTags TEXT,       -- JSON array
-  folderId TEXT,
-  lastModified INTEGER NOT NULL
-);
-
--- Table: virtual_folders (collections créées par l'utilisateur)
-CREATE TABLE virtual_folders (
+-- Collections (workspaces)
+CREATE TABLE collections (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   createdAt INTEGER NOT NULL,
-  isVirtual INTEGER DEFAULT 1
+  lastOpenedAt INTEGER,
+  isActive INTEGER DEFAULT 0
+);
+
+-- Dossiers sources (physiques)
+CREATE TABLE collection_folders (
+  id TEXT PRIMARY KEY,
+  collectionId TEXT NOT NULL,
+  path TEXT NOT NULL,
+  name TEXT NOT NULL,
+  addedAt INTEGER NOT NULL,
+  FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE CASCADE
+);
+
+-- Dossiers virtuels (albums)
+CREATE TABLE virtual_folders (
+  id TEXT PRIMARY KEY,
+  collectionId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  createdAt INTEGER NOT NULL,
+  isVirtual INTEGER DEFAULT 1,
+  FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE CASCADE
+);
+
+-- Métadonnées enrichies
+CREATE TABLE metadata (
+  id TEXT PRIMARY KEY,
+  collectionId TEXT,
+  virtualFolderId TEXT,
+  aiDescription TEXT,
+  aiTags TEXT,           -- JSON array
+  aiTagsDetailed TEXT,   -- JSON avec confidence
+  colorTag TEXT,
+  manualTags TEXT,       -- JSON array
+  lastModified INTEGER NOT NULL,
+  FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE SET NULL
 );
 ```
 
-### 3. Asset Protocol
+### 3. Asset Protocol (Tauri)
 
 Tauri fournit un protocol sécurisé pour accéder aux images locales :
 
@@ -89,6 +168,7 @@ const assetUrl = convertFileSrc("/Users/john/Photos/image.jpg");
 ```
 
 **Configuration dans `tauri.conf.json`** :
+
 ```json
 "security": {
   "assetProtocol": {
@@ -102,16 +182,77 @@ const assetUrl = convertFileSrc("/Users/john/Photos/image.jpg");
 
 ## Optimisation des Performances
 
-### Virtualisation & Infinite Scroll
+### Virtualisation UI (@tanstack/react-virtual)
 
-Le rendu de milliers d'éléments DOM (`div`, `img`) est le goulot d'étranglement principal.
+Le rendu de milliers d'éléments DOM est résolu par la virtualisation :
 
-- **Stratégie** : "Infinite Scroll" dans `PhotoGrid`.
-- **Implémentation** : 
-  - On ne rend initialement que les 20-30 premiers items.
-  - Un "Sentinel" (div invisible) en bas de page est observé via `IntersectionObserver`.
-  - Lorsqu'il devient visible, on charge le chunk suivant d'images.
-  - Cela maintient le DOM léger et le défilement fluide (60fps).
+- **Stratégie** : Virtual Masonry avec `@tanstack/react-virtual`
+- **Implémentation** :
+  - Calcul des positions absolues via AspectRatio
+  - Distribution en colonnes (Masonry)
+  - Rendu uniquement des items visibles (+buffer)
+  - Auto-Scroll intelligent lors de la navigation clavier
+
+```typescript
+// PhotoGrid - Distribution Masonry
+const cols = useMemo(() => {
+	const columns: PortfolioItem[][] = Array.from(
+		{ length: gridColumns },
+		() => []
+	);
+	items.forEach((item, index) => {
+		const colIndex = index % gridColumns;
+		const targetColumn = columns[colIndex];
+		if (targetColumn) targetColumn.push(item);
+	});
+	return columns;
+}, [items, gridColumns]);
+
+// Virtualizer par colonne
+const rowVirtualizer = useVirtualizer({
+	count: colItems.length,
+	getScrollElement: () => containerRef.current,
+	estimateSize: (i) => {
+		const item = colItems[i];
+		if (item.width && item.height && columnWidth > 0) {
+			return columnWidth / (item.width / item.height) + GAP;
+		}
+		return 300 + GAP;
+	},
+	overscan: 5,
+});
+```
+
+### React.memo & Lazy Loading
+
+```typescript
+// PhotoCard optimisé
+const PhotoCardComponent: React.FC<PhotoCardProps> = ({ item, isSelected, ... }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <>
+      {!isLoaded && <div className="animate-pulse bg-white/5" />}
+      <motion.img
+        src={item.url}
+        onLoad={() => setIsLoaded(true)}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoaded ? 1 : 0 }}
+      />
+    </>
+  );
+};
+
+// Memoization avec comparaison custom
+export const PhotoCard = React.memo(PhotoCardComponent, (prev, next) => {
+  return (
+    prev.item === next.item &&
+    prev.isSelected === next.isSelected &&
+    prev.isFocused === next.isFocused
+    // Ignore les fonctions (onSelect, etc.)
+  );
+});
+```
 
 ### Code Splitting (Vite)
 
@@ -144,13 +285,12 @@ sequenceDiagram
     UI->>UI: Distribue vers folders physiques/virtuels
 ```
 
-1. **Scan Disque** : Lecture récursive via `readDir()` → Génération d'une liste de fichiers bruts.
-2. **Chargement DB** : Récupération des dossiers virtuels et des métadonnées depuis SQLite.
-3. **Hydratation & Distribution** : 
-   - Pour chaque fichier scanné, on vérifie s'il possède un `folderId` stocké dans ses métadonnées.
-   - Si oui, il est déplacé dans le dossier virtuel correspondant.
-   - Sinon, il reste dans son dossier physique d'origine.
-4. **Rendu** : L'état `folders` final est une fusion des dossiers physiques restants et des dossiers virtuels peuplés.
+1. **Scan Disque** : `readDir()` récursif via `@tauri-apps/plugin-fs`
+2. **Chargement DB** : Récupération des métadonnées et dossiers virtuels
+3. **Hydratation** :
+   - Chaque fichier est enrichi avec ses métadonnées (tags AI, couleurs)
+   - Si `virtualFolderId` existe, l'item est déplacé dans le dossier virtuel
+4. **Rendu** : État `folders` unifié (physiques + virtuels)
 
 ---
 
@@ -170,16 +310,17 @@ npm run tauri:build    # Génère .dmg / .app pour macOS
 
 Les permissions sont définies dans `src-tauri/capabilities/default.json` :
 
-| Permission | Scope | Description |
-|------------|-------|-------------|
-| `fs:allow-read-dir` | `$HOME/**` | Lecture des dossiers |
+| Permission           | Scope      | Description          |
+| -------------------- | ---------- | -------------------- |
+| `fs:allow-read-dir`  | `$HOME/**` | Lecture des dossiers |
 | `fs:allow-read-file` | `$HOME/**` | Lecture des fichiers |
-| `sql:allow-*` | Local DB | Opérations SQLite |
-| `dialog:default` | System | Dialogs natifs |
+| `sql:allow-*`        | Local DB   | Opérations SQLite    |
+| `dialog:default`     | System     | Dialogs natifs       |
 
 ### GitHub Actions CI/CD
 
 Le workflow `.github/workflows/release-macos.yml` :
+
 - Trigger : Push sur `main` ou dispatch manuel
 - Génère un draft release avec `.dmg` attaché
 - Version automatique depuis `tauri.conf.json`
@@ -192,9 +333,9 @@ L'application utilise **Vitest** pour garantir la fiabilité du cœur logique.
 
 ### Structure
 
-- **`tests/`** : Dossier racine contenant tous les tests unitaires.
-  - `geminiService.test.ts` : Mock le SDK Google GenAI pour vérifier les appels et l'utilisation stricte du modèle `gemini-3-flash-preview`.
-  - `fileHelpers.test.ts` : Mock Tauri FS pour vérifier la récursivité du scan de fichiers et la détection des types MIME.
+- **`tests/`** : Dossier racine contenant tous les tests unitaires
+  - `geminiService.test.ts` : Mock le SDK Google GenAI
+  - `fileHelpers.test.ts` : Mock Tauri FS pour scan récursif
 
 ### Exécution
 
@@ -202,5 +343,5 @@ L'application utilise **Vitest** pour garantir la fiabilité du cœur logique.
 npm run test
 ```
 
-- Environnement : `jsdom` (simulation DOM pour les composants React).
-- Mocks : `@tauri-apps/plugin-fs`, `@tauri-apps/api/core` mockés pour tests unitaires.
+- Environnement : `jsdom` (simulation DOM)
+- Mocks : `@tauri-apps/plugin-fs`, `@tauri-apps/api/core`

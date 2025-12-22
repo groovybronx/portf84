@@ -5,43 +5,171 @@ L'interface repose sur une séparation stricte entre les composants de présenta
 ## Architecture Générale
 
 ```
-components/
-├── PhotoGrid.tsx       # Vue grille avec masonry
-├── PhotoCarousel.tsx   # Vue carrousel 3D
-├── PhotoList.tsx       # Vue liste détaillée
-├── PhotoCard.tsx       # Vignette interactive (flip)
-├── ImageViewer.tsx     # Plein écran + métadonnées
-├── TopBar.tsx          # Barre d'outils principale
-├── FolderDrawer.tsx    # Panneau latéral navigation
-├── ContextMenu.tsx     # Menu clic-droit
-├── TagManager.tsx      # Gestion tags manuels
-├── AddTagModal.tsx     # Modal ajout tags
-├── SettingsModal.tsx   # Configuration API key
-└── topbar/             # Sous-composants TopBar
+src/features/
+├── library/components/
+│   ├── PhotoGrid.tsx       # Grille virtuelle (Masonry)
+│   ├── PhotoCarousel.tsx   # Vue carrousel 3D
+│   ├── PhotoList.tsx       # Vue liste détaillée
+│   └── PhotoCard.tsx       # Vignette interactive (flip)
+├── navigation/components/
+│   ├── TopBar.tsx          # Barre d'outils principale
+│   └── topbar/             # Sous-composants (Search, ColorFilter, etc.)
+├── collections/components/
+│   ├── FolderDrawer.tsx    # Panneau latéral navigation
+│   ├── CollectionManager.tsx
+│   ├── CreateFolderModal.tsx
+│   └── MoveToFolderModal.tsx
+├── vision/components/
+│   └── ImageViewer.tsx     # Plein écran + métadonnées
+├── tags/components/
+│   └── AddTagModal.tsx     # Modal ajout tags
+└── shared/components/
+    ├── ContextMenu.tsx     # Menu clic-droit
+    ├── SettingsModal.tsx   # Configuration API key
+    ├── ErrorBoundary.tsx   # Isolation erreurs
+    └── ui/                 # UI Kit (Button, Modal, GlassCard)
 ```
 
 ---
 
-## 1. PhotoGrid (Mode Grille)
+## 1. PhotoGrid (Mode Grille Virtuelle)
 
-Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
+Affiche une maçonnerie fluide d'images, capable de gérer des milliers d'items sans ralentissement.
 
-### Architecture : Maçonnerie Distribuée (JS-Distributed Masonry)
+### Architecture : Virtual Masonry (@tanstack/react-virtual)
 
-- *Problème du CSS pur (`column-count`)* : Il remplit les colonnes verticalement, ce qui casse l'ordre chronologique.
-- *Solution* : Algorithme JavaScript pour distribuer les items horizontalement (Item 1 → Col 1, Item 2 → Col 2...).
+**Problème du CSS `column-count`** : Il remplit les colonnes verticalement, ce qui casse l'ordre chronologique et empêche la virtualisation.
 
-### PhotoCard (Vignette Interactive)
+**Solution** : Distribution JavaScript en colonnes + Virtualisation par colonne
 
-- **Flip Animation** : `framer-motion` pour un retournement à 180° révélant les métadonnées.
-- **Optimisation 3D** : `preserve-3d` et `backface-visibility` pour performances fluides.
+```typescript
+// 1. Distribution Masonry (JS-Distributed)
+const cols = useMemo(() => {
+	const columns: PortfolioItem[][] = Array.from(
+		{ length: gridColumns },
+		() => []
+	);
+	items.forEach((item, index) => {
+		const colIndex = index % gridColumns;
+		columns[colIndex].push(item);
+	});
+	return columns;
+}, [items, gridColumns]);
+
+// 2. Virtualizer par colonne
+const rowVirtualizer = useVirtualizer({
+	count: items.length,
+	getScrollElement: () => scrollElement.current,
+	estimateSize: (i) => {
+		const item = items[i];
+		if (item.width && item.height && columnWidth > 0) {
+			return columnWidth / (item.width / item.height) + GAP;
+		}
+		return 300 + GAP; // Fallback
+	},
+	overscan: 5,
+});
+```
+
+### Auto-Scroll intelligent
+
+Lors de la navigation clavier, la grille **centre automatiquement** l'élément actif :
+
+```typescript
+// Détection du focus + scroll
+const scrollTarget = useMemo(() => {
+	if (!focusedId) return null;
+	const index = items.findIndex((i) => i.id === focusedId);
+	if (index === -1) return null;
+
+	return {
+		colIndex: index % gridColumns,
+		rowIndex: Math.floor(index / gridColumns),
+	};
+}, [focusedId, items, gridColumns]);
+
+// Transmission au virtualizer
+<VirtualColumn
+	scrollToIndex={
+		scrollTarget?.colIndex === index ? scrollTarget.rowIndex : null
+	}
+/>;
+
+// Dans VirtualColumn
+useEffect(() => {
+	if (
+		scrollToIndex !== null &&
+		scrollToIndex >= 0 &&
+		scrollToIndex < items.length
+	) {
+		rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
+	}
+}, [scrollToIndex, rowVirtualizer]);
+```
+
+### PhotoCard (Vignette Optimisée)
+
+**Optimisations appliquées** :
+
+1. **React.memo** : Ne se redessine que si ses propres props changent
+
+```typescript
+export const PhotoCard = React.memo(PhotoCardComponent, (prev, next) => {
+	return (
+		prev.item === next.item &&
+		prev.isSelected === next.isSelected &&
+		prev.isFocused === next.isFocused &&
+		prev.selectionMode === next.selectionMode &&
+		prev.showColorTags === next.showColorTags &&
+		prev.selectedTag === next.selectedTag
+		// Ignore les callbacks (onSelect, onHover, etc.)
+	);
+});
+```
+
+2. **Lazy Loading avec Skeleton** :
+
+```typescript
+const [isLoaded, setIsLoaded] = useState(false);
+
+return (
+	<GlassCard className="bg-gray-900/50">
+		{!isLoaded && <div className="absolute inset-0 bg-white/5 animate-pulse" />}
+		<motion.img
+			src={item.url}
+			loading="lazy"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: isLoaded ? 1 : 0 }}
+			transition={{ duration: 0.4 }}
+			onLoad={() => setIsLoaded(true)}
+		/>
+	</GlassCard>
+);
+```
+
+3. **Flip Animation** : `framer-motion` pour un retournement 3D révélant les métadonnées
+
+```typescript
+<motion.div
+	animate={{ rotateY: isFlipped ? 180 : 0 }}
+	style={{ transformStyle: "preserve-3d" }}
+>
+	<GlassCard style={{ backfaceVisibility: "hidden" }}>
+		{/* Face avant : Image */}
+	</GlassCard>
+	<GlassCard style={{ transform: "rotateY(180deg)" }}>
+		{/* Face arrière : Métadonnées */}
+	</GlassCard>
+</motion.div>
+```
 
 ### Slider de Colonnes
 
-| Position Slider | Colonnes | Résultat |
-|-----------------|----------|----------|
-| Gauche | 8 | Petites vignettes |
-| Droite | 2 | Grandes vignettes |
+| Position Slider | Colonnes | Résultat          |
+| --------------- | -------- | ----------------- |
+| Gauche          | 8        | Petites vignettes |
+| Centre          | 4        | Équilibré         |
+| Droite          | 2        | Grandes vignettes |
 
 ---
 
@@ -49,26 +177,44 @@ Affiche une maçonnerie fluide d'images avec un ordre de lecture optimisé.
 
 La barre d'outils principale avec trois zones distinctes :
 
-| Zone | Contenu | Comportement |
-|------|---------|--------------|
-| **Gauche** | Bibliothèque, Paramètres | Fixe |
-| **Centre** | Recherche, Filtres couleurs, Curseurs | Scrollable |
-| **Droite** | Sélecteur Vue, Dropdowns | Fixe |
+| Zone       | Contenu                               | Comportement |
+| ---------- | ------------------------------------- | ------------ |
+| **Gauche** | Menu Bibliothèque, Paramètres         | Fixe         |
+| **Centre** | Recherche, Filtres couleurs, Curseurs | Scrollable   |
+| **Droite** | Sélecteur Vue (Grid/Carousel/List)    | Fixe         |
+
+### Optimisation Context
+
+La TopBar utilise **uniquement** `useLibraryActions()` pour éviter les re-rendus :
+
+```typescript
+const TopBar: React.FC<TopBarProps> = ({ ... }) => {
+  // ❌ Avant : re-render à chaque changement de données
+  // const { setViewMode, setSearchTerm, folders } = useLibrary();
+
+  // ✅ Après : pas affecté par les changements de données
+  const { setViewMode, setSearchTerm } = useLibraryActions();
+  const { folders } = useLibraryState(); // Only if needed
+};
+```
 
 ### Smart Search
 
 Remplace l'ancien menu "Tags". Barre de recherche unifiée avec autosuggestion basée sur :
-- Tags AI
-- Tags manuels
+
+- Tags AI (`aiTags`)
+- Tags manuels (`manualTags`)
 - Noms de fichiers
+
+**Implémentation** : Utilise `Fuse.js` pour recherche floue (tolérance fautes)
 
 ---
 
 ## 3. FolderDrawer (Gestionnaire de Dossiers)
 
-Panneau latéral coulissant pour la navigation.
+Panneau latéral coulissant pour la navigation dans les Collections et Dossiers.
 
-### Sélection de Dossier
+### Sélection de Dossier (Native)
 
 Utilise `@tauri-apps/plugin-dialog` pour le sélecteur natif :
 
@@ -76,18 +222,26 @@ Utilise `@tauri-apps/plugin-dialog` pour le sélecteur natif :
 import { open } from "@tauri-apps/plugin-dialog";
 
 const selected = await open({
-  directory: true,
-  multiple: false,
-  title: "Select Photo Folder",
+	directory: true,
+	multiple: false,
+	title: "Sélectionner un Dossier Source",
 });
 ```
 
 ### Distinction Visuelle
 
-| Type | Icône | Description |
-|------|-------|-------------|
-| **Physique** | 💾 HardDrive (Bleu) | Dossier réel sur disque |
-| **Virtuel** | 💜 FolderHeart | Collection logique créée dans l'app |
+| Type         | Icône               | Description                         |
+| ------------ | ------------------- | ----------------------------------- |
+| **Physique** | 💾 HardDrive (Bleu) | Dossier réel sur disque             |
+| **Virtuel**  | 💜 FolderHeart      | Collection logique créée dans l'app |
+
+### Architecture Collections
+
+- Une **Collection** = Un espace de travail isolé
+- Chaque collection contient :
+  - Dossiers sources (liens disque)
+  - Dossiers virtuels (albums)
+  - Métadonnées isolées
 
 ---
 
@@ -97,9 +251,19 @@ Carrousel circulaire haute performance optimisé pour 60fps.
 
 ### Optimisations
 
-- **Background Statique** : Dégradé fixe au lieu d'image dynamique
+- **Background Statique** : Dégradé CSS fixe au lieu d'image dynamique
 - **Virtualisation Stricte** : Seules les images visibles (`VISIBLE_RANGE`) sont rendues
 - **Accélération Matérielle** : `will-change: transform, opacity`
+
+```typescript
+const VISIBLE_RANGE = 5; // Nombre d'items montés simultanément
+
+const visibleItems = useMemo(() => {
+	const start = Math.max(0, currentIndex - Math.floor(VISIBLE_RANGE / 2));
+	const end = Math.min(items.length, start + VISIBLE_RANGE);
+	return items.slice(start, end);
+}, [currentIndex, items]);
+```
 
 ---
 
@@ -109,11 +273,36 @@ Visualiseur modal pour inspection détaillée.
 
 ### Fonctionnalités
 
-- Navigation clavier (Flèches Gauche/Droite)
-- Lecture métadonnées EXIF (via `exif-js`)
+- Navigation clavier (Flèches Gauche/Droite, Esc pour fermer)
+- **AI Analysis en direct** :
+  - Bouton "Analyze" déclenche `analyzeImageStream()`
+  - Affichage du "Thinking Process" en temps réel (streaming)
+  - Persistance automatique des résultats
 - **TagManager intégré** : Ajout/Suppression rapide de tags
-- Déclenchement analyse AI
-- Tags couleurs modifiables
+- Tags couleurs modifiables (touches 1-6, 0 pour retirer)
+- Lecture métadonnées EXIF (via `exif-js`)
+
+### Thinking Process (Stream AI)
+
+```typescript
+const [thinking, setThinking] = useState("");
+const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+const handleAnalyze = async () => {
+	setIsAnalyzing(true);
+	setThinking("");
+
+	const result = await analyzeImageStream(
+		item,
+		(text) => setThinking(text), // Callback streaming
+		true // Enable thinking
+	);
+
+	// Mise à jour de l'item avec les résultats
+	onUpdateItem({ ...item, ...result });
+	setIsAnalyzing(false);
+};
+```
 
 ---
 
@@ -123,17 +312,28 @@ Menu contextuel personnalisé avec positionnement `fixed`.
 
 ### Actions Disponibles
 
-| Action | Description |
-|--------|-------------|
-| **Analyze (AI)** | Lance l'analyse Gemini |
-| **Add Tags** | Ouvre modal taguage |
+| Action                 | Description                  |
+| ---------------------- | ---------------------------- |
+| **Analyze (AI)**       | Lance l'analyse Gemini       |
+| **Add Tags**           | Ouvre modal taguage          |
 | **Move to Collection** | Déplace vers dossier virtuel |
-| **Color Tag** | Applique couleur (1-6) |
-| **Delete** | Suppression logique |
+| **Color Tag (1-6)**    | Applique couleur rapide      |
+| **Open**               | Ouvre en plein écran         |
+| **Delete**             | Suppression logique (Trash)  |
 
 ### Intelligence Contextuelle
 
 Si on clique-droit sur un item non sélectionné, il devient l'unique sélection avant d'exécuter l'action.
+
+```typescript
+const handleContextMove = (item: PortfolioItem) => {
+	if (!selectedIds.has(item.id)) {
+		clearSelection();
+		setSelectedIds(new Set([item.id]));
+	}
+	setIsMoveModalOpen(true);
+};
+```
 
 ---
 
@@ -141,9 +341,9 @@ Si on clique-droit sur un item non sélectionné, il devient l'unique sélection
 
 Composant dédié à la gestion des tags manuels.
 
-- **Autosuggestion** : Propose les tags existants lors de la saisie
-- **Persistance** : Sauvegarde immédiate dans SQLite
-- **Contextes** : ImageViewer sidebar, AddTagModal (batch)
+- **Autosuggestion** : Propose les tags existants lors de la saisie (via `availableTags`)
+- **Persistance** : Sauvegarde immédiate dans SQLite via `storageService.saveMetadata()`
+- **Contextes** : ImageViewer sidebar, AddTagModal (batch), ContextMenu
 
 ---
 
@@ -152,12 +352,19 @@ Composant dédié à la gestion des tags manuels.
 Modale de configuration globale.
 
 - **Accès** : Icône "Roue crantée" dans la TopBar
-- **Fonction** : Définir la **Clé API Gemini**
+- **Fonction principale** : Définir la **Clé API Gemini**
 - **Persistance** : `localStorage` (survit aux sessions)
+
+```typescript
+const handleSaveKey = (key: string) => {
+	localStorage.setItem("gemini_api_key", key);
+	setIsSettingsOpen(false);
+};
+```
 
 ---
 
-## 9. URLs d'Images
+## 9. URLs d'Images (Asset Protocol)
 
 Les images locales utilisent le protocol `asset://` de Tauri :
 
@@ -170,6 +377,8 @@ const url = convertFileSrc("/Users/john/photo.jpg");
 ```
 
 Cette approche :
-- Évite le chargement en mémoire (streaming natif)
+
+- Évite le chargement en mémoire RAM (streaming natif)
 - Respecte les permissions Tauri ACL
-- Fonctionne offline sans serveur
+- Fonctionne offline sans serveur HTTP
+- Supporte les MIME types natifs du système

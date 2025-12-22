@@ -4,40 +4,42 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 
 ## Stack Technologique
 
-| Technologie | Version | Rôle |
-|-------------|---------|------|
-| **React** | 19.x | Framework UI |
-| **Tailwind CSS** | 4.x | Styling (@theme syntax) |
-| **Tauri** | 2.x | Runtime natif |
-| **SQLite** | via plugin | Persistance locale |
-| **Framer Motion** | 12.x | Animations |
-| **Gemini AI** | @google/genai | Analyse d'images |
-| **Vitest** | 4.x | Tests unitaires |
+| Technologie                 | Version       | Rôle                    |
+| --------------------------- | ------------- | ----------------------- |
+| **React**                   | 19.x          | Framework UI            |
+| **Tailwind CSS**            | 4.x           | Styling (@theme syntax) |
+| **Tauri**                   | 2.x           | Runtime natif           |
+| **SQLite**                  | via plugin    | Persistance locale      |
+| **@tanstack/react-virtual** | 3.13          | Virtualisation UI       |
+| **Framer Motion**           | 12.x          | Animations              |
+| **Gemini AI**               | @google/genai | Analyse d'images        |
+| **Vitest**                  | 4.x           | Tests unitaires         |
 
 ---
 
 ## Sommaire
 
 1. [Architecture & Données](ARCHITECTURE.md)
-   - Stack technologique Tauri v2
-   - Base de données SQLite
+   - Structure Feature-Based (src/features)
+   - Contexts Split (State/Dispatch)
+   - Base de données SQLite (Collections)
    - Asset Protocol & permissions
    - Déploiement & CI/CD
-   
 2. [Composants UI & UX](COMPONENTS.md)
-   - Système de vues (Grid, Flow, List)
+   - Système de vues (Grid Virtuelle, Carousel, List)
+   - PhotoCard (React.memo + Lazy Loading)
    - Dialog natif Tauri
    - Moteur d'animation
-   
 3. [Service AI (Gemini)](AI_SERVICE.md)
    - Intégration de l'API
+   - Streaming & Thinking Process
    - Ingénierie du Prompt
    - Batch processing
-   
 4. [Interactions & Raccourcis](INTERACTIONS.md)
-   - Gestion du clavier
+   - Gestion du clavier (Auto-Scroll)
    - Système de tagging couleur
    - Drag & Drop
+   - Sélection multiple
 
 ---
 
@@ -73,12 +75,14 @@ npm run tauri:build
 
 ## Conventions de Code
 
-| Convention | Description |
-|------------|-------------|
-| **Hooks-based** | État global dans `App.tsx` via hooks custom |
-| **Glassmorphism** | `backdrop-blur` + couleurs semi-transparentes |
-| **Performance** | `useMemo` pour tris/filtres, lazy loading images |
-| **Persistance** | SQLite via `@tauri-apps/plugin-sql` |
+| Convention         | Description                                     |
+| ------------------ | ----------------------------------------------- |
+| **Feature-Based**  | Architecture modulaire (`src/features`)         |
+| **Context Split**  | Séparation State/Dispatch pour performance      |
+| **React.memo**     | Optimisation rendu des composants critiques     |
+| **Virtualisation** | `@tanstack/react-virtual` pour grilles infinies |
+| **Glassmorphism**  | `backdrop-blur` + couleurs semi-transparentes   |
+| **Persistance**    | SQLite via `@tauri-apps/plugin-sql`             |
 
 ---
 
