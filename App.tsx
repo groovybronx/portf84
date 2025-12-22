@@ -21,11 +21,10 @@ import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./types";
 import { AnimatePresence, motion } from "framer-motion";
 import { analyzeImage } from "./services/geminiService";
 
-// Hooks
-import { useCollections } from "./hooks/useCollections";
-import { useLibrary } from "./hooks/useLibrary";
-import { useViewOptions } from "./hooks/useViewOptions";
-import { useSelection } from "./hooks/useSelection";
+// Contexts
+import { useCollections } from "./contexts/CollectionsContext";
+import { useLibrary } from "./contexts/LibraryContext";
+import { useSelection } from "./contexts/SelectionContext";
 import { useBatchAI } from "./hooks/useBatchAI";
 
 const App: React.FC = () => {
@@ -35,7 +34,7 @@ const App: React.FC = () => {
   const [hoveredItem, setHoveredItem] = useState<PortfolioItem | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // --- 1. Collections Layer (NEW) ---
+  // --- Context Consumption ---
   const {
     collections,
     activeCollection,
@@ -48,7 +47,6 @@ const App: React.FC = () => {
     removeSourceFolder,
   } = useCollections();
 
-  // --- 2. Library & Data Layer ---
   const {
     folders,
     activeFolderIds,
@@ -60,17 +58,6 @@ const App: React.FC = () => {
     toggleFolderSelection,
     moveItemsToFolder,
     clearLibrary,
-  } = useLibrary(activeCollection?.id ?? null); // Pass collection ID for isolation
-
-  // Wrapper to keep selectedItem in sync with library updates
-  const updateItem = (item: PortfolioItem) => {
-    libraryUpdateItem(item);
-    // If the modified item is the one currently open, update local state immediately
-    setSelectedItem((prev) => (prev && prev.id === item.id ? item : prev));
-  };
-
-  // --- 2. View & Filter Layer ---
-  const {
     viewMode,
     setViewMode,
     gridColumns,
@@ -88,9 +75,8 @@ const App: React.FC = () => {
     availableTags,
     processedItems,
     currentItems,
-  } = useViewOptions({ folders, activeFolderIds });
+  } = useLibrary();
 
-  // --- 3. Selection & Drag Layer ---
   const {
     selectionMode,
     setSelectionMode,
@@ -104,7 +90,13 @@ const App: React.FC = () => {
     handleMouseMove,
     handleMouseUp,
     registerItemRef,
-  } = useSelection(viewMode, processedItems);
+  } = useSelection();
+
+  // Wrapper to keep selectedItem in sync with library updates
+  const updateItem = (item: PortfolioItem) => {
+    libraryUpdateItem(item);
+    setSelectedItem((prev) => (prev && prev.id === item.id ? item : prev));
+  };
 
   // --- 4. AI Layer ---
   const { isBatchProcessing, batchProgress, addToQueue } =
@@ -363,9 +355,9 @@ const App: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-background text-white selection:bg-blue-500/30"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
+      className="main-app bg-surface min-h-screen overflow-hidden flex flex-col"
+      onMouseDown={(e) => handleMouseDown(e, viewMode, processedItems)}
+      onMouseMove={(e) => handleMouseMove(e, processedItems)}
       onMouseUp={handleMouseUp}
     >
       {/* Drag Selection Box */}
@@ -403,7 +395,7 @@ const App: React.FC = () => {
           sortDirection={sortDirection}
           onSortChange={setSortOption}
           onSortDirectionChange={() =>
-            setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
+            setSortDirection(sortDirection === "asc" ? "desc" : "asc")
           }
           selectedTag={selectedTag}
           availableTags={availableTags}
