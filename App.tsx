@@ -303,21 +303,6 @@ const App: React.FC = () => {
 	// --- RENDER ---
 
 	const renderView = () => {
-		const commonProps = {
-			onSelect: setSelectedItem,
-			selectionMode,
-			selectedIds,
-			onToggleSelect: toggleSelection,
-			showColorTags: true,
-			registerItemRef,
-			onContextMenu: (e: React.MouseEvent, item: PortfolioItem) => {
-				e.preventDefault();
-				setContextMenu({ x: e.clientX, y: e.clientY, item });
-			},
-			onTagClick: setSelectedTag,
-			selectedTag,
-		};
-
 		switch (viewMode) {
 			case ViewMode.GRID:
 				return (
@@ -336,8 +321,11 @@ const App: React.FC = () => {
 						onFocusChange={setFocusedId}
 					/>
 				);
+			case ViewMode.CAROUSEL:
 				return (
 					<PhotoCarousel
+						onSelect={setSelectedItem}
+						onFocusedItem={(i) => setFocusedId(i.id)}
 					/>
 				);
 			case ViewMode.LIST:
