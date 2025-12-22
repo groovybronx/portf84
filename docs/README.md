@@ -22,7 +22,7 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 1. [Architecture & Données](ARCHITECTURE.md)
    - Structure Feature-Based (src/features)
    - Contexts Split (State/Dispatch)
-   - Base de données SQLite (Collections)
+   - Base de données SQLite (Projets & Shadow Folders)
    - Asset Protocol & permissions
    - Déploiement & CI/CD
 2. [Composants UI & UX](COMPONENTS.md)

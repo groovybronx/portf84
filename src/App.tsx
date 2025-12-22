@@ -301,7 +301,7 @@ const App: React.FC = () => {
 	const handleDirectoryPicker = async () => {
 		try {
 			if (!activeCollection) {
-				alert("Veuillez d'abord créer ou sélectionner une Collection");
+				alert("Veuillez d'abord créer ou sélectionner un Projet");
 				setIsCollectionManagerOpen(true);
 				return;
 			}

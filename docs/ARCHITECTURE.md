@@ -35,7 +35,7 @@ src/
 ├── features/           # Domaines fonctionnels
 │   ├── library/        # Grille photos, cartes, sélection
 │   ├── navigation/     # TopBar et composants associés
-│   ├── collections/    # Gestionnaire dossiers, Collections
+│   ├── collections/    # Gestionnaire dossiers, Projets
 │   ├── vision/         # AI Analysis, ImageViewer
 │   └── tags/           # Système de tagging
 ├── shared/             # Ressources transverses
@@ -96,25 +96,25 @@ export const useLibrary = () => ({
 
 ## Approche "Local-First" & Persistance
 
-### 1. Collections (Workspaces)
+### 1. Projets et Shadow Folders
 
-L'application organise les fichiers via des "Collections" isolées :
+L'application organise les fichiers via des "Projets" isolés :
 
-- **Collection** = Workspace indépendant (bibliothèque)
-- Chaque collection possède ses propres :
+- **Projet** = Workspace indépendant (anciennement "Collection")
+- Chaque projet possède ses propres :
   - **Dossiers sources** (liens vers disque, lecture seule)
   - **Shadow folders** (clones virtuels auto-créés, modifiables)
-  - **Dossiers virtuels** (albums manuels)
+  - **Collections** (albums manuels créés par l'utilisateur)
   - **Métadonnées** (tags AI, couleurs)
 
-#### Shadow Folders (Nouveau)
+#### Shadow Folders (Architecture Non-Destructive)
 
 Pour chaque dossier source ajouté, un **shadow folder** est automatiquement créé. Ce dossier virtuel :
 
 - Contient les mêmes items que le dossier source
-- Permet des modifications **non-destructives** (tags, déplacement, "suppression")
+- Permet des modifications **non-destructives** (tags, déplacement vers collections)
 - N'affecte jamais les fichiers sources originaux
-- Support la suppression virtuelle via flag `isHidden`
+- Est visible dans la section "Dossiers de Travail" du FolderDrawer
 
 ```
 Dossier Source (/Photos/Vacances) [lecture seule]
@@ -169,7 +169,6 @@ CREATE TABLE metadata (
   aiTagsDetailed TEXT,   -- JSON avec confidence
   colorTag TEXT,
   manualTags TEXT,       -- JSON array
-  isHidden INTEGER DEFAULT 0,  -- NEW: Suppression virtuelle
   lastModified INTEGER NOT NULL,
   FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE SET NULL
 );

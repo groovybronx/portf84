@@ -106,7 +106,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 								<div className="flex items-center justify-between">
 									<div className="flex-1">
 										<p className="text-xs text-blue-400 font-medium uppercase tracking-wide">
-											Collection Active
+											Projet Actif
 										</p>
 										<p className="text-sm text-white font-semibold truncate">
 											{activeCollection.name}
@@ -117,7 +117,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 										size="icon"
 										onClick={onManageCollections}
 										className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
-										title="Gérer les Collections"
+										title="Gérer les Projets"
 									>
 										<Settings size={16} />
 									</Button>
@@ -129,7 +129,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						{!activeCollection && (
 							<div className="mb-4 p-4 bg-yellow-600/10 border border-yellow-500/30 rounded-xl text-center">
 								<p className="text-xs text-yellow-400 mb-2">
-									Aucune Collection active
+									Aucun Projet actif
 								</p>
 								<Button
 									variant="ghost"
@@ -137,7 +137,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 									onClick={onManageCollections}
 									className="text-yellow-300 hover:text-yellow-200 hover:bg-yellow-500/10 underline decoration-yellow-300/30 underline-offset-2"
 								>
-									Créer ou sélectionner une Collection
+									Créer ou sélectionner un Projet
 								</Button>
 							</div>
 						)}

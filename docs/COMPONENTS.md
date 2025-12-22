@@ -15,7 +15,7 @@ src/features/
 │   ├── TopBar.tsx          # Barre d'outils principale
 │   └── topbar/             # Sous-composants (Search, ColorFilter, etc.)
 ├── collections/components/
-│   ├── FolderDrawer.tsx    # Panneau latéral navigation
+│   ├── FolderDrawer.tsx    # Panneau latéral navigation (Projets)
 │   ├── CollectionManager.tsx
 │   ├── CreateFolderModal.tsx
 │   └── MoveToFolderModal.tsx
