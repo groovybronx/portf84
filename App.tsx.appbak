@@ -322,36 +322,32 @@ const App: React.FC = () => {
 			case ViewMode.GRID:
 				return (
 					<PhotoGrid
-						onSelect={setSelectedItem}
+						items={processedItems}
+						{...commonProps}
 						onHover={(i) => {
 							setHoveredItem(i);
 							if (i) setFocusedId(i.id);
 						}}
-						onContextMenu={(e, item) => {
-							e.preventDefault();
-							setContextMenu({ x: e.clientX, y: e.clientY, item });
-						}}
-						onTagClick={(tag) => setSelectedTag(tag)}
 						focusedId={focusedId}
 						onFocusChange={setFocusedId}
+						columns={gridColumns}
 					/>
 				);
+			case ViewMode.CAROUSEL:
 				return (
 					<PhotoCarousel
+						items={processedItems}
+						onSelect={setSelectedItem}
+						showColorTags={true}
+						onFocusedItem={(i) => setFocusedId(i.id)}
 					/>
 				);
 			case ViewMode.LIST:
 				return (
 					<PhotoList
-						onSelect={setSelectedItem}
+						items={processedItems}
+						{...commonProps}
 						onHover={setHoveredItem}
-						onContextMenu={(e, item) => {
-							e.preventDefault();
-							setContextMenu({ x: e.clientX, y: e.clientY, item });
-						}}
-						onTagClick={(tag) => setSelectedTag(tag)}
-						focusedId={focusedId}
-						onFocusChange={setFocusedId}
 					/>
 				);
 			default:
