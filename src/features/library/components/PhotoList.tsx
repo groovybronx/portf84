@@ -83,7 +83,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 							{/* Thumbnail */}
 							<div className="shrink-0 w-32 h-32 rounded-lg overflow-hidden bg-glass-bg-accent">
 								<img
-									src={item.path}
+									src={item.url}
 									alt={item.name}
 									className="w-full h-full object-cover"
 									loading="lazy"

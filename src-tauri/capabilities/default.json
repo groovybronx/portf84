@@ -1,37 +1,23 @@
 {
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "default",
-  "description": "enables the default permissions",
-  "windows": ["main"],
-  "permissions": [
-    "core:default",
-    "core:image:default",
-    "fs:default",
-    "fs:allow-read-dir",
-    "fs:allow-app-read",
-    "fs:allow-app-write",
-    "fs:allow-stat",
-    "dialog:default",
-    "sql:default",
-    {
-      "identifier": "fs:allow-read-dir",
-      "allow": [
-        {
-          "path": "$HOME/**"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:allow-read-file",
-      "allow": [
-        {
-          "path": "$HOME/**"
-        }
-      ]
-    },
-    "sql:allow-load",
-    "sql:allow-execute",
-    "sql:allow-select",
-    "os:default"
-  ]
+	"$schema": "../gen/schemas/desktop-schema.json",
+	"identifier": "default",
+	"description": "enables the default permissions",
+	"windows": ["main"],
+	"permissions": [
+		"core:default",
+		"core:image:default",
+		"fs:default",
+		"fs:allow-read-dir",
+		"fs:allow-read-file",
+		"fs:allow-write-file",
+		"fs:allow-stat",
+		"fs:allow-exists",
+		"fs:scope-home-recursive",
+		"dialog:default",
+		"sql:default",
+		"sql:allow-load",
+		"sql:allow-execute",
+		"sql:allow-select",
+		"os:default"
+	]
 }

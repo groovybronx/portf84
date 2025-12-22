@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
 import { useSelection } from "../../../contexts/SelectionContext";
+import { Button } from "../../../shared/components/ui";
 
 // Sub-components
 import { SearchField } from "./topbar/SearchField";
@@ -98,13 +99,13 @@ export const TopBar: React.FC<TopBarProps> = ({
 				<div className="glass-surface rounded-2xl shadow-xl p-2 sm:p-3 flex items-center max-w-[95vw]">
 					{/* --- LEFT SECTION --- */}
 					<div className="flex items-center gap-2 shrink-0">
-						<button
+						<Button
+							variant="ghost"
+							size="icon"
 							onClick={() => setIsPinned(!isPinned)}
-							className={`p-2 rounded-lg transition-colors ${
-								isPinned
-									? "text-blue-400 bg-glass-bg-accent"
-									: "text-gray-500 hover:text-white"
-							}`}
+							className={
+								isPinned ? "text-blue-400 bg-glass-bg-accent" : "text-gray-500"
+							}
 							title={isPinned ? "Unpin Topbar" : "Pin Topbar"}
 						>
 							{isPinned ? (
@@ -112,24 +113,27 @@ export const TopBar: React.FC<TopBarProps> = ({
 							) : (
 								<PinOff size={16} />
 							)}
-						</button>
+						</Button>
 						<div className="h-6 w-px bg-glass-border/10 mx-1 hidden sm:block" />
-						<button
+						<Button
+							variant="ghost"
 							onClick={onOpenFolders}
-							className="p-2 sm:px-3 sm:py-2 rounded-lg hover:bg-glass-bg-accent text-blue-400 hover:text-white flex items-center gap-2 transition-colors border border-transparent hover:border-glass-border-light"
+							leftIcon={<FolderCog size={18} />}
+							className="text-blue-400 hover:text-white"
 						>
-							<FolderCog size={18} />
-							<span className="text-sm font-medium hidden md:inline max-w-[100px] truncate">
+							<span className="hidden md:inline max-w-[100px] truncate">
 								{folderName || "Library"}
 							</span>
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
 							onClick={onOpenSettings}
-							className="p-2 rounded-lg hover:bg-glass-bg-accent text-gray-500 hover:text-white transition-colors"
+							className="text-gray-500 hover:text-white"
 							title="Settings"
 						>
 							<Settings size={18} />
-						</button>
+						</Button>
 					</div>
 
 					<div className="h-6 w-px bg-glass-border/10 mx-2 hidden sm:block shrink-0" />

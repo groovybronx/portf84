@@ -110,7 +110,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	};
 
 	return (
-		<div className="h-full flex flex-col items-center justify-center px-8 py-6 relative">
+		<div className="h-screen flex flex-col items-center justify-center px-8 pt-24 pb-0 relative">
 			{/* Navigation Buttons */}
 			<button
 				onClick={handlePrev}
@@ -153,7 +153,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 					>
 						<div className="relative max-w-5xl max-h-full">
 							<img
-								src={currentItem.path}
+								src={currentItem.url}
 								alt={currentItem.name}
 								className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl"
 							/>
