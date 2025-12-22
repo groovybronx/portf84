@@ -17,8 +17,7 @@ import {
 	Palette,
 } from "lucide-react";
 import { useVision } from "../hooks/useVision";
-// // import { ImageMetadataView } from "./ImageMetadataView";  // TODO: migrate to vision feature
-// // import { TagManager } from "./TagManager";  // TODO: migrate to vision feature
+import { TagManager } from "../../tags/components/TagManager";
 
 interface ImageViewerProps {
 	item: PortfolioItem;
@@ -438,10 +437,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 								{error && <p className="text-red-400 text-xs mt-2">{error}</p>}
 							</div>
 
-							{/* Tag Manager (Relocated Phase 7) */}
-							<div className="p-4 text-sm text-gray-500 italic">
-								Tag manager coming soon
-							</div>
+							{/* Tag Manager */}
+							<TagManager
+								item={item}
+								onUpdateItem={onUpdateItem}
+								availableTags={availableTags}
+							/>
 						</motion.div>
 					)}
 				</AnimatePresence>
