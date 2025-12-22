@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FolderCog, Pin, PinOff, Settings } from "lucide-react";
+import { FolderCog, Pin, PinOff, Settings, ShieldAlert } from "lucide-react";
 import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
@@ -55,6 +55,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 		setViewMode,
 		gridColumns,
 		setGridColumns,
+		autoAnalyzeEnabled,
 	} = useLibrary();
 
 	const { selectionMode, setSelectionMode, selectedIds, clearSelection } =
@@ -135,6 +136,16 @@ export const TopBar: React.FC<TopBarProps> = ({
 							<Settings size={18} />
 						</Button>
 					</div>
+
+					{/* AUTO-ANALYZE SAFETY INDICATOR */}
+					{autoAnalyzeEnabled && (
+						<div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/50 rounded-full animate-pulse mx-2 shrink-0 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+							<ShieldAlert size={14} className="text-red-500" />
+							<span className="text-[10px] font-bold text-red-500 hidden lg:inline tracking-wider uppercase">
+								Auto-Analyze Active
+							</span>
+						</div>
+					)}
 
 					<div className="h-6 w-px bg-glass-border/10 mx-2 hidden sm:block shrink-0" />
 

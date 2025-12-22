@@ -55,6 +55,7 @@ const App: React.FC = () => {
 		updateItem: libraryUpdateItem,
 		createFolder: createVirtualFolder,
 		deleteFolder,
+		removeFolderByPath,
 		toggleFolderSelection,
 		moveItemsToFolder,
 		clearLibrary,
@@ -421,7 +422,7 @@ const App: React.FC = () => {
 						onManageCollections={() => setIsCollectionManagerOpen(true)}
 						onRemoveSourceFolder={async (path) => {
 							await removeSourceFolder(path);
-							// Optionally reload library here
+							removeFolderByPath(path);
 						}}
 					/>
 				</div>

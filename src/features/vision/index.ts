@@ -1,2 +1,3 @@
 export { ImageViewer } from "./components/ImageViewer";
-export { analyzeImage } from "./services/geminiService";
+export { analyzeImage, analyzeImageStream } from "./services/geminiService";
+export { useVision } from "./hooks/useVision";

@@ -31,12 +31,22 @@ interface LibraryState {
 	activeColorFilter: string | null;
 	sortOption: SortOption;
 	sortDirection: SortDirection;
+	// AI Settings
+	autoAnalyzeEnabled: boolean;
 }
 
 type LibraryAction =
 	| { type: "SET_FOLDERS"; payload: Folder[] }
 	| { type: "ADD_FOLDER"; payload: Folder }
 	| { type: "REMOVE_FOLDER"; payload: string }
+	| { type: "REMOVE_FOLDER_BY_PATH"; payload: string }
+	| {
+			type: "MERGE_FOLDERS";
+			payload: {
+				foldersToAdd: Folder[];
+				virtualFoldersMap: Map<string, PortfolioItem[]>;
+			};
+	  }
 	| { type: "UPDATE_FOLDER"; payload: Folder }
 	| { type: "SET_ACTIVE_FOLDER_IDS"; payload: Set<string> }
 	| { type: "TOGGLE_FOLDER"; payload: string }
@@ -46,8 +56,10 @@ type LibraryAction =
 	| { type: "SET_SELECTED_TAG"; payload: string | null }
 	| { type: "SET_ACTIVE_COLOR_FILTER"; payload: string | null }
 	| { type: "SET_SORT_OPTION"; payload: SortOption }
+	| { type: "SET_SORT_OPTION"; payload: SortOption }
 	| { type: "SET_SORT_DIRECTION"; payload: SortDirection }
-	| { type: "CLEAR_LIBRARY"; payload: void };
+	| { type: "CLEAR_LIBRARY"; payload: void }
+	| { type: "SET_AUTO_ANALYZE"; payload: boolean };
 
 interface LibraryContextType extends LibraryState {
 	// Computed values
@@ -61,6 +73,7 @@ interface LibraryContextType extends LibraryState {
 	updateItem: (item: PortfolioItem) => void;
 	createFolder: (name: string) => string;
 	deleteFolder: (id: string) => void;
+	removeFolderByPath: (path: string) => void;
 	toggleFolderSelection: (id: string) => void;
 	moveItemsToFolder: (
 		itemIds: Set<string>,
@@ -77,6 +90,7 @@ interface LibraryContextType extends LibraryState {
 	setActiveColorFilter: (color: string | null) => void;
 	setSortOption: (option: SortOption) => void;
 	setSortDirection: (direction: SortDirection) => void;
+	setAutoAnalyze: (enabled: boolean) => void;
 }
 
 // Reducer
@@ -94,6 +108,46 @@ function libraryReducer(
 				...state,
 				folders: state.folders.filter((f) => f.id !== action.payload),
 			};
+		case "REMOVE_FOLDER_BY_PATH":
+			return {
+				...state,
+				folders: state.folders.filter((f) => f.path !== action.payload),
+			};
+		case "MERGE_FOLDERS": {
+			const { foldersToAdd, virtualFoldersMap } = action.payload;
+
+			// Update existing virtual folders with new items
+			const updatedFolders = state.folders.map((folder) => {
+				if (folder.isVirtual && virtualFoldersMap.has(folder.id)) {
+					const newItems = virtualFoldersMap.get(folder.id) || [];
+					// Merge items avoiding duplicates
+					const existingIds = new Set(folder.items.map((i) => i.id));
+					const distinctNewItems = newItems.filter(
+						(i) => !existingIds.has(i.id)
+					);
+					return {
+						...folder,
+						items: [...folder.items, ...distinctNewItems],
+					};
+				}
+				return folder;
+			});
+
+			// Filter out physical folders that are being re-added (to avoid duplicates)
+			const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
+			const keptPhysical = updatedFolders.filter(
+				(f) => !f.isVirtual && !newPhysicalIds.has(f.id)
+			);
+
+			// New folders list: Updated Virtual + Kept Physical + New Physical
+			// Need to be careful not to lose virtual folders that weren't updated
+			const virtualFolders = updatedFolders.filter((f) => f.isVirtual); // These are already updated above
+
+			return {
+				...state,
+				folders: [...virtualFolders, ...keptPhysical, ...foldersToAdd],
+			};
+		}
 		case "UPDATE_FOLDER":
 			return {
 				...state,
@@ -143,6 +197,8 @@ function libraryReducer(
 				folders: [],
 				activeFolderIds: new Set(["all"]),
 			};
+		case "SET_AUTO_ANALYZE":
+			return { ...state, autoAnalyzeEnabled: action.payload };
 		default:
 			return state;
 	}
@@ -167,6 +223,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		activeColorFilter: null,
 		sortOption: "date",
 		sortDirection: "desc",
+		autoAnalyzeEnabled: false,
 	});
 
 	// Clear library when collection changes to null
@@ -274,24 +331,12 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 					activeCollection.id
 				);
 
-			const updatedVirtualFolders = storedVirtual.map((vf) => {
-				const newItems = virtualFoldersMap.get(vf.id) || [];
-				const prevVF = state.folders.find((p) => p.id === vf.id);
-				const prevItems = prevVF ? prevVF.items : [];
-				return { ...vf, items: [...prevItems, ...newItems], isVirtual: true };
+			dispatch({
+				type: "MERGE_FOLDERS",
+				payload: { foldersToAdd, virtualFoldersMap },
 			});
 
-			const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
-			const keptPhysical = state.folders.filter(
-				(f) => !f.isVirtual && !newPhysicalIds.has(f.id)
-			);
-			const newFolders = [
-				...updatedVirtualFolders,
-				...keptPhysical,
-				...foldersToAdd,
-			];
-
-			dispatch({ type: "SET_FOLDERS", payload: newFolders });
+			// Removed manual state calculation that caused race condition
 
 			if (foldersToAdd.length > 0 || virtualFoldersMap.size > 0) {
 				dispatch({ type: "SET_ACTIVE_FOLDER_IDS", payload: new Set(["all"]) });
@@ -308,21 +353,39 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		console.log("[LibraryContext] importFiles not yet implemented");
 	}, []);
 
-	const updateItem = useCallback((updated: PortfolioItem) => {
-		const updatedFolders = state.folders.map((folder) => {
-			if (!updated.folderId || folder.id === updated.folderId) {
-				return {
-					...folder,
-					items: folder.items.map((item) =>
-						item.id === updated.id ? updated : item
-					),
-				};
-			}
-			return folder;
-		});
-		dispatch({ type: "SET_FOLDERS", payload: updatedFolders });
-		storageService.saveMetadata(updated, updated.path || updated.name);
-	}, []);
+	const updateItem = useCallback(
+		(updated: PortfolioItem) => {
+			// Use functional update to ensure we have latest state
+			let updatedFolders: Folder[] = [];
+			let currentFolders: Folder[] = [];
+
+			// Access current value from state via a ref or by re-dispatching?
+			// React clean pattern: We should probably just dispatch an UPDATE_ITEM action
+			// rather than calculating it here, but to minimize refactor:
+
+			// FIX: We need to trust that 'state.folders' is fresh because this function
+			// should be recreated when 'state.folders' changes.
+			// However, to be absolutely safe and fix the reported bug where folders might reset,
+			// let's ensure we are using the dependency correctly.
+			// The original code had [] dependency, which DEFINITELY caused stale closure.
+
+			updatedFolders = state.folders.map((folder) => {
+				if (!updated.folderId || folder.id === updated.folderId) {
+					return {
+						...folder,
+						items: folder.items.map((item) =>
+							item.id === updated.id ? updated : item
+						),
+					};
+				}
+				return folder;
+			});
+
+			dispatch({ type: "SET_FOLDERS", payload: updatedFolders });
+			storageService.saveMetadata(updated, updated.path || updated.name);
+		},
+		[state.folders]
+	);
 
 	const createFolder = useCallback(
 		(name: string): string => {
@@ -349,6 +412,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		dispatch({ type: "REMOVE_FOLDER", payload: id });
 		dispatch({ type: "TOGGLE_FOLDER", payload: id }); // Remove from active if present
 		storageService.deleteVirtualFolder(id);
+	}, []);
+
+	const removeFolderByPath = useCallback((path: string) => {
+		dispatch({ type: "REMOVE_FOLDER_BY_PATH", payload: path });
 	}, []);
 
 	const toggleFolderSelection = useCallback((id: string) => {
@@ -429,6 +496,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		dispatch({ type: "SET_SORT_DIRECTION", payload: direction });
 	}, []);
 
+	const setAutoAnalyze = useCallback((enabled: boolean) => {
+		dispatch({ type: "SET_AUTO_ANALYZE", payload: enabled });
+	}, []);
+
 	const value: LibraryContextType = {
 		...state,
 		availableTags,
@@ -439,6 +510,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		updateItem,
 		createFolder,
 		deleteFolder,
+		removeFolderByPath,
 		toggleFolderSelection,
 		moveItemsToFolder,
 		clearLibrary,
@@ -449,6 +521,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		setActiveColorFilter,
 		setSortOption,
 		setSortDirection,
+		setAutoAnalyze,
 	};
 
 	return (

@@ -16,7 +16,7 @@ import {
 	ChevronRight,
 	Palette,
 } from "lucide-react";
-import { analyzeImage } from "../services/geminiService";
+import { useVision } from "../hooks/useVision";
 // // import { ImageMetadataView } from "./ImageMetadataView";  // TODO: migrate to vision feature
 // // import { TagManager } from "./TagManager";  // TODO: migrate to vision feature
 
@@ -39,8 +39,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 	showColorTags = false,
 	availableTags,
 }) => {
-	const [analyzing, setAnalyzing] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const { analyzing, thinkingText, error, analyze, reset } =
+		useVision(onUpdateItem);
+	const [deepAnalysis, setDeepAnalysis] = useState(false);
 	const [showMetadata, setShowMetadata] = useState(false);
 	const [dimensions, setDimensions] = useState<{
 		width: number;
@@ -53,8 +54,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
 	// Reset local state when the item changes (navigation)
 	useEffect(() => {
-		setAnalyzing(false);
-		setError(null);
+		reset();
+		setShowMetadata(false);
 		setDimensions(
 			item.width && item.height
 				? { width: item.width, height: item.height }
@@ -77,23 +78,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [onNext, onPrev, onClose]);
 
-	const handleAnalyze = async () => {
-		setAnalyzing(true);
-		setError(null);
-		try {
-			const result = await analyzeImage(item);
-			onUpdateItem({
-				...item,
-				aiDescription: result.description,
-				aiTags: result.tags,
-				aiTagsDetailed: result.tagsDetailed,
-			});
-		} catch (e) {
-			console.error(e);
-			setError("AI Analysis unavailable. Check API Key.");
-		} finally {
-			setAnalyzing(false);
-		}
+	const handleAnalyze = () => {
+		analyze(item, deepAnalysis);
 	};
 
 	const handleShare = async () => {
@@ -240,7 +226,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
 				<AnimatePresence mode="wait">
 					{showMetadata ? (
-						<div key="metadata" className="p-4 text-sm text-gray-500 italic">Metadata view coming soon</div>
+						<div key="metadata" className="p-4 text-sm text-gray-500 italic">
+							Metadata view coming soon
+						</div>
 					) : (
 						<motion.div
 							key="overview"
@@ -333,20 +321,51 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 								</div>
 
 								{!item.aiDescription && !analyzing ? (
-									<button
-										onClick={handleAnalyze}
-										className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
-									>
-										<Sparkles
-											size={16}
-											className="group-hover:rotate-12 transition-transform"
-										/>
-										Generate Description
-									</button>
+									<>
+										<button
+											onClick={handleAnalyze}
+											className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
+										>
+											<Sparkles
+												size={16}
+												className="group-hover:rotate-12 transition-transform"
+											/>
+											Generate Description
+										</button>
+										<div className="flex items-center gap-2 justify-center mt-2">
+											<input
+												type="checkbox"
+												id="deepMode"
+												checked={deepAnalysis}
+												onChange={(e) => setDeepAnalysis(e.target.checked)}
+												className="rounded border-glass-border bg-glass-bg-accent text-blue-500 focus:ring-blue-500/50"
+											/>
+											<label
+												htmlFor="deepMode"
+												className="text-xs text-gray-400 cursor-pointer hover:text-white transition-colors"
+											>
+												Detailed Reasoning (Tokens++)
+											</label>
+										</div>
+									</>
 								) : analyzing ? (
-									<div className="flex items-center gap-3 text-gray-400 animate-pulse bg-glass-bg-accent p-4 rounded-lg border border-glass-border-light">
-										<Loader size={18} className="animate-spin" />
-										<span>Analyzing image context...</span>
+									<div className="space-y-3">
+										<div className="flex items-center gap-3 text-gray-400 animate-pulse bg-glass-bg-accent p-4 rounded-lg border border-glass-border-light">
+											<Loader size={18} className="animate-spin" />
+											<span>
+												{thinkingText
+													? "Reasoning..."
+													: "Analyzing image context..."}
+											</span>
+										</div>
+										{thinkingText && (
+											<div className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg text-xs font-mono text-purple-300 max-h-40 overflow-y-auto custom-scrollbar">
+												<p className="font-bold mb-1 uppercase tracking-wider text-[10px] text-purple-400">
+													Thinking Process:
+												</p>
+												<p className="whitespace-pre-wrap">{thinkingText}</p>
+											</div>
+										)}
 									</div>
 								) : (
 									<div className="space-y-4">
@@ -420,7 +439,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 							</div>
 
 							{/* Tag Manager (Relocated Phase 7) */}
-							<div className="p-4 text-sm text-gray-500 italic">Tag manager coming soon</div>
+							<div className="p-4 text-sm text-gray-500 italic">
+								Tag manager coming soon
+							</div>
 						</motion.div>
 					)}
 				</AnimatePresence>
