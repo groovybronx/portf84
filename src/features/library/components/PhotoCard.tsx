@@ -81,16 +81,16 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 					ease: [0.4, 0, 0.2, 1], // Custom smooth ease-in-out
 				}}
 				style={{ transformStyle: "preserve-3d" }}
-				className={`relative w-full transition-all duration-300 ${
+				className={`relative w-full transition-all duration-300 rounded-xl ${
 					isSelected
-						? "border-2 border-blue-500 ring-2 ring-blue-500/50"
+						? "border-[3px] border-white shadow-xl z-10"
 						: isFocused
-						? "border-2 border-white/80 ring-2 ring-white/20 z-10 scale-[1.02]"
-						: "border border-transparent"
+						? "border-[3px] border-white/80 z-10 scale-[1.02]"
+						: "border-0"
 				}`}
 			>
 				<GlassCard
-					className="backface-hidden overflow-hidden h-full group"
+					className="backface-hidden overflow-hidden h-full group border-0" // Added border-0 to remove default glass border
 					variant="accent"
 					style={{
 						backfaceVisibility: "hidden",

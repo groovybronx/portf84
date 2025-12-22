@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TopBar } from "./features/navigation";
-import { PhotoGrid, PhotoCarousel, PhotoList } from "./features/library";
+import {
+	PhotoGrid,
+	PhotoGridVirtual,
+	PhotoCarousel,
+	PhotoList,
+} from "./features/library";
 import { ImageViewer, analyzeImage } from "./features/vision";
 import {
 	FolderDrawer,
@@ -155,44 +160,6 @@ const App: React.FC = () => {
 
 	// --- Effects & Helpers ---
 
-	// Keyboard Shortcuts (Global)
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (
-				e.target instanceof HTMLInputElement ||
-				e.target instanceof HTMLTextAreaElement
-			)
-				return;
-
-			// Color Tagging Shortcuts
-			if (/^[1-6]$/.test(e.key)) {
-				const color = COLOR_PALETTE[e.key];
-				if (color) applyColorTagToSelection(color);
-			} else if (e.key === "0") {
-				applyColorTagToSelection(undefined);
-			}
-		};
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [selectedItem, selectionMode, selectedIds, focusedId, hoveredItem]);
-
-	// Clear library and reload when collection changes
-	useEffect(() => {
-		if (!collectionsLoading) {
-			console.log("[App] Collection changed, clearing library");
-			clearLibrary();
-
-			if (activeCollection && sourceFolders.length > 0) {
-				console.log("[App] Auto-loading source folders:", sourceFolders);
-				sourceFolders.forEach((folder) => {
-					console.log("[App] Loading folder:", folder.path);
-					loadFromPath(folder.path);
-				});
-			}
-		}
-	}, [activeCollection?.id, collectionsLoading]);
-	// ^ Only watch activeCollection.id - sourceFolders is fetched by useCollections
-
 	// Apply color to Focused/Selected items
 	const applyColorTagToSelection = (color: string | undefined) => {
 		let itemsToUpdate: PortfolioItem[] = [];
@@ -213,6 +180,116 @@ const App: React.FC = () => {
 			applyColorTagToSelection(color || undefined);
 		else setActiveColorFilter(color);
 	};
+
+	// Keyboard Shortcuts (Global)
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (
+				e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement
+			)
+				return;
+
+			// 1. Navigation (Arrows) & Selection (Space/Enter)
+			if (
+				[
+					"ArrowUp",
+					"ArrowDown",
+					"ArrowLeft",
+					"ArrowRight",
+					" ",
+					"Enter",
+				].includes(e.key)
+			) {
+				e.preventDefault(); // Prevent scroll (Space/Arrows)
+
+				const currentIndex = focusedId
+					? processedItems.findIndex((i) => i.id === focusedId)
+					: -1;
+
+				if (e.key === " " || e.key === "Enter") {
+					// Open Fullscreen
+					if (focusedId) {
+						const item = processedItems.find((i) => i.id === focusedId);
+						if (item) setSelectedItem(item);
+					}
+					return;
+				}
+
+				// If nothing focused, focus first item
+				if (currentIndex === -1) {
+					if (processedItems.length > 0 && processedItems[0]) {
+						setFocusedId(processedItems[0].id);
+					}
+					return;
+				}
+
+				let newIndex = currentIndex;
+
+				switch (e.key) {
+					case "ArrowRight":
+						newIndex = Math.min(processedItems.length - 1, currentIndex + 1);
+						break;
+					case "ArrowLeft":
+						newIndex = Math.max(0, currentIndex - 1);
+						break;
+					case "ArrowDown":
+						newIndex = Math.min(
+							processedItems.length - 1,
+							currentIndex + gridColumns
+						);
+						break;
+					case "ArrowUp":
+						newIndex = Math.max(0, currentIndex - gridColumns);
+						break;
+				}
+
+				if (newIndex !== currentIndex) {
+					const targetItem = processedItems[newIndex];
+					if (targetItem) {
+						setFocusedId(targetItem.id);
+					}
+				}
+				return;
+			}
+
+			// 2. Color Tagging Shortcuts
+			if (/^[1-6]$/.test(e.key)) {
+				const color = COLOR_PALETTE[e.key];
+				if (color) applyColorTagToSelection(color);
+			} else if (e.key === "0") {
+				applyColorTagToSelection(undefined);
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [
+		selectedItem,
+		selectionMode,
+		selectedIds,
+		focusedId,
+		hoveredItem,
+		processedItems,
+		gridColumns,
+	]);
+
+	// Clear library and reload when collection changes
+	useEffect(() => {
+		if (!collectionsLoading) {
+			console.log("[App] Collection changed, clearing library");
+			clearLibrary();
+
+			if (activeCollection && sourceFolders.length > 0) {
+				console.log("[App] Auto-loading source folders:", sourceFolders);
+				sourceFolders.forEach((folder) => {
+					console.log("[App] Loading folder:", folder.path);
+					loadFromPath(folder.path);
+				});
+			}
+		}
+	}, [activeCollection?.id, collectionsLoading, sourceFolders]); // Added sourceFolders to deps
+
+	// ...
 
 	const handleDirectoryPicker = async () => {
 		try {
@@ -307,11 +384,12 @@ const App: React.FC = () => {
 		switch (viewMode) {
 			case ViewMode.GRID:
 				return (
-					<PhotoGrid
+					<PhotoGridVirtual
 						onSelect={setSelectedItem}
 						onHover={(i) => {
 							setHoveredItem(i);
-							if (i) setFocusedId(i.id);
+							// Removed setFocusedId(i.id) to prevent focus following mouse
+							// Now focus is set only on click (via onFocusChange)
 						}}
 						onContextMenu={(e, item) => {
 							e.preventDefault();

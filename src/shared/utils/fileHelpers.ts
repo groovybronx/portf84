@@ -1,6 +1,6 @@
 import { PortfolioItem } from "../types";
 import { readDir, stat } from "@tauri-apps/plugin-fs";
-import { convertFileSrc } from "@tauri-apps/api/core";
+import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { join } from "@tauri-apps/api/path";
 
 // Recursive function to walk directory path using Tauri FS
@@ -28,7 +28,23 @@ export async function scanDirectory(
 				const fileStat = await stat(entryFullPath);
 
 				const assetUrl = convertFileSrc(entryFullPath);
-				// Removed noisy log: console.log(`[FileHelpers] Generated URL for ${entry.name}: ${assetUrl}`);
+
+				// Call backend to get dimensions efficiently
+				let width, height;
+				let fileSize = fileStat.size;
+
+				try {
+					const dims = await invoke<{
+						width: number;
+						height: number;
+						size: number;
+					}>("get_image_dimensions", { path: entryFullPath });
+					width = dims.width;
+					height = dims.height;
+					fileSize = dims.size || fileSize;
+				} catch (e) {
+					console.warn(`Failed to get dimensions for ${entry.name}`, e);
+				}
 
 				const ext = entry.name.split(".").pop()?.toLowerCase();
 				const mimeType =
@@ -40,8 +56,10 @@ export async function scanDirectory(
 					url: assetUrl,
 					name: entry.name,
 					type: mimeType,
-					size: fileStat.size,
+					size: fileSize,
 					lastModified: fileStat.mtime?.getTime() || Date.now(),
+					width,
+					height,
 					aiTags: currentPath ? [currentPath.split("/").pop() || ""] : [],
 				};
 
