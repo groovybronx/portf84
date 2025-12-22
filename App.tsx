@@ -425,20 +425,14 @@ const App: React.FC = () => {
 
 			{/* Main Content Area - EmptyState or View */}
 			<main className="relative z-(--z-grid-item)">
-				{!activeCollection ? (
-					<EmptyState
-						title="Aucune Collection Active"
-						description="Créez une Collection pour commencer à organiser vos images"
-						onAction={() => setIsCollectionManagerOpen(true)}
-						actionLabel="Créer une Collection"
-					/>
-				) : currentItems.length === 0 ? (
-					<EmptyState
-						title="Collection Vide"
-						description="Ajoutez des dossiers sources ou importez des images"
-						onAction={handleDirectoryPicker}
-						actionLabel="Ajouter un Dossier"
-					/>
+				{currentItems.length === 0 ? (
+					<div className="flex items-center justify-center h-full min-h-[60vh]">
+						<p className="text-gray-500 text-center">
+							{!activeCollection
+								? "Ouvrez le tiroir (icône en haut à gauche) pour créer une Collection"
+								: "Aucune image. Ajoutez un dossier source depuis le tiroir."}
+						</p>
+					</div>
 				) : (
 					<AnimatePresence mode="wait">{renderView()}</AnimatePresence>
 				)}
