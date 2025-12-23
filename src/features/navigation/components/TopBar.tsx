@@ -56,6 +56,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 		gridColumns,
 		setGridColumns,
 		autoAnalyzeEnabled,
+		useCinematicCarousel,
 	} = useLibrary();
 
 	const { selectionMode, setSelectionMode, selectedIds, clearSelection } =
@@ -229,6 +230,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							onModeChange={setViewMode}
 							isViewMenuOpen={isViewMenuOpen}
 							setIsViewMenuOpen={setIsViewMenuOpen}
+							useCinematicCarousel={useCinematicCarousel}
 						/>
 					</div>
 				</div>

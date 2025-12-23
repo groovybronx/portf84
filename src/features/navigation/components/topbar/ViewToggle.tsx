@@ -15,6 +15,7 @@ interface ViewToggleProps {
 	onModeChange: (mode: ViewMode) => void;
 	isViewMenuOpen: boolean;
 	setIsViewMenuOpen: (open: boolean) => void;
+	useCinematicCarousel?: boolean;
 }
 
 const viewModes: { id: ViewMode; icon: LucideIcon; label: string }[] = [
@@ -28,6 +29,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 	onModeChange,
 	isViewMenuOpen,
 	setIsViewMenuOpen,
+	useCinematicCarousel = false,
 }) => {
 	const currentModeData =
 		viewModes.find((m) => m.id === currentViewMode) || viewModes[0]!;
@@ -74,7 +76,12 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 								}`}
 							>
 								<mode.icon size={16} />
-								{mode.label}
+								<span className="flex-1">{mode.label}</span>
+								{mode.id === ViewMode.CAROUSEL && useCinematicCarousel && (
+									<span className="px-1.5 py-0.5 text-[9px] font-bold bg-blue-500/30 text-blue-300 rounded border border-blue-400/30">
+										3D
+									</span>
+								)}
 							</Button>
 						))}
 					</motion.div>

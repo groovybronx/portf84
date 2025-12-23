@@ -8,7 +8,8 @@ L'interface repose sur une séparation stricte entre les composants de présenta
 src/features/
 ├── library/components/
 │   ├── PhotoGrid.tsx       # Grille virtuelle (Masonry)
-│   ├── PhotoCarousel.tsx   # Vue carrousel 3D
+│   ├── PhotoCarousel.tsx   # Vue carrousel standard
+│   ├── CinematicCarousel.tsx # Vue carrousel 3D immersive (expérimental)
 │   ├── PhotoList.tsx       # Vue liste détaillée
 │   └── PhotoCard.tsx       # Vignette interactive (flip)
 ├── navigation/components/
@@ -267,7 +268,20 @@ const visibleItems = useMemo(() => {
 
 ---
 
-## 5. ImageViewer (Plein Écran)
+## 5. CinematicCarousel (Mode Flow 3D Immersif - Expérimental)
+
+Un carrousel 3D dramatique utilisant `framer-motion` pour des effets de perspective et de rotation intenses.
+
+### Caractéristiques
+
+- **Perspective intense** : `perspective: 1500px` pour une profondeur maximale.
+- **Interactivité** : Cliquabilité directe sur les images latérales pour la navigation.
+- **Animations fluides** : Utilisation de transitions `spring` pour un mouvement naturel.
+- **Rendu conditionnel** : Activé via le toggle expérimental dans `SettingsModal`.
+
+---
+
+## 6. ImageViewer (Plein Écran)
 
 Visualiseur modal pour inspection détaillée.
 

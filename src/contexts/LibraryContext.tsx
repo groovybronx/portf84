@@ -33,6 +33,8 @@ interface LibraryState {
 	sortDirection: SortDirection;
 	// AI Settings
 	autoAnalyzeEnabled: boolean;
+	// Experimental Features
+	useCinematicCarousel: boolean;
 }
 
 type LibraryAction =
@@ -59,7 +61,8 @@ type LibraryAction =
 	| { type: "SET_SORT_OPTION"; payload: SortOption }
 	| { type: "SET_SORT_DIRECTION"; payload: SortDirection }
 	| { type: "CLEAR_LIBRARY"; payload: void }
-	| { type: "SET_AUTO_ANALYZE"; payload: boolean };
+	| { type: "SET_AUTO_ANALYZE"; payload: boolean }
+	| { type: "SET_CINEMATIC_CAROUSEL"; payload: boolean };
 
 interface LibraryContextType extends LibraryState {
 	// Computed values
@@ -199,6 +202,8 @@ function libraryReducer(
 			};
 		case "SET_AUTO_ANALYZE":
 			return { ...state, autoAnalyzeEnabled: action.payload };
+		case "SET_CINEMATIC_CAROUSEL":
+			return { ...state, useCinematicCarousel: action.payload };
 		default:
 			return state;
 	}
@@ -260,6 +265,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		sortOption: "date",
 		sortDirection: "desc",
 		autoAnalyzeEnabled: false,
+		useCinematicCarousel: false,
 	});
 
 	// Clear library when collection changes to null
@@ -410,21 +416,15 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 	const updateItem = useCallback(
 		(updated: PortfolioItem) => {
 			// Use functional update to ensure we have latest state
-			let updatedFolders: Folder[] = [];
-			let currentFolders: Folder[] = [];
+			let updatedFolders: Folder[];
 
-			// Access current value from state via a ref or by re-dispatching?
-			// React clean pattern: We should probably just dispatch an UPDATE_ITEM action
-			// rather than calculating it here, but to minimize refactor:
-
-			// FIX: We need to trust that 'state.folders' is fresh because this function
-			// should be recreated when 'state.folders' changes.
-			// However, to be absolutely safe and fix the reported bug where folders might reset,
-			// let's ensure we are using the dependency correctly.
-			// The original code had [] dependency, which DEFINITELY caused stale closure.
-
+			// FIX: Update item in ALL folders that contain it (shadow folders + collections)
+			// Previously only updated in one folder, causing color tags to not display
 			updatedFolders = state.folders.map((folder) => {
-				if (!updated.folderId || folder.id === updated.folderId) {
+				// Check if this folder contains the item
+				const hasItem = folder.items.some((item) => item.id === updated.id);
+
+				if (hasItem) {
 					return {
 						...folder,
 						items: folder.items.map((item) =>
@@ -554,6 +554,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 		dispatch({ type: "SET_AUTO_ANALYZE", payload: enabled });
 	}, []);
 
+	const setCinematicCarousel = useCallback((enabled: boolean) => {
+		dispatch({ type: "SET_CINEMATIC_CAROUSEL", payload: enabled });
+	}, []);
+
 	// --- 1. State Value (Memoized separately) ---
 	const stateValue: LibraryContextState = useMemo(
 		() => ({
@@ -585,6 +589,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 			setSortOption,
 			setSortDirection,
 			setAutoAnalyze,
+			setCinematicCarousel,
 		}),
 		[
 			loadFromPath,
@@ -604,6 +609,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 			setSortOption,
 			setSortDirection,
 			setAutoAnalyze,
+			setCinematicCarousel,
 		]
 	);
 

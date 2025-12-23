@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TopBar } from "./features/navigation";
-import { PhotoGrid, PhotoCarousel, PhotoList } from "./features/library";
+import { PhotoGrid } from "./features/library/components/PhotoGrid";
+import { PhotoCarousel } from "./features/library/components/PhotoCarousel";
+import { CinematicCarousel } from "./features/library/components/CinematicCarousel";
+import { PhotoList } from "./features/library/components/PhotoList";
 import { ImageViewer, analyzeImage } from "./features/vision";
 import {
 	FolderDrawer,
@@ -77,6 +80,9 @@ const App: React.FC = () => {
 		availableTags,
 		processedItems,
 		currentItems,
+		autoAnalyzeEnabled,
+		useCinematicCarousel,
+		setCinematicCarousel,
 	} = useLibrary();
 
 	const {
@@ -408,6 +414,24 @@ const App: React.FC = () => {
 					/>
 				);
 			case ViewMode.CAROUSEL:
+				// Use experimental Cinematic Carousel if enabled
+				if (useCinematicCarousel) {
+					return (
+						<CinematicCarousel
+							items={currentItems}
+							initialIndex={
+								selectedItem
+									? currentItems.findIndex(
+											(item) => item.id === selectedItem.id
+									  )
+									: 0
+							}
+							onClose={() => setSelectedItem(null)}
+							onItemClick={setSelectedItem}
+						/>
+					);
+				}
+				// Default PhotoCarousel
 				return (
 					<PhotoCarousel
 						onSelect={setSelectedItem}
@@ -619,6 +643,8 @@ const App: React.FC = () => {
 			<SettingsModal
 				isOpen={isSettingsOpen}
 				onClose={() => setIsSettingsOpen(false)}
+				useCinematicCarousel={useCinematicCarousel}
+				onToggleCinematicCarousel={setCinematicCarousel}
 			/>
 
 			<UnifiedProgress />

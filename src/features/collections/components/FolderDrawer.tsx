@@ -60,10 +60,6 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 		(f) => f.isVirtual && !f.sourceFolderId
 	);
 
-	console.log(
-		`[FolderDrawer] Shadow folders: ${shadowFolders.length}, Manual: ${manualCollections.length}`
-	);
-
 	return (
 		<AnimatePresence>
 			{isOpen && (

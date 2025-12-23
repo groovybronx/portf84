@@ -32,12 +32,12 @@ Le projet suit une architecture **fractal modulaire** pour maximiser la maintena
 
 ```
 src/
-├── features/           # Domaines fonctionnels
-│   ├── library/        # Grille photos, cartes, sélection
-│   ├── navigation/     # TopBar et composants associés
-│   ├── collections/    # Gestionnaire dossiers, Projets
-│   ├── vision/         # AI Analysis, ImageViewer
-│   └── tags/           # Système de tagging
+  ├── features/           # Domaines fonctionnels
+  │   ├── library/        # Grille photos, cartes, carrousels (standard & 3D)
+  │   ├── navigation/     # TopBar et composants associés
+  │   ├── collections/    # Gestionnaire dossiers, Projets
+  │   ├── vision/         # AI Analysis, ImageViewer
+  │   └── tags/           # Système de tagging
 ├── shared/             # Ressources transverses
 │   ├── components/     # UI Kit (Button, Modal, GlassCard)
 │   ├── hooks/          # Hooks réutilisables
