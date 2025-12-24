@@ -1,4 +1,4 @@
-Dernière mise à jour : 24/12/2024 à 14:10
+Dernière mise à jour : 24/12/2024 à 14:50
 
 # Composants UI & UX
 
@@ -13,7 +13,8 @@ src/features/
 │   ├── PhotoCarousel.tsx   # Vue carrousel standard
 │   ├── CinematicCarousel.tsx # Vue carrousel 3D immersive (expérimental)
 │   ├── PhotoList.tsx       # Vue liste détaillée
-│   └── PhotoCard.tsx       # Vignette interactive (flip)
+│   ├── PhotoCard.tsx       # Vignette interactive (flip)
+│   └── ViewRenderer.tsx    # Rendu conditionnel des vues
 ├── navigation/components/
 │   ├── TopBar.tsx          # Barre d'outils principale
 │   └── topbar/             # Sous-composants (Search, ColorFilter, etc.)
@@ -26,11 +27,18 @@ src/features/
 │   └── ImageViewer.tsx     # Plein écran + métadonnées
 ├── tags/components/
 │   └── AddTagModal.tsx     # Modal ajout tags
-└── shared/components/
-    ├── ContextMenu.tsx     # Menu clic-droit
-    ├── SettingsModal.tsx   # Configuration API key
-    ├── ErrorBoundary.tsx   # Isolation erreurs
-    └── ui/                 # UI Kit (Button, Modal, GlassCard)
+└── shared/
+    ├── components/
+    │   ├── ContextMenu.tsx     # Menu clic-droit
+    │   ├── SettingsModal.tsx   # Configuration API key
+    │   ├── ErrorBoundary.tsx   # Isolation erreurs
+    │   └── ui/                 # UI Kit (Button, Modal, GlassCard)
+    └── hooks/
+        ├── useKeyboardShortcuts.ts  # Raccourcis clavier globaux
+        ├── useModalState.ts         # Gestion état des modales
+        ├── useItemActions.ts        # Actions sur les items
+        ├── useBatchAI.ts            # Traitement AI par lot
+        └── useSessionRestore.ts     # Restauration de session
 ```
 
 ---
@@ -428,3 +436,128 @@ Cette approche :
 - Respecte les permissions Tauri ACL
 - Fonctionne offline sans serveur HTTP
 - Supporte les MIME types natifs du système
+
+---
+
+## 10. Custom Hooks (Refactorisation App.tsx)
+
+### useKeyboardShortcuts
+
+**Responsabilité** : Gestion centralisée des raccourcis clavier globaux
+
+**Fonctionnalités** :
+
+- Navigation avec flèches (← → ↑ ↓)
+- Sélection avec Space/Enter
+- Color tagging avec touches 0-6
+- Ignore les événements dans les inputs/textareas
+
+**Usage** :
+
+```typescript
+useKeyboardShortcuts({
+  processedItems,
+  focusedId,
+  setFocusedId,
+  setSelectedItem,
+  applyColorTagToSelection,
+  gridColumns,
+});
+```
+
+---
+
+### useModalState
+
+**Responsabilité** : Centralisation de l'état des modales
+
+**Modales gérées** :
+
+- FolderDrawer
+- CreateFolderModal
+- MoveToFolderModal
+- AddTagModal
+- SettingsModal
+- CollectionManager
+
+**Usage** :
+
+```typescript
+const {
+  isFolderDrawerOpen,
+  setIsFolderDrawerOpen,
+  // ... autres modales
+} = useModalState();
+```
+
+**Bénéfice** : Réduit la duplication de code (6 useState → 1 hook)
+
+---
+
+### useItemActions
+
+**Responsabilité** : Actions métier sur les items (tagging, colors, move, analyze)
+
+**Actions disponibles** :
+
+- `addTagsToSelection(tag)` : Ajoute un tag aux items sélectionnés
+- `applyColorTagToSelection(color)` : Applique une couleur
+- `analyzeItem(item)` : Lance l'analyse AI
+- `moveItemToFolder(folderId)` : Déplace vers un dossier
+- `createFolderAndMove(name)` : Crée un dossier et déplace
+- `handleContextMove(item)` : Gère le déplacement depuis le menu contextuel
+
+**Usage** :
+
+```typescript
+const {
+  addTagsToSelection,
+  applyColorTagToSelection,
+  analyzeItem,
+  // ...
+} = useItemActions({
+  currentItems,
+  selectedIds,
+  updateItem,
+  clearSelection,
+  // ...
+});
+```
+
+**Bénéfice** : Logique métier isolée, testable, et réutilisable
+
+---
+
+### ViewRenderer
+
+**Responsabilité** : Rendu conditionnel des vues (Grid/Carousel/List)
+
+**Props** :
+
+- `viewMode` : Mode de vue actuel
+- `useCinematicCarousel` : Active le carousel 3D
+- `currentItems` : Items à afficher
+- `selectedItem` : Item sélectionné
+- `focusedId` : ID de l'item focusé
+- Callbacks : `onSelect`, `onHover`, `onContextMenu`, `onTagClick`, `onFocusChange`
+
+**Usage** :
+
+```typescript
+<ViewRenderer
+  viewMode={viewMode}
+  useCinematicCarousel={useCinematicCarousel}
+  currentItems={currentItems}
+  selectedItem={selectedItem}
+  focusedId={focusedId}
+  onSelect={setSelectedItem}
+  onHover={setHoveredItem}
+  onContextMenu={(e, item) =>
+    setContextMenu({ x: e.clientX, y: e.clientY, item })
+  }
+  onTagClick={setSelectedTag}
+  onFocusChange={setFocusedId}
+/>
+```
+
+**Bénéfice** : Simplifie App.tsx en extrayant 63 lignes de logique de rendu
