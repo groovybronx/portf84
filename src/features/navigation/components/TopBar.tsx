@@ -87,7 +87,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 
 	return (
 		<div
-			className={`fixed top-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center pointer-events-none transition-all duration-300 ${
+			className={`fixed top-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center transition-all duration-300 ${
 				isSidebarPinned ? "left-80" : "left-0"
 			}`}
 			onMouseEnter={() => setIsHovered(true)}
