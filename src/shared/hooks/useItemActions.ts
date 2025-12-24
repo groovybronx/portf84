@@ -84,11 +84,9 @@ export const useItemActions = ({
   // Apply color to Focused/Selected items
   const applyColorTagToSelection = useCallback(
     (color: string | undefined) => {
-      let itemsToUpdate: PortfolioItem[] = [];
-
-      if (selectedItem) itemsToUpdate = [selectedItem];
-      else if (selectionMode && selectedIds.size > 0)
+      if (selectionMode && selectedIds.size > 0)
         itemsToUpdate = currentItems.filter((i) => selectedIds.has(i.id));
+      else if (selectedItem) itemsToUpdate = [selectedItem];
       else if (focusedId) {
         const item = currentItems.find((i) => i.id === focusedId);
         if (item) itemsToUpdate = [item];
@@ -97,9 +95,9 @@ export const useItemActions = ({
       itemsToUpdate.forEach((item) => updateItem({ ...item, colorTag: color }));
     },
     [
-      selectedItem,
       selectionMode,
       selectedIds,
+      selectedItem,
       focusedId,
       currentItems,
       updateItem,

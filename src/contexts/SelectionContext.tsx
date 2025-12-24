@@ -222,10 +222,10 @@ export const SelectionProvider: React.FC<{ children: React.ReactNode }> = ({
 			dispatch({ type: "SET_DRAG_BOX", payload: null });
 			if (rafId.current) cancelAnimationFrame(rafId.current);
 
-			// Auto-exit selection mode after drag-select completes
-			if (state.selectedIds.size > 0) {
-				dispatch({ type: "SET_SELECTION_MODE", payload: false });
-			}
+			// No longer auto-exiting selection mode here to keep checkboxes visible
+			// if (state.selectedIds.size > 0) {
+			// 	dispatch({ type: "SET_SELECTION_MODE", payload: false });
+			// }
 		}
 		dragStartPos.current = null;
 		rectCache.current.clear();
