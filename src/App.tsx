@@ -274,7 +274,7 @@ const App: React.FC = () => {
 
   return (
     <div
-      className="main-app bg-surface min-h-screen overflow-hidden flex flex-col"
+      className="main-app bg-surface h-screen overflow-hidden flex flex-col"
       onMouseDown={(e) => handleMouseDown(e, viewMode, processedItems)}
       onMouseMove={(e) => handleMouseMove(e, processedItems)}
       onMouseUp={handleMouseUp}
@@ -353,9 +353,9 @@ const App: React.FC = () => {
         </ErrorBoundary>
 
         {/* Main Content Area */}
-        <div className="flex-1 relative overflow-hidden flex flex-col">
+        <div className="flex-1 relative overflow-hidden flex flex-col h-full">
           <ErrorBoundary featureName="library">
-            <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar">
+            <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full">
           {currentItems.length === 0 ? (
             <div className="flex items-center justify-center h-full min-h-[60vh]">
               <p className="text-gray-500 text-center">
