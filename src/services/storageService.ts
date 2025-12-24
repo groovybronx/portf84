@@ -1,4 +1,18 @@
 import Database from "@tauri-apps/plugin-sql";
+import type {
+	DBMetadata,
+	DBVirtualFolder,
+	DBCollection,
+	DBCollectionFolder,
+	DBHandle,
+	ParsedMetadata,
+	ParsedVirtualFolder,
+	ParsedHandle,
+	ParsedCollection,
+	MetadataInput,
+	VirtualFolderInput,
+	ShadowFolderPair,
+} from "../shared/types/database";
 
 const DB_PATH = "sqlite:lumina.db";
 let dbInstance: Database | null = null;
@@ -86,6 +100,26 @@ const getDB = async (): Promise<Database> => {
         )
       `);
 
+			// ==================== PERFORMANCE INDEXES ====================
+			// Create indexes if they don't exist (idempotent)
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_metadata_collectionId 
+        ON metadata(collectionId)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_metadata_virtualFolderId 
+        ON metadata(virtualFolderId)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_virtual_folders_sourceFolderId 
+        ON virtual_folders(sourceFolderId)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_collection_folders_collectionId 
+        ON collection_folders(collectionId)
+      `);
+			console.log("[Storage] Performance indexes created/verified");
+
 			console.log("[Storage] Schema initialized successfully");
 			dbInstance = db;
 			return db;
@@ -115,9 +149,9 @@ export const storageService = {
 		}
 	},
 
-	getDirectoryHandles: async (): Promise<any[]> => {
+	getDirectoryHandles: async (): Promise<ParsedHandle[]> => {
 		const db = await getDB();
-		const results = await db.select<any[]>("SELECT * FROM handles");
+		const results = await db.select<DBHandle[]>("SELECT * FROM handles");
 		return results.map((h) => ({
 			...h,
 			isRoot: h.isRoot === 1,
@@ -136,10 +170,10 @@ export const storageService = {
 
 	// --- Metadata (AI Tags, Colors, Folder Assignment) ---
 	saveMetadata: async (
-		item: any,
+		item: MetadataInput,
 		relativePath: string,
 		collectionId?: string
-	) => {
+	): Promise<void> => {
 		const db = await getDB();
 		const finalCollectionId = collectionId || item.collectionId;
 
@@ -172,15 +206,15 @@ export const storageService = {
 	getMetadataBatch: async (
 		keys: string[],
 		collectionId?: string
-	): Promise<Map<string, any>> => {
+	): Promise<Map<string, ParsedMetadata>> => {
 		const db = await getDB();
-		const resultMap = new Map<string, any>();
+		const resultMap = new Map<string, ParsedMetadata>();
 
-		let results: any[] = [];
+		let results: DBMetadata[] = [];
 		if (keys.length === 0) {
 			// No keys: return all metadata (optionally filtered by collection)
 			if (collectionId) {
-				results = await db.select<any[]>(
+				results = await db.select<DBMetadata[]>(
 					"SELECT * FROM metadata WHERE collectionId = ?",
 					[collectionId]
 				);
@@ -188,7 +222,7 @@ export const storageService = {
 					`[Storage] getMetadataBatch: Loaded ${results.length} metadata for collection ${collectionId}`
 				);
 			} else {
-				results = await db.select<any[]>("SELECT * FROM metadata");
+				results = await db.select<DBMetadata[]>("SELECT * FROM metadata");
 				console.log(
 					`[Storage] getMetadataBatch: Loaded ${results.length} metadata (all collections)`
 				);
@@ -196,18 +230,18 @@ export const storageService = {
 		} else {
 			// With keys: fetch specific items (optionally filtered by collection)
 			for (const key of keys) {
-				let row;
+				let row: DBMetadata[];
 				if (collectionId) {
-					row = await db.select<any[]>(
+					row = await db.select<DBMetadata[]>(
 						"SELECT * FROM metadata WHERE id = ? AND collectionId = ?",
 						[key, collectionId]
 					);
 				} else {
-					row = await db.select<any[]>("SELECT * FROM metadata WHERE id = ?", [
+					row = await db.select<DBMetadata[]>("SELECT * FROM metadata WHERE id = ?", [
 						key,
 					]);
 				}
-				if (row.length > 0) results.push(row[0]);
+				if (row.length > 0 && row[0]) results.push(row[0]);
 			}
 			console.log(
 				`[Storage] getMetadataBatch: Loaded ${results.length}/${
@@ -218,20 +252,24 @@ export const storageService = {
 
 		results.forEach((meta) => {
 			resultMap.set(meta.id, {
-				...meta,
+				id: meta.id,
+				collectionId: meta.collectionId,
+				virtualFolderId: meta.virtualFolderId,
+				folderId: meta.virtualFolderId ?? undefined,
+				aiDescription: meta.aiDescription,
 				aiTags: JSON.parse(meta.aiTags || "[]"),
 				aiTagsDetailed: JSON.parse(meta.aiTagsDetailed || "[]"),
+				colorTag: meta.colorTag,
 				manualTags: JSON.parse(meta.manualTags || "[]"),
-				virtualFolderId: meta.virtualFolderId,
-				folderId: meta.virtualFolderId || meta.folderId, // Backward compat: prefer virtualFolderId
-				collectionId: meta.collectionId,
+				isHidden: meta.isHidden === 1,
+				lastModified: meta.lastModified,
 			});
 		});
 		return resultMap;
 	},
 
 	// --- Virtual Folders Persistence ---
-	saveVirtualFolder: async (folder: any) => {
+	saveVirtualFolder: async (folder: VirtualFolderInput): Promise<void> => {
 		const db = await getDB();
 		await db.execute(
 			"INSERT OR REPLACE INTO virtual_folders (id, collectionId, name, createdAt, isVirtual, sourceFolderId) VALUES (?, ?, ?, ?, ?, ?)",
@@ -251,11 +289,11 @@ export const storageService = {
 		await db.execute("DELETE FROM virtual_folders WHERE id = ?", [id]);
 	},
 
-	getVirtualFolders: async (collectionId?: string): Promise<any[]> => {
+	getVirtualFolders: async (collectionId?: string): Promise<ParsedVirtualFolder[]> => {
 		const db = await getDB();
-		let rawFolders;
+		let rawFolders: DBVirtualFolder[];
 		if (collectionId) {
-			rawFolders = await db.select<any[]>(
+			rawFolders = await db.select<DBVirtualFolder[]>(
 				"SELECT * FROM virtual_folders WHERE collectionId = ?",
 				[collectionId]
 			);
@@ -263,16 +301,16 @@ export const storageService = {
 				`[Storage] getVirtualFolders: Loaded ${rawFolders.length} virtual folders for collection ${collectionId}`
 			);
 		} else {
-			rawFolders = await db.select<any[]>("SELECT * FROM virtual_folders");
+			rawFolders = await db.select<DBVirtualFolder[]>("SELECT * FROM virtual_folders");
 			console.log(
 				`[Storage] getVirtualFolders: Loaded ${rawFolders.length} virtual folders (all collections)`
 			);
 		}
-		return rawFolders.map((f: any) => ({
+		return rawFolders.map((f) => ({
 			...f,
-			items: [],
+			items: [] as [],
 			isVirtual: f.isVirtual === 1,
-			sourceFolderId: f.sourceFolderId, // Include sourceFolderId for shadow detection
+			sourceFolderId: f.sourceFolderId ?? undefined,
 		}));
 	},
 
@@ -295,25 +333,30 @@ export const storageService = {
 		return id;
 	},
 
-	getCollections: async (): Promise<any[]> => {
+	getCollections: async (): Promise<ParsedCollection[]> => {
 		const db = await getDB();
-		const collections = await db.select<any[]>(
+		const collections = await db.select<DBCollection[]>(
 			"SELECT * FROM collections ORDER BY lastOpenedAt DESC"
 		);
 		return collections.map((c) => ({
 			...c,
+			lastOpenedAt: c.lastOpenedAt ?? undefined,
 			isActive: c.isActive === 1,
 		}));
 	},
 
-	getActiveCollection: async (): Promise<any | null> => {
+	getActiveCollection: async (): Promise<ParsedCollection | null> => {
 		const db = await getDB();
-		const results = await db.select<any[]>(
+		const results = await db.select<DBCollection[]>(
 			"SELECT * FROM collections WHERE isActive = 1 LIMIT 1"
 		);
-		if (results.length === 0) return null;
+		if (results.length === 0 || !results[0]) return null;
+		const c = results[0];
 		return {
-			...results[0],
+			id: c.id,
+			name: c.name,
+			createdAt: c.createdAt,
+			lastOpenedAt: c.lastOpenedAt ?? undefined,
 			isActive: true,
 		};
 	},
@@ -372,7 +415,7 @@ export const storageService = {
 			);
 
 			// Verify insertion
-			const verify = await db.select<any[]>(
+			const verify = await db.select<DBCollectionFolder[]>(
 				"SELECT * FROM collection_folders WHERE id = ?",
 				[id]
 			);
@@ -415,9 +458,9 @@ export const storageService = {
 		console.log(`[Storage] Folder removed from collection: ${path}`);
 	},
 
-	getCollectionFolders: async (collectionId: string): Promise<any[]> => {
+	getCollectionFolders: async (collectionId: string): Promise<DBCollectionFolder[]> => {
 		const db = await getDB();
-		const result = await db.select<any[]>(
+		const result = await db.select<DBCollectionFolder[]>(
 			"SELECT * FROM collection_folders WHERE collectionId = ? ORDER BY addedAt DESC",
 			[collectionId]
 		);
@@ -426,9 +469,9 @@ export const storageService = {
 	},
 
 	// DEBUG: List all collection_folders in database
-	debugListAllCollectionFolders: async (): Promise<any[]> => {
+	debugListAllCollectionFolders: async (): Promise<DBCollectionFolder[]> => {
 		const db = await getDB();
-		const result = await db.select<any[]>(
+		const result = await db.select<DBCollectionFolder[]>(
 			"SELECT * FROM collection_folders ORDER BY addedAt DESC"
 		);
 		console.log("[Storage] DEBUG - All collection_folders in DB:", result);
@@ -457,16 +500,22 @@ export const storageService = {
 		return id;
 	},
 
-	getShadowFolder: async (sourceFolderId: string): Promise<any | null> => {
+	getShadowFolder: async (sourceFolderId: string): Promise<ParsedVirtualFolder | null> => {
 		const db = await getDB();
-		const results = await db.select<any[]>(
+		const results = await db.select<DBVirtualFolder[]>(
 			"SELECT * FROM virtual_folders WHERE sourceFolderId = ? LIMIT 1",
 			[sourceFolderId]
 		);
-		if (results.length === 0) return null;
+		if (results.length === 0 || !results[0]) return null;
+		const f = results[0];
 		return {
-			...results[0],
-			isVirtual: results[0].isVirtual === 1,
+			id: f.id,
+			collectionId: f.collectionId,
+			name: f.name,
+			createdAt: f.createdAt,
+			items: [] as [],
+			isVirtual: f.isVirtual === 1,
+			sourceFolderId: f.sourceFolderId ?? undefined,
 		};
 	},
 
@@ -507,26 +556,21 @@ export const storageService = {
 	// --- Helper Functions for Shadow Folders ---
 	getShadowFoldersWithSources: async (
 		collectionId: string
-	): Promise<
-		Array<{
-			shadowFolder: any;
-			sourceFolder: any;
-		}>
-	> => {
+	): Promise<ShadowFolderPair[]> => {
 		const shadowFolders = await storageService.getVirtualFolders(collectionId);
 		const sourceFolders = await storageService.getCollectionFolders(
 			collectionId
 		);
 
 		const results = shadowFolders
-			.filter((vf) => vf.sourceFolderId) // Only shadow folders
+			.filter((vf) => vf.sourceFolderId)
 			.map((shadow) => {
 				const source = sourceFolders.find(
 					(sf) => sf.id === shadow.sourceFolderId
 				);
-				return { shadowFolder: shadow, sourceFolder: source };
+				return { shadowFolder: shadow, sourceFolder: source! };
 			})
-			.filter((pair) => pair.sourceFolder); // Only keep pairs with valid source
+			.filter((pair) => pair.sourceFolder);
 
 		console.log(
 			`[Storage] getShadowFoldersWithSources: Found ${results.length} shadow folder pairs for collection ${collectionId}`
@@ -534,7 +578,7 @@ export const storageService = {
 		return results;
 	},
 
-	getManualCollections: async (collectionId: string): Promise<any[]> => {
+	getManualCollections: async (collectionId: string): Promise<ParsedVirtualFolder[]> => {
 		const allVirtual = await storageService.getVirtualFolders(collectionId);
 		const manualCollections = allVirtual.filter((vf) => !vf.sourceFolderId);
 		console.log(

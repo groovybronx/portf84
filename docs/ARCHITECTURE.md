@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 24/12/2024 à 22:00
+Dernière mise à jour : 25/12/2024 à 00:10
 
 ## Vue d'Ensemble
 
@@ -192,6 +192,12 @@ CREATE TABLE metadata (
   lastModified INTEGER NOT NULL,
   FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE SET NULL
 );
+
+-- Performance Indexes (ajoutés Phase 1)
+CREATE INDEX idx_metadata_collectionId ON metadata(collectionId);
+CREATE INDEX idx_metadata_virtualFolderId ON metadata(virtualFolderId);
+CREATE INDEX idx_virtual_folders_sourceFolderId ON virtual_folders(sourceFolderId);
+CREATE INDEX idx_collection_folders_collectionId ON collection_folders(collectionId);
 ```
 
 ### 3. Asset Protocol (Tauri)

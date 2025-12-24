@@ -1,4 +1,4 @@
-Dernière mise à jour : 24/12/2024 à 23:23
+Dernière mise à jour : 25/12/2024 à 00:10
 
 # Composants UI & UX
 
@@ -39,6 +39,13 @@ src/features/
         ├── useItemActions.ts        # Actions sur les items
         ├── useBatchAI.ts            # Traitement AI par lot
         └── useSessionRestore.ts     # Restauration de session
+
+src/shared/
+├── types/
+│   ├── types.ts          # Types principaux (PortfolioItem, Folder, etc.)
+│   └── database.ts       # Types stricts pour SQLite (DBMetadata, ParsedCollection, etc.)
+└── theme/
+    └── animations.ts     # Variants Framer Motion centralisés
 ```
 
 ---
