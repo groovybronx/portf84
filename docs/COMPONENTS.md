@@ -46,29 +46,29 @@ Affiche une maçonnerie fluide d'images, capable de gérer des milliers d'items 
 ```typescript
 // 1. Distribution Masonry (JS-Distributed)
 const cols = useMemo(() => {
-	const columns: PortfolioItem[][] = Array.from(
-		{ length: gridColumns },
-		() => []
-	);
-	items.forEach((item, index) => {
-		const colIndex = index % gridColumns;
-		columns[colIndex].push(item);
-	});
-	return columns;
+  const columns: PortfolioItem[][] = Array.from(
+    { length: gridColumns },
+    () => []
+  );
+  items.forEach((item, index) => {
+    const colIndex = index % gridColumns;
+    columns[colIndex].push(item);
+  });
+  return columns;
 }, [items, gridColumns]);
 
 // 2. Virtualizer par colonne
 const rowVirtualizer = useVirtualizer({
-	count: items.length,
-	getScrollElement: () => scrollElement.current,
-	estimateSize: (i) => {
-		const item = items[i];
-		if (item.width && item.height && columnWidth > 0) {
-			return columnWidth / (item.width / item.height) + GAP;
-		}
-		return 300 + GAP; // Fallback
-	},
-	overscan: 5,
+  count: items.length,
+  getScrollElement: () => scrollElement.current,
+  estimateSize: (i) => {
+    const item = items[i];
+    if (item.width && item.height && columnWidth > 0) {
+      return columnWidth / (item.width / item.height) + GAP;
+    }
+    return 300 + GAP; // Fallback
+  },
+  overscan: 5,
 });
 ```
 
@@ -79,32 +79,32 @@ Lors de la navigation clavier, la grille **centre automatiquement** l'élément 
 ```typescript
 // Détection du focus + scroll
 const scrollTarget = useMemo(() => {
-	if (!focusedId) return null;
-	const index = items.findIndex((i) => i.id === focusedId);
-	if (index === -1) return null;
+  if (!focusedId) return null;
+  const index = items.findIndex((i) => i.id === focusedId);
+  if (index === -1) return null;
 
-	return {
-		colIndex: index % gridColumns,
-		rowIndex: Math.floor(index / gridColumns),
-	};
+  return {
+    colIndex: index % gridColumns,
+    rowIndex: Math.floor(index / gridColumns),
+  };
 }, [focusedId, items, gridColumns]);
 
 // Transmission au virtualizer
 <VirtualColumn
-	scrollToIndex={
-		scrollTarget?.colIndex === index ? scrollTarget.rowIndex : null
-	}
+  scrollToIndex={
+    scrollTarget?.colIndex === index ? scrollTarget.rowIndex : null
+  }
 />;
 
 // Dans VirtualColumn
 useEffect(() => {
-	if (
-		scrollToIndex !== null &&
-		scrollToIndex >= 0 &&
-		scrollToIndex < items.length
-	) {
-		rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
-	}
+  if (
+    scrollToIndex !== null &&
+    scrollToIndex >= 0 &&
+    scrollToIndex < items.length
+  ) {
+    rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
+  }
 }, [scrollToIndex, rowVirtualizer]);
 ```
 
@@ -116,15 +116,15 @@ useEffect(() => {
 
 ```typescript
 export const PhotoCard = React.memo(PhotoCardComponent, (prev, next) => {
-	return (
-		prev.item === next.item &&
-		prev.isSelected === next.isSelected &&
-		prev.isFocused === next.isFocused &&
-		prev.selectionMode === next.selectionMode &&
-		prev.showColorTags === next.showColorTags &&
-		prev.selectedTag === next.selectedTag
-		// Ignore les callbacks (onSelect, onHover, etc.)
-	);
+  return (
+    prev.item === next.item &&
+    prev.isSelected === next.isSelected &&
+    prev.isFocused === next.isFocused &&
+    prev.selectionMode === next.selectionMode &&
+    prev.showColorTags === next.showColorTags &&
+    prev.selectedTag === next.selectedTag
+    // Ignore les callbacks (onSelect, onHover, etc.)
+  );
 });
 ```
 
@@ -134,17 +134,17 @@ export const PhotoCard = React.memo(PhotoCardComponent, (prev, next) => {
 const [isLoaded, setIsLoaded] = useState(false);
 
 return (
-	<GlassCard className="bg-gray-900/50">
-		{!isLoaded && <div className="absolute inset-0 bg-white/5 animate-pulse" />}
-		<motion.img
-			src={item.url}
-			loading="lazy"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: isLoaded ? 1 : 0 }}
-			transition={{ duration: 0.4 }}
-			onLoad={() => setIsLoaded(true)}
-		/>
-	</GlassCard>
+  <GlassCard className="bg-gray-900/50">
+    {!isLoaded && <div className="absolute inset-0 bg-white/5 animate-pulse" />}
+    <motion.img
+      src={item.url}
+      loading="lazy"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isLoaded ? 1 : 0 }}
+      transition={{ duration: 0.4 }}
+      onLoad={() => setIsLoaded(true)}
+    />
+  </GlassCard>
 );
 ```
 
@@ -152,15 +152,15 @@ return (
 
 ```typescript
 <motion.div
-	animate={{ rotateY: isFlipped ? 180 : 0 }}
-	style={{ transformStyle: "preserve-3d" }}
+  animate={{ rotateY: isFlipped ? 180 : 0 }}
+  style={{ transformStyle: "preserve-3d" }}
 >
-	<GlassCard style={{ backfaceVisibility: "hidden" }}>
-		{/* Face avant : Image */}
-	</GlassCard>
-	<GlassCard style={{ transform: "rotateY(180deg)" }}>
-		{/* Face arrière : Métadonnées */}
-	</GlassCard>
+  <GlassCard style={{ backfaceVisibility: "hidden" }}>
+    {/* Face avant : Image */}
+  </GlassCard>
+  <GlassCard style={{ transform: "rotateY(180deg)" }}>
+    {/* Face arrière : Métadonnées */}
+  </GlassCard>
 </motion.div>
 ```
 
@@ -223,9 +223,9 @@ Utilise `@tauri-apps/plugin-dialog` pour le sélecteur natif :
 import { open } from "@tauri-apps/plugin-dialog";
 
 const selected = await open({
-	directory: true,
-	multiple: false,
-	title: "Sélectionner un Dossier Source",
+  directory: true,
+  multiple: false,
+  title: "Sélectionner un Dossier Source",
 });
 ```
 
@@ -260,9 +260,9 @@ Carrousel circulaire haute performance optimisé pour 60fps.
 const VISIBLE_RANGE = 5; // Nombre d'items montés simultanément
 
 const visibleItems = useMemo(() => {
-	const start = Math.max(0, currentIndex - Math.floor(VISIBLE_RANGE / 2));
-	const end = Math.min(items.length, start + VISIBLE_RANGE);
-	return items.slice(start, end);
+  const start = Math.max(0, currentIndex - Math.floor(VISIBLE_RANGE / 2));
+  const end = Math.min(items.length, start + VISIBLE_RANGE);
+  return items.slice(start, end);
 }, [currentIndex, items]);
 ```
 
@@ -270,14 +270,46 @@ const visibleItems = useMemo(() => {
 
 ## 5. CinematicCarousel (Mode Flow 3D Immersif - Expérimental)
 
-Un carrousel 3D dramatique utilisant `framer-motion` pour des effets de perspective et de rotation intenses.
+Dernière mise à jour : 24/12/2024 à 14:10
+
+Un carrousel 3D dramatique utilisant `framer-motion` pour des effets de perspective et de rotation intenses avec virtualisation pour des performances optimales.
 
 ### Caractéristiques
 
-- **Perspective intense** : `perspective: 1500px` pour une profondeur maximale.
-- **Interactivité** : Cliquabilité directe sur les images latérales pour la navigation.
-- **Animations fluides** : Utilisation de transitions `spring` pour un mouvement naturel.
-- **Rendu conditionnel** : Activé via le toggle expérimental dans `SettingsModal`.
+- **Virtualisation intelligente** : Seules 7 images sont rendues simultanément (image actuelle ± 3), optimisant les performances même avec des milliers d'images
+- **Perspective intense** : `perspective: 1500px` avec `transformStyle: preserve-3d` pour une profondeur maximale
+- **Navigation circulaire** : Défilement infini dans les deux directions avec gestion des indices modulaires
+- **Interactivité complète** :
+  - Cliquabilité directe sur les images latérales pour naviguer instantanément
+  - Navigation clavier (← → pour naviguer, Esc pour fermer, I pour toggle info)
+  - Boutons de navigation avec icônes ChevronLeft/Right
+- **Animations fluides** : Transitions `spring` (stiffness: 150, damping: 20) pour un mouvement naturel et physique
+- **Gestion des z-index** : Système de couches avec z-index dynamiques (300 pour contrôles, 250 pour navigation, 100-90 pour images)
+- **Overlay métadonnées** : Panneau d'information glassmorphique affichant nom, description AI, tags et position
+- **Rendu conditionnel** : Activé via le toggle expérimental dans `SettingsModal`
+
+### Positionnement 3D
+
+Chaque image est positionnée selon son offset par rapport à l'image centrale :
+
+```typescript
+const getImageStyle = (offset: number) => {
+  const translateX = offset * 500; // Espacement horizontal
+  const translateZ = offset === 0 ? 250 : -Math.abs(offset) * 200; // Profondeur
+  const rotateY = offset * -25; // Rotation perspective
+  const scale =
+    offset === 0 ? 1.1 : Math.max(0.6, 0.9 - Math.abs(offset) * 0.1);
+  const opacity =
+    offset === 0 ? 1 : Math.max(0.5, 0.85 - Math.abs(offset) * 0.15);
+  const zIndex = 100 - Math.abs(offset) * 10;
+
+  return { translateX, translateZ, rotateY, scale, opacity, zIndex };
+};
+```
+
+### Indicateur de progression
+
+Affiche jusqu'à 20 points de progression en bas de l'écran, avec l'item actuel mis en évidence par une barre élargie.
 
 ---
 
@@ -303,18 +335,18 @@ const [thinking, setThinking] = useState("");
 const [isAnalyzing, setIsAnalyzing] = useState(false);
 
 const handleAnalyze = async () => {
-	setIsAnalyzing(true);
-	setThinking("");
+  setIsAnalyzing(true);
+  setThinking("");
 
-	const result = await analyzeImageStream(
-		item,
-		(text) => setThinking(text), // Callback streaming
-		true // Enable thinking
-	);
+  const result = await analyzeImageStream(
+    item,
+    (text) => setThinking(text), // Callback streaming
+    true // Enable thinking
+  );
 
-	// Mise à jour de l'item avec les résultats
-	onUpdateItem({ ...item, ...result });
-	setIsAnalyzing(false);
+  // Mise à jour de l'item avec les résultats
+  onUpdateItem({ ...item, ...result });
+  setIsAnalyzing(false);
 };
 ```
 
@@ -341,11 +373,11 @@ Si on clique-droit sur un item non sélectionné, il devient l'unique sélection
 
 ```typescript
 const handleContextMove = (item: PortfolioItem) => {
-	if (!selectedIds.has(item.id)) {
-		clearSelection();
-		setSelectedIds(new Set([item.id]));
-	}
-	setIsMoveModalOpen(true);
+  if (!selectedIds.has(item.id)) {
+    clearSelection();
+    setSelectedIds(new Set([item.id]));
+  }
+  setIsMoveModalOpen(true);
 };
 ```
 
@@ -371,8 +403,8 @@ Modale de configuration globale.
 
 ```typescript
 const handleSaveKey = (key: string) => {
-	localStorage.setItem("gemini_api_key", key);
-	setIsSettingsOpen(false);
+  localStorage.setItem("gemini_api_key", key);
+  setIsSettingsOpen(false);
 };
 ```
 
