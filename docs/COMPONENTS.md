@@ -1,4 +1,4 @@
-Dernière mise à jour : 24/12/2024 à 17:58
+Dernière mise à jour : 24/12/2024 à 18:25
 
 # Composants UI & UX
 
@@ -187,11 +187,14 @@ return (
 
 La barre d'outils principale avec trois zones distinctes :
 
-| Zone       | Contenu                               | Comportement |
-| ---------- | ------------------------------------- | ------------ |
-| **Gauche** | Menu Bibliothèque, Paramètres         | Fixe         |
-| **Centre** | Recherche, Filtres couleurs, Curseurs | Scrollable   |
 | **Droite** | Sélecteur Vue (Grid/Carousel/List)    | Fixe         |
+
+### Adaptation au Pinning
+
+La TopBar reçoit désormais la prop `isSidebarPinned`.
+
+- **Pointer Events** : Le conteneur de la TopBar utilise `pointer-events-none` pour ne pas bloquer les clics sur la sidebar épinglée. Seule la "pill" centrale et ses boutons acceptent les clics (`pointer-events-auto`).
+- **Layout Dynamique** : Si la sidebar est épinglée, la TopBar applique une marge à gauche (`left-80`) pour rester centrée par rapport à la zone de contenu utile.
 
 ### Optimisation Context
 
@@ -238,12 +241,22 @@ const selected = await open({
 });
 ```
 
-### Distinction Visuelle
+### Pinning & Persistance (Pin Logic)
 
-| Type         | Icône               | Description                         |
-| ------------ | ------------------- | ----------------------------------- |
-| **Physique** | 💾 HardDrive (Bleu) | Dossier réel sur disque             |
-| **Virtuel**  | 💜 FolderHeart      | Collection logique créée dans l'app |
+Le `FolderDrawer` gère deux modes d'affichage via une logique de rendu unifiée (`isVisible`) :
+
+- **`isPinned={true}`** : Rendu relatif (`relative`), s'intègre dans le flux flexbox de l'application.
+- **`isPinned={false}`** : Rendu fixe (`fixed`), utilise les animations de transition spring et un backdrop.
+
+Cette unification garantit que l'état interne du composant (scroll, sélections) est préservé lors de la transition entre le mode flottant et le mode épinglé.
+
+| Icone       | État                      | Signification                                      |
+| ----------- | ------------------------- | -------------------------------------------------- |
+| 📚 Layers   | Racine (Library)          | Affiche tous les dossiers et items du Projet Actif |
+| 💾 HardDrive | Physique (Source)         | Dossier synchronisé avec le système de fichiers    |
+| 💜 FolderHeart | Virtuel (Collection)     | Collection manuelle cible de déplacements          |
+| 📌 Unpin    | Actif (isPinned=true)      | La barre est fixée à gauche                        |
+| 📌 Pin      | Inactif (isPinned=false)   | La barre est en mode drawer flottant               |
 
 ### Architecture Collections
 

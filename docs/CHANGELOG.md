@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 18:35
+Dernière mise à jour : 24/12/2024 à 19:10
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,19 +8,48 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Finalisation Raffinements UX & Documentation
+**Session en cours** : Finalisation Sidebar Persistante & Documentation
 
 **Progression** :
+- ✅ Sidebar Persistante : 12/12 tâches (100% complété)
+  - Pin/Unpin, Push content layout, TopBar fix
 - ✅ Amélioration UX Sélection : 8/8 tâches (100% complété)
-  - Persistance des checkboxes, actions groupées (1-6)
 - ✅ Raffinement Déplacement & Focus : 4/4 tâches (100% complété)
-- ✅ Raffinement UI Navigation : 3/3 tâches (100% complété)
 - ✅ Audit complet Documentation : 6/6 fichiers sync (100% complété)
 
 **Prochaines étapes** :
 - [x] Push final et validation utilisateur
 
-**Dernière modification** : 24/12/2024 à 18:35
+**Dernière modification** : 24/12/2024 à 19:10
+
+## [24/12/2024 - 19:10] - Implémentation de la Sidebar Persistante
+
+### Type : Nouveau Feature / UX
+
+**Composant** : `App.tsx`, `FolderDrawer.tsx`, `TopBar.tsx`, `index.css`
+
+**Changements** :
+
+- **Sidebar Pinned (Persistance)** :
+  - Ajout d'une fonctionnalité "Épingler" (Pin) dans la barre latérale.
+  - Lorsque la barre est épinglée, elle **pousse** le contenu principal au lieu de s'afficher en overlay.
+  - Synchronisation intelligente entre le mode "Drawer" (flottant) et le mode "Pinned" (persistant).
+- **Refonte Layout App** :
+  - Passage à une structure `flex-row` au niveau de la racine pour supporter le décalage dynamique du contenu.
+  - Gestion indépendante du scroll entre la barre latérale et la galerie photo.
+- **Optimisation TopBar** :
+  - Correction de l'interception des clics : la TopBar ne bloque plus l'accès à la sidebar.
+  - Décalage automatique de la TopBar vers la droite lorsque la sidebar est fixe.
+- **Raffinement UX** :
+  - Suppression du bouton "fermer" (X) redondant en mode épinglé.
+  - Unpinning automatique ferme désormais la barre pour une transition propre.
+
+**Impact** : Une gestion de l'espace beaucoup plus flexible pour les utilisateurs intensifs de dossiers et de collections.
+
+**Documentation mise à jour** :
+- `docs/ARCHITECTURE.md` : Nouveau layout flex-row.
+- `docs/COMPONENTS.md` : Mise à jour des props `isSidebarPinned` et logique unifiée.
+- `docs/INTERACTIONS.md` : Description du système de pinning.
 
 ## [24/12/2024 - 18:35] - Amélioration de la Persistance de Sélection
 

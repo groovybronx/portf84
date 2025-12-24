@@ -1,6 +1,6 @@
 # Interactions & Raccourcis
 
-Dernière mise à jour : 24/12/2024 à 18:25
+Dernière mise à jour : 24/12/2024 à 19:10
 
 Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souris qu'au clavier ("Power User Friendly").
 
@@ -130,6 +130,25 @@ Filtrage rapide via les pastilles colorées dans la TopBar.
 | 🟢 Vert   | `4`    | `#22c55e` |
 | 🔵 Bleu   | `5`    | `#3b82f6` |
 | 🟣 Violet | `6`    | `#a855f7` |
+
+---
+
+## Sidebar & Navigation Library
+
+La barre latérale s'active via l'icône `Layers` dans la TopBar ou en glissant depuis le bord gauche.
+
+### Épinglage (Pinning)
+
+L'utilisateur peut fixer la barre latérale pour qu'elle reste toujours visible et ne recouvre pas ses photos.
+
+- **📌 Icône Épingle** : Située en haut à droite de la sidebar.
+  - **Click** : Alterne entre le mode épinglé et le mode flottant.
+  - **Automatisme** : Si vous désactivez l'épingle (Unpin), la barre se ferme automatiquement pour libérer l'espace.
+- **Synchronisation** : L'icône de bibliothèque dans la TopBar permet également de basculer cet état. Si la barre est épinglée, cliquer sur l'icône dans la TopBar la détachera et la fermera.
+
+### Indépendance du Scroll
+
+Le scroll de la sidebar est totalement indépendant de celui de la galerie. Vous pouvez explorer vos collections tout en gardant une vue fixe sur vos photos.
 
 ---
 

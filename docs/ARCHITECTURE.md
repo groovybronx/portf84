@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 24/12/2024 à 17:58
+Dernière mise à jour : 24/12/2024 à 19:10
 
 ## Vue d'Ensemble
 
@@ -13,7 +13,25 @@ graph TD
     B --> D[Native File System]
     B --> E[Asset Protocol]
     A --> F[Gemini AI API]
+    A --> G["Persistent Sidebar (Flex Layout)"]
 ```
+
+## Système de Sidebar (Pinned vs Float)
+
+L'application utilise un système de navigation hybride pour la bibliothèque :
+
+- **Mode Float (Drawer)** : La barre latérale s'affiche en superposition (overlay) avec un backdrop flou. Idéal pour les petits écrans ou une consultation rapide.
+- **Mode Pinned (Persistant)** : La barre latérale est fixée à gauche et **pousse** le contenu principal (galerie).
+
+### Implémentation du Layout
+
+Le layout racine (`App.tsx`) utilise une structure `flex-row` dynamique :
+- **Conteneur Principal** : `h-screen overflow-hidden flex flex-col`
+- **Body** : `flex-1 flex flex-row overflow-hidden`
+- **Sidebar** : `w-80 shrink-0` (en mode pinned)
+- **Galerie** : `flex-1 overflow-y-auto`
+
+Cette structure garantit que la galerie et la sidebar possèdent des zones de défilement **indépendantes**, empêchant le défilement de l'un d'affecter l'autre.
 
 ## Stack Technologique
 
@@ -36,7 +54,7 @@ Le projet suit une architecture **fractal modulaire** pour maximiser la maintena
 src/
   ├── features/           # Domaines fonctionnels
   │   ├── library/        # Grille photos, cartes, carrousels (standard & 3D)
-  │   ├── navigation/     # TopBar et composants associés
+  │   ├── navigation/     # TopBar, Library navigation (Layers icon)
   │   ├── collections/    # Gestionnaire dossiers, Projets
   │   ├── vision/         # AI Analysis, ImageViewer
   │   └── tags/           # Système de tagging
