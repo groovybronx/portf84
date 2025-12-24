@@ -537,8 +537,6 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
           updatedItem.path || updatedItem.name
         );
       });
-
-      });
     },
     [state.folders]
   );
