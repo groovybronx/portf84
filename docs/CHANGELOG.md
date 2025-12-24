@@ -1,8 +1,34 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 14:50
+Dernière mise à jour : 24/12/2024 à 16:09
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
+
+---
+
+## 🎯 État Actuel du Projet
+
+**Session en cours** : Refactorisation App.tsx + Configuration des règles de documentation
+
+**Progression** :
+- ✅ Refactorisation App.tsx : 10/13 tâches (77% complété)
+  - Code refactorisé : 656 → 477 lignes (-27%)
+  - 3 hooks créés : `useKeyboardShortcuts`, `useModalState`, `useItemActions`
+  - 1 composant créé : `ViewRenderer`
+- ✅ Règles de documentation créées et configurées
+  - `docs/REGLES_DOCUMENTATION.md` : Gestion de la documentation
+  - `docs/REGLES_ARTIFACTS.md` : Gestion des artifacts Antigravity
+
+**Prochaines étapes** :
+- [ ] Tests unitaires pour `useKeyboardShortcuts` et `useItemActions`
+- [ ] Tests manuels (navigation, modales, vues, collections)
+- [ ] Finaliser la documentation (`COMPONENTS.md` déjà mis à jour)
+
+**Dernière modification** : 24/12/2024 à 16:09
+
+---
+
+## Historique des Modifications
 
 ---
 

@@ -1,7 +1,3 @@
----
-trigger: always_on
----
-
 # Instructions de Gestion de la Documentation Technique
 
 ## 1. Source de Vérité et Connaissance Persistante
