@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 19:50
+Dernière mise à jour : 24/12/2024 à 20:00
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -12,16 +12,39 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 **Progression** :
 - ✅ Sidebar Persistante : 12/12 tâches (100% complété)
+- ✅ Synchronisation Atomique : 4/4 tâches (100% complété)
+  - Implémentation `BATCH_UPDATE_ITEMS`, suppression race conditions
 - ✅ Amélioration UX Sélection : 8/8 tâches (100% complété)
 - ✅ Raffinement Déplacement & Focus : 4/4 tâches (100% complété)
 - ✅ Micro-animations ContextMenu : 4/4 tâches (100% complété)
-  - Hover highlight (glide effect), Icon scaling, Color tag scaling
 - ✅ Audit complet Documentation : 6/6 fichiers sync (100% complété)
 
 **Prochaines étapes** :
 - [x] Push final et validation utilisateur
 
-**Dernière modification** : 24/12/2024 à 19:50
+**Dernière modification** : 24/12/2024 à 20:00
+
+## [24/12/2024 - 20:00] - Fix Synchronisation Batch Updates
+
+### Type : Correction Performance / UX
+
+**Composant** : `LibraryContext.tsx`, `useItemActions.ts`, `App.tsx`
+
+**Changements** :
+
+- **Synchronisation Atomique** :
+  - Création d'une nouvelle action `BATCH_UPDATE_ITEMS` dans le reducer.
+  - Les mises à jour de plusieurs items (couleurs, tags) sont désormais traitées en **une seule transition d'état**.
+  - Suppression de la boucle d'appels à `updateItem` qui causait des écrasements d'état ("race conditions").
+- **Réactivité Immédiate** :
+  - L'interface se met à jour instantanément pour l'ensemble de la sélection sans nécessiter de rechargement de l'application.
+- **Robustesse** :
+  - Les mises à jour utilisent désormais une architecture "functional update" ou atomique, garantissant l'intégrité des données même lors d'actions rapides.
+
+**Impact** : Une expérience utilisateur fluide et fiable pour la gestion de masse de la bibliothèque.
+
+**Documentation mise à jour** :
+- `docs/ARCHITECTURE.md` : Note sur les mises à jour atomiques dans le flux de données.
 
 ## [24/12/2024 - 19:50] - Micro-animations et Hover Highlight ContextMenu
 

@@ -45,11 +45,15 @@ export const useItemActions = ({
   focusedId,
   selectionMode,
   contextMenuItem,
-  setIsMoveModalOpen: (open: boolean) => void;
-  setIsAddTagModalOpen: (open: boolean) => void;
-  activeCollection: { id: string; name: string } | null;
-  updateItems, // Added
+  updateItems,
   updateItem,
+  clearSelection,
+  setSelectedIds,
+  createVirtualFolder,
+  moveItemsToFolder,
+  setIsMoveModalOpen,
+  setIsAddTagModalOpen,
+  activeCollection,
 }: UseItemActionsProps): ItemActions => {
   // Tagging Logic
   const addTagsToSelection = useCallback(
