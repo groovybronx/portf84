@@ -310,7 +310,18 @@ const App: React.FC = () => {
         <div className="top-bar-area relative z-(--z-topbar)">
           <TopBar
             folderName={activeFolderName}
-            onOpenFolders={() => setIsFolderDrawerOpen(true)}
+            onOpenFolders={() => {
+              // Priority toggle logic:
+              // 1. If pinned, unpin and hide.
+              // 2. If drawer open, close it.
+              // 3. Otherwise open drawer.
+              if (isSidebarPinned) {
+                setIsSidebarPinned(false);
+                setIsFolderDrawerOpen(false);
+              } else {
+                setIsFolderDrawerOpen(!isFolderDrawerOpen);
+              }
+            }}
             onMoveSelected={() => setIsMoveModalOpen(true)}
             onShareSelected={handleShareSelected}
             onRunBatchAI={handleRunBatchAI}

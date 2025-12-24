@@ -79,22 +79,17 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 							variant="ghost"
 							size="icon"
 							onClick={onTogglePin}
-							className={`rounded-full transition-colors ${
-								isPinned ? "text-blue-400 bg-blue-500/10" : "text-gray-400 hover:text-white"
+							className={`rounded-full transition-all duration-300 ${
+								isPinned
+									? "text-blue-400 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+									: "text-gray-400 hover:text-white hover:bg-white/5"
 							}`}
-							title={isPinned ? "Unpin Library" : "Pin Library"}
+							title={isPinned ? "Détacher la bibliothèque" : "Fixer la bibliothèque"}
 						>
-							<Pin size={18} className={isPinned ? "rotate-45" : ""} />
-						</Button>
-					)}
-					{!isPinned && (
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={onClose}
-							className="text-gray-400 hover:text-white rounded-full"
-						>
-							<X size={20} />
+							<Pin
+								size={18}
+								className={`transition-transform duration-300 ${isPinned ? "fill-current" : "rotate-45"}`}
+							/>
 						</Button>
 					)}
 				</div>
@@ -376,34 +371,35 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 					</div>
 	);
 
-	if (isPinned) {
-		return (
-			<div className="drawer-area h-full w-80 glass-surface-lg border-r border-glass-border p-6 shadow-xl relative shrink-0 overflow-hidden">
-				{drawerBody}
-			</div>
-		);
-	}
+	// Unified Visibility Logic
+	const isVisible = isOpen || isPinned;
 
 	return (
 		<AnimatePresence>
-			{isOpen && (
+			{isVisible && (
 				<>
-					{/* Backdrop */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						onClick={onClose}
-						className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
-					/>
+					{/* Backdrop - Only in floating drawer mode */}
+					{!isPinned && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							onClick={onClose}
+							className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
+						/>
+					)}
 
-					{/* Drawer */}
+					{/* Sidebar / Drawer Component */}
 					<motion.div
-						initial={{ x: "-100%" }}
+						initial={isPinned ? false : { x: "-100%" }}
 						animate={{ x: 0 }}
 						exit={{ x: "-100%" }}
 						transition={{ type: "spring", damping: 30, stiffness: 300 }}
-						className="drawer-area fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
+						className={`drawer-area glass-surface-lg border-r border-glass-border p-6 flex flex-col shadow-2xl overflow-hidden ${
+							isPinned
+								? "relative h-full w-80 shrink-0 z-0"
+								: "fixed top-0 left-0 bottom-0 w-80 z-(--z-drawer)"
+						}`}
 					>
 						{drawerBody}
 					</motion.div>
