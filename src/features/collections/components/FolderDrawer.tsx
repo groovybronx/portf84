@@ -17,6 +17,13 @@ import {
 	Pin,
 } from "lucide-react";
 
+import {
+	Folder as FolderType,
+	Collection,
+	SourceFolder,
+} from "../../../shared/types";
+import { Button } from "../../../shared/components/ui";
+
 interface FolderDrawerProps {
 	isOpen: boolean;
 	onClose: () => void;
