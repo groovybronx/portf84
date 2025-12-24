@@ -310,6 +310,7 @@ const App: React.FC = () => {
         <div className="top-bar-area relative z-(--z-topbar)">
           <TopBar
             folderName={activeFolderName}
+            isSidebarPinned={isSidebarPinned}
             onOpenFolders={() => {
               // Priority toggle logic:
               // 1. If pinned, unpin and hide.

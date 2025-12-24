@@ -24,6 +24,7 @@ interface TopBarProps {
 	onOpenSettings: () => void;
 	showColorTags: boolean;
 	onToggleColorTags: () => void;
+	isSidebarPinned?: boolean;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -37,6 +38,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	onOpenSettings,
 	showColorTags,
 	onToggleColorTags,
+	isSidebarPinned = false,
 }) => {
 	// Context consumption
 	const {
@@ -85,7 +87,9 @@ export const TopBar: React.FC<TopBarProps> = ({
 
 	return (
 		<div
-			className="fixed top-0 left-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center pointer-events-auto"
+			className={`fixed top-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center pointer-events-none transition-all duration-300 ${
+				isSidebarPinned ? "left-80" : "left-0"
+			}`}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => {
 				setIsHovered(false);
@@ -96,9 +100,9 @@ export const TopBar: React.FC<TopBarProps> = ({
 				initial={{ y: -100, opacity: 0 }}
 				animate={{ y: shouldShow ? 0 : -100, opacity: shouldShow ? 1 : 0 }}
 				transition={{ type: "spring", stiffness: 300, damping: 30 }}
-				className="w-full flex justify-center p-4"
+				className="w-full flex justify-center p-4 pointer-events-none"
 			>
-				<div className="glass-surface rounded-2xl shadow-xl p-2 sm:p-3 flex items-center max-w-[95vw]">
+				<div className="glass-surface rounded-2xl shadow-xl p-2 sm:p-3 flex items-center max-w-[95vw] pointer-events-auto">
 					{/* --- LEFT SECTION --- */}
 					<div className="flex items-center gap-2 shrink-0">
 						<Button
