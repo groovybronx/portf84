@@ -1,5 +1,7 @@
 # Architecture Technique - Lumina Portfolio V2
 
+Dernière mise à jour : 24/12/2024 à 16:52
+
 ## Vue d'Ensemble
 
 Lumina Portfolio est une application native **Local-First** construite avec **Tauri v2**, offrant une expérience desktop haute performance sans backend externe.
@@ -304,12 +306,43 @@ sequenceDiagram
     UI->>UI: Distribue vers folders physiques/virtuels
 ```
 
+### Chargement des Dossiers Sources
+
 1. **Scan Disque** : `readDir()` récursif via `@tauri-apps/plugin-fs`
 2. **Chargement DB** : Récupération des métadonnées et dossiers virtuels
 3. **Hydratation** :
    - Chaque fichier est enrichi avec ses métadonnées (tags AI, couleurs)
    - Si `virtualFolderId` existe, l'item est déplacé dans le dossier virtuel
 4. **Rendu** : État `folders` unifié (physiques + virtuels)
+
+### Chargement des Collections Virtuelles (Startup)
+
+Au démarrage de l'application ou lors du changement de projet actif, `LibraryContext` charge automatiquement les collections virtuelles créées par l'utilisateur :
+
+```typescript
+// LibraryContext.tsx - useEffect
+useEffect(() => {
+  const loadVirtualFolders = async () => {
+    if (!activeCollection) return;
+
+    const storedVirtual = await storageService.getVirtualFolders(activeCollection.id);
+
+    // Filtre pour exclure les shadow folders (avec sourceFolderId)
+    const userCollections = storedVirtual.filter((vf) => !vf.sourceFolderId);
+
+    if (userCollections.length > 0) {
+      dispatch({ type: "SET_FOLDERS", payload: userCollections });
+    }
+  };
+
+  loadVirtualFolders();
+}, [activeCollection?.id]);
+```
+
+**Différenciation des types de dossiers** :
+- **Shadow folders** : `isVirtual=true` + `sourceFolderId` présent → Chargés par `loadFromPath`
+- **Collections virtuelles** : `isVirtual=true` + `sourceFolderId` absent → Chargées au startup
+- **Dossiers sources** : `isVirtual=false` → Scannés depuis le disque
 
 ---
 
