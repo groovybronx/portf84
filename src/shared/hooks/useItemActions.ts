@@ -19,6 +19,7 @@ export interface UseItemActionsProps {
     items: PortfolioItem[]
   ) => void;
   setIsMoveModalOpen: (open: boolean) => void;
+  setIsAddTagModalOpen: (open: boolean) => void;
   activeCollection: { id: string; name: string } | null;
 }
 
@@ -29,6 +30,7 @@ export interface ItemActions {
   moveItemToFolder: (targetId: string) => void;
   createFolderAndMove: (name: string) => void;
   handleContextMove: (item: PortfolioItem) => void;
+  handleContextAddTag: (item: PortfolioItem) => void;
 }
 
 /**
@@ -48,6 +50,7 @@ export const useItemActions = ({
   createVirtualFolder,
   moveItemsToFolder,
   setIsMoveModalOpen,
+  setIsAddTagModalOpen,
   activeCollection,
 }: UseItemActionsProps): ItemActions => {
   // Tagging Logic
@@ -169,6 +172,18 @@ export const useItemActions = ({
     [selectedIds, clearSelection, setSelectedIds, setIsMoveModalOpen]
   );
 
+  // Context menu add tag handler
+  const handleContextAddTag = useCallback(
+    (item: PortfolioItem) => {
+      if (!selectedIds.has(item.id)) {
+        clearSelection();
+        setSelectedIds(new Set([item.id]));
+      }
+      setIsAddTagModalOpen(true);
+    },
+    [selectedIds, clearSelection, setSelectedIds, setIsAddTagModalOpen]
+  );
+
   return {
     addTagsToSelection,
     applyColorTagToSelection,
@@ -176,5 +191,6 @@ export const useItemActions = ({
     moveItemToFolder,
     createFolderAndMove,
     handleContextMove,
+    handleContextAddTag,
   };
 };

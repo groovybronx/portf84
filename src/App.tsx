@@ -158,6 +158,7 @@ const App: React.FC = () => {
     createVirtualFolder,
     moveItemsToFolder,
     setIsMoveModalOpen,
+    setIsAddTagModalOpen,
     activeCollection,
   });
 
@@ -395,14 +396,9 @@ const App: React.FC = () => {
             onColorTag={(item, color) =>
               updateItem({ ...item, colorTag: color })
             }
-            onAddTags={(item) => {
-              if (selectedIds.size <= 1) {
-                // Optional: could force select the context item here if desired
-              }
-              setIsAddTagModalOpen(true);
-            }}
-            onOpen={setSelectedItem}
-            onMove={handleContextMove}
+            onAddTags: handleContextAddTag,
+            onOpen: setSelectedItem,
+            onMove: handleContextMove,
           />
         )}
       </AnimatePresence>
