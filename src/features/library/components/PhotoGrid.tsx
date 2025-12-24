@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { PortfolioItem } from "../../../shared/types";
+import { PortfolioItem, Folder, Collection } from "../../../shared/types";
 import { PhotoCard } from "./PhotoCard";
 import { useLibrary } from "../../../contexts/LibraryContext";
 import { useSelection } from "../../../contexts/SelectionContext";
@@ -12,6 +12,8 @@ interface PhotoGridProps {
 	onTagClick?: (tag: string) => void;
 	focusedId?: string | null;
 	onFocusChange?: (id: string | null) => void;
+	folders?: Folder[];
+	collections?: Collection[];
 }
 
 const GAP = 16;
@@ -35,6 +37,8 @@ const VirtualColumn = ({
 	registerItemRef,
 	selectedTag,
 	scrollToIndex, // New prop
+	folders,
+	collections,
 }: any) => {
 	const rowVirtualizer = useVirtualizer({
 		count: items.length,
@@ -115,6 +119,8 @@ const VirtualColumn = ({
 							registerItemRef={registerItemRef}
 							onTagClick={onTagClick}
 							selectedTag={selectedTag}
+							folders={folders}
+							collections={collections}
 						/>
 					</div>
 				);
@@ -130,6 +136,8 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
 	onTagClick,
 	focusedId,
 	onFocusChange,
+	folders = [],
+	collections = [],
 }) => {
 	const { processedItems: items, gridColumns, selectedTag } = useLibrary();
 	const { selectionMode, selectedIds, toggleSelection, registerItemRef } =

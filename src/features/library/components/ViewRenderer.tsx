@@ -3,7 +3,7 @@ import { PhotoGrid } from "./PhotoGrid";
 import { PhotoCarousel } from "./PhotoCarousel";
 import { CinematicCarousel } from "./CinematicCarousel";
 import { PhotoList } from "./PhotoList";
-import { PortfolioItem, ViewMode } from "../../../shared/types";
+import { PortfolioItem, ViewMode, Folder, Collection } from "../../../shared/types";
 
 export interface ViewRendererProps {
   viewMode: ViewMode;
@@ -16,6 +16,8 @@ export interface ViewRendererProps {
   onContextMenu: (e: React.MouseEvent, item: PortfolioItem) => void;
   onTagClick: (tag: string) => void;
   onFocusChange: (id: string) => void;
+  folders?: Folder[];
+  collections?: Collection[];
 }
 
 /**
@@ -33,6 +35,8 @@ export const ViewRenderer: React.FC<ViewRendererProps> = ({
   onContextMenu,
   onTagClick,
   onFocusChange,
+  folders,
+  collections,
 }) => {
   switch (viewMode) {
     case ViewMode.GRID:
@@ -44,6 +48,8 @@ export const ViewRenderer: React.FC<ViewRendererProps> = ({
           onTagClick={onTagClick}
           focusedId={focusedId}
           onFocusChange={onFocusChange}
+          folders={folders}
+          collections={collections}
         />
       );
 

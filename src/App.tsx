@@ -407,6 +407,8 @@ const App: React.FC = () => {
                 }}
                 onTagClick={setSelectedTag}
                 onFocusChange={setFocusedId}
+                folders={folders}
+                collections={collections}
               />
             </AnimatePresence>
           )}

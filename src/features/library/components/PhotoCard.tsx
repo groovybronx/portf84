@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PortfolioItem } from "../../../shared/types";
+import { PortfolioItem, Folder, Collection } from "../../../shared/types";
 import { GlassCard } from "../../../shared/components/ui";
 import {
 	CheckCircle2,
@@ -41,6 +41,8 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 	registerItemRef,
 	onTagClick,
 	selectedTag,
+	folders = [],
+	collections = [],
 }) => {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [isFlipped, setIsFlipped] = useState(false);
@@ -49,6 +51,19 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 		e.stopPropagation();
 		setIsFlipped(!isFlipped);
 	};
+
+	// Compute location (folder or collection name)
+	const locationName = React.useMemo(() => {
+		if (item.virtualFolderId) {
+			const folder = folders.find(f => f.id === item.virtualFolderId);
+			if (folder) return folder.name;
+		}
+		if (item.collectionId) {
+			const collection = collections.find(c => c.id === item.collectionId);
+			if (collection) return collection.name;
+		}
+		return null;
+	}, [item.virtualFolderId, item.collectionId, folders, collections]);
 
 	return (
 		<div
@@ -205,6 +220,16 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 							<Maximize2 size={16} />
 						</button>
 					</div>
+
+					{/* Location (Folder/Collection) */}
+					{locationName && (
+						<div className="flex items-center gap-2 text-xs text-gray-400">
+							<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+							</svg>
+							<span className="truncate">{locationName}</span>
+						</div>
+					)}
 
 					<div className="h-px bg-white/10 w-full shrink-0" />
 
