@@ -22,9 +22,11 @@ Les documents suivants doivent être maintenus à jour :
 
 ## 3. Règles de Modification (CRITIQUE)
 
-- **Horodatage obligatoire :** En haut de chaque fichier modifié, tu dois indiquer ou mettre à jour la mention : `Dernière mise à jour : JJ/MM/AAAA à HH:MM`.
-- **Édition Partielle Uniquement :** Il est **strictement INTERDIT** de remplacer la totalité d'un fichier. Ne modifie que les informations qui ont besoin d'être complétées, actualisées ou supprimées.
-- **Conservation :** Préserve toujours la structure existante et le contenu encore valide.
+- **Horodatage Strict (Ligne 1) :** La TOUTE PREMIÈRE LIGNE de chaque document doit impérativement être l'horodatage : `Dernière mise à jour : JJ/MM/AAAA à HH:MM`.
+  - Lors d'une modification, tu dois **remplacer** l'ancien horodatage en ligne 1 par le nouveau.
+  - Ne place jamais l'horodatage au milieu ou à la fin du document.
+- **Édition Partielle Uniquement :** Il est strictement INTERDIT de remplacer la totalité d'un fichier. Ne modifie que les informations nécessaires.
+- **Conservation :** Préserve toujours la structure existante (titres, listes) après la ligne 1.
 
 ## 4. Gestion du CHANGELOG.md
 

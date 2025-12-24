@@ -1,3 +1,5 @@
+Dernière mise à jour : 24/12/2024 à 14:10
+
 # Composants UI & UX
 
 L'interface repose sur une séparation stricte entre les composants de présentation ("Dumb Components") et le conteneur logique (`App.tsx`).
@@ -269,8 +271,6 @@ const visibleItems = useMemo(() => {
 ---
 
 ## 5. CinematicCarousel (Mode Flow 3D Immersif - Expérimental)
-
-Dernière mise à jour : 24/12/2024 à 14:10
 
 Un carrousel 3D dramatique utilisant `framer-motion` pour des effets de perspective et de rotation intenses avec virtualisation pour des performances optimales.
 
