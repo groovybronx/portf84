@@ -127,6 +127,7 @@ const App: React.FC = () => {
     isCollectionManagerOpen,
     setIsCollectionManagerOpen,
   } = useModalState();
+  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [showColorTags, setShowColorTags] = useState(true);
 
   // Context Menu
@@ -322,16 +323,17 @@ const App: React.FC = () => {
         </div>
       </ErrorBoundary>
 
-      {/* Folder Drawer - Updated with Collection support */}
-      <ErrorBoundary featureName="collections">
-        <div className="drawer-area relative z-(--z-drawer-overlay)">
+      {/* App Layout: Sidebar + Main Content */}
+      <div className="flex-1 flex flex-row overflow-hidden relative">
+        {/* Sidebar / Folder Drawer */}
+        <ErrorBoundary featureName="collections">
           <FolderDrawer
-            isOpen={isFolderDrawerOpen}
+            isOpen={isFolderDrawerOpen || isSidebarPinned}
             onClose={() => setIsFolderDrawerOpen(false)}
             folders={folders}
             activeFolderId={activeFolderIds}
             onSelectFolder={toggleFolderSelection}
-            onImportFolder={handleDirectoryPicker} // SAME as EmptyState button
+            onImportFolder={handleDirectoryPicker}
             onCreateFolder={() => setIsCreateFolderModalOpen(true)}
             onDeleteFolder={deleteFolder}
             activeCollection={activeCollection}
@@ -341,13 +343,19 @@ const App: React.FC = () => {
               await removeSourceFolder(path);
               removeFolderByPath(path);
             }}
+            isPinned={isSidebarPinned}
+            onTogglePin={() => {
+              const newPinned = !isSidebarPinned;
+              setIsSidebarPinned(newPinned);
+              if (newPinned) setIsFolderDrawerOpen(false);
+            }}
           />
-        </div>
-      </ErrorBoundary>
+        </ErrorBoundary>
 
-      {/* Main Content Area - EmptyState or View */}
-      <ErrorBoundary featureName="library">
-        <main className="relative z-(--z-grid-item)">
+        {/* Main Content Area */}
+        <div className="flex-1 relative overflow-hidden flex flex-col">
+          <ErrorBoundary featureName="library">
+            <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar">
           {currentItems.length === 0 ? (
             <div className="flex items-center justify-center h-full min-h-[60vh]">
               <p className="text-gray-500 text-center">
@@ -375,8 +383,10 @@ const App: React.FC = () => {
               />
             </AnimatePresence>
           )}
-        </main>
-      </ErrorBoundary>
+            </main>
+          </ErrorBoundary>
+        </div>
+      </div>
 
       {/* Context Menu */}
       <AnimatePresence>

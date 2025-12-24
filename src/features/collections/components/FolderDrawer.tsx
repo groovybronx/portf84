@@ -14,13 +14,8 @@ import {
 	HardDrive,
 	Settings,
 	ChevronRight,
+	Pin,
 } from "lucide-react";
-import {
-	Folder as FolderType,
-	Collection,
-	SourceFolder,
-} from "../../../shared/types";
-import { Button } from "../../../shared/components/ui";
 
 interface FolderDrawerProps {
 	isOpen: boolean;
@@ -36,6 +31,8 @@ interface FolderDrawerProps {
 	sourceFolders: SourceFolder[];
 	onManageCollections: () => void;
 	onRemoveSourceFolder?: (path: string) => void;
+	isPinned?: boolean;
+	onTogglePin?: () => void;
 }
 
 export const FolderDrawer: React.FC<FolderDrawerProps> = ({
@@ -51,6 +48,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 	sourceFolders,
 	onManageCollections,
 	onRemoveSourceFolder,
+	isPinned = false,
+	onTogglePin,
 }) => {
 	const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
 
@@ -60,41 +59,39 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 		(f) => f.isVirtual && !f.sourceFolderId
 	);
 
-	return (
-		<AnimatePresence>
-			{isOpen && (
-				<>
-					{/* Backdrop */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						onClick={onClose}
-						className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
-					/>
-
-					{/* Drawer */}
-					<motion.div
-						initial={{ x: "-100%" }}
-						animate={{ x: 0 }}
-						exit={{ x: "-100%" }}
-						transition={{ type: "spring", damping: 30, stiffness: 300 }}
-						className="fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
-					>
-						{/* Header */}
-						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-xl font-bold text-white flex items-center gap-2">
-								<Layers className="text-blue-500" /> Library
-							</h2>
-							<Button
-								variant="ghost"
-								size="icon"
-								onClick={onClose}
-								className="text-gray-400 hover:text-white rounded-full"
-							>
-								<X size={20} />
-							</Button>
-						</div>
+	const drawerBody = (
+		<div className="flex flex-col h-full">
+			{/* Header */}
+			<div className="flex items-center justify-between mb-6">
+				<h2 className="text-xl font-bold text-white flex items-center gap-2">
+					<Layers className="text-blue-500" /> Library
+				</h2>
+				<div className="flex items-center gap-1">
+					{onTogglePin && (
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onTogglePin}
+							className={`rounded-full transition-colors ${
+								isPinned ? "text-blue-400 bg-blue-500/10" : "text-gray-400 hover:text-white"
+							}`}
+							title={isPinned ? "Unpin Library" : "Pin Library"}
+						>
+							<Pin size={18} className={isPinned ? "rotate-45" : ""} />
+						</Button>
+					)}
+					{!isPinned && (
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onClose}
+							className="text-gray-400 hover:text-white rounded-full"
+						>
+							<X size={20} />
+						</Button>
+					)}
+				</div>
+			</div>
 
 						{/* Active Collection Banner */}
 						{activeCollection && (
@@ -369,6 +366,39 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 								Nouvelle Collection Virtuelle
 							</Button>
 						</div>
+					</div>
+	);
+
+	if (isPinned) {
+		return (
+			<div className="h-full w-80 glass-surface-lg border-r border-glass-border p-6 shadow-xl relative shrink-0 overflow-hidden">
+				{drawerBody}
+			</div>
+		);
+	}
+
+	return (
+		<AnimatePresence>
+			{isOpen && (
+				<>
+					{/* Backdrop */}
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						onClick={onClose}
+						className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
+					/>
+
+					{/* Drawer */}
+					<motion.div
+						initial={{ x: "-100%" }}
+						animate={{ x: 0 }}
+						exit={{ x: "-100%" }}
+						transition={{ type: "spring", damping: 30, stiffness: 300 }}
+						className="fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
+					>
+						{drawerBody}
 					</motion.div>
 				</>
 			)}
