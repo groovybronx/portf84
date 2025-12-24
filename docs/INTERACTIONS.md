@@ -130,8 +130,10 @@ Filtrage rapide via les pastilles colorées dans la TopBar.
 | 🟢 Vert   | `4`    | `#22c55e` |
 | 🔵 Bleu   | `5`    | `#3b82f6` |
 | 🟣 Violet | `6`    | `#a855f7` |
+| ❌ Retirer | `0`    | N/A       |
 
----
+> [!TIP]
+> Le menu contextuel utilise un système de **surbrillance fluide** (Glide Effect) : lorsque vous déplacez la souris entre les items, le surlignage glisse de façon organique pour une sensation "Apple-like" premium.
 
 ## Sidebar & Navigation Library
 

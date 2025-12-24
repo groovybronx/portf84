@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 19:10
+Dernière mise à jour : 24/12/2024 à 19:50
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,19 +8,43 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Finalisation Sidebar Persistante & Documentation
+**Session en cours** : Raffinement UI & Micro-animations
 
 **Progression** :
 - ✅ Sidebar Persistante : 12/12 tâches (100% complété)
-  - Pin/Unpin, Push content layout, TopBar fix
 - ✅ Amélioration UX Sélection : 8/8 tâches (100% complété)
 - ✅ Raffinement Déplacement & Focus : 4/4 tâches (100% complété)
+- ✅ Micro-animations ContextMenu : 4/4 tâches (100% complété)
+  - Hover highlight (glide effect), Icon scaling, Color tag scaling
 - ✅ Audit complet Documentation : 6/6 fichiers sync (100% complété)
 
 **Prochaines étapes** :
 - [x] Push final et validation utilisateur
 
-**Dernière modification** : 24/12/2024 à 19:10
+**Dernière modification** : 24/12/2024 à 19:50
+
+## [24/12/2024 - 19:50] - Micro-animations et Hover Highlight ContextMenu
+
+### Type : Amélioration UI / Premium Feel
+
+**Composant** : `ContextMenu.tsx`
+
+**Changements** :
+
+- **Hover Highlight (Glide Effect)** :
+  - Implémentation d'un arrière-plan de surbrillance partagé via `layoutId` (Framer Motion).
+  - L'effet crée une transition fluide ("glissement") de la surbrillance lors du passage de la souris entre les éléments du menu.
+- **Micro-animations d'icônes** :
+  - Ajout d'un effet d'échelle (`scale-110`) sur les icônes au survol pour un retour visuel plus dynamique.
+- **Raffinement Color Tags** :
+  - Augmentation de l'échelle des pastilles de couleur au survol (`scale-125`) et ajout de transitions fluides.
+- **Refactorisation structurelle** :
+  - Nettoyage du code du `ContextMenu` pour utiliser une structure de données d'items, facilitant la maintenance.
+
+**Impact** : Une sensation beaucoup plus "Apple-like" et premium lors de l'utilisation du menu contextuel.
+
+**Documentation mise à jour** :
+- `docs/INTERACTIONS.md` : Mention de l'effet de surbrillance fluide dans le menu contextuel.
 
 ## [24/12/2024 - 19:10] - Implémentation de la Sidebar Persistante
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	Sparkles,
@@ -38,25 +38,55 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 	onMove,
 }) => {
 	const menuRef = useRef<HTMLDivElement>(null);
+	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
 	// Close on click outside
 	useEffect(() => {
 		const handleClick = (e: MouseEvent) => {
-			// Check if click is outside the menu
 			if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
 				onClose();
 			}
 		};
 
-		// Use 'mousedown' with capture:true to detect clicks even if other components (like items) stop propagation
 		document.addEventListener("mousedown", handleClick, { capture: true });
 		return () =>
 			document.removeEventListener("mousedown", handleClick, { capture: true });
 	}, [onClose]);
 
 	// Adjust position if close to edge
-	const adjustedX = Math.min(x, window.innerWidth - 240); // Increased margin
-	const adjustedY = Math.min(y, window.innerHeight - 350); // Increased margin
+	const adjustedX = Math.min(x, window.innerWidth - 240);
+	const adjustedY = Math.min(y, window.innerHeight - 350);
+
+	const menuItems = [
+		{
+			id: "open",
+			label: "Open Fullscreen",
+			icon: Eye,
+			color: "text-blue-400",
+			action: () => onOpen(item),
+		},
+		{
+			id: "analyze",
+			label: "Analyze with AI",
+			icon: Sparkles,
+			color: "text-purple-400",
+			action: () => onAnalyze(item),
+		},
+		{
+			id: "tags",
+			label: "Add Tag",
+			icon: Tag,
+			color: "text-green-400",
+			action: () => onAddTags(item),
+		},
+		{
+			id: "move",
+			label: "Move to Collection",
+			icon: FolderInput,
+			color: "text-blue-400",
+			action: () => onMove(item),
+		},
+	];
 
 	return (
 		<motion.div
@@ -66,8 +96,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 			exit={{ opacity: 0, scale: 0.95 }}
 			transition={{ duration: 0.1 }}
 			style={{ top: adjustedY, left: adjustedX }}
-			onMouseDown={(e) => e.stopPropagation()} // Prevent triggering drag selection in App background
-			onContextMenu={(e) => e.preventDefault()} // Prevent native context menu on the custom menu
+			onMouseDown={(e) => e.stopPropagation()}
+			onContextMenu={(e) => e.preventDefault()}
 			className="fixed z-(--z-context-menu) w-60 glass-surface border border-glass-border rounded-xl shadow-2xl py-2 overflow-hidden"
 		>
 			<div className="px-4 py-2 border-b border-glass-border/10 mb-1 flex items-center justify-between">
@@ -86,45 +116,38 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 				</button>
 			</div>
 
-			<button
-				onClick={() => {
-					onOpen(item);
-					onClose();
-				}}
-				className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-glass-bg-accent hover:text-white flex items-center gap-3 transition-colors"
-			>
-				<Eye size={16} className="text-blue-400" /> Open Fullscreen
-			</button>
-
-			<button
-				onClick={() => {
-					onAnalyze(item);
-					onClose();
-				}}
-				className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-glass-bg-accent hover:text-white flex items-center gap-3 transition-colors"
-			>
-				<Sparkles size={16} className="text-purple-400" /> Analyze with AI
-			</button>
-
-			<button
-				onClick={() => {
-					onAddTags(item);
-					onClose();
-				}}
-				className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-glass-bg-accent hover:text-white flex items-center gap-3 transition-colors"
-			>
-				<Tag size={16} className="text-green-400" /> Add Tag
-			</button>
-
-			<button
-				onClick={() => {
-					onMove(item);
-					onClose();
-				}}
-				className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-glass-bg-accent hover:text-white flex items-center gap-3 transition-colors"
-			>
-				<FolderInput size={16} className="text-blue-400" /> Move to Collection
-			</button>
+			<div className="relative">
+				{menuItems.map((menuItem) => (
+					<button
+						key={menuItem.id}
+						onMouseEnter={() => setHoveredAction(menuItem.id)}
+						onMouseLeave={() => setHoveredAction(null)}
+						onClick={() => {
+							menuItem.action();
+							onClose();
+						}}
+						className="w-full text-left px-4 py-2 text-sm text-gray-200 flex items-center gap-3 transition-colors relative group"
+					>
+						{hoveredAction === menuItem.id && (
+							<motion.div
+								layoutId="menu-hover-bg"
+								initial={false}
+								className="absolute inset-0 bg-white/10 z-0"
+								transition={{
+									type: "spring",
+									bounce: 0.15,
+									duration: 0.35,
+								}}
+							/>
+						)}
+						<menuItem.icon
+							size={16}
+							className={`${menuItem.color} relative z-10 transition-transform group-hover:scale-110`}
+						/>
+						<span className="relative z-10 font-medium">{menuItem.label}</span>
+					</button>
+				))}
+			</div>
 
 			<div className="my-1 border-t border-glass-border/10" />
 
@@ -140,7 +163,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 								onColorTag(item, hex);
 								onClose();
 							}}
-							className={`w-5 h-5 rounded-full border border-transparent hover:scale-110 hover:border-white transition-all ${
+							className={`w-5 h-5 rounded-full border border-transparent hover:scale-125 hover:border-white transition-all ${
 								item.colorTag === hex ? "ring-2 ring-white/50" : ""
 							}`}
 							style={{ backgroundColor: hex }}
@@ -151,7 +174,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 							onColorTag(item, undefined);
 							onClose();
 						}}
-						className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-gray-500 hover:text-white hover:border-white"
+						className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-gray-500 hover:text-white hover:border-white transition-all hover:scale-125"
 						title="Remove Tag"
 					>
 						<X size={12} />
@@ -162,14 +185,33 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 			<div className="my-1 border-t border-glass-border/10" />
 
 			<button
+				onMouseEnter={() => setHoveredAction("delete")}
+				onMouseLeave={() => setHoveredAction(null)}
 				onClick={() => {
 					onDelete(item.id);
 					onClose();
 				}}
-				className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-3 transition-colors"
+				className="w-full text-left px-4 py-2 text-sm text-red-500/80 flex items-center gap-3 transition-colors relative group"
 			>
-				<Trash2 size={16} /> Delete Item
+				{hoveredAction === "delete" && (
+					<motion.div
+						layoutId="menu-hover-bg"
+						initial={false}
+						className="absolute inset-0 bg-red-500/10 z-0"
+						transition={{
+							type: "spring",
+							bounce: 0.15,
+							duration: 0.35,
+						}}
+					/>
+				)}
+				<Trash2
+					size={16}
+					className="relative z-10 transition-transform group-hover:scale-110"
+				/>
+				<span className="relative z-10 font-medium">Delete Item</span>
 			</button>
 		</motion.div>
 	);
 };
+

@@ -62,7 +62,8 @@ type LibraryAction =
   | { type: "SET_SORT_DIRECTION"; payload: SortDirection }
   | { type: "CLEAR_LIBRARY"; payload: void }
   | { type: "SET_AUTO_ANALYZE"; payload: boolean }
-  | { type: "SET_CINEMATIC_CAROUSEL"; payload: boolean };
+  | { type: "SET_CINEMATIC_CAROUSEL"; payload: boolean }
+  | { type: "BATCH_UPDATE_ITEMS"; payload: PortfolioItem[] };
 
 interface LibraryContextType extends LibraryState {
   // Computed values
@@ -208,6 +209,26 @@ function libraryReducer(
       return { ...state, autoAnalyzeEnabled: action.payload };
     case "SET_CINEMATIC_CAROUSEL":
       return { ...state, useCinematicCarousel: action.payload };
+    case "BATCH_UPDATE_ITEMS": {
+      const updates = action.payload;
+      const updateMap = new Map(updates.map((i) => [i.id, i]));
+
+      return {
+        ...state,
+        folders: state.folders.map((folder) => {
+          // Check if this folder contains any of the updated items
+          const hasUpdates = folder.items.some((item) => updateMap.has(item.id));
+          if (!hasUpdates) return folder;
+
+          return {
+            ...folder,
+            items: folder.items.map((item) =>
+              updateMap.has(item.id) ? updateMap.get(item.id)! : item
+            ),
+          };
+        }),
+      };
+    }
     default:
       return state;
   }
@@ -232,6 +253,7 @@ interface LibraryContextActions {
   loadFromPath: (path: string) => Promise<void>;
   importFiles: (fileList: FileList) => void;
   updateItem: (item: PortfolioItem) => void;
+  updateItems: (items: PortfolioItem[]) => void;
   createFolder: (name: string) => string;
   deleteFolder: (id: string) => void;
   removeFolderByPath: (path: string) => void;
@@ -447,32 +469,18 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log("[LibraryContext] importFiles not yet implemented");
   }, []);
 
+  const updateItems = useCallback((updatedItems: PortfolioItem[]) => {
+    dispatch({ type: "BATCH_UPDATE_ITEMS", payload: updatedItems });
+    updatedItems.forEach((item) => {
+      storageService.saveMetadata(item, item.path || item.name);
+    });
+  }, []);
+
   const updateItem = useCallback(
-    (updated: PortfolioItem) => {
-      // Use functional update to ensure we have latest state
-      let updatedFolders: Folder[];
-
-      // FIX: Update item in ALL folders that contain it (shadow folders + collections)
-      // Previously only updated in one folder, causing color tags to not display
-      updatedFolders = state.folders.map((folder) => {
-        // Check if this folder contains the item
-        const hasItem = folder.items.some((item) => item.id === updated.id);
-
-        if (hasItem) {
-          return {
-            ...folder,
-            items: folder.items.map((item) =>
-              item.id === updated.id ? updated : item
-            ),
-          };
-        }
-        return folder;
-      });
-
-      dispatch({ type: "SET_FOLDERS", payload: updatedFolders });
-      storageService.saveMetadata(updated, updated.path || updated.name);
+    (item: PortfolioItem) => {
+      updateItems([item]);
     },
-    [state.folders]
+    [updateItems]
   );
 
   const createFolder = useCallback(
@@ -600,6 +608,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       loadFromPath,
       importFiles,
       updateItem,
+      updateItems,
       createFolder,
       deleteFolder,
       removeFolderByPath,
@@ -620,6 +629,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       loadFromPath,
       importFiles,
       updateItem,
+      updateItems,
       createFolder,
       deleteFolder,
       removeFolderByPath,

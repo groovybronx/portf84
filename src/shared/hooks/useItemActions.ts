@@ -9,6 +9,7 @@ export interface UseItemActionsProps {
   focusedId: string | null;
   selectionMode: boolean;
   contextMenuItem: PortfolioItem | null;
+  updateItems: (items: PortfolioItem[]) => void;
   updateItem: (item: PortfolioItem) => void;
   clearSelection: () => void;
   setSelectedIds: (ids: Set<string>) => void;
@@ -44,14 +45,11 @@ export const useItemActions = ({
   focusedId,
   selectionMode,
   contextMenuItem,
+  setIsMoveModalOpen: (open: boolean) => void;
+  setIsAddTagModalOpen: (open: boolean) => void;
+  activeCollection: { id: string; name: string } | null;
+  updateItems, // Added
   updateItem,
-  clearSelection,
-  setSelectedIds,
-  createVirtualFolder,
-  moveItemsToFolder,
-  setIsMoveModalOpen,
-  setIsAddTagModalOpen,
-  activeCollection,
 }: UseItemActionsProps): ItemActions => {
   // Tagging Logic
   const addTagsToSelection = useCallback(
@@ -67,32 +65,37 @@ export const useItemActions = ({
 
       if (itemsToUpdate.length === 0) return;
 
-      for (const item of itemsToUpdate) {
+      const results = itemsToUpdate.map((item) => {
         const currentTags = item.manualTags || [];
         if (!currentTags.includes(newTag)) {
-          const updatedItem = {
+          return {
             ...item,
             manualTags: [...currentTags, newTag],
           };
-          updateItem(updatedItem);
         }
-      }
+        return item;
+      });
+
+      updateItems(results);
     },
-    [selectedIds, currentItems, contextMenuItem, updateItem]
+    [selectedIds, currentItems, contextMenuItem, updateItems]
   );
 
   // Apply color to Focused/Selected items
   const applyColorTagToSelection = useCallback(
     (color: string | undefined) => {
-      if (selectionMode && selectedIds.size > 0)
+      let itemsToUpdate: PortfolioItem[] = [];
+
+      if (selectedIds.size > 0) {
         itemsToUpdate = currentItems.filter((i) => selectedIds.has(i.id));
-      else if (selectedItem) itemsToUpdate = [selectedItem];
-      else if (focusedId) {
+      } else if (selectedItem) {
+        itemsToUpdate = [selectedItem];
+      } else if (focusedId) {
         const item = currentItems.find((i) => i.id === focusedId);
         if (item) itemsToUpdate = [item];
       }
 
-      itemsToUpdate.forEach((item) => updateItem({ ...item, colorTag: color }));
+      updateItems(itemsToUpdate.map((item) => ({ ...item, colorTag: color })));
     },
     [
       selectionMode,
@@ -100,7 +103,7 @@ export const useItemActions = ({
       selectedItem,
       focusedId,
       currentItems,
-      updateItem,
+      updateItems,
     ]
   );
 

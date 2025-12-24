@@ -59,6 +59,7 @@ const App: React.FC = () => {
     loadFromPath,
     importFiles,
     updateItem: libraryUpdateItem,
+    updateItems: libraryUpdateItems,
     createFolder: createVirtualFolder,
     deleteFolder,
     removeFolderByPath,
@@ -103,9 +104,18 @@ const App: React.FC = () => {
   } = useSelection();
 
   // Wrapper to keep selectedItem in sync with library updates
+  const updateItems = (items: PortfolioItem[]) => {
+    libraryUpdateItems(items);
+    // If our selected item is in the batch, update it too
+    setSelectedItem((prev) => {
+      if (!prev) return null;
+      const updated = items.find((i) => i.id === prev.id);
+      return updated || prev;
+    });
+  };
+
   const updateItem = (item: PortfolioItem) => {
-    libraryUpdateItem(item);
-    setSelectedItem((prev) => (prev && prev.id === item.id ? item : prev));
+    updateItems([item]);
   };
 
   // --- 4. AI Layer ---
@@ -154,6 +164,7 @@ const App: React.FC = () => {
     focusedId,
     selectionMode,
     contextMenuItem: contextMenu?.item || null,
+    updateItems,
     updateItem,
     clearSelection,
     setSelectedIds,
@@ -182,7 +193,7 @@ const App: React.FC = () => {
   };
 
   const handleTopBarColorAction = (color: string | null) => {
-    if (selectionMode && selectedIds.size > 0)
+    if (selectedIds.size > 0)
       applyColorTagToSelection(color || undefined);
     else setActiveColorFilter(color);
   };
@@ -420,9 +431,14 @@ const App: React.FC = () => {
                   folderId: "trash",
                 }) /* Pseudo delete */
             }
-            onColorTag={(item, color) =>
-              updateItem({ ...item, colorTag: color })
-            }
+            onColorTag={(item, color) => {
+              // If item not in selection, it becomes the selection
+              if (!selectedIds.has(item.id)) {
+                clearSelection();
+                setSelectedIds(new Set([item.id]));
+              }
+              applyColorTagToSelection(color);
+            }}
             onAddTags={handleContextAddTag}
             onOpen={setSelectedItem}
             onMove={handleContextMove}
