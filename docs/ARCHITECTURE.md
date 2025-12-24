@@ -419,50 +419,19 @@ npm run test
 - **Environnement** : `jsdom` (simulation DOM pour hooks et composants)
 - **Mocks** : `@tauri-apps/plugin-fs`, `@tauri-apps/api/core`, `@google/genai`
 - **Couverture** : Couverture complète du cœur logique (hooks extraits) et des services critiques.
-## Optimisations de Performance
-
-### État Actuel (Décembre 2024)
-
-L'application utilise déjà plusieurs optimisations clés :
-
-#### ✅ Virtualisation (TanStack Virtual)
-- **PhotoGrid** : Rendu virtuel par colonnes avec calcul dynamique des hauteurs
-- **Overscan** : 10 éléments pré-rendus pour scrolling fluide
-- **Impact** : Seules ~30 images visibles sont rendues simultanément
-
-#### ✅ Context Splitting
-- `LibraryContext` séparé en état/dispatch pour minimiser les re-renders
-- `useMemo` pour `processedItems` et `availableTags`
-
-#### ✅ Batch Updates Atomiques
-- Action `BATCH_UPDATE_ITEMS` pour mises à jour groupées
-- Élimine les race conditions lors de modifications multiples
-
-### Problèmes Identifiés (Audit 24/12/2024)
-
-#### 🔴 Critique
-1. **Pas de système de thumbnails** → Images en pleine résolution (5MB chacune)
-2. **PhotoCarousel : 5 images simultanées** → Toutes en haute résolution
-3. **Pas de lazy loading natif** → Temps de chargement initial très long
-
-#### 🟡 Moyen
-4. **Pas de cache LRU** → Rechargement constant
-5. **Métadonnées toutes en RAM** → 50MB pour 10k images
-6. **Re-renders excessifs** → Lag lors de changements d'état
-
-### Plan d'Optimisation (3 Phases)
-
-**Phase 1 : Quick Wins** → Lazy loading + overscan + déchargement carousel  
-**Phase 2 : Thumbnails** → Service Rust + WebP (400px, 800px, 1200px)  
-**Phase 3 : Avancé** → Cache LRU + Web Workers + IndexedDB
-
-### Gains Estimés (1000 images)
-
-| Métrique | Avant | Après | Amélioration |
-|----------|-------|-------|--------------|
-| Temps de chargement | 30s | 3s | -90% |
-| Mémoire | 5GB | 500MB | -90% |
-| FPS (scrolling) | 20fps | 60fps | +200% |
 
 ---
 
+## Optimisations de Performance
+
+L'application utilise plusieurs optimisations clés :
+
+- **Virtualisation** : `@tanstack/react-virtual` pour rendu efficace (overscan: 10)
+- **Context Splitting** : Séparation état/dispatch pour minimiser les re-renders
+- **Batch Updates** : Action `BATCH_UPDATE_ITEMS` pour mises à jour atomiques
+- **Lazy Loading** : `loading="lazy"` et `decoding="async"` sur toutes les images (Phase 1, déc. 2024)
+- **Image Unloading** : Déchargement automatique des images hors viewport dans le carousel
+
+> **Note** : Pour l'analyse détaillée des performances et le plan d'optimisation complet, voir les artifacts de session dans `.gemini/antigravity/brain/`.
+
+---
