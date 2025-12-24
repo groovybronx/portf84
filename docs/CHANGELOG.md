@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 16:27
+Dernière mise à jour : 24/12/2024 à 16:49
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Refactorisation App.tsx + Configuration des règles de documentation ✅ TERMINÉ
+**Session en cours** : Tests et corrections de bugs
 
 **Progression** :
 - ✅ Refactorisation App.tsx : 10/13 tâches (77% complété)
@@ -16,21 +16,46 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
   - 3 hooks créés : `useKeyboardShortcuts`, `useModalState`, `useItemActions`
   - 1 composant créé : `ViewRenderer`
 - ✅ Règles de documentation créées et configurées (100% complété)
-  - `.agent/rules/REGLES_LIMITE_TOKENS.md` : Gestion adaptative des limites de tokens
-  - `.agent/rules/artifacts-antigravity.md` : Gestion des artifacts et continuité multi-sessions
-  - `.agent/rules/maintient-a-jour-documentation.md` : Gestion de la documentation (enrichi)
-  - `docs/CHANGELOG.md` : Structure améliorée avec section "État Actuel"
+- ✅ Fix persistence des collections virtuelles (100% complété)
+  - Collections virtuelles persistent après reload
+  - Déduplication des shadow folders corrigée
+  - Différenciation claire : source / shadow / collections
 
 **Prochaines étapes** :
 - [ ] Tests unitaires pour `useKeyboardShortcuts` et `useItemActions`
 - [ ] Tests manuels (navigation, modales, vues, collections)
-- [ ] Finaliser la documentation (`COMPONENTS.md` déjà mis à jour)
+- [ ] Finaliser la documentation
 
-**Dernière modification** : 24/12/2024 à 16:27
+**Dernière modification** : 24/12/2024 à 16:49
 
 ---
 
 ## Historique des Modifications
+
+---
+
+## [24/12/2024 - 16:49] - Fix persistence collections virtuelles
+
+### Type : Correction
+
+**Composant** : `src/contexts/LibraryContext.tsx`
+
+**Changements** :
+
+- **Ajout d'un useEffect pour charger les collections virtuelles au démarrage** :
+  - Charge automatiquement les collections virtuelles créées par l'utilisateur
+  - Filtre pour exclure les shadow folders (avec `sourceFolderId`)
+  - Les shadow folders sont chargés exclusivement par `loadFromPath`
+
+- **Correction de la déduplication dans le reducer MERGE_FOLDERS** :
+  - Comparaison par chemin (`path`) au lieu de l'ID
+  - Évite les doublons de dossiers sources
+
+**Impact** : Les collections virtuelles persistent maintenant correctement après un reload de l'application, et les shadow folders n'apparaissent plus en double
+
+**Bugs corrigés** :
+- Collections virtuelles disparaissaient après reload
+- Shadow folders apparaissaient en double dans la liste
 
 ---
 
