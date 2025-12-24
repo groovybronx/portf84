@@ -261,3 +261,91 @@ export const debugListAllCollectionFolders = async (): Promise<DBCollectionFolde
 	console.log("[Storage] DEBUG - All collection_folders in DB:", result);
 	return result;
 };
+
+// ==================== AUTO-GROUPING FUNCTIONS ====================
+
+/** Map hex color to human-readable name */
+const COLOR_NAMES: Record<string, string> = {
+	"#ef4444": "Rouge",
+	"#f97316": "Orange",
+	"#eab308": "Jaune",
+	"#22c55e": "Vert",
+	"#3b82f6": "Bleu",
+	"#a855f7": "Violet",
+	"#ec4899": "Rose",
+	"#6b7280": "Gris",
+};
+
+/**
+ * Get human-readable name for a color hex
+ */
+export const getColorName = (hex: string): string => {
+	return COLOR_NAMES[hex.toLowerCase()] || hex;
+};
+
+/**
+ * Create a virtual collection and move all items with a specific colorTag into it
+ * Returns the created folder ID and count of items moved
+ */
+export const groupItemsByColorTag = async (
+	collectionId: string,
+	colorTag: string,
+	itemIds: string[]
+): Promise<{ folderId: string; count: number }> => {
+	const db = await getDB();
+	const colorName = getColorName(colorTag);
+	const folderName = `📁 ${colorName}`;
+
+	// Create virtual folder
+	const folderId = `virtual-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	await db.execute(
+		"INSERT INTO virtual_folders (id, collectionId, name, createdAt, isVirtual, sourceFolderId) VALUES (?, ?, ?, ?, ?, ?)",
+		[folderId, collectionId, folderName, Date.now(), 1, null]
+	);
+
+	// Move items to folder (update virtualFolderId in metadata)
+	let count = 0;
+	for (const itemId of itemIds) {
+		await db.execute(
+			"UPDATE metadata SET virtualFolderId = ? WHERE id = ?",
+			[folderId, itemId]
+		);
+		count++;
+	}
+
+	console.log(`[Storage] ✅ Created folder "${folderName}" with ${count} items`);
+	return { folderId, count };
+};
+
+/**
+ * Create a virtual collection and move all items with a specific tag into it
+ * Returns the created folder ID and count of items moved
+ */
+export const groupItemsByTag = async (
+	collectionId: string,
+	tagName: string,
+	itemIds: string[]
+): Promise<{ folderId: string; count: number }> => {
+	const db = await getDB();
+	const folderName = `🏷️ ${tagName}`;
+
+	// Create virtual folder
+	const folderId = `virtual-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	await db.execute(
+		"INSERT INTO virtual_folders (id, collectionId, name, createdAt, isVirtual, sourceFolderId) VALUES (?, ?, ?, ?, ?, ?)",
+		[folderId, collectionId, folderName, Date.now(), 1, null]
+	);
+
+	// Move items to folder
+	let count = 0;
+	for (const itemId of itemIds) {
+		await db.execute(
+			"UPDATE metadata SET virtualFolderId = ? WHERE id = ?",
+			[folderId, itemId]
+		);
+		count++;
+	}
+
+	console.log(`[Storage] ✅ Created folder "${folderName}" with ${count} items`);
+	return { folderId, count };
+};

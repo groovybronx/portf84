@@ -59,7 +59,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 							title="Color Tag"
 						/>
 					)}
-					<h4 className="text-sm font-bold text-white line-clamp-2 leading-tight">
+					<h4 className="text-[10px] font-medium text-white/80 line-clamp-1 leading-tight">
 						{item.name}
 					</h4>
 				</div>

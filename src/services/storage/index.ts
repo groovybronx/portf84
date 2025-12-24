@@ -34,6 +34,9 @@ import {
 	removeFolderFromCollection,
 	getCollectionFolders,
 	debugListAllCollectionFolders,
+	getColorName,
+	groupItemsByColorTag,
+	groupItemsByTag,
 } from "./folders";
 import {
 	saveMetadata,
@@ -88,6 +91,11 @@ export const storageService = {
 	removeFolderFromCollection,
 	getCollectionFolders,
 	debugListAllCollectionFolders,
+
+	// Auto-Grouping
+	getColorName,
+	groupItemsByColorTag,
+	groupItemsByTag,
 
 	// Metadata
 	saveMetadata,
