@@ -9,6 +9,8 @@ import {
 	Tag,
 	Sparkles,
 	Maximize2,
+	HardDrive,
+	FolderHeart,
 } from "lucide-react";
 
 interface PhotoCardProps {
@@ -25,6 +27,8 @@ interface PhotoCardProps {
 	registerItemRef?: (id: string, el: HTMLElement | null) => void;
 	onTagClick?: (tag: string) => void;
 	selectedTag?: string | null;
+	folders?: Folder[];
+	collections?: Collection[];
 }
 
 const PhotoCardComponent: React.FC<PhotoCardProps> = ({
@@ -54,16 +58,15 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 
 	// Compute location (folder or collection name)
 	const locationName = React.useMemo(() => {
+		// Only show folder name (shadow folder or virtual collection)
+		// Never show project name
 		if (item.virtualFolderId) {
 			const folder = folders.find(f => f.id === item.virtualFolderId);
 			if (folder) return folder.name;
 		}
-		if (item.collectionId) {
-			const collection = collections.find(c => c.id === item.collectionId);
-			if (collection) return collection.name;
-		}
+		
 		return null;
-	}, [item.virtualFolderId, item.collectionId, folders, collections]);
+	}, [item.virtualFolderId, folders]);
 
 	return (
 		<div
@@ -222,16 +225,30 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 					</div>
 
 					{/* Location (Folder/Collection) */}
-					{locationName && (
-						<div className="flex items-center gap-2 text-xs text-gray-400">
-							<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-							</svg>
-							<span className="truncate">{locationName}</span>
+			{locationName && (() => {
+				// Determine if it's a shadow folder or virtual collection
+				const folder = folders.find(f => f.id === item.virtualFolderId);
+				const isShadowFolder = folder?.sourceFolderId;
+				
+				return (
+					<div className="flex items-center gap-2">
+						<div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
+							isShadowFolder 
+								? 'bg-blue-500/10 border border-blue-500/20' 
+								: 'bg-purple-500/10 border border-purple-500/20'
+						}`}>
+							{isShadowFolder ? (
+								<HardDrive size={14} className="text-blue-400" />
+							) : (
+								<FolderHeart size={14} className="text-purple-400" />
+							)}
 						</div>
-					)}
+						<span className="text-xs text-gray-400 truncate">{locationName}</span>
+					</div>
+				);
+			})()}
 
-					<div className="h-px bg-white/10 w-full shrink-0" />
+			<div className="h-px bg-white/10 w-full shrink-0" />
 
 					{/* 2. Description IA */}
 					<div className="min-h-0 shrink-0">

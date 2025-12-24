@@ -1,4 +1,4 @@
-Dernière mise à jour : 24/12/2024 à 22:24
+Dernière mise à jour : 24/12/2024 à 23:23
 
 # Composants UI & UX
 
@@ -171,6 +171,36 @@ return (
     {/* Face arrière : Métadonnées */}
   </GlassCard>
 </motion.div>
+```
+
+4. **Affichage Dossier/Collection** (24/12/2024) :
+
+Le dos de la carte affiche maintenant le nom du dossier ou de la collection virtuelle avec une icône colorée :
+
+- **Shadow folders** : Icône `HardDrive` bleue (`text-blue-400`, `bg-blue-500/10`)
+- **Collections virtuelles** : Icône `FolderHeart` violette (`text-purple-400`, `bg-purple-500/10`)
+
+Les couleurs correspondent exactement à celles de la sidebar (`FolderDrawer`) pour une cohérence visuelle.
+
+**Props** :
+```typescript
+interface PhotoCardProps {
+  item: PortfolioItem;
+  isSelected: boolean;
+  isFocused: boolean;
+  selectionMode: boolean;
+  showColorTags: boolean;
+  onSelect: (item: PortfolioItem) => void;
+  onToggleSelect: (id: string) => void;
+  onFocus: (id: string) => void;
+  onContextMenu: (e: React.MouseEvent, item: PortfolioItem) => void;
+  onHover: (item: PortfolioItem | null) => void;
+  registerItemRef?: (id: string, el: HTMLElement | null) => void;
+  onTagClick?: (tag: string) => void;
+  selectedTag?: string | null;
+  folders?: Folder[];        // NEW: Pour afficher le nom du dossier
+  collections?: Collection[]; // NEW: Pour afficher le nom de la collection
+}
 ```
 
 ### Slider de Colonnes

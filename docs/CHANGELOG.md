@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 22:22
+Dernière mise à jour : 24/12/2024 à 23:23
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Optimisations Performance
+**Session en cours** : Améliorations UX PhotoCard
 
 **Progression** :
 - ✅ Sidebar Persistante : 12/12 tâches (100% complété)
@@ -20,12 +20,40 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ✅ Audit Performance : Analyse complète + plan d'optimisation
 - ✅ Phase 1 Performance (Quick Wins) : 3/3 tâches (100% complété)
 - ✅ Fix TopBar hover detection
+- ✅ Affichage dossier/collection sur PhotoCard : 100% complété
 
 **Prochaines étapes** :
 - [ ] Implémenter Phase 2 : Système de thumbnails (Rust)
 - [ ] Tests de performance (mesures avant/après)
 
-**Dernière modification** : 24/12/2024 à 22:22
+**Dernière modification** : 24/12/2024 à 23:23
+
+## [24/12/2024 - 23:23] - Affichage Dossier/Collection sur PhotoCard
+
+### Type : Ajout
+
+**Composant** : `PhotoCard.tsx`, `libraryLoader.ts`, `PhotoGrid.tsx`, `ViewRenderer.tsx`, `App.tsx`
+
+**Changements** :
+
+- Ajout de props `folders` et `collections` à `PhotoCard`
+- Calcul du nom du dossier/collection via `virtualFolderId`
+- Affichage sur le dos de la carte avec icône colorée :
+  - 🔵 Shadow folders : icône `HardDrive` bleue (`text-blue-400`, `bg-blue-500/10`)
+  - 🟣 Collections virtuelles : icône `FolderHeart` violette (`text-purple-400`, `bg-purple-500/10`)
+- Fix `libraryLoader.ts` : ajout de `virtualFolderId` aux items assignés aux shadow folders
+- Chaîne de props complète : `App.tsx` → `ViewRenderer` → `PhotoGrid` → `VirtualColumn` → `PhotoCard`
+
+**Impact** : 
+
+Amélioration de l'UX en affichant le contexte organisationnel de chaque image directement sur la carte. Les couleurs d'icônes correspondent exactement à celles de la sidebar (FolderDrawer) pour une cohérence visuelle parfaite.
+
+**Documentation mise à jour** :
+
+- `docs/COMPONENTS.md` : Ajout section props PhotoCard
+- `docs/CHANGELOG.md` : Entrée complète
+
+---
 
 ## [24/12/2024 - 22:22] - Fix TopBar Hover Detection
 

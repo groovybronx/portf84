@@ -236,6 +236,8 @@ export const PhotoGrid: React.FC<PhotoGridProps> = ({
 							selectedIds={selectedIds}
 							registerItemRef={registerItemRef}
 							selectedTag={selectedTag}
+							folders={folders}
+							collections={collections}
 						/>
 					))}
 				</div>

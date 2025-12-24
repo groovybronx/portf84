@@ -100,7 +100,7 @@ export const libraryLoader = {
 			const itemWithCollection = { ...item, collectionId };
 			if (shadowFolderForPath) {
 				return {
-					item: itemWithCollection,
+					item: { ...itemWithCollection, virtualFolderId: shadowFolderForPath.id },
 					targetFolderId: shadowFolderForPath.id,
 				};
 			}
