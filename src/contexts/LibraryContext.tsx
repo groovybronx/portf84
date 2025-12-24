@@ -138,9 +138,12 @@ function libraryReducer(
       });
 
       // Filter out physical folders that are being re-added (to avoid duplicates)
-      const newPhysicalIds = new Set(foldersToAdd.map((f) => f.id));
+      // Use path comparison instead of ID to properly detect duplicates
+      const newPhysicalPaths = new Set(
+        foldersToAdd.filter((f) => !f.isVirtual).map((f) => f.path)
+      );
       const keptPhysical = updatedFolders.filter(
-        (f) => !f.isVirtual && !newPhysicalIds.has(f.id)
+        (f) => !f.isVirtual && f.path && !newPhysicalPaths.has(f.path)
       );
 
       // New folders list: Updated Virtual + Kept Physical + New Physical
@@ -277,6 +280,35 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
     }
   }, [activeCollection]);
+
+  // Load virtual folders on mount when collection changes
+  useEffect(() => {
+    const loadVirtualFolders = async () => {
+      if (!activeCollection) return;
+
+      console.log(
+        `[LibraryContext] Loading virtual folders for collection ${activeCollection.id}`
+      );
+      const storedVirtual = await storageService.getVirtualFolders(
+        activeCollection.id
+      );
+
+      // IMPORTANT: Only load user-created virtual collections (not shadow folders)
+      // Shadow folders (with sourceFolderId) are loaded by loadFromPath
+      const userCollections = storedVirtual.filter((vf) => !vf.sourceFolderId);
+
+      if (userCollections.length > 0) {
+        console.log(
+          `[LibraryContext] Found ${userCollections.length} user-created virtual collections to restore`
+        );
+        dispatch({ type: "SET_FOLDERS", payload: userCollections });
+      }
+    };
+
+    loadVirtualFolders();
+  }, [activeCollection?.id]);
+
+
 
   // Computed: Get all items from all folders
   const allItems = useMemo(() => {
