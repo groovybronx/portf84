@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 20:00
+Dernière mise à jour : 24/12/2024 à 22:00
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -13,16 +13,94 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 **Progression** :
 - ✅ Sidebar Persistante : 12/12 tâches (100% complété)
 - ✅ Synchronisation Atomique : 4/4 tâches (100% complété)
-  - Implémentation `BATCH_UPDATE_ITEMS`, suppression race conditions
 - ✅ Amélioration UX Sélection : 8/8 tâches (100% complété)
 - ✅ Raffinement Déplacement & Focus : 4/4 tâches (100% complété)
 - ✅ Micro-animations ContextMenu : 4/4 tâches (100% complété)
-- ✅ Audit complet Documentation : 6/6 fichiers sync (100% complété)
+- ✅ PhotoCarousel Multi-images : 5/5 tâches (100% complété)
+- ✅ Audit Performance : Analyse complète + plan d'optimisation
+- 🔄 Optimisations Performance : 0/40 tâches (Phase 1 & 2 planifiées)
 
 **Prochaines étapes** :
-- [x] Push final et validation utilisateur
+- [ ] Implémenter Phase 1 (Quick Wins) : Lazy loading + overscan
+- [ ] Implémenter Phase 2 : Système de thumbnails (Rust)
 
-**Dernière modification** : 24/12/2024 à 20:00
+**Dernière modification** : 24/12/2024 à 22:00
+
+## [24/12/2024 - 22:00] - Audit de Performance et Plan d'Optimisation
+
+### Type : Analyse / Planification
+
+**Composant** : Analyse globale de l'application
+
+**Travaux effectués** :
+
+- **Audit de Performance Complet** :
+  - Analyse de l'architecture actuelle (virtualisation, contextes, rendu)
+  - Identification de 6 problèmes majeurs de performance
+  - Mesure de l'impact sur les grandes galeries (1000+ images)
+  - Documentation détaillée dans `performance_audit.md`
+
+- **Problèmes Identifiés** :
+  - ❌ Pas de système de thumbnails → Images en pleine résolution (5MB chacune)
+  - ❌ PhotoCarousel → 5 images simultanées en haute résolution
+  - ❌ Pas de lazy loading natif
+  - ❌ Pas de cache LRU → Rechargement constant
+  - ❌ Métadonnées toutes en RAM → 50MB pour 10k images
+  - ❌ Re-renders excessifs du contexte
+
+- **Plan d'Optimisation en 3 Phases** :
+  - **Phase 1 (Quick Wins)** : Lazy loading + overscan + context splitting
+  - **Phase 2 (Structurel)** : Système de thumbnails Rust + cache LRU
+  - **Phase 3 (Avancé)** : Web Workers + IndexedDB + prefetching
+
+- **Gains Estimés** (1000 images) :
+  - Temps de chargement : -80% (30s → 3s)
+  - Mémoire : -90% (5GB → 500MB)
+  - Fluidité : +200% (20fps → 60fps)
+
+**Impact** : Roadmap claire pour supporter des galeries de 10 000+ images sans dégradation.
+
+**Documentation créée** :
+- `performance_audit.md` : Analyse détaillée et recommandations
+- `implementation_plan_performance.md` : Plan d'implémentation avec code
+- `task_performance.md` : 40 tâches organisées en checklist
+
+---
+
+## [24/12/2024 - 21:45] - PhotoCarousel Multi-images avec Effet Coverflow
+
+### Type : Amélioration UI / Performance
+
+**Composant** : `PhotoCarousel.tsx`
+
+**Changements** :
+
+- **Affichage Multi-images** :
+  - Rendu simultané de 5 images (centrale + 2 de chaque côté)
+  - Effet "coverflow" avec échelle et opacité adaptatives
+  - Images latérales cliquables pour navigation rapide
+
+- **Animations Optimisées** :
+  - Transition `tween` au lieu de `spring` pour fluidité maximale
+  - Durée : 0.5s avec courbe cubic-bezier personnalisée
+  - Suppression du filtre `brightness` pour éliminer le lag
+
+- **Positionnement Linéaire** :
+  - Images arrivent depuis les bords (gauche/droite) au lieu du centre
+  - Espacement configurable (400px par défaut)
+  - Clés stables pour animations fluides
+
+- **Ajustements Visuels** :
+  - Hauteur limitée à 90vh pour éviter débordement
+  - Titre en `text-sm font-light` avec wrapping intelligent
+  - Badge de couleur réduit (4×4px)
+
+**Impact** : Navigation visuelle immersive avec aperçu du contexte (images adjacentes).
+
+**Documentation mise à jour** :
+- Documentation complète en français du composant
+
+---
 
 ## [24/12/2024 - 20:00] - Fix Synchronisation Batch Updates
 
