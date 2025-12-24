@@ -202,25 +202,30 @@ const App: React.FC = () => {
   const handleGroupByColor = async (item: PortfolioItem) => {
     if (!item.colorTag || !activeCollection) return;
     
-    // Find all items with the same colorTag
-    const itemsWithSameColor = currentItems.filter(i => i.colorTag === item.colorTag);
-    const itemIds = itemsWithSameColor.map(i => i.id);
+    // Find all items with the same colorTag from all folders
+    const allItemsFlat = folders.flatMap(f => f.items);
+    const itemsWithSameColor = allItemsFlat.filter(i => i.colorTag === item.colorTag);
     
-    if (itemIds.length === 0) return;
+    if (itemsWithSameColor.length === 0) return;
     
-    try {
-      const result = await storageService.groupItemsByColorTag(
-        activeCollection.id,
-        item.colorTag,
-        itemIds
-      );
-      console.log(`[App] Created folder with ${result.count} items`);
-      // Reload to show new folder - trigger re-render by toggling folder
-      // The folder will appear in FolderDrawer after reload
-      alert(`Collection "${storageService.getColorName(item.colorTag)}" créée avec ${result.count} images !`);
-    } catch (error) {
-      console.error("[App] Failed to group by color:", error);
-    }
+    const colorName = storageService.getColorName(item.colorTag);
+    const folderName = `📁 ${colorName}`;
+    
+    // Create the virtual folder locally (this updates React state)
+    const newFolderId = createVirtualFolder(folderName);
+    
+    // Also save to DB with proper structure
+    await storageService.groupItemsByColorTag(
+      activeCollection.id,
+      item.colorTag,
+      itemsWithSameColor.map(i => i.id)
+    );
+    
+    // Move items to the new folder (this updates both React state and DB)
+    const itemIds = new Set(itemsWithSameColor.map(i => i.id));
+    moveItemsToFolder(itemIds, newFolderId, allItemsFlat);
+    
+    console.log(`[App] Created folder "${folderName}" with ${itemsWithSameColor.length} items`);
   };
 
   // Clear library and reload when collection changes
