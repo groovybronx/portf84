@@ -1,6 +1,6 @@
 # Plan de Refactorisation - Lumina Portfolio
 
-Dernière mise à jour : 25/12/2024 à 00:20
+Dernière mise à jour : 25/12/2024 à 00:25
 
 ---
 
@@ -93,12 +93,12 @@ src/design-system/
 └── patterns/         # GlassCard, ActionMenu, TagPill
 ```
 
-### Phase 4 : Optimisation DB (1-2 jours)
+### Phase 4 : Optimisation DB (1-2 jours) ✅ COMPLÉTÉ
 
-- [ ] Créer table `tags` normalisée
-- [ ] Créer table `item_tags` (many-to-many)
-- [ ] Préparer table `thumbnails` pour cache images
-- [ ] Implémenter migrations SQLite automatisées
+- [x] Créer table `tags` normalisée (id, name, normalizedName, type, confidence)
+- [x] Créer table `item_tags` (many-to-many avec index)
+- [x] Créer module `src/services/storage/tags.ts` (12 fonctions CRUD)
+- [x] Types TypeScript : `DBTag`, `ParsedTag`, `TagType`, `DBItemTag`
 
 ---
 
@@ -169,3 +169,4 @@ npm run tauri:dev
 | 25/12/2024 | 1 | Phase 1 complétée : Index SQLite, typage strict, animations centralisées |
 | 25/12/2024 | 2 | Phase 2 complétée : Découpage storageService en 6 modules |
 | 25/12/2024 | 3 | Phase 3 complétée : Décomposition PhotoCard en 5 sous-composants |
+| 25/12/2024 | 4 | Phase 4 complétée : Tables tags normalisées + module tags.ts |

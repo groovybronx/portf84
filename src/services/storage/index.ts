@@ -11,9 +11,10 @@ export * from "./collections";
 export * from "./folders";
 export * from "./metadata";
 export * from "./handles";
+export * from "./tags";
 
 // Import all functions for the unified storageService object
-import { getDB, resetDatabase } from "./db";
+import { resetDatabase } from "./db";
 import {
 	createCollection,
 	getCollections,
@@ -46,6 +47,19 @@ import {
 	removeDirectoryHandle,
 	clearHandles,
 } from "./handles";
+import {
+	getOrCreateTag,
+	addTagToItem,
+	removeTagFromItem,
+	getTagsForItem,
+	getItemsWithTag,
+	getAllTags,
+	searchTags,
+	deleteTag,
+	clearTagsForItem,
+	addTagsToItem,
+	getTagsGroupedForItem,
+} from "./tags";
 
 /**
  * Unified storage service object
@@ -86,4 +100,17 @@ export const storageService = {
 	getDirectoryHandles,
 	removeDirectoryHandle,
 	clearHandles,
+
+	// Tags (Normalized)
+	getOrCreateTag,
+	addTagToItem,
+	removeTagFromItem,
+	getTagsForItem,
+	getItemsWithTag,
+	getAllTags,
+	searchTags,
+	deleteTag,
+	clearTagsForItem,
+	addTagsToItem,
+	getTagsGroupedForItem,
 };

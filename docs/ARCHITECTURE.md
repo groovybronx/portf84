@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 25/12/2024 à 00:20
+Dernière mise à jour : 25/12/2024 à 00:25
 
 ## Vue d'Ensemble
 
@@ -79,6 +79,7 @@ src/
 │       ├── folders.ts      # Virtual/Shadow folders
 │       ├── metadata.ts     # Métadonnées items
 │       ├── handles.ts      # Directory handles
+│       ├── tags.ts         # Tags normalisés (12 fonctions)
 │       └── index.ts        # Export unifié
 └── App.tsx             # Point d'entrée, composition
 ```

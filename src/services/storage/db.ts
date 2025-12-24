@@ -113,6 +113,48 @@ export const getDB = async (): Promise<Database> => {
       `);
 			console.log("[Storage] Performance indexes created/verified");
 
+			// ==================== NORMALIZED TAGS TABLES ====================
+			// Table des tags uniques
+			await db.execute(`
+        CREATE TABLE IF NOT EXISTS tags (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          normalizedName TEXT NOT NULL,
+          type TEXT NOT NULL CHECK(type IN ('ai', 'manual', 'ai_detailed')),
+          confidence REAL,
+          createdAt INTEGER NOT NULL
+        )
+      `);
+			await db.execute(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_tags_normalized 
+        ON tags(normalizedName, type)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_tags_name 
+        ON tags(name)
+      `);
+
+			// Table de liaison items ↔ tags (many-to-many)
+			await db.execute(`
+        CREATE TABLE IF NOT EXISTS item_tags (
+          itemId TEXT NOT NULL,
+          tagId TEXT NOT NULL,
+          addedAt INTEGER NOT NULL,
+          PRIMARY KEY (itemId, tagId),
+          FOREIGN KEY (itemId) REFERENCES metadata(id) ON DELETE CASCADE,
+          FOREIGN KEY (tagId) REFERENCES tags(id) ON DELETE CASCADE
+        )
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_item_tags_item 
+        ON item_tags(itemId)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_item_tags_tag 
+        ON item_tags(tagId)
+      `);
+			console.log("[Storage] Tags tables created/verified");
+
 			console.log("[Storage] Schema initialized successfully");
 			dbInstance = db;
 			return db;

@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 00:20
+Dernière mise à jour : 25/12/2024 à 00:25
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,18 +8,41 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Refactorisation Phase 3 - UI PhotoCard
+**Session en cours** : Refactorisation Phase 4 - Optimisation DB Tags
 
 **Progression** :
 - ✅ Phase 1 Quick Wins : 100% complétée
 - ✅ Phase 2 Découpage Services : 100% complétée
 - ✅ Phase 3 Refactorisation UI : 100% complétée
-  - PhotoCard décomposé en 5 sous-composants
+- ✅ Phase 4 Optimisation DB : 100% complétée
+  - Tables `tags` et `item_tags` normalisées
+  - Module `tags.ts` (12 fonctions CRUD)
 
 **Prochaines étapes** :
-- [ ] Phase 4 : Optimisation DB (normalisation tags)
+- [ ] Commit Git et merge vers main
 
-**Dernière modification** : 25/12/2024 à 00:20
+**Dernière modification** : 25/12/2024 à 00:25
+
+## [25/12/2024 - 00:25] - Phase 4 Refactorisation : Normalisation Tags DB
+
+### Type : Refactorisation / Performance
+
+**Composants** : `src/services/storage/`
+
+**Changements** :
+
+- Ajout tables SQLite normalisées :
+  - `tags` : id, name, normalizedName, type, confidence, createdAt
+  - `item_tags` : itemId, tagId, addedAt (relation N-N)
+- Ajout 5 index de performance sur les tables tags
+- Création `tags.ts` avec 12 fonctions CRUD :
+  - `getOrCreateTag`, `addTagToItem`, `removeTagFromItem`
+  - `getTagsForItem`, `getItemsWithTag`, `getAllTags`
+  - `searchTags`, `deleteTag`, `clearTagsForItem`
+  - `addTagsToItem`, `getTagsGroupedForItem`
+- Nouveaux types : `DBTag`, `ParsedTag`, `TagType`, `DBItemTag`
+
+**Impact** : Préparation pour recherche rapide par tag et consolidation des tags.
 
 ## [25/12/2024 - 00:20] - Phase 3 Refactorisation : Décomposition PhotoCard
 

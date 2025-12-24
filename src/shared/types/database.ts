@@ -128,3 +128,32 @@ export interface ShadowFolderPair {
   shadowFolder: ParsedVirtualFolder;
   sourceFolder: DBCollectionFolder;
 }
+
+// ==================== NORMALIZED TAGS ====================
+
+export type TagType = 'ai' | 'manual' | 'ai_detailed';
+
+/** Raw tag row from database */
+export interface DBTag {
+  id: string;
+  name: string;
+  normalizedName: string;
+  type: TagType;
+  confidence: number | null;
+  createdAt: number;
+}
+
+/** Parsed tag for frontend usage */
+export interface ParsedTag {
+  id: string;
+  name: string;
+  type: TagType;
+  confidence?: number;
+}
+
+/** Raw item-tag relation from database */
+export interface DBItemTag {
+  itemId: string;
+  tagId: string;
+  addedAt: number;
+}
