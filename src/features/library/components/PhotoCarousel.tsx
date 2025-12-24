@@ -40,6 +40,26 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	const dragCurrentX = useRef(0);
 
 	/**
+	 * Déchargement des images hors du viewport pour libérer la mémoire.
+	 * Les images avec offset > 2 sont déchargées.
+	 */
+	useEffect(() => {
+		const imagesToUnload = items
+			.filter((_, idx) => Math.abs(idx - currentIndex) > 2)
+			.slice(0, 10); // Limiter pour éviter trop d'opérations
+
+		imagesToUnload.forEach(item => {
+			const imgElements = document.querySelectorAll(`img[data-item-id="${item.id}"]`);
+			imgElements.forEach(img => {
+				if (img instanceof HTMLImageElement && img.src) {
+					// Vider le src pour forcer le garbage collection
+					img.src = '';
+				}
+			});
+		});
+	}, [currentIndex, items]);
+
+	/**
 	 * Synchronise l'item au focus avec le parent.
 	 */
 	useEffect(() => {
@@ -208,6 +228,9 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 								<img
 									src={item.url}
 									alt={item.name}
+									data-item-id={item.id}
+									loading="lazy"
+									decoding="async"
 									className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
 									style={{
 										filter: isCurrent ? "none" : "brightness(1)",
