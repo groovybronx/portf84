@@ -211,17 +211,10 @@ const App: React.FC = () => {
     const colorName = storageService.getColorName(item.colorTag);
     const folderName = `📁 ${colorName}`;
     
-    // Create the virtual folder locally (this updates React state)
+    // Create the virtual folder (updates React state + saves to DB via createVirtualFolder)
     const newFolderId = createVirtualFolder(folderName);
     
-    // Also save to DB with proper structure
-    await storageService.groupItemsByColorTag(
-      activeCollection.id,
-      item.colorTag,
-      itemsWithSameColor.map(i => i.id)
-    );
-    
-    // Move items to the new folder (this updates both React state and DB)
+    // Move items to the new folder (updates React state + saves metadata to DB)
     const itemIds = new Set(itemsWithSameColor.map(i => i.id));
     moveItemsToFolder(itemIds, newFolderId, allItemsFlat);
     
