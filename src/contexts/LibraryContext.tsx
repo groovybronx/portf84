@@ -486,10 +486,6 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
         collectionId: activeCollection?.id || "unknown",
       };
       dispatch({ type: "ADD_FOLDER", payload: newFolder });
-      dispatch({
-        type: "SET_ACTIVE_FOLDER_IDS",
-        payload: new Set([newFolder.id]),
-      });
       storageService.saveVirtualFolder(newFolder);
       return newFolder.id;
     },
@@ -542,9 +538,6 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
         );
       });
 
-      dispatch({
-        type: "SET_ACTIVE_FOLDER_IDS",
-        payload: new Set([targetFolderId]),
       });
     },
     [state.folders]
