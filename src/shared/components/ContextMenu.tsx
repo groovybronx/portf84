@@ -9,8 +9,10 @@ import {
 	X,
 	Tag,
 	FolderInput,
+	FolderPlus,
 } from "lucide-react";
 import { PortfolioItem, COLOR_PALETTE } from "../types";
+import { getColorName } from "../../services/storage/folders";
 
 interface ContextMenuProps {
 	x: number;
@@ -23,6 +25,7 @@ interface ContextMenuProps {
 	onAddTags: (item: PortfolioItem) => void;
 	onOpen: (item: PortfolioItem) => void;
 	onMove: (item: PortfolioItem) => void;
+	onGroupByColor?: (item: PortfolioItem) => void;
 }
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -36,6 +39,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 	onAddTags,
 	onOpen,
 	onMove,
+	onGroupByColor,
 }) => {
 	const menuRef = useRef<HTMLDivElement>(null);
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
@@ -181,6 +185,42 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 					</button>
 				</div>
 			</div>
+
+			{/* Group by Color action (only if item has colorTag) */}
+			{item.colorTag && onGroupByColor && (
+				<>
+					<div className="my-1 border-t border-glass-border/10" />
+					<button
+						onMouseEnter={() => setHoveredAction("group")}
+						onMouseLeave={() => setHoveredAction(null)}
+						onClick={() => {
+							onGroupByColor(item);
+							onClose();
+						}}
+						className="w-full text-left px-4 py-2 text-sm text-gray-200 flex items-center gap-3 transition-colors relative group"
+					>
+						{hoveredAction === "group" && (
+							<motion.div
+								layoutId="menu-hover-bg"
+								initial={false}
+								className="absolute inset-0 bg-white/10 z-0"
+								transition={{
+									type: "spring",
+									bounce: 0.15,
+									duration: 0.35,
+								}}
+							/>
+						)}
+						<FolderPlus
+							size={16}
+							className="text-amber-400 relative z-10 transition-transform group-hover:scale-110"
+						/>
+						<span className="relative z-10 font-medium">
+							Grouper les "{getColorName(item.colorTag)}"
+						</span>
+					</button>
+				</>
+			)}
 
 			<div className="my-1 border-t border-glass-border/10" />
 

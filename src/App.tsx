@@ -198,6 +198,31 @@ const App: React.FC = () => {
     else setActiveColorFilter(color);
   };
 
+  // Group items by color into a new virtual collection
+  const handleGroupByColor = async (item: PortfolioItem) => {
+    if (!item.colorTag || !activeCollection) return;
+    
+    // Find all items with the same colorTag
+    const itemsWithSameColor = currentItems.filter(i => i.colorTag === item.colorTag);
+    const itemIds = itemsWithSameColor.map(i => i.id);
+    
+    if (itemIds.length === 0) return;
+    
+    try {
+      const result = await storageService.groupItemsByColorTag(
+        activeCollection.id,
+        item.colorTag,
+        itemIds
+      );
+      console.log(`[App] Created folder with ${result.count} items`);
+      // Reload to show new folder - trigger re-render by toggling folder
+      // The folder will appear in FolderDrawer after reload
+      alert(`Collection "${storageService.getColorName(item.colorTag)}" créée avec ${result.count} images !`);
+    } catch (error) {
+      console.error("[App] Failed to group by color:", error);
+    }
+  };
+
   // Clear library and reload when collection changes
   useEffect(() => {
     const loadCollectionData = async () => {
@@ -444,6 +469,7 @@ const App: React.FC = () => {
             onAddTags={handleContextAddTag}
             onOpen={setSelectedItem}
             onMove={handleContextMove}
+            onGroupByColor={handleGroupByColor}
           />
         )}
       </AnimatePresence>
