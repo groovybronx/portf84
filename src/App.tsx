@@ -396,9 +396,9 @@ const App: React.FC = () => {
             onColorTag={(item, color) =>
               updateItem({ ...item, colorTag: color })
             }
-            onAddTags: handleContextAddTag,
-            onOpen: setSelectedItem,
-            onMove: handleContextMove,
+            onAddTags={handleContextAddTag}
+            onOpen={setSelectedItem}
+            onMove={handleContextMove}
           />
         )}
       </AnimatePresence>
