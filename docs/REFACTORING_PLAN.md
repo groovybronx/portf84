@@ -48,19 +48,21 @@ Améliorer la maintenabilité, lisibilité et performance du code via une refact
 - [x] Remplacer types `any` par interfaces strictes dans `storageService.ts` (18 remplacements)
 - [x] Créer `src/shared/theme/animations.ts` pour centraliser les variants (15+ variants)
 
-### Phase 2 : Refactorisation Services (2-3 jours)
+### Phase 2 : Refactorisation Services (2-3 jours) ✅ COMPLÉTÉ
 
 Découpage de `storageService.ts` :
 
 ```
 src/services/storage/
-├── index.ts           # Export unifié
-├── db.ts              # Connexion SQLite
+├── index.ts           # Export unifié + storageService object
+├── db.ts              # Connexion SQLite + init schéma
 ├── collections.ts     # CRUD Collections
 ├── folders.ts         # Dossiers virtuels & Shadow
 ├── metadata.ts        # Métadonnées items
-└── handles.ts         # Directory handles
+└── handles.ts         # Directory handles (legacy)
 ```
+
+**Résultat** : `storageService.ts` réduit de 580 à 18 lignes (re-export)
 
 Refactorisation de `LibraryContext.tsx` :
 - [ ] Extraire reducer → `libraryReducer.ts`
@@ -163,3 +165,4 @@ npm run tauri:dev
 |------|-------|-------------|
 | 24/12/2024 | - | Création du plan initial |
 | 25/12/2024 | 1 | Phase 1 complétée : Index SQLite, typage strict, animations centralisées |
+| 25/12/2024 | 2 | Phase 2 complétée : Découpage storageService en 6 modules |

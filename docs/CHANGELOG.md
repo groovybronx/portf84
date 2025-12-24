@@ -8,33 +8,41 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Refactorisation Phase 1 - Quick Wins
+**Session en cours** : Refactorisation Phase 2 - Découpage StorageService
 
 **Progression** :
 - ✅ Phase 1 Quick Wins : 100% complétée
-  - 4 index SQLite ajoutés
-  - 18 types `any` remplacés par interfaces strictes
-  - `database.ts` créé (110 lignes, 10 interfaces)
-  - `animations.ts` créé (180 lignes, 15+ variants)
+- ✅ Phase 2 Découpage Services : 100% complétée
+  - 6 modules créés dans `src/services/storage/`
+  - `storageService.ts` réduit de 580 à 18 lignes
 
 **Prochaines étapes** :
-- [ ] Commit Git des changements Phase 1
-- [ ] Phase 2 : Découpage `storageService.ts` en modules
-- [ ] Phase 3 : Refactorisation UI
+- [ ] Phase 3 : Refactorisation UI (PhotoCard décomposé)
+- [ ] Phase 4 : Optimisation DB (normalisation tags)
 
 **Dernière modification** : 25/12/2024 à 00:10
 
-## [25/12/2024 - 00:10] - Phase 1 Refactorisation : Quick Wins
+## [25/12/2024 - 00:10] - Phase 2 Refactorisation : Découpage StorageService
 
-### Type : Refactorisation / Performance
+### Type : Refactorisation
 
-**Composants** : `storageService.ts`, `database.ts`, `animations.ts`
+**Composants** : `src/services/storage/`
 
 **Changements** :
 
-### Type : Ajout
+- Création de 6 modules séparés :
+  - `db.ts` : Connexion SQLite + initialisation schéma (140 lignes)
+  - `collections.ts` : CRUD Collections (85 lignes)
+  - `folders.ts` : Virtual + Shadow folders (235 lignes)
+  - `metadata.ts` : Métadonnées items (130 lignes)
+  - `handles.ts` : Directory handles legacy (55 lignes)
+  - `index.ts` : Export unifié + storageService object (85 lignes)
+- `storageService.ts` transformé en simple re-export (580 → 18 lignes)
 
-**Composant** : `PhotoCard.tsx`, `libraryLoader.ts`, `PhotoGrid.tsx`, `ViewRenderer.tsx`, `App.tsx`
+**Impact** : Meilleure maintenabilité, code plus lisible, modules spécialisés.
+
+**Documentation mise à jour** :
+- `docs/REFACTORING_PLAN.md` : Phase 2 marquée complétée
 
 **Changements** :
 
