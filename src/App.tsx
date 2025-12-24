@@ -329,7 +329,10 @@ const App: React.FC = () => {
         <ErrorBoundary featureName="collections">
           <FolderDrawer
             isOpen={isFolderDrawerOpen || isSidebarPinned}
-            onClose={() => setIsFolderDrawerOpen(false)}
+            onClose={() => {
+              setIsFolderDrawerOpen(false);
+              setIsSidebarPinned(false);
+            }}
             folders={folders}
             activeFolderId={activeFolderIds}
             onSelectFolder={toggleFolderSelection}
@@ -347,7 +350,9 @@ const App: React.FC = () => {
             onTogglePin={() => {
               const newPinned = !isSidebarPinned;
               setIsSidebarPinned(newPinned);
-              if (newPinned) setIsFolderDrawerOpen(false);
+              // When unpinning, keep it open as a floating drawer for continuity
+              if (!newPinned) setIsFolderDrawerOpen(true);
+              else setIsFolderDrawerOpen(false);
             }}
           />
         </ErrorBoundary>

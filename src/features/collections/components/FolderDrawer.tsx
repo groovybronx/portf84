@@ -87,7 +87,6 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 							<Pin size={18} className={isPinned ? "rotate-45" : ""} />
 						</Button>
 					)}
-					{!isPinned && (
 						<Button
 							variant="ghost"
 							size="icon"
@@ -96,7 +95,6 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						>
 							<X size={20} />
 						</Button>
-					)}
 				</div>
 			</div>
 
