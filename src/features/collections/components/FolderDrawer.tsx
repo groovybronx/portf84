@@ -378,7 +378,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 
 	if (isPinned) {
 		return (
-			<div className="h-full w-80 glass-surface-lg border-r border-glass-border p-6 shadow-xl relative shrink-0 overflow-hidden">
+			<div className="drawer-area h-full w-80 glass-surface-lg border-r border-glass-border p-6 shadow-xl relative shrink-0 overflow-hidden">
 				{drawerBody}
 			</div>
 		);
@@ -403,7 +403,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						animate={{ x: 0 }}
 						exit={{ x: "-100%" }}
 						transition={{ type: "spring", damping: 30, stiffness: 300 }}
-						className="fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
+						className="drawer-area fixed top-0 left-0 bottom-0 w-80 glass-surface-lg border-r border-glass-border z-(--z-drawer) p-6 flex flex-col shadow-2xl"
 					>
 						{drawerBody}
 					</motion.div>
