@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 16:49
+Dernière mise à jour : 24/12/2024 à 17:01
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -11,10 +11,11 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 **Session en cours** : Tests et corrections de bugs
 
 **Progression** :
-- ✅ Refactorisation App.tsx : 10/13 tâches (77% complété)
+- ✅ Refactorisation App.tsx : 13/13 tâches (100% complété)
   - Code refactorisé : 656 → 477 lignes (-27%)
   - 3 hooks créés : `useKeyboardShortcuts`, `useModalState`, `useItemActions`
   - 1 composant créé : `ViewRenderer`
+  - Tests unitaires créés : 32 tests (17 + 15)
 - ✅ Règles de documentation créées et configurées (100% complété)
 - ✅ Fix persistence des collections virtuelles (100% complété)
   - Collections virtuelles persistent après reload
@@ -22,15 +23,50 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
   - Différenciation claire : source / shadow / collections
 
 **Prochaines étapes** :
-- [ ] Tests unitaires pour `useKeyboardShortcuts` et `useItemActions`
 - [ ] Tests manuels (navigation, modales, vues, collections)
-- [ ] Finaliser la documentation
+- [ ] Commit Git des changements
 
-**Dernière modification** : 24/12/2024 à 16:49
+**Dernière modification** : 24/12/2024 à 17:01
 
 ---
 
 ## Historique des Modifications
+
+---
+
+## [24/12/2024 - 17:01] - Création tests unitaires pour hooks
+
+### Type : Ajout
+
+**Composant** : `tests/useKeyboardShortcuts.test.ts`, `tests/useItemActions.test.ts`
+
+**Changements** :
+
+- **Tests pour `useKeyboardShortcuts`** (17 tests) :
+  - Navigation avec flèches (7 tests) : ArrowRight, ArrowLeft, ArrowUp, ArrowDown, limites
+  - Sélection avec Space/Enter (3 tests)
+  - Color tagging avec touches 0-6 (3 tests)
+  - Exclusion inputs/textareas (2 tests)
+  - Edge cases (2 tests) : liste vide, ID invalide
+
+- **Tests pour `useItemActions`** (15 tests) :
+  - `addTagsToSelection` (4 tests) : sélection multiple, context menu, déduplication
+  - `applyColorTagToSelection` (4 tests) : fullscreen, sélection multiple, focused item
+  - `analyzeItem` (2 tests) : analyse AI, gestion erreurs
+  - `moveItemToFolder` (1 test) : déplacement et cleanup
+  - `createFolderAndMove` (2 tests) : création dossier, vérification collection
+  - `handleContextMove` (2 tests) : sélection et modal
+
+**Résultats** :
+- ✅ 40 tests passent (32 nouveaux + 8 existants)
+- ✅ Aucune régression détectée
+- ✅ Durée d'exécution : 2.62s
+
+**Impact** : Couverture complète des hooks extraits lors de la refactorisation App.tsx, garantissant la stabilité du code
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md` : Entrée ajoutée
+- `docs/COMPONENTS.md` : Section tests ajoutée
 
 ---
 

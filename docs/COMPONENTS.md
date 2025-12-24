@@ -561,3 +561,42 @@ const {
 ```
 
 **Bénéfice** : Simplifie App.tsx en extrayant 63 lignes de logique de rendu
+
+---
+
+## 11. Tests Unitaires
+
+Les hooks personnalisés sont couverts par des tests unitaires complets utilisant **Vitest** et **@testing-library/react**.
+
+### Tests pour useKeyboardShortcuts
+
+**Fichier** : [tests/useKeyboardShortcuts.test.ts](file:///Users/davidmichels/gravity%20app/portf84/tests/useKeyboardShortcuts.test.ts)
+
+**Couverture** : 17 tests
+
+- Navigation (7 tests) : ArrowRight, ArrowLeft, ArrowUp, ArrowDown, limites
+- Sélection (3 tests) : Space, Enter, comportement sans focus
+- Color tagging (3 tests) : touches 1-6, touche 0, touches 7-9
+- Exclusion (2 tests) : ignore inputs/textareas
+- Edge cases (2 tests) : liste vide, ID invalide
+
+### Tests pour useItemActions
+
+**Fichier** : [tests/useItemActions.test.ts](file:///Users/davidmichels/gravity%20app/portf84/tests/useItemActions.test.ts)
+
+**Couverture** : 15 tests
+
+- `addTagsToSelection` (4 tests) : sélection multiple, context menu, déduplication
+- `applyColorTagToSelection` (4 tests) : fullscreen, sélection multiple, focused item
+- `analyzeItem` (2 tests) : analyse AI, gestion erreurs
+- `moveItemToFolder` (1 test) : déplacement et cleanup
+- `createFolderAndMove` (2 tests) : création dossier, vérification collection
+- `handleContextMove` (2 tests) : sélection et modal
+
+### Exécution
+
+```bash
+npm test
+```
+
+**Résultats** : 40 tests passent (32 nouveaux + 8 existants) en 2.62s
