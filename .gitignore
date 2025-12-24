@@ -7,28 +7,27 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
-!node_modules/@google/genai 
+!node_modules/@google/genai
+
+# Build outputs
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# OpenMemory - IDE/Assistant specific rules
-
 # Tauri / Rust
 src-tauri/target
 src-tauri/gen/schemas
+src-tauri/WixTools/
+
+# Tauri builds (binaries)
+*.dmg
+*.app
+*.exe
+*.msi
+*.deb
+*.AppImage
 
 # Databases
 *.db
@@ -36,3 +35,48 @@ src-tauri/gen/schemas
 *.db-shm
 *.db-wal
 
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+config.local.json
+secrets.json
+
+# Cache
+.cache/
+.parcel-cache/
+.turbo/
+
+# Temporaires
+*.tmp
+*.temp
+.temp/
+tmp/
+
+# Tests & Coverage
+coverage/
+.nyc_output/
+*.lcov
+.vitest/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OpenMemory - IDE/Assistant specific rules
