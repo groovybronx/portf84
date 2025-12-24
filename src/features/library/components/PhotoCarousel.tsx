@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
@@ -16,34 +16,31 @@ interface PhotoCarouselProps {
 
 /**
  * Composant PhotoCarousel
- *
- * Un carrousel d'images plein écran ou adaptatif qui gère :
- * - La navigation par flèches (clavier et boutons)
- * - Le glisser-déposer (Drag & Swipe) manuel
- * - Les animations fluides de transition via Framer Motion
- * - L'affichage des métadonnées et tags générés par l'IA
+ * 
+ * Un carrousel d'images avec effet "coverflow" qui affiche :
+ * - L'image centrale en pleine taille
+ * - 2 images de chaque côté en taille réduite
+ * - Navigation par flèches (clavier et boutons)
+ * - Glisser-déposer (Drag & Swipe) manuel
+ * - Animations fluides de transition via Framer Motion
  */
 export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	onSelect,
 	onFocusedItem,
 }) => {
 	// --- État et Initialisation ---
-
-	// Récupération des items traités (filtrés/triés) depuis le contexte
+	
 	const { processedItems: items } = useLibrary();
 	const showColorTags = true;
 
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [direction, setDirection] = useState(0); // 1 = suivant, -1 = précédent
 	const [isDragging, setIsDragging] = useState(false);
-
-	// Références pour le calcul du drag manuel
+	
 	const dragStartX = useRef(0);
 	const dragCurrentX = useRef(0);
 
 	/**
 	 * Synchronise l'item au focus avec le parent.
-	 * Se déclenche à chaque changement d'index ou d'item.
 	 */
 	useEffect(() => {
 		const current = items[currentIndex];
@@ -54,9 +51,6 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 
 	/**
 	 * Gestion de la navigation clavier globale.
-	 * Flèche Gauche : Précédent
-	 * Flèche Droite : Suivant
-	 * Entrée : Sélectionner/Ouvrir
 	 */
 	useEffect(() => {
 		const handleKey = (e: KeyboardEvent) => {
@@ -79,14 +73,10 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	// --- Handlers de Navigation ---
 
 	const handleNext = () => {
-		setDirection(1);
-		// Boucle infinie vers le début si on dépasse la fin
 		setCurrentIndex((prev) => (prev + 1) % items.length);
 	};
 
 	const handlePrev = () => {
-		setDirection(-1);
-		// Boucle infinie vers la fin si on descend sous 0
 		setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
 	};
 
@@ -102,9 +92,6 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 		dragCurrentX.current = e.clientX;
 	};
 
-	/**
-	 * Détermine si le swipe est suffisant pour changer d'image (> 50px)
-	 */
 	const handleDragEnd = () => {
 		if (!isDragging) return;
 		setIsDragging(false);
@@ -113,6 +100,20 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 			if (diff > 0) handlePrev();
 			else handleNext();
 		}
+	};
+
+	// --- Calcul des images visibles ---
+
+	/**
+	 * Retourne les indices des 5 images à afficher (centrale + 2 de chaque côté)
+	 */
+	const getVisibleIndices = () => {
+		const indices = [];
+		for (let offset = -2; offset <= 2; offset++) {
+			const index = (currentIndex + offset + items.length) % items.length;
+			indices.push({ index, offset });
+		}
+		return indices;
 	};
 
 	// --- Rendu conditionnel ---
@@ -125,41 +126,14 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 		);
 	}
 
-	const currentItem = items[currentIndex];
-	if (!currentItem) return null;
-
-	/**
-	 * PARAMÈTRES D'ANIMATION (Framer Motion)
-	 *
-	 * variants : Définit les états visuels.
-	 * - enter : Position initiale hors-champ (x: 1000 ou -1000).
-	 * - center : Position stable visible à l'écran.
-	 * - exit : Position de sortie hors-champ.
-	 */
-	const variants = {
-		enter: (direction: number) => ({
-			x: direction > 0 ? 1000 : -1000,
-			opacity: 0,
-			scale: 0.8,
-		}),
-		center: {
-			x: 0,
-			opacity: 1,
-			scale: 1,
-		},
-		exit: (direction: number) => ({
-			x: direction > 0 ? -1000 : 1000,
-			opacity: 0,
-			scale: 0.8,
-		}),
-	};
+	const visibleItems = getVisibleIndices();
 
 	return (
 		<div className="h-screen flex flex-col items-center justify-center px-8 pt-24 pb-0 relative">
 			{/* Boutons de navigation flottants */}
 			<button
 				onClick={handlePrev}
-				className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
+				className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
 				aria-label="Précédent"
 			>
 				<ChevronLeft size={24} />
@@ -167,7 +141,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 
 			<button
 				onClick={handleNext}
-				className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
+				className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
 				aria-label="Suivant"
 			>
 				<ChevronRight size={24} />
@@ -175,78 +149,108 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 
 			{/* Zone interactive du carrousel */}
 			<div
-				className="w-full h-full flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing"
+				className="w-full h-full flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing relative"
 				onMouseDown={handleDragStart}
 				onMouseMove={handleDragMove}
 				onMouseUp={handleDragEnd}
 				onMouseLeave={handleDragEnd}
 			>
-				<AnimatePresence initial={false} custom={direction} mode="wait">
-					<motion.div
-						key={currentIndex}
-						custom={direction}
-						variants={variants}
-						initial="enter"
-						animate="center"
-						exit="exit"
-						/**
-						 * RÉGLAGES DE LA TRANSITION
-						 * On utilise un système de ressort (spring) pour le mouvement X.
-						 * stiffness : Rigidité (plus haut = plus rapide).
-						 * damping : Amortissement (plus haut = moins de rebonds).
-						 */
-						transition={{
-							x: { type: "spring", stiffness: 300, damping: 30 },
-							opacity: { duration: 0.2 },
-						}}
-						className="w-full h-full flex items-center justify-center"
-						onClick={() => onSelect(currentItem)}
-					>
-						<div className="relative max-w-5xl max-h-full">
-							{/* L'image principale */}
-							<img
-								src={currentItem.url}
-								alt={currentItem.name}
-								className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl"
-							/>
+				{visibleItems.map(({ index, offset }) => {
+					const item = items[index];
+					if (!item) return null;
+					
+					const isCurrent = offset === 0;
+					
+					/**
+					 * PARAMÈTRES D'ANIMATION LINÉAIRE
+					 * Les images arrivent depuis les bords et glissent horizontalement.
+					 * - offset négatif : images à gauche (hors écran ou visibles)
+					 * - offset 0 : image centrale
+					 * - offset positif : images à droite (hors écran ou visibles)
+					 */
+					const scale = isCurrent ? 1 : Math.abs(offset) === 1 ? 0.7 : 0.5;
+					const opacity = isCurrent ? 1 : Math.abs(offset) === 1 ? 0.9 : 0.3;
+					const zIndex = isCurrent ? 10 : 10 - Math.abs(offset);
+					
+					// Position basée sur l'offset : effet de défilement linéaire
+					const basePosition = offset * 400; // Espacement entre images
+					const xPosition = basePosition;
+					
+					// Position initiale pour les nouvelles images (hors écran)
+					const initialX = offset > 0 ? 1200 : offset < 0 ? -1200 : 0;
 
-							{/* Badge de couleur (Pastille) */}
-							{showColorTags && currentItem.colorTag && (
-								<div
-									className="absolute top-4 right-4 w-8 h-8 rounded-full shadow-lg border-2 border-white"
-									style={{ backgroundColor: currentItem.colorTag }}
+					return (
+						<motion.div
+							key={index}
+							initial={{ x: initialX, scale, opacity: 0 }}
+							animate={{
+								x: xPosition,
+								scale,
+								opacity,
+								zIndex,
+							}}
+							exit={{ x: offset > 0 ? 1200 : -1200, opacity: 0 }}
+							transition={{
+								x: { type: "tween", duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+								scale: { type: "tween", duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+								opacity: { type: "tween", duration: 0.3, ease: "easeOut" },
+							}}
+							className="absolute flex items-center justify-center"
+							onClick={() => {
+								if (isCurrent) {
+									onSelect(item);
+								} else {
+									setCurrentIndex(index);
+								}
+							}}
+						>
+							<div className="relative max-w-3xl max-h-full">
+								<img
+									src={item.url}
+									alt={item.name}
+									className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+									style={{
+										filter: isCurrent ? "none" : "brightness(1)",
+									}}
 								/>
-							)}
 
-							{/* Barre d'informations (Overlay) */}
-							<div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-								<h3 className="text-white text-xl font-semibold mb-2">
-									{currentItem.name}
-								</h3>
-								{currentItem.aiDescription && (
-									<p className="text-gray-300 text-sm mb-2">
-										{currentItem.aiDescription}
-									</p>
+								{isCurrent && showColorTags && item.colorTag && (
+									<div
+										className="absolute top-4 right-4 w-4 h-4 rounded-full shadow-lg border-2 border-white"
+										style={{ backgroundColor: item.colorTag }}
+									/>
 								)}
-								{/* Tags IA */}
-								<div className="flex gap-2 flex-wrap">
-									{currentItem.aiTags?.map((tag) => (
-										<span
-											key={tag}
-											className="px-2 py-1 bg-blue-500/30 text-blue-200 text-xs rounded-full"
-										>
-											{tag}
-										</span>
-									))}
-								</div>
+
+								{isCurrent && (
+									<div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 	to-transparent p-6 rounded-b-lg">
+										<h3 className="text-white text-sm font-light mb-2 wrap-break-words">
+											{item.name}
+										</h3>
+										{item.aiDescription && (
+											<p className="text-gray-300 text-sm mb-2">
+												{item.aiDescription}
+											</p>
+										)}
+										<div className="flex gap-2 flex-wrap">
+											{item.aiTags?.map((tag) => (
+												<span
+													key={tag}
+													className="px-2 py-1 bg-blue-500/30 text-blue-200 text-xs rounded-full"
+												>
+													{tag}
+												</span>
+											))}
+										</div>
+									</div>
+								)}
 							</div>
-						</div>
-					</motion.div>
-				</AnimatePresence>
+						</motion.div>
+					);
+				})}
 			</div>
 
 			{/* Compteur numérique (Position actuelle) */}
-			<div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-glass-bg rounded-full border border-glass-border-light">
+			<div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-glass-bg rounded-full border border-glass-border-light z-20">
 				<span className="text-sm text-gray-300">
 					{currentIndex + 1} / {items.length}
 				</span>
