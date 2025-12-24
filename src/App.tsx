@@ -145,6 +145,7 @@ const App: React.FC = () => {
     moveItemToFolder,
     createFolderAndMove,
     handleContextMove,
+    handleContextAddTag,
   } = useItemActions({
     currentItems,
     selectedIds,
