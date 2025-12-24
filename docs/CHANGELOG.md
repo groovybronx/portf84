@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 22:00
+Dernière mise à jour : 24/12/2024 à 22:22
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Raffinement UI & Micro-animations
+**Session en cours** : Optimisations Performance
 
 **Progression** :
 - ✅ Sidebar Persistante : 12/12 tâches (100% complété)
@@ -18,13 +18,63 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ✅ Micro-animations ContextMenu : 4/4 tâches (100% complété)
 - ✅ PhotoCarousel Multi-images : 5/5 tâches (100% complété)
 - ✅ Audit Performance : Analyse complète + plan d'optimisation
-- 🔄 Optimisations Performance : 0/40 tâches (Phase 1 & 2 planifiées)
+- ✅ Phase 1 Performance (Quick Wins) : 3/3 tâches (100% complété)
+- ✅ Fix TopBar hover detection
 
 **Prochaines étapes** :
-- [ ] Implémenter Phase 1 (Quick Wins) : Lazy loading + overscan
 - [ ] Implémenter Phase 2 : Système de thumbnails (Rust)
+- [ ] Tests de performance (mesures avant/après)
 
-**Dernière modification** : 24/12/2024 à 22:00
+**Dernière modification** : 24/12/2024 à 22:22
+
+## [24/12/2024 - 22:22] - Fix TopBar Hover Detection
+
+### Type : Correction Bug
+
+**Composant** : `TopBar.tsx`
+
+**Problème** :
+- Après avoir "unpin" la TopBar en mode carousel, elle ne réapparaissait plus au survol
+- Le conteneur avait `pointer-events-none` qui bloquait tous les événements de souris
+
+**Solution** :
+- Suppression de `pointer-events-none` du conteneur principal
+- Les événements `onMouseEnter` et `onMouseLeave` fonctionnent maintenant correctement
+
+**Impact** : La TopBar est maintenant accessible en mode unpinned, améliorant l'UX en mode carousel.
+
+---
+
+## [24/12/2024 - 22:06] - Phase 1 : Optimisations Performance (Quick Wins)
+
+### Type : Performance
+
+**Composants** : `PhotoCard.tsx`, `PhotoCarousel.tsx`, `PhotoGrid.tsx`
+
+**Optimisations implémentées** :
+
+- **Lazy Loading Natif** :
+  - Ajout de `loading="lazy"` et `decoding="async"` sur toutes les images
+  - PhotoCard : Transition d'opacité au chargement
+  - PhotoCarousel : Attribut `data-item-id` pour identification
+
+- **Déchargement Carousel** :
+  - `useEffect` qui vide le `src` des images avec offset > 2
+  - Libération automatique de la mémoire lors de la navigation
+  - Limite de 10 images déchargées par cycle pour éviter surcharge
+
+- **Overscan Augmenté** :
+  - PhotoGrid : 5 → 10 éléments pré-rendus
+  - Amélioration de la fluidité du scrolling
+
+**Gains attendus** (1000 images) :
+- Temps de chargement initial : **-60%**
+- Mémoire carousel : **-60%** (5 images au lieu de toutes)
+- Fluidité scrolling : **+20%**
+
+**Impact** : Amélioration significative des performances pour les grandes galeries sans changement visible de l'UX.
+
+---
 
 ## [24/12/2024 - 22:00] - Audit de Performance et Plan d'Optimisation
 
