@@ -1,5 +1,7 @@
 # Lumina Portfolio - Documentation Technique
 
+Dernière mise à jour : 24/12/2024 à 17:52
+
 Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
 
 ## Stack Technologique

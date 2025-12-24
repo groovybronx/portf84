@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 24/12/2024 à 16:52
+Dernière mise à jour : 24/12/2024 à 17:45
 
 ## Vue d'Ensemble
 
@@ -385,9 +385,12 @@ L'application utilise **Vitest** pour garantir la fiabilité du cœur logique.
 
 ### Structure
 
-- **`tests/`** : Dossier racine contenant tous les tests unitaires
+- **`tests/`** : Dossier racine contenant tous les tests (Vitest)
+  - `useKeyboardShortcuts.test.ts` : Navigation, sélection, colors
+  - `useItemActions.test.ts` : Actions métier, analyse AI, dossiers
   - `geminiService.test.ts` : Mock le SDK Google GenAI
-  - `fileHelpers.test.ts` : Mock Tauri FS pour scan récursif
+  - `fileHelpers.test.ts` : Mock Tauri FS (scan récursif)
+  - `ErrorBoundary.test.tsx` : Tests de rendu et repli UI
 
 ### Exécution
 
@@ -395,5 +398,6 @@ L'application utilise **Vitest** pour garantir la fiabilité du cœur logique.
 npm run test
 ```
 
-- Environnement : `jsdom` (simulation DOM)
-- Mocks : `@tauri-apps/plugin-fs`, `@tauri-apps/api/core`
+- **Environnement** : `jsdom` (simulation DOM pour hooks et composants)
+- **Mocks** : `@tauri-apps/plugin-fs`, `@tauri-apps/api/core`, `@google/genai`
+- **Couverture** : Couverture complète du cœur logique (hooks extraits) et des services critiques.

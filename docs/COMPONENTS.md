@@ -1,4 +1,4 @@
-Dernière mise à jour : 24/12/2024 à 14:50
+Dernière mise à jour : 24/12/2024 à 17:47
 
 # Composants UI & UX
 
@@ -133,7 +133,6 @@ export const PhotoCard = React.memo(PhotoCardComponent, (prev, next) => {
     prev.selectionMode === next.selectionMode &&
     prev.showColorTags === next.showColorTags &&
     prev.selectedTag === next.selectedTag
-    // Ignore les callbacks (onSelect, onHover, etc.)
   );
 });
 ```

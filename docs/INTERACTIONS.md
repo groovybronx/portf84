@@ -1,5 +1,7 @@
 # Interactions & Raccourcis
 
+Dernière mise à jour : 24/12/2024 à 17:49
+
 Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souris qu'au clavier ("Power User Friendly").
 
 ## Souris & Gestes
@@ -15,46 +17,39 @@ Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souri
 | **Clic Droit**           | Ouvre le Menu Contextuel                                                                  |
 | **Ctrl + Clic**          | Ajoute à la sélection multiple                                                            |
 
-### Drag-to-Select (Sélection Rectangle)
-
-1. Cliquez et maintenez dans une zone vide de la grille
-2. Tracez un rectangle pour sélectionner plusieurs images
+1. Cliquez et maintenez sur une zone vide ou une image (si Shift/Ctrl n'est pas maintenu, la sélection actuelle reset)
+2. Tracez un rectangle pour sélectionner plusieurs images (**seuil de 5px** avant activation)
 3. Maintenir `Shift` ou `Ctrl` ajoute à la sélection existante
-4. **Performance** : Grâce à `React.memo`, le rectangle se dessine à 60fps même sur 10,000 images
+4. **Auto-Validation** : Dés que vous relâchez le bouton de la souris, le mode sélection se ferme (BatchActions reste visible tant qu'il y a des items)
+5. **Reset Rapide** : Cliquez dans le vide ou sur une image non sélectionnée pour réinitialiser toute la sélection
+6. **Performance** : Grâce à `React.memo` et un cache de rectangles calculé au `onMouseDown`, le rectangle se dessine à 60fps sans re-rendus inutiles.
 
 **Implémentation** :
 
 ```typescript
-// SelectionContext - Drag-select
-const handleMouseDown = (e: MouseEvent) => {
-	if (e.target === e.currentTarget) {
-		// Zone vide
-		setIsDragSelecting(true);
-		setDragStartPos({ x: e.clientX, y: e.clientY });
+// SelectionContext - Drag-select implementation
+const handleMouseMove = (e: MouseEvent) => {
+	if (!dragStartPos.current) return;
+
+	// Seuil de 5px pour éviter les micros-mouvements
+	if (!state.isDragSelecting && (width > 5 || height > 5)) {
+		dispatch({ type: "SET_IS_DRAG_SELECTING", payload: true });
+	}
+
+	if (state.isDragSelecting) {
+		// Calcul du rectangle + Détection intersection via rectCache (getBoundingClientRect pré-calculé)
+		// ...
 	}
 };
 
-const handleMouseMove = (e: MouseEvent) => {
-	if (!isDragSelecting) return;
-
-	// Calcul du rectangle
-	const box = {
-		x: Math.min(dragStartPos.x, e.clientX),
-		y: Math.min(dragStartPos.y, e.clientY),
-		w: Math.abs(e.clientX - dragStartPos.x),
-		h: Math.abs(e.clientY - dragStartPos.y),
-	};
-	setDragBox(box);
-
-	// Détection collision avec items (via registerItemRef)
-	const selectedItems = items.filter((item) => {
-		const el = itemRefs.current.get(item.id);
-		if (!el) return false;
-		const rect = el.getBoundingClientRect();
-		return intersects(box, rect);
-	});
-
-	setSelectedIds(new Set(selectedItems.map((i) => i.id)));
+const handleMouseUp = () => {
+	if (state.isDragSelecting) {
+		dispatch({ type: "SET_IS_DRAG_SELECTING", payload: false });
+		// Auto-exit selection mode
+		if (state.selectedIds.size > 0) {
+			dispatch({ type: "SET_SELECTION_MODE", payload: false });
+		}
+	}
 };
 ```
 
@@ -213,35 +208,17 @@ useEffect(() => {
 **Cible** : Image focusée OU sélection multiple OU image sous la souris (selon contexte).
 
 ```typescript
-// App.tsx - Color Tagging Shortcuts
-const applyColorTagToSelection = (color: string | undefined) => {
-	let itemsToUpdate: PortfolioItem[] = [];
-
-	if (selectedItem) itemsToUpdate = [selectedItem];
-	else if (selectionMode && selectedIds.size > 0)
-		itemsToUpdate = currentItems.filter((i) => selectedIds.has(i.id));
-	else if (focusedId) {
-		const item = currentItems.find((i) => i.id === focusedId);
-		if (item) itemsToUpdate = [item];
-	}
-
-	itemsToUpdate.forEach((item) => updateItem({ ...item, colorTag: color }));
-};
-
-// Hook clavier
+// useKeyboardShortcuts.ts
 useEffect(() => {
 	const handleKeyDown = (e: KeyboardEvent) => {
-		if (/^[1-6]$/.test(e.key)) {
-			const color = COLOR_PALETTE[e.key];
-			if (color) applyColorTagToSelection(color);
-		} else if (e.key === "0") {
-			applyColorTagToSelection(undefined);
-		}
+		if (e.target instanceof HTMLInputElement) return;
+
+		// Logic for arrows, space, enter, 0-6...
 	};
 
 	window.addEventListener("keydown", handleKeyDown);
 	return () => window.removeEventListener("keydown", handleKeyDown);
-}, []);
+}, [/* dependencies */]);
 ```
 
 ---
@@ -260,9 +237,10 @@ Le système gère deux états distincts :
 ### Sélection (`selectedIds`)
 
 - Mode multi-sélection activé via `Ctrl + Clic` ou Drag-Select
-- Affiche une bordure bleue + icône "Check"
+- Affiche une bordure bleue + icône "Check" (top-right)
 - Les actions de masse (Move, Tag, Analyze) s'appliquent à la sélection
-- Désactivation : Clic dans une zone vide ou touche `Echap`
+- **Désactivation** : Clic dans une zone vide, clic sur image non sélectionnée, ou touche `Echap`
+- **Native Style** : Désactivé via CSS (`::selection`) pour éviter le voile bleu du navigateur flux.
 
 **Interaction** :
 

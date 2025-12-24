@@ -1,5 +1,7 @@
 # Intégration AI (Gemini)
 
+Dernière mise à jour : 24/12/2024 à 17:52
+
 L'application utilise le SDK `@google/genai` pour analyser les images et enrichir les métadonnées.
 
 ## Configuration
@@ -83,10 +85,10 @@ export const analyzeImage = async (
 				parts: [
 					{ inlineData: { mimeType: item.type, data: base64Data } },
 					{
-						text: `Analyze this image. 
+						text: `Analyze this image.
                  1. Provide a concise description (max 2 sentences).
                  2. List 5-8 relevant tags.
-                 
+
                  Return valid JSON only matching this structure:
                  {
                    "description": "string",
@@ -141,12 +143,12 @@ export const analyzeImageStream = async (
 	// Prompt avec instruction "Thinking"
 	let prompt = `Analyze this image.
     STEP 1: THINKING PROCESS
-    Analyze the image composition, style, lighting, and subject matter step-by-step. 
+    Analyze the image composition, style, lighting, and subject matter step-by-step.
     Explain your reasoning for choosing specific tags.
-    
+
     STEP 2: FINAL OUTPUT
     After your analysis, output the separator "---JSON---" and then the final JSON object.
-    
+
     Structure:
     [Your thinking process here...]
     ---JSON---
@@ -324,8 +326,8 @@ Les résultats AI sont **automatiquement sauvegardés** dans SQLite :
 ```typescript
 // storageService.saveMetadata()
 await db.execute(
-	`INSERT OR REPLACE INTO metadata 
-   (id, collectionId, aiDescription, aiTags, aiTagsDetailed, lastModified) 
+	`INSERT OR REPLACE INTO metadata
+   (id, collectionId, aiDescription, aiTags, aiTagsDetailed, lastModified)
    VALUES (?, ?, ?, ?, ?, ?)`,
 	[
 		item.id,
