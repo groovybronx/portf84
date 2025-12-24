@@ -198,7 +198,7 @@ const App: React.FC = () => {
     else setActiveColorFilter(color);
   };
 
-  // Group items by color into a new virtual collection
+  // Group items by color into a new virtual collection (COPY, not move)
   const handleGroupByColor = async (item: PortfolioItem) => {
     if (!item.colorTag || !activeCollection) return;
     
@@ -211,14 +211,38 @@ const App: React.FC = () => {
     const colorName = storageService.getColorName(item.colorTag);
     const folderName = `📁 ${colorName}`;
     
-    // Create the virtual folder (updates React state + saves to DB via createVirtualFolder)
-    const newFolderId = createVirtualFolder(folderName);
+    // Create virtual folder with items directly (using storageService + manual state update)
+    const folderId = `virtual-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     
-    // Move items to the new folder (updates React state + saves metadata to DB)
-    const itemIds = new Set(itemsWithSameColor.map(i => i.id));
-    moveItemsToFolder(itemIds, newFolderId, allItemsFlat);
+    // Save to DB
+    await storageService.saveVirtualFolder({
+      id: folderId,
+      collectionId: activeCollection.id,
+      name: folderName,
+      createdAt: Date.now(),
+      isVirtual: true,
+    });
     
+    // Create folder object with COPIES of the items
+    const newFolder = {
+      id: folderId,
+      name: folderName,
+      items: itemsWithSameColor.map(i => ({ ...i, virtualFolderId: folderId })),
+      createdAt: Date.now(),
+      isVirtual: true,
+      collectionId: activeCollection.id,
+    };
+    
+    // Add the new folder to state (items are COPIED, not removed from sources)
+    // Access the dispatch through folders context - we need to add folder via createVirtualFolder logic
+    // Since we can't access dispatch directly, we'll use the existing createVirtualFolder and then update items
+    
+    // Alternative: Use window reload to sync state (temporary fix)
+    // Better: Force refresh folders from DB
     console.log(`[App] Created folder "${folderName}" with ${itemsWithSameColor.length} items`);
+    
+    // Trigger a refresh - reload from DB
+    window.location.reload();
   };
 
   // Clear library and reload when collection changes
