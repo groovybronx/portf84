@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 00:10
+Dernière mise à jour : 25/12/2024 à 00:20
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,19 +8,40 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Refactorisation Phase 2 - Découpage StorageService
+**Session en cours** : Refactorisation Phase 3 - UI PhotoCard
 
 **Progression** :
 - ✅ Phase 1 Quick Wins : 100% complétée
 - ✅ Phase 2 Découpage Services : 100% complétée
-  - 6 modules créés dans `src/services/storage/`
-  - `storageService.ts` réduit de 580 à 18 lignes
+- ✅ Phase 3 Refactorisation UI : 100% complétée
+  - PhotoCard décomposé en 5 sous-composants
 
 **Prochaines étapes** :
-- [ ] Phase 3 : Refactorisation UI (PhotoCard décomposé)
 - [ ] Phase 4 : Optimisation DB (normalisation tags)
 
-**Dernière modification** : 25/12/2024 à 00:10
+**Dernière modification** : 25/12/2024 à 00:20
+
+## [25/12/2024 - 00:20] - Phase 3 Refactorisation : Décomposition PhotoCard
+
+### Type : Refactorisation
+
+**Composants** : `src/features/library/components/PhotoCard/`
+
+**Changements** :
+
+- Création dossier `PhotoCard/` avec 5 fichiers :
+  - `index.tsx` : Composant principal assemblé (130 lignes)
+  - `PhotoCardFront.tsx` : Face avant avec image + overlay (100 lignes)
+  - `PhotoCardBack.tsx` : Face arrière avec métadonnées (190 lignes)
+  - `PhotoCardBadges.tsx` : Badges couleur et sélection (55 lignes)
+  - `usePhotoCardFlip.ts` : Hook pour animation flip (90 lignes)
+- `PhotoCard.tsx` réduit de 364 à 8 lignes (re-export)
+
+**Impact** : Séparation des responsabilités, meilleure maintenabilité.
+
+**Documentation mise à jour** :
+- `docs/REFACTORING_PLAN.md` : Phase 3 marquée complétée
+- `docs/COMPONENTS.md` : Architecture mise à jour
 
 ## [25/12/2024 - 00:10] - Phase 2 Refactorisation : Découpage StorageService
 

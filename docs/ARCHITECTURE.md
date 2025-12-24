@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 25/12/2024 à 00:10
+Dernière mise à jour : 25/12/2024 à 00:20
 
 ## Vue d'Ensemble
 
@@ -72,7 +72,14 @@ src/
 ├── services/           # Logique métier externe
 │   ├── geminiService.ts
 │   ├── libraryLoader.ts
-│   └── storageService.ts
+│   ├── storageService.ts   # Re-export (voir storage/)
+│   └── storage/            # Modules SQLite décomposés
+│       ├── db.ts           # Connexion + init
+│       ├── collections.ts  # CRUD Collections
+│       ├── folders.ts      # Virtual/Shadow folders
+│       ├── metadata.ts     # Métadonnées items
+│       ├── handles.ts      # Directory handles
+│       └── index.ts        # Export unifié
 └── App.tsx             # Point d'entrée, composition
 ```
 

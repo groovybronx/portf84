@@ -1,4 +1,4 @@
-Dernière mise à jour : 25/12/2024 à 00:10
+Dernière mise à jour : 25/12/2024 à 00:20
 
 # Composants UI & UX
 
@@ -13,7 +13,13 @@ src/features/
 │   ├── PhotoCarousel.tsx   # Vue carrousel standard
 │   ├── CinematicCarousel.tsx # Vue carrousel 3D immersive (expérimental)
 │   ├── PhotoList.tsx       # Vue liste détaillée
-│   ├── PhotoCard.tsx       # Vignette interactive (flip)
+│   ├── PhotoCard.tsx       # Re-export (voir PhotoCard/)
+│   ├── PhotoCard/          # Composant décomposé
+│   │   ├── index.tsx         # Assemblage principal
+│   │   ├── PhotoCardFront.tsx # Face avant (image)
+│   │   ├── PhotoCardBack.tsx  # Face arrière (métadonnées)
+│   │   ├── PhotoCardBadges.tsx # Badges
+│   │   └── usePhotoCardFlip.ts # Hook flip
 │   └── ViewRenderer.tsx    # Rendu conditionnel des vues
 ├── navigation/components/
 │   ├── TopBar.tsx          # Barre d'outils principale
