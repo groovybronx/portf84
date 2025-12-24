@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 18:05
+Dernière mise à jour : 24/12/2024 à 18:35
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,44 +8,63 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Audit documentation et Raffinements UX
+**Session en cours** : Finalisation Raffinements UX & Documentation
 
 **Progression** :
-- ✅ Amélioration UX Sélection : 5/5 tâches (100% complété)
-  - Auto-validation, reset intelligent, suppression bouton "Done"
+- ✅ Amélioration UX Sélection : 8/8 tâches (100% complété)
+  - Persistance des checkboxes, actions groupées (1-6)
+- ✅ Raffinement Déplacement & Focus : 4/4 tâches (100% complété)
+- ✅ Raffinement UI Navigation : 3/3 tâches (100% complété)
 - ✅ Audit complet Documentation : 6/6 fichiers sync (100% complété)
-- ✅ Raffinement Déplacement & Styles : 3/3 tâches (100% complété)
 
 **Prochaines étapes** :
 - [x] Push final et validation utilisateur
 
-**Dernière modification** : 24/12/2024 à 18:05
+**Dernière modification** : 24/12/2024 à 18:35
 
----
+## [24/12/2024 - 18:35] - Amélioration de la Persistance de Sélection
+
+### Type : Amélioration UX
+
+**Composant** : `SelectionContext.tsx`, `useItemActions.ts`
+
+**Changements** :
+
+- **Persistance Visuelle** : Les icônes de sélection (checkboxes) restent désormais affichées après avoir relâché la souris lors d'une sélection par rectangle (Drag-Select).
+- **Actions Groupées (Fix)** : Les raccourcis clavier (touches 1-6 pour les couleurs) et les actions de la TopBar s'appliquent désormais à **l'ensemble des images sélectionnées** par défaut.
+- **Désactivation Propre** : La sélection et ses indicateurs visuels disparaissent dès que l'utilisateur clique dans une zone vide ou désélectionne manuellement tous les items.
+
+**Impact** : Une expérience de sélection beaucoup plus robuste et prévisible, facilitant le tagging de masse.
+
+**Documentation mise à jour** :
+- `docs/INTERACTIONS.md` : Clarification de la persistance des indicateurs de sélection.
 
 ## Historique des Modifications
 
 ---
 
-## [24/12/2024 - 18:05] - Raffinement du Déplacement et Cohérence Visuelle
+## [24/12/2024 - 18:25] - Raffinement Navigation et Terminologie "Library"
 
 ### Type : Amélioration UX / Cohérence
 
-**Composant** : `ActionModals.tsx`, `FolderDrawer.tsx`
+**Composant** : `App.tsx`, `TopBar.tsx`, `FolderDrawer.tsx`, `LibraryContext.tsx`
 
 **Changements** :
 
-- **Filtrage des Dossiers** : La modale "Move Items" ne propose désormais que les **Collections Manuelles**. Les shadow folders sont exclus pour éviter les erreurs de déplacement.
-- **Cohérence Visuelle** :
-  - Standardisation de l'icône `FolderHeart` pour toutes les collections manuelles (modale et sidebar).
-  - Thème **Violet** harmonisé pour toutes les cibles de déplacement (icônes, boutons, hovers).
-  - Bouton "Create New Collection" dans la modale passé en violet pour correspondre au thème.
+- **Terminologie "Library"** :
+  - Renommage de "All Photos" en **"Library"** dans la TopBar et la Sidebar.
+  - Standardisation de l'icône `Layers` pour la vue racine de la bibliothèque.
+- **Navigation & Focus** :
+  - Suppression du changement automatique de dossier après un déplacement d'item ou la création d'une collection.
+  - L'utilisateur reste désormais **focus sur son contexte actuel**, évitant les interruptions de flux.
+- **Raffinement Déplacement** :
+  - Filtrage exclusif des **Collections Manuelles** dans la modale de déplacement.
+  - Thème **Violet** et icône `FolderHeart` pour toutes les collections virtuelles.
 
-**Impact** : Meilleure clarté dans l'organisation des fichiers et renforcement de l'identité visuelle des collections virtuelles.
+**Impact** : Une navigation plus fluide, prévisible et visuellement cohérente avec l'identité premium du projet.
 
 **Documentation mise à jour** :
-- `docs/ARCHITECTURE.md` : Terminologie "Manual Collections"
-- `docs/COMPONENTS.md` & `docs/INTERACTIONS.md` : Clarification des cibles de déplacement.
+- `docs/ARCHITECTURE.md`, `docs/COMPONENTS.md`, `docs/INTERACTIONS.md` : Mise à jour iconographie et comportements de navigation.
 
 ## [24/12/2024 - 17:42] - Amélioration de l'UX de Sélection
 

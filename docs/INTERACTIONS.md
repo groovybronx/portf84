@@ -1,6 +1,6 @@
 # Interactions & Raccourcis
 
-Dernière mise à jour : 24/12/2024 à 17:58
+Dernière mise à jour : 24/12/2024 à 18:25
 
 Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souris qu'au clavier ("Power User Friendly").
 
@@ -238,7 +238,8 @@ Le système gère deux états distincts :
 
 - Mode multi-sélection activé via `Ctrl + Clic` ou Drag-Select
 - Affiche une bordure bleue + icône "Check" (top-right)
-- Les actions de masse (Move, Tag, Analyze) s'appliquent à la sélection
+- **Persistance** : Les indicateurs restent visibles après le relâchement du clic (Drag-Select) tant que des items sont sélectionnés.
+- Les actions de masse (Move, Tag, Analyze, Color Tags 1-6) s'appliquent systématiquement à toute la sélection active.
 - **Désactivation** : Clic dans une zone vide, clic sur image non sélectionnée, ou touche `Echap`
 - **Native Style** : Désactivé via CSS (`::selection`) pour éviter le voile bleu du navigateur flux.
 
@@ -248,6 +249,12 @@ Le système gère deux états distincts :
 - `Ctrl + Clic` : Ajoute à la sélection (toggle)
 - `Drag Rectangle` : Sélection multiple
 - `Double-Clic` : Ouvre en plein écran (ignore sélection)
+
+### Comportement post-action
+
+Pour garantir un flux de travail ininterrompu :
+- **Déplacement d'items** : Après avoir déplacé des items vers une collection, l'application **conserve le focus** sur le dossier ou la collection actuelle. Elle ne bascule JAMAIS automatiquement vers la cible.
+- **Création de collection** : La création d'une nouvelle collection ou le "Create & Move" ne change pas la vue active de l'utilisateur.
 
 ---
 
