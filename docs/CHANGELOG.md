@@ -34,39 +34,26 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ---
 
-## [24/12/2024 - 17:01] - Création tests unitaires pour hooks
+## [24/12/2024 - 17:42] - Amélioration de l'UX de Sélection
 
-### Type : Ajout
+### Type : Amélioration UX
 
-**Composant** : `tests/useKeyboardShortcuts.test.ts`, `tests/useItemActions.test.ts`
+**Composant** : `App.tsx`, `SelectionContext.tsx`, `PhotoCard.tsx`, `PhotoList.tsx`, `BatchActions.tsx`, `index.css`
 
 **Changements** :
 
-- **Tests pour `useKeyboardShortcuts`** (17 tests) :
-  - Navigation avec flèches (7 tests) : ArrowRight, ArrowLeft, ArrowUp, ArrowDown, limites
-  - Sélection avec Space/Enter (3 tests)
-  - Color tagging avec touches 0-6 (3 tests)
-  - Exclusion inputs/textareas (2 tests)
-  - Edge cases (2 tests) : liste vide, ID invalide
+- **Expérience de Sélection** :
+  - **Auto-Validation** : Désormais, le mode sélection s'arrête automatiquement au relâchement de la souris après un drag-select.
+  - **Reset Intelligent** : Cliquer dans le vide ou sur une image non sélectionnée réinitialise la sélection.
+  - **Suppression du bouton "Done"** : Interface épurée car l'action est désormais implicite.
+  - **Désactivation du style natif** : Plus de voile bleu de sélection textuelle forcée par le navigateur.
+  - **Ajustement Visuel** : Opacité du rectangle de sélection fixée à 30%.
 
-- **Tests pour `useItemActions`** (15 tests) :
-  - `addTagsToSelection` (4 tests) : sélection multiple, context menu, déduplication
-  - `applyColorTagToSelection` (4 tests) : fullscreen, sélection multiple, focused item
-  - `analyzeItem` (2 tests) : analyse AI, gestion erreurs
-  - `moveItemToFolder` (1 test) : déplacement et cleanup
-  - `createFolderAndMove` (2 tests) : création dossier, vérification collection
-  - `handleContextMove` (2 tests) : sélection et modal
-
-**Résultats** :
-- ✅ 40 tests passent (32 nouveaux + 8 existants)
-- ✅ Aucune régression détectée
-- ✅ Durée d'exécution : 2.62s
-
-**Impact** : Couverture complète des hooks extraits lors de la refactorisation App.tsx, garantissant la stabilité du code
+**Impact** : Une navigation beaucoup plus fluide et "native" qui élimine les clics inutiles pour valider ou annuler une sélection.
 
 **Documentation mise à jour** :
-- `docs/CHANGELOG.md` : Entrée ajoutée
-- `docs/COMPONENTS.md` : Section tests ajoutée
+- `docs/CHANGELOG.md` : Mise à jour
+- `docs/COMPONENTS.md` : Les sections sur la sélection sont désormais à jour avec ce nouveau comportement (auto-exit).
 
 ---
 

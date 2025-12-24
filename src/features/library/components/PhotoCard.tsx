@@ -53,6 +53,7 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 	return (
 		<div
 			ref={(el) => registerItemRef?.(item.id, el)}
+			data-item-id={item.id}
 			className="relative perspective-1000 group cursor-pointer"
 			onMouseEnter={() => onHover(item)}
 			onMouseLeave={() => {
@@ -158,18 +159,18 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
 					)}
 
 					{selectionMode && (
-						<div className="absolute inset-0 bg-black/20 flex items-start justify-end p-3">
-							{isSelected ? (
-								<CheckCircle2
-									className="text-blue-500 drop-shadow-lg bg-white rounded-full"
-									size={24}
-									fill="white"
-								/>
-							) : (
-								<Circle className="text-white/70 drop-shadow-lg" size={24} />
-							)}
-						</div>
-					)}
+					<div className="absolute top-3 right-3 z-20">
+						{isSelected ? (
+							<CheckCircle2
+								className="text-blue-500 drop-shadow-lg bg-white rounded-full"
+								size={24}
+								fill="white"
+							/>
+						) : (
+							<Circle className="text-white/70 drop-shadow-lg" size={24} />
+						)}
+					</div>
+				)}
 				</GlassCard>
 
 				{/* Back Face */}

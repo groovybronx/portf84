@@ -49,6 +49,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 						<motion.div
 							key={item.id}
 							ref={(el) => registerItemRef?.(item.id, el)}
+							data-item-id={item.id}
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: index * 0.05 }}

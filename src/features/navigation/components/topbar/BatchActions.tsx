@@ -67,14 +67,6 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 					<Sparkles size={18} />
 				)}
 			</Button>
-			<Button
-				variant="danger"
-				onClick={onToggleSelectionMode}
-				leftIcon={<X size={18} />}
-				className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
-			>
-				<span className="hidden sm:inline">Done</span>
-			</Button>
 		</div>
 	);
 };

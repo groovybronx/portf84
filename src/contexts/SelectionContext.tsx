@@ -137,6 +137,21 @@ export const SelectionProvider: React.FC<{ children: React.ReactNode }> = ({
 				return;
 			if (e.button !== 0) return;
 
+			// Check if click is on an item
+			const clickedOnItem = (e.target as HTMLElement).closest("[data-item-id]");
+			const itemId = clickedOnItem?.getAttribute("data-item-id");
+			const isModifierKey = e.shiftKey || e.ctrlKey || e.metaKey;
+
+			if (state.selectedIds.size > 0 && !isModifierKey) {
+				// If clicking in the void OR on an item that isn't selected -> reset selection
+				if (!itemId || !state.selectedIds.has(itemId)) {
+					dispatch({ type: "CLEAR_SELECTION" });
+					// If it was the void, we return to prevent immediate drag start if preferred
+					// but usually we want to allow drag even after a reset.
+					if (!itemId) return;
+				}
+			}
+
 			dragStartPos.current = { x: e.clientX, y: e.clientY };
 
 			// Pre-calculate rects when starting drag to avoid per-frame DOM reads
@@ -146,7 +161,7 @@ export const SelectionProvider: React.FC<{ children: React.ReactNode }> = ({
 				if (el) rectCache.current.set(item.id, el.getBoundingClientRect());
 			});
 		},
-		[]
+		[state.selectedIds.size]
 	);
 
 	const handleMouseMove = useCallback(
@@ -207,11 +222,9 @@ export const SelectionProvider: React.FC<{ children: React.ReactNode }> = ({
 			dispatch({ type: "SET_DRAG_BOX", payload: null });
 			if (rafId.current) cancelAnimationFrame(rafId.current);
 
-			// Auto-exit selection mode if we have selections
-			// This allows immediate use of selected items without clicking "Done"
+			// Auto-exit selection mode after drag-select completes
 			if (state.selectedIds.size > 0) {
-				// Keep selection mode active so user can see what's selected
-				// But they can now interact with selected items immediately
+				dispatch({ type: "SET_SELECTION_MODE", payload: false });
 			}
 		}
 		dragStartPos.current = null;

@@ -279,7 +279,7 @@ const App: React.FC = () => {
       {/* Drag Selection Box */}
       {isDragSelecting && dragBox && (
         <div
-          className="fixed border border-blue-500 bg-blue-500/20 z-(--z-controlbar) pointer-events-none"
+          className="fixed border-2 border-blue-500 bg-blue-500/30 z-(--z-controlbar) pointer-events-none"
           style={{
             left: dragBox.x,
             top: dragBox.y,
