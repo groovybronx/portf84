@@ -264,7 +264,7 @@ const App: React.FC = () => {
   };
 
   const activeFolderName = activeFolderIds.has("all")
-    ? "All Photos"
+    ? "Library"
     : activeFolderIds.size === 1
     ? folders.find((f) => f.id === Array.from(activeFolderIds)[0])?.name
     : "Collection";

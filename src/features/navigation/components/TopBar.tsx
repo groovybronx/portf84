@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FolderCog, Pin, PinOff, Settings, ShieldAlert } from "lucide-react";
+import { Layers, Pin, PinOff, Settings, ShieldAlert } from "lucide-react";
 import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
@@ -120,7 +120,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 						<Button
 							variant="ghost"
 							onClick={onOpenFolders}
-							leftIcon={<FolderCog size={18} />}
+							leftIcon={<Layers size={18} />}
 							className="text-blue-400 hover:text-white"
 						>
 							<span className="hidden md:inline max-w-[100px] truncate">

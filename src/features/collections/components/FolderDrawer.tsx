@@ -155,10 +155,10 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 											: "bg-glass-bg-accent group-hover:bg-glass-bg-active"
 									}`}
 								>
-									<ImageIcon size={20} />
+									<Layers size={20} />
 								</div>
 								<div className="flex-1 text-left">
-									<p className="font-medium text-sm">Toutes les Photos</p>
+									<p className="font-medium text-sm">Library</p>
 									<p className="text-xs opacity-60">{totalItems} items</p>
 								</div>
 								{activeFolderId.has("all") ? (
