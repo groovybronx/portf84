@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
 	FolderPlus,
 	FolderInput,
-	Folder as FolderIcon,
+	FolderHeart,
 	Plus,
 	ArrowLeft,
 } from "lucide-react";
@@ -168,9 +168,9 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 					{/* Create New Option */}
 					<button
 						onClick={() => setIsCreating(true)}
-						className="w-full flex items-center gap-4 p-3 rounded-xl border border-dashed border-glass-border/20 hover:border-blue-500/50 hover:bg-blue-500/10 text-gray-300 hover:text-white transition-all group text-left mb-2 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+						className="w-full flex items-center gap-4 p-3 rounded-xl border border-dashed border-glass-border/20 hover:border-purple-500/50 hover:bg-purple-500/10 text-gray-300 hover:text-white transition-all group text-left mb-2 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
 					>
-						<div className="w-10 h-10 rounded-lg bg-glass-bg-accent flex items-center justify-center text-gray-400 group-hover:text-blue-400 transition-colors">
+						<div className="w-10 h-10 rounded-lg bg-glass-bg-accent flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors">
 							<Plus size={20} />
 						</div>
 						<div className="flex-1">
@@ -179,26 +179,28 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 						</div>
 					</button>
 
-					{folders.map((folder) => (
-						<button
-							key={folder.id}
-							onClick={() => {
-								onMove(folder.id);
-								onClose();
-							}}
-							className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-glass-bg-accent transition-colors group text-left border border-transparent hover:border-glass-border-light outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
-						>
-							<div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-								<FolderIcon size={20} />
-							</div>
-							<div className="flex-1">
-								<p className="font-medium text-white">{folder.name}</p>
-								<p className="text-xs text-gray-500">
-									{folder.items.length} items
-								</p>
-							</div>
-						</button>
-					))}
+					{folders
+						.filter((f) => f.isVirtual && !f.sourceFolderId)
+						.map((folder) => (
+							<button
+								key={folder.id}
+								onClick={() => {
+									onMove(folder.id);
+									onClose();
+								}}
+								className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-glass-bg-accent transition-colors group text-left border border-transparent hover:border-glass-border-light outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+							>
+								<div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+									<FolderHeart size={20} />
+								</div>
+								<div className="flex-1">
+									<p className="font-medium text-white">{folder.name}</p>
+									<p className="text-xs text-gray-500">
+										{folder.items.length} items
+									</p>
+								</div>
+							</button>
+						))}
 
 					{folders.length === 0 && (
 						<div className="text-center py-4 text-gray-500 text-sm">

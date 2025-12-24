@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 24/12/2024 à 17:01
+Dernière mise à jour : 24/12/2024 à 18:05
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,31 +8,44 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Tests et corrections de bugs
+**Session en cours** : Audit documentation et Raffinements UX
 
 **Progression** :
-- ✅ Refactorisation App.tsx : 13/13 tâches (100% complété)
-  - Code refactorisé : 656 → 477 lignes (-27%)
-  - 3 hooks créés : `useKeyboardShortcuts`, `useModalState`, `useItemActions`
-  - 1 composant créé : `ViewRenderer`
-  - Tests unitaires créés : 32 tests (17 + 15)
-- ✅ Règles de documentation créées et configurées (100% complété)
-- ✅ Fix persistence des collections virtuelles (100% complété)
-  - Collections virtuelles persistent après reload
-  - Déduplication des shadow folders corrigée
-  - Différenciation claire : source / shadow / collections
+- ✅ Amélioration UX Sélection : 5/5 tâches (100% complété)
+  - Auto-validation, reset intelligent, suppression bouton "Done"
+- ✅ Audit complet Documentation : 6/6 fichiers sync (100% complété)
+- ✅ Raffinement Déplacement & Styles : 3/3 tâches (100% complété)
 
 **Prochaines étapes** :
-- [ ] Tests manuels (navigation, modales, vues, collections)
-- [ ] Commit Git des changements
+- [x] Push final et validation utilisateur
 
-**Dernière modification** : 24/12/2024 à 17:01
+**Dernière modification** : 24/12/2024 à 18:05
 
 ---
 
 ## Historique des Modifications
 
 ---
+
+## [24/12/2024 - 18:05] - Raffinement du Déplacement et Cohérence Visuelle
+
+### Type : Amélioration UX / Cohérence
+
+**Composant** : `ActionModals.tsx`, `FolderDrawer.tsx`
+
+**Changements** :
+
+- **Filtrage des Dossiers** : La modale "Move Items" ne propose désormais que les **Collections Manuelles**. Les shadow folders sont exclus pour éviter les erreurs de déplacement.
+- **Cohérence Visuelle** :
+  - Standardisation de l'icône `FolderHeart` pour toutes les collections manuelles (modale et sidebar).
+  - Thème **Violet** harmonisé pour toutes les cibles de déplacement (icônes, boutons, hovers).
+  - Bouton "Create New Collection" dans la modale passé en violet pour correspondre au thème.
+
+**Impact** : Meilleure clarté dans l'organisation des fichiers et renforcement de l'identité visuelle des collections virtuelles.
+
+**Documentation mise à jour** :
+- `docs/ARCHITECTURE.md` : Terminologie "Manual Collections"
+- `docs/COMPONENTS.md` & `docs/INTERACTIONS.md` : Clarification des cibles de déplacement.
 
 ## [24/12/2024 - 17:42] - Amélioration de l'UX de Sélection
 

@@ -1,6 +1,6 @@
 # Interactions & Raccourcis
 
-Dernière mise à jour : 24/12/2024 à 17:49
+Dernière mise à jour : 24/12/2024 à 17:58
 
 Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souris qu'au clavier ("Power User Friendly").
 

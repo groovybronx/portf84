@@ -1,4 +1,4 @@
-Dernière mise à jour : 24/12/2024 à 17:47
+Dernière mise à jour : 24/12/2024 à 17:58
 
 # Composants UI & UX
 
@@ -369,7 +369,7 @@ Menu contextuel personnalisé avec positionnement `fixed`.
 | ---------------------- | ---------------------------- |
 | **Analyze (AI)**       | Lance l'analyse Gemini       |
 | **Add Tags**           | Ouvre modal taguage          |
-| **Move to Collection** | Déplace vers dossier virtuel |
+| **Move to Collection** | Déplace vers collection manuelle (icône violette) |
 | **Color Tag (1-6)**    | Applique couleur rapide      |
 | **Open**               | Ouvre en plein écran         |
 | **Delete**             | Suppression logique (Trash)  |

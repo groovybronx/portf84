@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 24/12/2024 à 17:45
+Dernière mise à jour : 24/12/2024 à 17:58
 
 ## Vue d'Ensemble
 
@@ -106,7 +106,7 @@ L'application organise les fichiers via des "Projets" isolés :
 - Chaque projet possède ses propres :
   - **Dossiers sources** (liens vers disque, lecture seule)
   - **Shadow folders** (clones virtuels auto-créés, modifiables)
-  - **Collections** (albums manuels créés par l'utilisateur)
+  - **Manual Collections** (albums logiques créés par l'utilisateur, cibles exclusives de déplacement)
   - **Métadonnées** (tags AI, couleurs)
 
 #### Shadow Folders (Architecture Non-Destructive)
