@@ -62,7 +62,7 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					placeholder="e.g. Best of 2024"
-					leftIcon={<FolderIcon size={16} />}
+					leftIcon={<FolderHeart size={16} />}
 				/>
 			</form>
 		</Modal>
