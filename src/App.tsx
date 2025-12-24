@@ -362,9 +362,8 @@ const App: React.FC = () => {
             onTogglePin={() => {
               const newPinned = !isSidebarPinned;
               setIsSidebarPinned(newPinned);
-              // When unpinning, keep it open as a floating drawer for continuity
-              if (!newPinned) setIsFolderDrawerOpen(true);
-              else setIsFolderDrawerOpen(false);
+              // When unpinning, hide everything for a clean exit
+              setIsFolderDrawerOpen(false);
             }}
           />
         </ErrorBoundary>
