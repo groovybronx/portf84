@@ -76,7 +76,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 
 	// State for accordion sections
 	const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
-		new Set(["work", "collections", "colors"])
+		new Set()
 	);
 
 	const toggleSection = (section: string) => {
@@ -202,19 +202,31 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 				<div>
 					<button 
 						onClick={() => toggleSection("work")}
-						className="w-full flex items-center justify-between mb-2 px-2 hover:bg-white/5 rounded-lg py-1 transition-colors"
+						className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+							expandedSections.has("work") 
+								? "bg-blue-500/10 border-blue-500/20 shadow-[0_0_15px_-5px_rgba(59,130,246,0.3)]" 
+								: "hover:bg-white/5 border-transparent"
+						}`}
 					>
-						<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-							<HardDrive size={12} />
+						<p className={`text-xs uppercase font-bold tracking-wider flex items-center gap-2 ${
+							expandedSections.has("work") ? "text-blue-400" : "text-gray-500"
+						}`}>
+							<HardDrive size={14} className={expandedSections.has("work") ? "text-blue-400" : "text-gray-500"} />
 							<span>Dossiers de Travail</span>
 						</p>
 						<div className="flex items-center gap-2">
-							<span className="text-[10px] text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded-full">
+							<span className={`text-[10px] px-2 py-0.5 rounded-full ${
+								expandedSections.has("work") 
+									? "bg-blue-500/20 text-blue-300" 
+									: "bg-gray-800/50 text-gray-600"
+							}`}>
 								{shadowFolders.length}
 							</span>
 							<ChevronRight 
-								size={12} 
-								className={`text-gray-500 transition-transform duration-200 ${expandedSections.has("work") ? "rotate-90" : ""}`}
+								size={14} 
+								className={`transition-transform duration-300 ${
+									expandedSections.has("work") ? "rotate-90 text-blue-400" : "text-gray-600"
+								}`}
 							/>
 						</div>
 					</button>
@@ -304,21 +316,29 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 				<div>
 					<button 
 						onClick={() => toggleSection("collections")}
-						className="w-full flex items-center justify-between mb-2 px-2 hover:bg-white/5 rounded-lg py-1 transition-colors"
+						className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+							expandedSections.has("collections") 
+								? "bg-purple-500/10 border-purple-500/20 shadow-[0_0_15px_-5px_rgba(168,85,247,0.3)]" 
+								: "hover:bg-white/5 border-transparent"
+						}`}
 					>
-						<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-							<FolderHeart size={12} />
+						<p className={`text-xs uppercase font-bold tracking-wider flex items-center gap-2 ${
+							expandedSections.has("collections") ? "text-purple-400" : "text-gray-500"
+						}`}>
+							<FolderHeart size={14} className={expandedSections.has("collections") ? "text-purple-400" : "text-gray-500"} />
 							<span>Collections</span>
 						</p>
 						<div className="flex items-center gap-2">
 							{activeFolderId.size > 1 && !activeFolderId.has("all") && (
-								<span className="text-blue-400 text-[10px] bg-blue-500/10 px-2 py-0.5 rounded-full">
+								<span className="text-purple-400 text-[10px] bg-purple-500/10 px-2 py-0.5 rounded-full">
 									{activeFolderId.size} Sélectionnées
 								</span>
 							)}
 							<ChevronRight 
-								size={12} 
-								className={`text-gray-500 transition-transform duration-200 ${expandedSections.has("collections") ? "rotate-90" : ""}`}
+								size={14} 
+								className={`transition-transform duration-300 ${
+									expandedSections.has("collections") ? "rotate-90 text-purple-400" : "text-gray-600"
+								}`}
 							/>
 						</div>
 					</button>
@@ -426,15 +446,23 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 				<div>
 					<button 
 						onClick={() => toggleSection("colors")}
-						className="w-full flex items-center justify-between mb-2 px-2 hover:bg-white/5 rounded-lg py-1 transition-colors"
+						className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+							expandedSections.has("colors") 
+								? "bg-amber-500/10 border-amber-500/20 shadow-[0_0_15px_-5px_rgba(245,158,11,0.3)]" 
+								: "hover:bg-white/5 border-transparent"
+						}`}
 					>
-						<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-							<Palette size={12} />
+						<p className={`text-xs uppercase font-bold tracking-wider flex items-center gap-2 ${
+							expandedSections.has("colors") ? "text-amber-400" : "text-gray-500"
+						}`}>
+							<Palette size={14} className={expandedSections.has("colors") ? "text-amber-400" : "text-gray-500"} />
 							<span>Filtres Couleur</span>
 						</p>
 						<ChevronRight 
-							size={12} 
-							className={`text-gray-500 transition-transform duration-200 ${expandedSections.has("colors") ? "rotate-90" : ""}`}
+							size={14} 
+							className={`transition-transform duration-300 ${
+								expandedSections.has("colors") ? "rotate-90 text-amber-400" : "text-gray-600"
+							}`}
 						/>
 					</button>
 					
