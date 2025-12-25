@@ -51,10 +51,15 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 			: null
 	);
 
+	const [isZoomed, setIsZoomed] = useState(false);
+	const [zoomOrigin, setZoomOrigin] = useState("center center");
+
 	// Reset local state when the item changes (navigation)
 	useEffect(() => {
 		reset();
 		setShowMetadata(false);
+		setIsZoomed(false); // Reset Zoom on change
+		setZoomOrigin("center center");
 		setDimensions(
 			item.width && item.height
 				? { width: item.width, height: item.height }
@@ -150,25 +155,55 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					<ChevronRight size={32} />
 				</button>
 
-				<div className="relative z-(--z-grid-item) w-full h-full flex items-center justify-center">
+				{/* Zoom & Pan Logic */}
+				<div 
+					className={`relative z-(--z-grid-item) w-full h-full flex items-center justify-center overflow-hidden ${
+						isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+					}`}
+					onMouseMove={(e) => {
+						if (!isZoomed) return;
+						const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+						const x = ((e.clientX - left) / width) * 100;
+						const y = ((e.clientY - top) / height) * 100;
+						setZoomOrigin(`${x}% ${y}%`);
+					}}
+					onClick={(e) => {
+						e.stopPropagation();
+						// Toggle Zoom
+						setIsZoomed(!isZoomed);
+					}}
+				>
 					<motion.img
-						key={item.id} // Ensure framer motion detects the image change for animation
+						key={item.id}
 						layoutId={`card-${item.id}`}
 						src={item.url}
 						alt={item.name}
-						className="w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm"
-						onClick={(e) => e.stopPropagation()}
+						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out`}
 						onLoad={handleImageLoad}
 						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ opacity: 1, scale: 1 }}
+						animate={{ 
+							opacity: 1, 
+							scale: isZoomed ? 2.5 : 1, // Zoom Factor 2.5x
+							transformOrigin: isZoomed ? zoomOrigin : "center center"
+						}}
 						transition={{ duration: 0.3 }}
 						style={
-							showColorTags && item.colorTag
+							showColorTags && item.colorTag && !isZoomed
 								? { borderBottom: `4px solid ${item.colorTag}` }
 								: {}
 						}
 					/>
-					{showColorTags && item.colorTag && (
+					
+					{/* Zoom Hint Overlay (only visible when not zoomed and hovered) */}
+					{!isZoomed && (
+						<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/nav:opacity-100 transition-opacity pointer-events-none">
+							<div className="bg-black/50 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transform translate-y-4 group-hover/nav:translate-y-0 transition-transform">
+								<Maximize2 size={16} /> Click to Zoom
+							</div>
+						</div>
+					)}
+
+					{showColorTags && item.colorTag && !isZoomed && (
 						<div
 							className="absolute top-4 left-4 w-4 h-4 rounded-full shadow-md border border-glass-border"
 							style={{ backgroundColor: item.colorTag }}
