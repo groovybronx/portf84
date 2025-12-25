@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 00:25
+Dernière mise à jour : 25/12/2024 à 01:36
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,21 +8,39 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Finalisation UI/UX - Smart Folders & Sidebar
+**Session en cours** : Feature - Interactive Scrubber
 
 **Progression** :
-- ✅ Phase 1 Quick Wins : 100% complétée
-- ✅ Phase 2 Découpage Services : 100% complétée
-- ✅ Phase 3 Refactorisation UI : 100% complétée
-- ✅ Phase 4 Optimisation DB : 100% complétée
 - ✅ Feature Smart Folders (Couleurs) : 100% complétée
 - ✅ Refonte Sidebar (Accordéons) : 100% complétée
+- ✅ PhotoCarousel Scrubber (Interactif) : 100% complétée
 
 **Prochaines étapes** :
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 01:20
+**Dernière modification** : 25/12/2024 à 01:36
+
+## [25/12/2024 - 01:36] - Feature : Scrubber Interactif
+
+### Type : Feature / UI
+
+**Composants** : `src/features/library/components/PhotoCarousel.tsx`
+
+**Changements** :
+
+- Ajout d'une **barre de défilement interactive** dans la vue Carrousel (Flow).
+- Remplacement du compteur numérique par une barre de progression visuelle (points).
+- Fonctionnalités du Scrubber :
+  - **Click-to-Jump** : Sauter instantanément à n'importe quelle position.
+  - **Drag & Drop** : Glisser pour défiler rapidement (scrubbing) à travers la collection.
+  - **Hover Thumb** : Curseur visuel au survol pour plus de précision.
+
+**Impact** : Amélioration majeure de la navigation dans les grandes collections en mode plein écran.
+
+**Documentation mise à jour** :
+- `docs/COMPONENTS.md`
+- `docs/INTERACTIONS.md`
 
 ## [25/12/2024 - 01:20] - UI/UX : Smart Folders & Refonte Sidebar
 

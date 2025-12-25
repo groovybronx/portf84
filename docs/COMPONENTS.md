@@ -1,4 +1,4 @@
-Dernière mise à jour : 25/12/2024 à 01:21
+Dernière mise à jour : 25/12/2024 à 01:37
 
 # Composants UI & UX
 
@@ -60,7 +60,26 @@ src/shared/
 
 Affiche une maçonnerie fluide d'images, capable de gérer des milliers d'items sans ralentissement.
 
-### Architecture : Virtual Masonry (@tanstack/react-virtual)
+## 2. PhotoCarousel (Mode Flow)
+
+Vue immersive défilante centrée sur l'image active.
+
+### Fonctionnalités
+
+- **Navigation Clavier** : Flèches gauche/droite.
+- **Support Tactile/Souris** : Swipe gauche/droite pour changer d'image.
+- **Scrubber Interactif** : 
+  - Barre de progression située en bas.
+  - Permet le **défilement rapide** (Scrubbing) via Drag & Drop.
+  - Click-to-Jump pour atteindre rapidement une position approximative.
+  
+### Architecture
+
+Utilise Framer Motion pour des transitions fluides et `useEffect` pour gérer le déchargement mémoire des images hors écran (Off-screen cleaning).
+
+---
+
+## 3. PhotoCard (Vignette Optimisée)
 
 **Problème du CSS `column-count`** : Il remplit les colonnes verticalement, ce qui casse l'ordre chronologique et empêche la virtualisation.
 

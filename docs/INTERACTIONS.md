@@ -61,6 +61,8 @@ const handleMouseUp = () => {
 | **Clic hors image** | Fermer le visualiseur       |
 | **Echap**           | Fermer le visualiseur       |
 | **Roulette souris** | Navigation images (scroll)  |
+| **Scrubber Drag**   | Défilement rapide           |
+| **Scrubber Clic**   | Saut à la position          |
 | **Touches 1-6**     | Applique tag couleur        |
 | **Touche 0**        | Retire le tag couleur       |
 
