@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Merge, RefreshCw, Tag as TagIcon, ArrowRight } from 'lucide-react';
-import { analyzeTagRedundancy, TagGroup } from '../../services/tagAnalysisService';
-import { mergeTags } from '../../services/storage/tags';
-import { ParsedTag } from '../../shared/types/database';
+import { analyzeTagRedundancy, TagGroup } from '../../../services/tagAnalysisService';
+import { mergeTags } from '../../../services/storage/tags';
+import { ParsedTag } from '../../../shared/types/database';
 
 interface TagManagerModalProps {
     isOpen: boolean;

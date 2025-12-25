@@ -16,6 +16,7 @@ import {
   UnifiedProgress,
   ErrorBoundary,
 } from "./shared/components";
+import { TagManagerModal } from "./features/tags/components/TagManagerModal";
 import { open } from "@tauri-apps/plugin-dialog";
 
 import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./shared/types";
@@ -137,6 +138,7 @@ const App: React.FC = () => {
     isCollectionManagerOpen,
     setIsCollectionManagerOpen,
   } = useModalState();
+  const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [showColorTags, setShowColorTags] = useState(true);
 
@@ -346,6 +348,7 @@ const App: React.FC = () => {
             isBatchAIProcessing={isBatchProcessing}
             batchAIProgress={batchProgress}
             onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenTagManager={() => setIsTagManagerOpen(true)}
             showColorTags={showColorTags}
             onToggleColorTags={toggleColorTags}
           />
@@ -516,6 +519,14 @@ const App: React.FC = () => {
         onClose={() => setIsSettingsOpen(false)}
         useCinematicCarousel={useCinematicCarousel}
         onToggleCinematicCarousel={setCinematicCarousel}
+      />
+      <TagManagerModal 
+        isOpen={isTagManagerOpen}
+        onClose={() => setIsTagManagerOpen(false)}
+        onTagsUpdated={() => {
+             console.log("Tags merged via Manager");
+             /* Force refresh context if needed */
+        }}
       />
 
       <UnifiedProgress />

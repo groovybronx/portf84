@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layers, Pin, PinOff, Settings, ShieldAlert } from "lucide-react";
+import { Layers, Pin, PinOff, Settings, ShieldAlert, Merge } from "lucide-react";
 import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
@@ -22,6 +22,7 @@ interface TopBarProps {
 	isBatchAIProcessing: boolean;
 	batchAIProgress: number;
 	onOpenSettings: () => void;
+	onOpenTagManager: () => void;
 	showColorTags: boolean;
 	onToggleColorTags: () => void;
 	isSidebarPinned?: boolean;
@@ -36,6 +37,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	isBatchAIProcessing,
 	batchAIProgress,
 	onOpenSettings,
+	onOpenTagManager,
 	showColorTags,
 	onToggleColorTags,
 	isSidebarPinned = false,
@@ -130,6 +132,15 @@ export const TopBar: React.FC<TopBarProps> = ({
 							<span className="hidden md:inline max-w-[100px] truncate">
 								{folderName || "Library"}
 							</span>
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onOpenTagManager}
+							className="text-gray-500 hover:text-purple-400"
+							title="Smart Tag Manager"
+						>
+							<Merge size={18} />
 						</Button>
 						<Button
 							variant="ghost"
