@@ -83,7 +83,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
       {/* Close button - HIGHEST z-index */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-[300] p-3 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
+        className="absolute top-6 right-6 z-300 p-3 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
         title="Close (Esc)"
       >
         <X size={24} />
@@ -92,7 +92,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
       {/* Info toggle - HIGHEST z-index */}
       <button
         onClick={() => setShowInfo(!showInfo)}
-        className={`absolute top-6 left-6 z-[300] p-3 rounded-full border transition-all hover:scale-110 shadow-lg ${
+        className={`absolute top-6 left-6 z-300 p-3 rounded-full border transition-all hover:scale-110 shadow-lg ${
           showInfo
             ? "bg-blue-500/30 border-blue-400/50 text-blue-200"
             : "bg-white/20 hover:bg-white/30 border-white/30 text-white"
@@ -105,7 +105,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
       {/* Navigation arrows - HIGH z-index */}
       <button
         onClick={goToPrev}
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-[250] p-4 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-250 p-4 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
         title="Previous (←)"
       >
         <ChevronLeft size={32} />
@@ -113,7 +113,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
 
       <button
         onClick={goToNext}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-[250] p-4 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-250 p-4 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
         title="Next (→)"
       >
         <ChevronRight size={32} />

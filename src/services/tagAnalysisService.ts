@@ -31,7 +31,7 @@ const levenshteinDistance = (a: string, b: string): number => {
     }
   }
 
-  return matrix[b.length][a.length];
+  return matrix[b.length]![a.length]!;
 };
 
 export interface TagGroup {

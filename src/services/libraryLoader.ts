@@ -78,10 +78,10 @@ export const libraryLoader = {
 				const hydrated = {
 					...item,
 					collectionId, // NEW: Assign collection ID to all items
-					aiDescription: meta.aiDescription,
+					aiDescription: meta.aiDescription || undefined,
 					aiTags: meta.aiTags,
 					aiTagsDetailed: meta.aiTagsDetailed,
-					colorTag: meta.colorTag,
+					colorTag: meta.colorTag || undefined,
 					manualTags: meta.manualTags,
 					virtualFolderId: meta.virtualFolderId || meta.folderId, // Prefer virtualFolderId
 					folderId: meta.virtualFolderId || meta.folderId, // Backward compat
