@@ -265,7 +265,10 @@ const App: React.FC = () => {
     const idx = processedItems.findIndex((i) => i.id === selectedItem.id);
     if (idx !== -1 && idx < processedItems.length - 1) {
       const nextItem = processedItems[idx + 1];
-      if (nextItem) setSelectedItem(nextItem);
+      if (nextItem) {
+        setSelectedItem(nextItem);
+        setFocusedId(nextItem.id); // Sync grid focus
+      }
     }
   };
   const handlePrev = () => {
@@ -273,7 +276,10 @@ const App: React.FC = () => {
     const idx = processedItems.findIndex((i) => i.id === selectedItem.id);
     if (idx > 0) {
       const prevItem = processedItems[idx - 1];
-      if (prevItem) setSelectedItem(prevItem);
+      if (prevItem) {
+        setSelectedItem(prevItem);
+        setFocusedId(prevItem.id); // Sync grid focus
+      }
     }
   };
 
