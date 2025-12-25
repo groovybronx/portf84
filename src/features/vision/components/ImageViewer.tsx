@@ -158,19 +158,15 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 				{/* Zoom & Pan Logic */}
 				<div 
 					className={`relative z-(--z-grid-item) w-full h-full flex items-center justify-center overflow-hidden ${
-						isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+						isZoomed ? "cursor-grab active:cursor-grabbing" : "cursor-zoom-in"
 					}`}
-					onMouseMove={(e) => {
-						if (!isZoomed) return;
-						const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-						const x = ((e.clientX - left) / width) * 100;
-						const y = ((e.clientY - top) / height) * 100;
-						setZoomOrigin(`${x}% ${y}%`);
-					}}
 					onClick={(e) => {
 						e.stopPropagation();
-						// Toggle Zoom
-						setIsZoomed(!isZoomed);
+						if (!isZoomed) {
+							setIsZoomed(true);
+						} else {
+							setIsZoomed(false); // Zoom out on click
+						}
 					}}
 				>
 					<motion.img
@@ -180,11 +176,17 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						alt={item.name}
 						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out`}
 						onLoad={handleImageLoad}
+						// Enable Drag only when zoomed
+						drag={isZoomed}
+						dragConstraints={{ left: -1000, right: 1000, top: -1000, bottom: 1000 }} // Loose constraints
+						dragElastic={0.2}
+						whileTap={isZoomed ? { cursor: "grabbing" } : {}}
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ 
 							opacity: 1, 
 							scale: isZoomed ? 2.5 : 1, // Zoom Factor 2.5x
-							transformOrigin: isZoomed ? zoomOrigin : "center center"
+							x: isZoomed ? undefined : 0, // Reset position on zoom out
+							y: isZoomed ? undefined : 0  // Reset position on zoom out
 						}}
 						transition={{ duration: 0.3 }}
 						style={
