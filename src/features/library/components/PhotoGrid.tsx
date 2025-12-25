@@ -76,7 +76,7 @@ const VirtualColumn = ({
 			scrollToIndex >= 0 &&
 			scrollToIndex < items.length
 		) {
-			rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
+			rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center", behavior: "smooth" });
 		}
 	}, [scrollToIndex, rowVirtualizer]);
 
