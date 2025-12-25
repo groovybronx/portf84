@@ -15,6 +15,7 @@ import {
 	Settings,
 	ChevronRight,
 	Pin,
+	Palette,
 } from "lucide-react";
 
 import {
