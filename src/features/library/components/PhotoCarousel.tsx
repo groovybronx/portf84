@@ -272,16 +272,55 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 				})}
 			</div>
 
-			{/* Progress indicator (Style Cinematic) */}
-			<div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1 z-20">
-				{items.slice(0, Math.min(items.length, 20)).map((_, idx) => (
-					<div
-						key={idx}
-						className={`h-1 rounded-full transition-all duration-300 ${
-							idx === currentIndex % 20 ? "w-8 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]" : "w-1 bg-white/30"
-						}`}
+			{/* Scrubber Interactif */}
+			<div 
+				className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 group"
+				onMouseDown={(e) => {
+					e.stopPropagation(); // Empêcher le conflit avec le drag de l'image
+					const rect = e.currentTarget.getBoundingClientRect();
+					const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+					const percentage = x / rect.width;
+					const newIndex = Math.floor(percentage * items.length);
+					setCurrentIndex(Math.min(items.length - 1, Math.max(0, newIndex)));
+
+					// Démarrer le drag global pour ce scrubber
+					const handleMouseMove = (moveEvent: MouseEvent) => {
+						const moveX = Math.max(0, Math.min(moveEvent.clientX - rect.left, rect.width));
+						const movePercentage = moveX / rect.width;
+						const moveIndex = Math.floor(movePercentage * items.length);
+						setCurrentIndex(Math.min(items.length - 1, Math.max(0, moveIndex)));
+					};
+
+					const handleMouseUp = () => {
+						window.removeEventListener("mousemove", handleMouseMove);
+						window.removeEventListener("mouseup", handleMouseUp);
+					};
+
+					window.addEventListener("mousemove", handleMouseMove);
+					window.addEventListener("mouseup", handleMouseUp);
+				}}
+			>
+				{/* Zone sensible élargie pour faciliter l'interaction */}
+				<div className="w-64 h-8 flex items-center justify-center cursor-pointer">
+					{/* Track background */}
+					<div className="w-full h-1 bg-white/20 rounded-full overflow-hidden relative group-hover:h-1.5 transition-all duration-300">
+						{/* Progress Bar */}
+						<div 
+							className="absolute top-0 left-0 h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-75 ease-linear"
+							style={{ 
+								width: `${((currentIndex + 1) / items.length) * 100}%` 
+							}}
+						/>
+					</div>
+					
+					{/* Thumb (visible uniquement au hover ou drag) */}
+					<div 
+						className="absolute h-3 w-3 bg-white rounded-full shadow-lg transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+						style={{ 
+							left: `${((currentIndex + 0.5) / items.length) * 100}%` 
+						}}
 					/>
-				))}
+				</div>
 			</div>
 		</div>
 	);
