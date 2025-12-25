@@ -1,4 +1,4 @@
-Dernière mise à jour : 25/12/2024 à 01:37
+Dernière mise à jour : 25/12/2024 à 01:46
 
 # Composants UI & UX
 
@@ -145,7 +145,8 @@ useEffect(() => {
     scrollToIndex >= 0 &&
     scrollToIndex < items.length
   ) {
-    rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center" });
+    // behavior: 'smooth' pour une transition fluide
+    rowVirtualizer.scrollToIndex(scrollToIndex, { align: "center", behavior: "smooth" });
   }
 }, [scrollToIndex, rowVirtualizer]);
 ```

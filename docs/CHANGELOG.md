@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 01:36
+Dernière mise à jour : 25/12/2024 à 01:46
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,18 +8,33 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Feature - Interactive Scrubber
+**Session en cours** : Finalisation UX - Navigation & Fluidité
 
 **Progression** :
 - ✅ Feature Smart Folders (Couleurs) : 100% complétée
 - ✅ Refonte Sidebar (Accordéons) : 100% complétée
-- ✅ PhotoCarousel Scrubber (Interactif) : 100% complétée
+- ✅ PhotoCarousel Scrubber : 100% complétée
+- ✅ Navigation Sync (Grille <-> Plein écran) : 100% complétée
+- ✅ Smooth Scroll Grille : 100% complétée
 
 **Prochaines étapes** :
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 01:36
+**Dernière modification** : 25/12/2024 à 01:46
+
+## [25/12/2024 - 01:46] - UX/UI : Navigation Sync & Smooth Scroll
+
+### Type : Improvement / UX
+
+**Composants** : `src/App.tsx`, `src/features/library/components/PhotoGrid.tsx`
+
+**Changements** :
+
+- **Synchronisation Focus** : Le défilement des images en mode plein écran (Space) met désormais à jour la position de la sélection dans la grille en arrière-plan. Au retour sur la grille, la vue est centrée sur la dernière image consultée.
+- **Smooth Scroll** : Activation du défilement fluide (`behavior: 'smooth'`) sur la grille lors de la navigation au clavier. Élimine les sauts brusques.
+
+**Impact** : Continuité visuelle parfaite entre les modes et sensation de navigation plus naturelle.
 
 ## [25/12/2024 - 01:36] - Feature : Scrubber Interactif
 
