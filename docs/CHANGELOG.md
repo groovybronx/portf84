@@ -8,41 +8,46 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Refactorisation Phase 4 - Optimisation DB Tags
+**Session en cours** : Finalisation UI/UX - Smart Folders & Sidebar
 
 **Progression** :
 - ✅ Phase 1 Quick Wins : 100% complétée
 - ✅ Phase 2 Découpage Services : 100% complétée
 - ✅ Phase 3 Refactorisation UI : 100% complétée
 - ✅ Phase 4 Optimisation DB : 100% complétée
-  - Tables `tags` et `item_tags` normalisées
-  - Module `tags.ts` (12 fonctions CRUD)
+- ✅ Feature Smart Folders (Couleurs) : 100% complétée
+- ✅ Refonte Sidebar (Accordéons) : 100% complétée
 
 **Prochaines étapes** :
-- [ ] Commit Git et merge vers main
+- [ ] Commit final documentation
+- [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 00:25
+**Dernière modification** : 25/12/2024 à 01:20
 
-## [25/12/2024 - 00:25] - Phase 4 Refactorisation : Normalisation Tags DB
+## [25/12/2024 - 01:20] - UI/UX : Smart Folders & Refonte Sidebar
 
-### Type : Refactorisation / Performance
+### Type : Feature / UI
 
-**Composants** : `src/services/storage/`
+**Composants** : `src/features/collections/components/FolderDrawer.tsx`, `src/App.tsx`, `src/shared/components/ContextMenu.tsx`
 
 **Changements** :
 
-- Ajout tables SQLite normalisées :
-  - `tags` : id, name, normalizedName, type, confidence, createdAt
-  - `item_tags` : itemId, tagId, addedAt (relation N-N)
-- Ajout 5 index de performance sur les tables tags
-- Création `tags.ts` avec 12 fonctions CRUD :
-  - `getOrCreateTag`, `addTagToItem`, `removeTagFromItem`
-  - `getTagsForItem`, `getItemsWithTag`, `getAllTags`
-  - `searchTags`, `deleteTag`, `clearTagsForItem`
-  - `addTagsToItem`, `getTagsGroupedForItem`
-- Nouveaux types : `DBTag`, `ParsedTag`, `TagType`, `DBItemTag`
+- **Smart Color Folders** :
+  - Nouvelle section "Filtres Couleur" dans la barre latérale.
+  - Filtrage instantané par couleur (plus besoin de créer des dossiers).
+  - Suppression de l'option obsolète "Grouper par couleur" dans le menu contextuel.
+- **Refonte Sidebar** :
+  - Structure en accordéons pour "Dossiers de Travail", "Collections" et "Filtres Couleur".
+  - Sections fermées par défaut au démarrage pour plus de clarté.
+  - Code couleur distinctif et **persistant** pour chaque section (Bleu/Violet/Ambre).
+  - Réorganisation : Dossiers de Travail > Collections > Filtres Couleur.
 
-**Impact** : Préparation pour recherche rapide par tag et consolidation des tags.
+**Impact** : Navigation plus fluide, interface plus propre et intuitive.
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md`
+- `docs/COMPONENTS.md`
+- `docs/INTERACTIONS.md`
 
 ## [25/12/2024 - 00:20] - Phase 3 Refactorisation : Décomposition PhotoCard
 

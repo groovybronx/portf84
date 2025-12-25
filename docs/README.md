@@ -1,6 +1,6 @@
 # Lumina Portfolio - Documentation Technique
 
-Dernière mise à jour : 24/12/2024 à 17:52
+Last update : 25/12/2024 à 01:23
 
 Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
 
@@ -29,6 +29,7 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
    - Déploiement & CI/CD
 2. [Composants UI & UX](COMPONENTS.md)
    - Système de vues (Grid Virtuelle, Carousel, List)
+   - Navigation Sidebar (Accordéons & Smart Folders)
    - PhotoCard (React.memo + Lazy Loading)
    - Dialog natif Tauri
    - Moteur d'animation

@@ -1,6 +1,6 @@
 # Interactions & Raccourcis
 
-Dernière mise à jour : 24/12/2024 à 19:10
+Dernière mise à jour : 25/12/2024 à 01:22
 
 Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souris qu'au clavier ("Power User Friendly").
 
@@ -138,6 +138,19 @@ Filtrage rapide via les pastilles colorées dans la TopBar.
 ## Sidebar & Navigation Library
 
 La barre latérale s'active via l'icône `Layers` dans la TopBar ou en glissant depuis le bord gauche.
+
+### Structure & Accordéons
+
+La navigation est organisée en 3 sections pliables (Accordéons) :
+
+| Section | Couleur | Description |
+| :--- | :--- | :--- |
+| **Dossiers de Travail** | 🔵 **Bleu** | Vos dossiers sources physiques (Hard Drive). |
+| **Collections** | 🟣 **Violet** | Vos albums virtuels créés dans Lumina. |
+| **Filtres Couleur** | 🟠 **Ambre** | **Smart Folders** : Cliquez pour voir toutes les images d'une couleur. |
+
+> [!TIP]
+> Les sections sont fermées par défaut au démarrage pour une vue épurée. Cliquez sur les en-têtes colorés pour les déplier.
 
 ### Épinglage (Pinning)
 

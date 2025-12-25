@@ -1,4 +1,4 @@
-Dernière mise à jour : 25/12/2024 à 00:20
+Dernière mise à jour : 25/12/2024 à 01:21
 
 # Composants UI & UX
 
@@ -446,7 +446,25 @@ const handleContextMove = (item: PortfolioItem) => {
 
 ---
 
-## 7. TagManager & Autosuggestion
+## 7. FolderDrawer (Barre Latérale)
+
+Composant de navigation principal permettant de gérer les dossiers de travail, les collections et les filtres.
+
+### Architecture
+
+- **Structure Accordéon** : Trois sections pliables (`Dossiers de Travail`, `Collections`, `Filtres Couleur`).
+- **État Persistant** : Les sections peuvent être ouvertes/fermées individuellement. Par défaut, elles sont fermées au démarrage.
+- **Smart Color Folders** : Section générée dynamiquement affichant toutes les images par couleur, sans dossier physique.
+
+### Sections
+
+1.  **Dossiers de Travail (Bleu)** : Dossiers sources physiques sur le disque.
+2.  **Collections (Violet)** : Dossiers virtuels crées manuellement dans l'app.
+3.  **Filtres Couleur (Ambre)** : Filtres intelligents. Cliquer sur "Rouge" affiche toutes les images taguées en rouge, où qu'elles soient.
+
+---
+
+## 8. TagManager & Autosuggestion
 
 Composant dédié à la gestion des tags manuels.
 
