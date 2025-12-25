@@ -21,7 +21,19 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 02:26
+**Dernière modification** : 25/12/2024 à 03:32
+
+## [25/12/2024 - 03:32] - Settings & Shortcuts Refactor
+
+### Type : Feature / Refactor
+
+**Composants** : `src/shared/components/SettingsModal.tsx`, `src/shared/hooks/useKeyboardShortcuts.ts`
+
+**Changements** :
+- **Refonte UI Settings** : Nouvelle architecture à onglets (General / Storage / Shortcuts) pour accueillir les nouvelles options.
+- **Raccourcis Configurables** : Nouvel onglet permettant de remapper toutes les touches principales (Navigation, Tags).
+- **Restart Button** : Bouton de redémarrage automatique intégré lors du changement de dossier de BDD.
+- **Backend Storage** : `useLocalShortcuts` gère désormais la persistance des préférences clavier.
 
 ## [25/12/2024 - 02:26] - Revert : Mode Loupe Désactivé
 

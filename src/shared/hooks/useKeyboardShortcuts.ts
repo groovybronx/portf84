@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { PortfolioItem, COLOR_PALETTE } from "../types";
+import { useLocalShortcuts } from "./useLocalShortcuts";
 
 export interface UseKeyboardShortcutsProps {
   processedItems: PortfolioItem[];
@@ -25,6 +26,8 @@ export const useKeyboardShortcuts = ({
   applyColorTagToSelection,
   gridColumns,
 }: UseKeyboardShortcutsProps) => {
+  const { shortcuts } = useLocalShortcuts();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore keyboard shortcuts when typing in inputs
@@ -34,24 +37,21 @@ export const useKeyboardShortcuts = ({
       )
         return;
 
-      // 1. Navigation (Arrows) & Selection (Space/Enter)
-      if (
-        [
-          "ArrowUp",
-          "ArrowDown",
-          "ArrowLeft",
-          "ArrowRight",
-          " ",
-          "Enter",
-        ].includes(e.key)
-      ) {
-        e.preventDefault(); // Prevent scroll (Space/Arrows)
+      // 1. Navigation & Opening
+      const isNavUp = shortcuts.NAV_UP.includes(e.key);
+      const isNavDown = shortcuts.NAV_DOWN.includes(e.key);
+      const isNavLeft = shortcuts.NAV_LEFT.includes(e.key);
+      const isNavRight = shortcuts.NAV_RIGHT.includes(e.key);
+      const isOpen = shortcuts.OPEN_VIEW.includes(e.key);
+
+      if (isNavUp || isNavDown || isNavLeft || isNavRight || isOpen) {
+        e.preventDefault(); // Prevent default scroll
 
         const currentIndex = focusedId
           ? processedItems.findIndex((i) => i.id === focusedId)
           : -1;
 
-        if (e.key === " " || e.key === "Enter") {
+        if (isOpen) {
           // Open Fullscreen
           if (focusedId) {
             const item = processedItems.find((i) => i.id === focusedId);
@@ -70,22 +70,14 @@ export const useKeyboardShortcuts = ({
 
         let newIndex = currentIndex;
 
-        switch (e.key) {
-          case "ArrowRight":
-            newIndex = Math.min(processedItems.length - 1, currentIndex + 1);
-            break;
-          case "ArrowLeft":
-            newIndex = Math.max(0, currentIndex - 1);
-            break;
-          case "ArrowDown":
-            newIndex = Math.min(
-              processedItems.length - 1,
-              currentIndex + gridColumns
-            );
-            break;
-          case "ArrowUp":
-            newIndex = Math.max(0, currentIndex - gridColumns);
-            break;
+        if (isNavRight) {
+             newIndex = Math.min(processedItems.length - 1, currentIndex + 1);
+        } else if (isNavLeft) {
+             newIndex = Math.max(0, currentIndex - 1);
+        } else if (isNavDown) {
+             newIndex = Math.min(processedItems.length - 1, currentIndex + gridColumns);
+        } else if (isNavUp) {
+             newIndex = Math.max(0, currentIndex - gridColumns);
         }
 
         if (newIndex !== currentIndex) {
@@ -98,12 +90,14 @@ export const useKeyboardShortcuts = ({
       }
 
       // 2. Color Tagging Shortcuts
-      if (/^[1-6]$/.test(e.key)) {
-        const color = COLOR_PALETTE[e.key];
-        if (color) applyColorTagToSelection(color);
-      } else if (e.key === "0") {
-        applyColorTagToSelection(undefined);
-      }
+      if (shortcuts.TAG_RED.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["1"]);
+      else if (shortcuts.TAG_ORANGE.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["2"]);
+      else if (shortcuts.TAG_YELLOW.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["3"]);
+      else if (shortcuts.TAG_GREEN.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["4"]);
+      else if (shortcuts.TAG_BLUE.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["5"]);
+      else if (shortcuts.TAG_PURPLE.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["6"]);
+      else if (shortcuts.TAG_REMOVE.includes(e.key)) applyColorTagToSelection(undefined);
+
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -115,5 +109,6 @@ export const useKeyboardShortcuts = ({
     setFocusedId,
     setSelectedItem,
     applyColorTagToSelection,
+    shortcuts, // Dependency on shortcuts configuration
   ]);
 };
