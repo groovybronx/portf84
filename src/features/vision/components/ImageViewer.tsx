@@ -179,15 +179,18 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						layoutId={isZoomed ? undefined : `card-${item.id}`}
 						src={item.url}
 						alt={item.name}
-						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out`}
+						// IMPORTANT: Prevent native drag to allow Framer Motion drag to work
+						draggable={false}
+						onDragStart={(e) => e.preventDefault()}
+						
+						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out select-none`}
 						onLoad={handleImageLoad}
 						
 						// Enable Drag only when zoomed
 						drag={isZoomed}
-						// Constraints: huge area to allow free movement, or use ref
 						dragConstraints={{ left: -2000, right: 2000, top: -2000, bottom: 2000 }}
-						dragElastic={0.1}
-						dragMomentum={false} // Stop immediately on release for 'Grabbing' feel
+						dragElastic={0.05}     // Reduce elasticity for more stability
+						dragMomentum={false}   // No momentum for precise control
 						
 						// Handle Click to Unzoom on the image itself
 						onTap={() => {
@@ -197,17 +200,18 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ 
 							opacity: 1, 
-							scale: isZoomed ? 2.5 : 1, // Zoom Factor 2.5x
-							x: isZoomed ? 0 : 0, // Reset position? No, '0' might lock it. undefined lets drag handle it.
-							// ACTUALLY: When dragging, x/y are controlled by the gesture.
-							// When resetting (unzoom), we want to force 0.
+							scale: isZoomed ? 2.5 : 1,
+							// When zoomed, we leave x/y to the drag gesture (undefined). 
+							// When unzoomed, we force 0 to re-center.
+							x: isZoomed ? undefined : 0,
+							y: isZoomed ? undefined : 0
 						}}
-						// We need to pass x: 0 ONLY when !isZoomed to reset.
-						// When isZoomed, we shouldn't animate x/y randomly, let drag handle it.
 						
+						// Use styles to strictly enforce 0 when not zoomed
 						style={{
 							x: isZoomed ? undefined : 0,
 							y: isZoomed ? undefined : 0,
+							cursor: isZoomed ? "grab" : "zoom-in",
 							...(showColorTags && item.colorTag && !isZoomed
 								? { borderBottom: `4px solid ${item.colorTag}` }
 								: {})
