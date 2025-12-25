@@ -21,11 +21,10 @@ interface ContextMenuProps {
 	onClose: () => void;
 	onAnalyze: (item: PortfolioItem) => void;
 	onDelete: (id: string) => void;
-	onColorTag: (item: PortfolioItem, color: string | undefined) => void;
 	onAddTags: (item: PortfolioItem) => void;
 	onOpen: (item: PortfolioItem) => void;
 	onMove: (item: PortfolioItem) => void;
-	onGroupByColor?: (item: PortfolioItem) => void;
+	onColorTag: (item: PortfolioItem, color: string | undefined) => void;
 }
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -35,11 +34,10 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 	onClose,
 	onAnalyze,
 	onDelete,
-	onColorTag,
 	onAddTags,
 	onOpen,
 	onMove,
-	onGroupByColor,
+	onColorTag,
 }) => {
 	const menuRef = useRef<HTMLDivElement>(null);
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);

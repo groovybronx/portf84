@@ -21,8 +21,10 @@ import {
 	Folder as FolderType,
 	Collection,
 	SourceFolder,
+	COLOR_PALETTE,
 } from "../../../shared/types";
 import { Button } from "../../../shared/components/ui";
+import { getColorName } from "../../../services/storage/folders";
 
 interface FolderDrawerProps {
 	isOpen: boolean;
@@ -33,13 +35,16 @@ interface FolderDrawerProps {
 	onImportFolder: () => void;
 	onCreateFolder: () => void;
 	onDeleteFolder: (id: string) => void;
-	// NEW: Collection management
+	// Collection management
 	activeCollection: Collection | null;
 	sourceFolders: SourceFolder[];
 	onManageCollections: () => void;
 	onRemoveSourceFolder?: (path: string) => void;
 	isPinned?: boolean;
 	onTogglePin?: () => void;
+	// Color filter
+	activeColorFilter?: string | null;
+	onColorFilterChange?: (color: string | null) => void;
 }
 
 export const FolderDrawer: React.FC<FolderDrawerProps> = ({
@@ -57,6 +62,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 	onRemoveSourceFolder,
 	isPinned = false,
 	onTogglePin,
+	activeColorFilter,
+	onColorFilterChange,
 }) => {
 	const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
 
@@ -140,7 +147,10 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						<div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
 							{/* All Photos Option */}
 							<button
-								onClick={() => onSelectFolder("all")}
+								onClick={() => {
+									onSelectFolder("all");
+									onColorFilterChange?.(null);
+								}}
 								className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group border ${
 									activeFolderId.has("all")
 										? "bg-blue-600/10 border-blue-500/50 text-white shadow-lg shadow-blue-900/10"
@@ -201,13 +211,17 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 															? "bg-glass-bg-active text-white border border-glass-border"
 															: "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
 													}`}
-													onClick={() => onSelectFolder(folder.id)}
+													onClick={() => {
+														onSelectFolder(folder.id);
+														onColorFilterChange?.(null);
+													}}
 												>
 													<div
 														className="shrink-0"
 														onClick={(e) => {
 															e.stopPropagation();
 															onSelectFolder(folder.id);
+															onColorFilterChange?.(null);
 														}}
 													>
 														{isActive ? (
@@ -249,6 +263,85 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 							</div>
 
 							<div className="h-px bg-glass-border/10" />
+							
+							{/* COLOR TAGS SECTION (Smart Folders) */}
+							<div>
+								<div className="flex items-center justify-between mb-2 px-2">
+									<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+										<Palette size={12} />
+										<span>Filtres Couleur</span>
+									</p>
+								</div>
+								
+								<div className="space-y-1">
+									{Object.entries(COLOR_PALETTE).map(([key, hex]) => {
+										const colorName = getColorName(hex);
+										// Count items with this color (unique items across all folders)
+										const uniqueItems = new Set();
+										folders.forEach(f => f.items.filter(i => i.colorTag === hex).forEach(i => uniqueItems.add(i.id)));
+										const count = uniqueItems.size;
+										
+										const isActive = activeColorFilter === hex;
+										
+										return (
+											<button
+												key={hex}
+												onClick={() => {
+													if (onColorFilterChange) {
+														// If already active, toggle off (or just keep it? usually toggle off or switch)
+														// UX: behave like a folder, so clicking it selects it.
+														// Clicking again could deselect, but folder logic usually just stays selected.
+														// Let's allow toggle off to return to "All" view without filter
+														if (isActive) {
+															onColorFilterChange(null);
+														} else {
+															onSelectFolder("all"); // Switch to "All" scope
+															onColorFilterChange(hex);
+														}
+													}
+												}}
+												className={`w-full group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
+													isActive
+														? "bg-glass-bg-active text-white border border-glass-border"
+														: "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
+												}`}
+											>
+												<div className="shrink-0">
+													{isActive ? (
+														<CheckCircle2 size={16} style={{ color: hex }} />
+													) : (
+														<Circle size={16} className="text-gray-600 group-hover:text-gray-400" />
+													)}
+												</div>
+
+												<div 
+													className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light transition-all"
+													style={{ 
+														backgroundColor: `${hex}15`, // 10% opacity hex
+														borderColor: isActive ? hex : 'transparent'
+													}}
+												>
+													<div 
+														className="w-3 h-3 rounded-full" 
+														style={{ backgroundColor: hex }}
+													/>
+												</div>
+
+												<div className="flex-1 min-w-0 text-left">
+													<p className={`font-medium text-sm truncate ${isActive ? "text-white" : ""}`}>
+														{colorName}
+													</p>
+													<p className="text-xs opacity-60">
+														{count} items
+													</p>
+												</div>
+											</button>
+										);
+									})}
+								</div>
+							</div>
+
+							<div className="h-px bg-glass-border/10" />
 
 							{/* MANUAL COLLECTIONS SECTION */}
 							<div>
@@ -281,13 +374,17 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 															? "bg-glass-bg-active text-white border border-glass-border"
 															: "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
 													}`}
-													onClick={() => onSelectFolder(folder.id)}
+													onClick={() => {
+														onSelectFolder(folder.id);
+														onColorFilterChange?.(null);
+													}}
 												>
 													<div
 														className="shrink-0"
 														onClick={(e) => {
 															e.stopPropagation();
 															onSelectFolder(folder.id);
+															onColorFilterChange?.(null);
 														}}
 													>
 														{isActive ? (

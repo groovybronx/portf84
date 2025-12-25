@@ -198,53 +198,6 @@ const App: React.FC = () => {
     else setActiveColorFilter(color);
   };
 
-  // Group items by color into a new virtual collection (COPY, not move)
-  const handleGroupByColor = async (item: PortfolioItem) => {
-    if (!item.colorTag || !activeCollection) return;
-    
-    // Find all items with the same colorTag from all folders
-    const allItemsFlat = folders.flatMap(f => f.items);
-    const itemsWithSameColor = allItemsFlat.filter(i => i.colorTag === item.colorTag);
-    
-    if (itemsWithSameColor.length === 0) return;
-    
-    const colorName = storageService.getColorName(item.colorTag);
-    const folderName = `📁 ${colorName}`;
-    
-    // Create virtual folder with items directly (using storageService + manual state update)
-    const folderId = `virtual-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    
-    // Save to DB
-    await storageService.saveVirtualFolder({
-      id: folderId,
-      collectionId: activeCollection.id,
-      name: folderName,
-      createdAt: Date.now(),
-      isVirtual: true,
-    });
-    
-    // Create folder object with COPIES of the items
-    const newFolder = {
-      id: folderId,
-      name: folderName,
-      items: itemsWithSameColor.map(i => ({ ...i, virtualFolderId: folderId })),
-      createdAt: Date.now(),
-      isVirtual: true,
-      collectionId: activeCollection.id,
-    };
-    
-    // Add the new folder to state (items are COPIED, not removed from sources)
-    // Access the dispatch through folders context - we need to add folder via createVirtualFolder logic
-    // Since we can't access dispatch directly, we'll use the existing createVirtualFolder and then update items
-    
-    // Alternative: Use window reload to sync state (temporary fix)
-    // Better: Force refresh folders from DB
-    console.log(`[App] Created folder "${folderName}" with ${itemsWithSameColor.length} items`);
-    
-    // Trigger a refresh - reload from DB
-    window.location.reload();
-  };
-
   // Clear library and reload when collection changes
   useEffect(() => {
     const loadCollectionData = async () => {
@@ -423,6 +376,8 @@ const App: React.FC = () => {
               // When unpinning, hide everything for a clean exit
               setIsFolderDrawerOpen(false);
             }}
+            activeColorFilter={activeColorFilter}
+            onColorFilterChange={setActiveColorFilter}
           />
         </ErrorBoundary>
 
@@ -491,7 +446,6 @@ const App: React.FC = () => {
             onAddTags={handleContextAddTag}
             onOpen={setSelectedItem}
             onMove={handleContextMove}
-            onGroupByColor={handleGroupByColor}
           />
         )}
       </AnimatePresence>
