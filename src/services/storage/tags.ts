@@ -277,13 +277,13 @@ export const syncAllTagsFromMetadata = async (): Promise<number> => {
         for (const tagName of aiTags) {
             const tagId = await getOrCreateTag(tagName, "ai");
             // Check link existence to be safe or just try insert
-            try { await addTagToItem(row.id, tagId, 1.0); } catch {}
+            try { await addTagToItem(row.id, tagId); } catch {}
         }
 
         // Sync Manual Tags
         for (const tagName of manualTags) {
             const tagId = await getOrCreateTag(tagName, "manual");
-            try { await addTagToItem(row.id, tagId, 1.0); } catch {}
+            try { await addTagToItem(row.id, tagId); } catch {}
         }
         count++;
     }
