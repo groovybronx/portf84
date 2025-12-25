@@ -21,7 +21,20 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 01:52
+**Dernière modification** : 25/12/2024 à 02:26
+
+## [25/12/2024 - 02:26] - Revert : Mode Loupe Désactivé
+
+### Type : Revert / UX
+
+**Composants** : `src/features/vision/components/ImageViewer.tsx`
+
+**Raison** : Instabilité du Drag-to-Pan et conflits d'interaction persistants sur certaines configurations.
+
+**Action** :
+- Retrait complet de la logique de Zoom et Pan.
+- Retour au comportement stable standard (Fit to screen).
+- Fonctionnalité marquée comme "Reportée" pour réévaluation future.
 
 ## [25/12/2024 - 01:52] - Brand : Nouvelle Identité Visuelle
 

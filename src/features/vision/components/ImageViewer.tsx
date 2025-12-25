@@ -51,16 +51,10 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 			: null
 	);
 
-	const constraintsRef = React.useRef(null);
-	const [isZoomed, setIsZoomed] = useState(false);
-	const [zoomOrigin, setZoomOrigin] = useState("center center");
-
 	// Reset local state when the item changes (navigation)
 	useEffect(() => {
 		reset();
 		setShowMetadata(false);
-		setIsZoomed(false); // Reset Zoom on change
-		setZoomOrigin("center center");
 		setDimensions(
 			item.width && item.height
 				? { width: item.width, height: item.height }
@@ -156,82 +150,25 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					<ChevronRight size={32} />
 				</button>
 
-				{/* Zoom & Pan Logic */}
-				<div 
-					ref={constraintsRef}
-					className={`relative z-(--z-grid-item) w-full h-full flex items-center justify-center overflow-hidden ${
-						isZoomed ? "cursor-grab active:cursor-grabbing" : "cursor-zoom-in"
-					}`}
-					onClick={(e) => {
-						e.stopPropagation();
-						if (!isZoomed) {
-							setIsZoomed(true);
-						}
-						// Note: Zoom out handled by click on zoomed image or background (if needed)
-						// But here we rely on the container click. 
-						// To avoid conflict with Drag, we should only Toggle if NOT dragging.
-						// Framer motion 'drag' usually prevents 'click' propagation if moved.
-					}}
-				>
+				<div className="relative z-(--z-grid-item) w-full h-full flex items-center justify-center">
 					<motion.img
-						key={item.id}
-						// Disable layoutId when zoomed to give full control to Drag
-						layoutId={isZoomed ? undefined : `card-${item.id}`}
+						key={item.id} // Ensure framer motion detects the image change for animation
+						layoutId={`card-${item.id}`}
 						src={item.url}
 						alt={item.name}
-						// IMPORTANT: Prevent native drag to allow Framer Motion drag to work
-						draggable={false}
-						onDragStart={(e) => e.preventDefault()}
-						
-						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out select-none`}
+						className="w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm"
+						onClick={(e) => e.stopPropagation()}
 						onLoad={handleImageLoad}
-						
-						// Enable Drag ALWAYS to ensure listeners are ready, but constrain it when not zoomed
-						drag
-						dragConstraints={
-							isZoomed 
-							? { left: -2000, right: 2000, top: -2000, bottom: 2000 } 
-							: { top: 0, left: 0, right: 0, bottom: 0 }
-						}
-						dragElastic={isZoomed ? 0.05 : 0}
-						dragMomentum={false}
-						
-						// Handle Click to Zoom/Unzoom
-						onTap={() => {
-							setIsZoomed(!isZoomed);
-						}}
-
 						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ 
-							opacity: 1, 
-							scale: isZoomed ? 2.5 : 1,
-							x: isZoomed ? undefined : 0,
-							y: isZoomed ? undefined : 0
-						}}
-						
-						// Use styles to strictly enforce 0 when not zoomed
-						style={{
-							x: isZoomed ? undefined : 0,
-							y: isZoomed ? undefined : 0,
-							cursor: isZoomed ? "grab" : "zoom-in",
-							...(showColorTags && item.colorTag && !isZoomed
-								? { borderBottom: `4px solid ${item.colorTag}` }
-								: {})
-						}}
-
+						animate={{ opacity: 1, scale: 1 }}
 						transition={{ duration: 0.3 }}
+						style={
+							showColorTags && item.colorTag
+								? { borderBottom: `4px solid ${item.colorTag}` }
+								: {}
+						}
 					/>
-					
-					{/* Zoom Hint Overlay (only visible when not zoomed and hovered) */}
-					{!isZoomed && (
-						<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/nav:opacity-100 transition-opacity pointer-events-none">
-							<div className="bg-black/50 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transform translate-y-4 group-hover/nav:translate-y-0 transition-transform">
-								<Maximize2 size={16} /> Click to Zoom
-							</div>
-						</div>
-					)}
-
-					{showColorTags && item.colorTag && !isZoomed && (
+					{showColorTags && item.colorTag && (
 						<div
 							className="absolute top-4 left-4 w-4 h-4 rounded-full shadow-md border border-glass-border"
 							style={{ backgroundColor: item.colorTag }}
