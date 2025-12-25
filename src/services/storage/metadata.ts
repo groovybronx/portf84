@@ -64,6 +64,9 @@ export const saveMetadata = async (
         console.error(`[Storage] Failed to sync tags for ${relativePath}:`, err);
         // Be careful not to throw here, we don't want to break the main metadata save
     }
+	} catch (e) {
+		console.error(`[Storage] Failed to save metadata:`, e);
+	}
 };
 
 /**
