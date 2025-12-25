@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 01:46
+Dernière mise à jour : 25/12/2024 à 01:52
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,20 +8,32 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Finalisation UX - Navigation & Fluidité
+**Session en cours** : Branding & Finalisation
 
 **Progression** :
 - ✅ Feature Smart Folders (Couleurs) : 100% complétée
 - ✅ Refonte Sidebar (Accordéons) : 100% complétée
 - ✅ PhotoCarousel Scrubber : 100% complétée
-- ✅ Navigation Sync (Grille <-> Plein écran) : 100% complétée
-- ✅ Smooth Scroll Grille : 100% complétée
+- ✅ Navigation Sync & Smooth Scroll : 100% complétée
+- ✅ Nouvelle Icône Application : 100% complétée
 
 **Prochaines étapes** :
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 01:46
+**Dernière modification** : 25/12/2024 à 01:52
+
+## [25/12/2024 - 01:52] - Brand : Nouvelle Identité Visuelle
+
+### Type : Improvement / Branding
+
+**Composants** : `src-tauri/icons/`
+
+**Changements** :
+
+- Création et déploiement d'une **nouvelle icône d'application**.
+- Design : Prisme/Objectif style Glassmorphism, sur fond sombre aux accents violets/bleus/ambres.
+- Génération automatique de toutes les tailles (macOS .icns, Windows .ico, Linux .png) via `tauri icon`.
 
 ## [25/12/2024 - 01:46] - UX/UI : Navigation Sync & Smooth Scroll
 
