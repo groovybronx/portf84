@@ -150,10 +150,14 @@ function libraryReducer(
       // New folders list: Updated Virtual + Kept Physical + New Physical
       // Need to be careful not to lose virtual folders that weren't updated
       const virtualFolders = updatedFolders.filter((f) => f.isVirtual); // These are already updated above
+      
+      // Deduplicate: exact ID match check
+      const virtualFolderIds = new Set(virtualFolders.map(f => f.id));
+      const uniqueFoldersToAdd = foldersToAdd.filter(f => !virtualFolderIds.has(f.id));
 
       return {
         ...state,
-        folders: [...virtualFolders, ...keptPhysical, ...foldersToAdd],
+        folders: [...virtualFolders, ...keptPhysical, ...uniqueFoldersToAdd],
       };
     }
     case "UPDATE_FOLDER":
