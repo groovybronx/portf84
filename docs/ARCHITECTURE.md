@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 25/12/2024 à 01:24
+Dernière mise à jour : 25/12/2024 à 03:37
 
 ## Vue d'Ensemble
 
@@ -41,6 +41,7 @@ Cette structure garantit que la galerie et la sidebar possèdent des zones de d�
 | **Runtime**        | Tauri v2                          | Bridge natif, sécurité, bundle |
 | **Persistance**    | SQLite (`@tauri-apps/plugin-sql`) | Base de données locale         |
 | **Fichiers**       | `@tauri-apps/plugin-fs`           | Accès système de fichiers      |
+| **Système**        | `@tauri-apps/plugin-process`      | Redémarrage app (Relaunch)     |
 | **UI Native**      | `@tauri-apps/plugin-dialog`       | Sélecteur de dossiers natif    |
 | **Virtualisation** | `@tanstack/react-virtual` 3.13    | Rendu UI optimisé              |
 

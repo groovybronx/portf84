@@ -1,6 +1,6 @@
 # Interactions & Raccourcis
 
-Dernière mise à jour : 25/12/2024 à 01:22
+Dernière mise à jour : 25/12/2024 à 03:35
 
 Lumina Portfolio est conçue pour être utilisée aussi efficacement à la souris qu'au clavier ("Power User Friendly").
 
@@ -55,16 +55,22 @@ const handleMouseUp = () => {
 
 ### Mode Plein Écran (ImageViewer)
 
-| Action              | Résultat                    |
+### Mode Plein Écran (ImageViewer)
+
+> [!NOTE]
+> Les raccourcis ci-dessous sont les **valeurs par défaut**. Vous pouvez les personnaliser dans **Settings > Shortcuts**.
+
+| Action              | Touche par défaut           |
 | ------------------- | --------------------------- |
-| **Boutons ←/→**     | Image précédente / suivante |
-| **Clic hors image** | Fermer le visualiseur       |
-| **Echap**           | Fermer le visualiseur       |
+| **Précédent**       | `←` (Gauche)                |
+| **Suivant**         | `→` (Droite)                |
+| **Haut / Bas**      | `↑` / `↓` (Navigation grille)|
+| **Ouvrir / Fermer** | `Espace` ou `Entrée`        |
+| **Quitter**         | `Echap`                     |
 | **Roulette souris** | Navigation images (scroll)  |
 | **Scrubber Drag**   | Défilement rapide           |
-| **Scrubber Clic**   | Saut à la position          |
-| **Touches 1-6**     | Applique tag couleur        |
-| **Touche 0**        | Retire le tag couleur       |
+| **Tags Couleur**    | Touches `1` à `6`           |
+| **Effacer Tags**    | Touche `0`                  |
 
 ---
 

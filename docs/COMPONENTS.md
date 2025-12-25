@@ -1,4 +1,4 @@
-Dernière mise à jour : 25/12/2024 à 01:46
+Dernière mise à jour : 25/12/2024 à 03:36
 
 # Composants UI & UX
 
@@ -36,11 +36,12 @@ src/features/
 └── shared/
     ├── components/
     │   ├── ContextMenu.tsx     # Menu clic-droit
-    │   ├── SettingsModal.tsx   # Configuration API key
+    │   ├── SettingsModal.tsx   # Config (Tabs: General, Storage, Shortcuts)
     │   ├── ErrorBoundary.tsx   # Isolation erreurs
     │   └── ui/                 # UI Kit (Button, Modal, GlassCard)
     └── hooks/
-        ├── useKeyboardShortcuts.ts  # Raccourcis clavier globaux
+        ├── useKeyboardShortcuts.ts  # Gestionnaire événements clavier
+        ├── useLocalShortcuts.ts     # Store configuration (localStorage)
         ├── useModalState.ts         # Gestion état des modales
         ├── useItemActions.ts        # Actions sur les items
         ├── useBatchAI.ts            # Traitement AI par lot
