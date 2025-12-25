@@ -4,7 +4,7 @@ import { ParsedTag } from "../shared/types/database";
 
 // Simple Levenshtein distance implementation
 const levenshteinDistance = (a: string, b: string): number => {
-  const matrix = [];
+  const matrix: number[][] = [];
 
   for (let i = 0; i <= b.length; i++) {
     matrix[i] = [i];
@@ -67,6 +67,9 @@ const areTokensSimilar = (a: Set<string>, b: Set<string>): boolean => {
 
 export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
     const tags = await getAllTags();
+    console.log(`[TagAnalysis] Analyzing ${tags.length} tags for redundancy...`);
+    // console.log("Tags sample:", tags.slice(0, 5).map(t => t.name));
+
     const groups: TagGroup[] = [];
     const processedIds = new Set<string>();
 
@@ -79,6 +82,7 @@ export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
 
     for (let i = 0; i < simpleTags.length; i++) {
         const root = simpleTags[i];
+        if (!root) continue;
         if (processedIds.has(root.id)) continue;
 
         const group: TagGroup = {
@@ -88,6 +92,7 @@ export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
 
         for (let j = i + 1; j < simpleTags.length; j++) {
             const candidate = simpleTags[j];
+            if (!candidate) continue;
             if (processedIds.has(candidate.id)) continue;
 
             const dist = levenshteinDistance(root.simpleName, candidate.simpleName);

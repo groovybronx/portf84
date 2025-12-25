@@ -41,8 +41,6 @@ import {
 import {
 	saveMetadata,
 	getMetadataBatch,
-	hideImage,
-	unhideImage,
 } from "./metadata";
 import {
 	addDirectoryHandle,
@@ -100,8 +98,7 @@ export const storageService = {
 	// Metadata
 	saveMetadata,
 	getMetadataBatch,
-	hideImage,
-	unhideImage,
+
 
 	// Handles (Legacy)
 	addDirectoryHandle,
