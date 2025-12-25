@@ -118,7 +118,7 @@ export const getMetadataBatch = async (
 				keys.length
 			} metadata for collection ${collectionId || "all"}`
 		);
-	// 2. Fetch tags relationally for all loaded items
+	}
 	const loadedIds = results.map(r => r.id);
     const itemTagsMap = new Map<string, { manual: string[]; ai: string[]; detailed: any[] }>();
     
