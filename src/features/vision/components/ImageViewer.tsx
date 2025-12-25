@@ -51,6 +51,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 			: null
 	);
 
+	const constraintsRef = React.useRef(null);
 	const [isZoomed, setIsZoomed] = useState(false);
 	const [zoomOrigin, setZoomOrigin] = useState("center center");
 
@@ -157,6 +158,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
 				{/* Zoom & Pan Logic */}
 				<div 
+					ref={constraintsRef}
 					className={`relative z-(--z-grid-item) w-full h-full flex items-center justify-center overflow-hidden ${
 						isZoomed ? "cursor-grab active:cursor-grabbing" : "cursor-zoom-in"
 					}`}
@@ -164,36 +166,54 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						e.stopPropagation();
 						if (!isZoomed) {
 							setIsZoomed(true);
-						} else {
-							setIsZoomed(false); // Zoom out on click
 						}
+						// Note: Zoom out handled by click on zoomed image or background (if needed)
+						// But here we rely on the container click. 
+						// To avoid conflict with Drag, we should only Toggle if NOT dragging.
+						// Framer motion 'drag' usually prevents 'click' propagation if moved.
 					}}
 				>
 					<motion.img
 						key={item.id}
-						layoutId={`card-${item.id}`}
+						// Disable layoutId when zoomed to give full control to Drag
+						layoutId={isZoomed ? undefined : `card-${item.id}`}
 						src={item.url}
 						alt={item.name}
 						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out`}
 						onLoad={handleImageLoad}
+						
 						// Enable Drag only when zoomed
 						drag={isZoomed}
-						dragConstraints={{ left: -1000, right: 1000, top: -1000, bottom: 1000 }} // Loose constraints
-						dragElastic={0.2}
-						whileTap={isZoomed ? { cursor: "grabbing" } : {}}
+						// Constraints: huge area to allow free movement, or use ref
+						dragConstraints={{ left: -2000, right: 2000, top: -2000, bottom: 2000 }}
+						dragElastic={0.1}
+						dragMomentum={false} // Stop immediately on release for 'Grabbing' feel
+						
+						// Handle Click to Unzoom on the image itself
+						onTap={() => {
+							if (isZoomed) setIsZoomed(false);
+						}}
+
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ 
 							opacity: 1, 
 							scale: isZoomed ? 2.5 : 1, // Zoom Factor 2.5x
-							x: isZoomed ? undefined : 0, // Reset position on zoom out
-							y: isZoomed ? undefined : 0  // Reset position on zoom out
+							x: isZoomed ? 0 : 0, // Reset position? No, '0' might lock it. undefined lets drag handle it.
+							// ACTUALLY: When dragging, x/y are controlled by the gesture.
+							// When resetting (unzoom), we want to force 0.
 						}}
-						transition={{ duration: 0.3 }}
-						style={
-							showColorTags && item.colorTag && !isZoomed
+						// We need to pass x: 0 ONLY when !isZoomed to reset.
+						// When isZoomed, we shouldn't animate x/y randomly, let drag handle it.
+						
+						style={{
+							x: isZoomed ? undefined : 0,
+							y: isZoomed ? undefined : 0,
+							...(showColorTags && item.colorTag && !isZoomed
 								? { borderBottom: `4px solid ${item.colorTag}` }
-								: {}
-						}
+								: {})
+						}}
+
+						transition={{ duration: 0.3 }}
 					/>
 					
 					{/* Zoom Hint Overlay (only visible when not zoomed and hovered) */}
