@@ -2,12 +2,9 @@
  * Metadata Management Module
  * AI Tags, Colors, Folder Assignment operations
  */
+import { DBMetadata, ParsedMetadata, MetadataInput } from "../../shared/types/database";
 import { getDB } from "./db";
-import type {
-	DBMetadata,
-	ParsedMetadata,
-	MetadataInput,
-} from "../../shared/types/database";
+import { getOrCreateTag, addTagToItem, removeAllTagsFromItem } from "./tags";
 
 /**
  * Save or update metadata for an item
@@ -40,10 +37,33 @@ export const saveMetadata = async (
 				Date.now(),
 			]
 		);
-		console.log(`[Storage] Metadata saved.`);
-	} catch (e) {
-		console.error(`[Storage] Failed to save metadata:`, e);
-	}
+	console.log(`[Storage] Metadata saved for ${item.id || "unknown"}`);
+
+    // Sync tags to relational tables for Analysis/Fusion features
+    try {
+        // 1. Clear existing links for this item to avoid duplicates (safest approach on save)
+        await removeAllTagsFromItem(item.id!);
+
+        // 2. Sync AI Tags
+        if (item.aiTags && item.aiTags.length > 0) {
+            for (const tagName of item.aiTags) {
+                const tagId = await getOrCreateTag(tagName, "ai");
+                await addTagToItem(item.id!, tagId, 1.0); // Default confidence 1.0 for now
+            }
+        }
+
+        // 3. Sync Manual Tags
+        if (item.manualTags && item.manualTags.length > 0) {
+            for (const tagName of item.manualTags) {
+                const tagId = await getOrCreateTag(tagName, "manual");
+                await addTagToItem(item.id!, tagId, 1.0);
+            }
+        }
+        console.log(`[Storage] Tags synced to relational DB for ${item.id}`);
+    } catch (err) {
+        console.error(`[Storage] Failed to sync tags for ${item.id}:`, err);
+        // Be careful not to throw here, we don't want to break the main metadata save
+    }
 };
 
 /**

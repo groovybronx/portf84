@@ -122,6 +122,8 @@ export const getAllTags = async (type?: TagType): Promise<ParsedTag[]> => {
 		rows = await db.select<DBTag[]>("SELECT * FROM tags ORDER BY type, name");
 	}
 
+    console.log(`[Storage] getAllTags(${type || 'ALL'}) returned ${rows.length} rows`);
+
 	return rows.map((t) => ({
 		id: t.id,
 		name: t.name,
@@ -247,4 +249,45 @@ export const mergeTags = async (
 		console.error("Failed to merge tags:", error);
 		throw error;
 	}
+};
+
+// Migration Utility: Resync all tags from metadata JSON to Relational Tables
+// This fixes the issue where tags existed in metadata but not in the tags table
+export const syncAllTagsFromMetadata = async (): Promise<number> => {
+    const db = await getDB();
+    console.log("[Storage] Starting full tag resync...");
+    
+    // Get all metadata
+    const rows = await db.select<{ id: string, aiTags: string, manualTags: string }[]>(
+        "SELECT id, aiTags, manualTags FROM metadata"
+    );
+
+    let count = 0;
+
+    for (const row of rows) {
+        let aiTags: string[] = [];
+        let manualTags: string[] = [];
+
+        try { aiTags = JSON.parse(row.aiTags || "[]"); } catch {}
+        try { manualTags = JSON.parse(row.manualTags || "[]"); } catch {}
+
+        if (aiTags.length === 0 && manualTags.length === 0) continue;
+
+        // Sync AI Tags
+        for (const tagName of aiTags) {
+            const tagId = await getOrCreateTag(tagName, "ai");
+            // Check link existence to be safe or just try insert
+            try { await addTagToItem(row.id, tagId, 1.0); } catch {}
+        }
+
+        // Sync Manual Tags
+        for (const tagName of manualTags) {
+            const tagId = await getOrCreateTag(tagName, "manual");
+            try { await addTagToItem(row.id, tagId, 1.0); } catch {}
+        }
+        count++;
+    }
+
+    console.log(`[Storage] Resync complete. Processed ${count} items.`);
+    return count;
 };

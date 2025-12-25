@@ -98,8 +98,26 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                         <TagIcon className="w-8 h-8 text-green-400" />
                                     </div>
                                     <h3 className="text-lg font-medium text-white">Your tags are clean!</h3>
-                                    <p className="text-sm text-white/40 max-w-xs mx-auto">No similar tags were found. Great job maintaining your library.</p>
-                                    <button onClick={loadAnalysis} className="text-xs text-blue-400 hover:text-blue-300 underline mt-2">Check Again</button>
+                                    <p className="text-sm text-white/40 max-w-xs mx-auto">No similar tags were found.</p>
+                                    
+                                    <div className="pt-4 flex flex-col gap-2 items-center">
+                                        <button onClick={loadAnalysis} className="text-xs text-blue-400 hover:text-blue-300 underline">
+                                            Check Again
+                                        </button>
+                                        <button 
+                                            onClick={async () => {
+                                                if(confirm("Force resync database tags? This might take a moment.")) {
+                                                    setLoading(true);
+                                                    const { syncAllTagsFromMetadata } = await import('../../../services/storage/tags');
+                                                    await syncAllTagsFromMetadata();
+                                                    await loadAnalysis();
+                                                }
+                                            }}
+                                            className="text-[10px] text-white/30 hover:text-white/60 border border-white/10 px-2 py-1 rounded"
+                                        >
+                                            Force Database Resync (Fix 0 tags)
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
