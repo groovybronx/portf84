@@ -118,19 +118,79 @@ export const getMetadataBatch = async (
 				keys.length
 			} metadata for collection ${collectionId || "all"}`
 		);
-	}
+	// 2. Fetch tags relationally for all loaded items
+	const loadedIds = results.map(r => r.id);
+    const itemTagsMap = new Map<string, { manual: string[]; ai: string[]; detailed: any[] }>();
+    
+    if (loadedIds.length > 0) {
+        // Chunk the IDs to avoid SQLite limit arguments if necessary, though typical usage is safe-ish
+        // For safety, let's process 500 IDs at a time or just simplicity for now (assuming reasonable batch size)
+        
+        // We can't easily do "WHERE itemId IN (...)" for massive lists standardly without chunking.
+        // But for local app usage, let's try a single query first or loop if keys > 999.
+        // Actually, let's stick to a simpler approach: 
+        // If retrieving ALL (keys.length === 0), we can just select all item_tags.
+        // If retrieving specific keys, filter by them.
+        
+        let tagsQuery = `
+            SELECT it.itemId, t.name, t.type, t.confidence 
+            FROM item_tags it
+            JOIN tags t ON it.tagId = t.id
+        `;
+        
+        let tagsRows: any[] = [];
+        
+        if (keys.length === 0) {
+            // Fetch ALL tags for the collection items we just found
+             if (collectionId) {
+                 // optimization: we know 'results' are filtered, so we filter tags by the items we have
+                 // But passing thousands of IDs to IN clause is bad.
+                 // Better: JOIN metadata in the tag query itself?
+                 tagsQuery += ` JOIN metadata m ON it.itemId = m.id WHERE m.collectionId = ?`;
+                 tagsRows = await db.select(tagsQuery, [collectionId]);
+             } else {
+                 tagsRows = await db.select(tagsQuery);
+             }
+        } else {
+            // Specific keys. If small enough, use IN. If large, looping is safer but slower.
+            // Let's assume keys are reasonable (usually a folder's content).
+             const placeholders = loadedIds.map(() => '?').join(',');
+             tagsQuery += ` WHERE it.itemId IN (${placeholders})`;
+             tagsRows = await db.select(tagsQuery, loadedIds);
+        }
+
+        // Group tags by itemId
+        tagsRows.forEach(row => {
+            if (!itemTagsMap.has(row.itemId)) {
+                itemTagsMap.set(row.itemId, { manual: [], ai: [], detailed: [] });
+            }
+            const entry = itemTagsMap.get(row.itemId)!;
+            
+            if (row.type === 'manual') {
+                entry.manual.push(row.name);
+            } else if (row.type === 'ai') {
+                entry.ai.push(row.name);
+                if (row.confidence) {
+                    entry.detailed.push({ name: row.name, confidence: row.confidence });
+                }
+            }
+        });
+    }
 
 	results.forEach((meta) => {
+        // Prefer relational tags if available, fallback to JSON (for safety/transitions)
+        const relationalTags = itemTagsMap.get(meta.id);
+        
 		resultMap.set(meta.id, {
 			id: meta.id,
 			collectionId: meta.collectionId,
 			virtualFolderId: meta.virtualFolderId,
 			folderId: meta.virtualFolderId ?? undefined,
 			aiDescription: meta.aiDescription,
-			aiTags: JSON.parse(meta.aiTags || "[]"),
-			aiTagsDetailed: JSON.parse(meta.aiTagsDetailed || "[]"),
+			aiTags: relationalTags?.ai.length ? relationalTags.ai : JSON.parse(meta.aiTags || "[]"),
+			aiTagsDetailed: relationalTags?.detailed.length ? relationalTags.detailed : JSON.parse(meta.aiTagsDetailed || "[]"),
 			colorTag: meta.colorTag,
-			manualTags: JSON.parse(meta.manualTags || "[]"),
+			manualTags: relationalTags?.manual.length ? relationalTags.manual : JSON.parse(meta.manualTags || "[]"),
 			isHidden: meta.isHidden === 1,
 			lastModified: meta.lastModified,
 		});

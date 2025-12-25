@@ -229,6 +229,23 @@ const App: React.FC = () => {
 
   // ...
 
+  // Sync selectedItem with library updates (e.g. after tag merge)
+  useEffect(() => {
+    if (selectedItem) {
+      // Find the updated version of the selected item in the folders
+      const allItems = folders.flatMap(f => f.items);
+      const freshItem = allItems.find(i => i.id === selectedItem.id);
+      
+      // Update if reference changed (implies data update)
+      if (freshItem && freshItem !== selectedItem) {
+        console.log("[App] Syncing selectedItem with library update");
+        setSelectedItem(freshItem);
+      }
+    }
+  }, [folders, selectedItem]);
+
+  // ... (existing code)
+
   const handleDirectoryPicker = async () => {
     try {
       if (!activeCollection) {
@@ -523,9 +540,12 @@ const App: React.FC = () => {
       <TagManagerModal 
         isOpen={isTagManagerOpen}
         onClose={() => setIsTagManagerOpen(false)}
-        onTagsUpdated={() => {
-             console.log("Tags merged via Manager");
-             /* Force refresh context if needed */
+        onTagsUpdated={async () => {
+             console.log("[App] Tags merged, refreshing library...");
+             // Refresh all source folders to get updated metadata
+             for (const folder of sourceFolders) {
+                 await loadFromPath(folder.path);
+             }
         }}
       />
 
