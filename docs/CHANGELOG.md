@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 01:52
+Dernière mise à jour : 25/12/2024 à 04:30
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -21,7 +21,22 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 03:41
+**Dernière modification** : 25/12/2024 à 04:30
+
+## [25/12/2024 - 04:30] - Tag Fusion UI Sync & Library Fixes
+
+### Type : Bugfix
+
+**Composants** : `metadata.ts`, `LibraryContext.tsx`, `App.tsx`
+
+**Corrections** :
+- **Source de Vérité Tag** : `getMetadataBatch` lit désormais les tags depuis les tables relationnelles (`tags`, `item_tags`) pour refléter immédiatement les fusions.
+- **Auto-Refresh Library** : `TagManagerModal` déclenche un rechargement complet de la bibliothèque après une fusion.
+- **Sync Sélection** : `App.tsx` synchronise désormais l'item sélectionné (Full Screen) avec les mises à jour de la bibliothèque.
+- **Deduplication Dossiers** : Correction d'un bug dans `LibraryContext` qui dupliquait les Shadow Folders lors d'un `MERGE_FOLDERS` (fix "Duplicate Keys").
+
+**Documentation mise à jour** :
+- `docs/ARCHITECTURE.md` : Clarification du flux de métadonnées.
 
 ## [25/12/2024 - 03:41] - Smart Tag Fusion
 

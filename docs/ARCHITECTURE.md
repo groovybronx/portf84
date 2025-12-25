@@ -145,6 +145,16 @@ Pour chaque dossier source ajouté, un **shadow folder** est automatiquement cr�
 - N'affecte jamais les fichiers sources originaux
 - Est visible dans la section "Dossiers de Travail" du FolderDrawer
 
+### 4. Flux de Données & Source de Vérité
+
+#### Sync Tags (Relational vs JSON)
+
+Pour les analyses avancées (Fusion, Recherche), l'application utilise une double stratégie :
+
+1.  **JSON (`metadata` table)** : Stockage legacy pour compatibilité directe et props rapides.
+2.  **Relationnel (`tags`, `item_tags`)** : **Source de vérité absolue** pour les opérations d'écriture (Fusion, Ajout/Suppression).
+    > Le service `metadata.ts` force la lecture depuis les tables relationnelles (`getMetadataBatch`) pour garantir que l'UI reflète immédiatement l'état fusionné en base.
+
 ```
 Dossier Source (/Photos/Vacances) [lecture seule]
     ↓ auto-création
