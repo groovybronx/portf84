@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Save, Key, AlertTriangle, ExternalLink } from "lucide-react";
+import { X, Save, Key, AlertTriangle, ExternalLink, Folder } from "lucide-react";
+import { open } from "@tauri-apps/plugin-dialog";
 
 interface SettingsModalProps {
 	isOpen: boolean;
@@ -16,27 +17,53 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	onToggleCinematicCarousel,
 }) => {
 	const [apiKey, setApiKey] = useState("");
+	const [dbPath, setDbPath] = useState("");
 	const [isSaved, setIsSaved] = useState(false);
 
 	useEffect(() => {
 		if (isOpen) {
 			const storedKey = localStorage.getItem("gemini_api_key");
+			const storedPath = localStorage.getItem("lumina_db_path");
 			if (storedKey) setApiKey(storedKey);
+			if (storedPath) setDbPath(storedPath);
+			else setDbPath(""); // Reset if null
 			setIsSaved(false);
 		}
 	}, [isOpen]);
 
+	const handleSelectDbPath = async () => {
+		try {
+			const selected = await open({
+				directory: true,
+				multiple: false,
+				title: "Select Database Location",
+			});
+			if (selected && typeof selected === "string") {
+				setDbPath(selected);
+			}
+		} catch (err) {
+			console.error("Failed to pick directory:", err);
+		}
+	};
+
 	const handleSave = () => {
 		if (apiKey.trim()) {
 			localStorage.setItem("gemini_api_key", apiKey.trim());
-			setIsSaved(true);
-			setTimeout(() => {
-				setIsSaved(false);
-				onClose();
-			}, 800);
 		} else {
 			localStorage.removeItem("gemini_api_key");
 		}
+
+		if (dbPath) {
+			localStorage.setItem("lumina_db_path", dbPath);
+		} else {
+			localStorage.removeItem("lumina_db_path");
+		}
+
+		setIsSaved(true);
+		setTimeout(() => {
+			setIsSaved(false);
+			onClose();
+		}, 800);
 	};
 
 	const handleClear = () => {
@@ -112,6 +139,43 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										Get a free key here <ExternalLink size={10} />
 									</a>
 								</div>
+							</div>
+
+							<div className="space-y-2 pt-4 border-t border-white/10">
+								<label className="text-sm font-medium text-white/70">
+									Database Storage Location
+								</label>
+								<div className="flex gap-2">
+									<input
+										type="text"
+										readOnly
+										value={dbPath || "Default System Folder"}
+										className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white/50 text-xs font-mono truncate cursor-not-allowed"
+									/>
+									<button
+										onClick={handleSelectDbPath}
+										className="px-4 py-2 bg-glass-bg hover:bg-glass-bg-active border border-white/10 rounded-lg text-white text-sm transition-colors whitespace-nowrap"
+									>
+										Change...
+									</button>
+								</div>
+								{dbPath && (
+									<div className="flex justify-between items-center">
+										<p className="text-xs text-amber-400 flex items-center gap-1">
+											<AlertTriangle size={12} /> Restart required to apply changes
+										</p>
+										<button 
+											onClick={() => setDbPath("")}
+											className="text-xs text-red-400 hover:text-red-300 underline"
+										>
+											Reset to Default
+										</button>
+									</div>
+								)}
+								<p className="text-xs text-white/40 leading-relaxed">
+									Choose where to store your library database (e.g., External Drive). 
+									<br/><strong>Note:</strong> Changing location creates a new empty database.
+								</p>
 							</div>
 
 							{/* Experimental Features */}

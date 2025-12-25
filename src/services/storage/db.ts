@@ -4,9 +4,27 @@
  */
 import Database from "@tauri-apps/plugin-sql";
 
-const DB_PATH = "sqlite:lumina.db";
+// Default path is relative to AppData usually
+const DEFAULT_DB_NAME = "lumina.db";
+
 let dbInstance: Database | null = null;
 let dbInitPromise: Promise<Database> | null = null;
+
+const getConnectionString = () => {
+	const customPath = localStorage.getItem("lumina_db_path");
+	if (customPath) {
+		// Custom absolute path requires specific handling or just passing the path depending on OS/Plugin
+		// For sql plugin, usually `sqlite:/path/to/db` works for absolute paths on some platforms
+		// But `sqlite:filename` is relative to AppData.
+		// Let's try explicit path. Important: Windows paths might need handling.
+		console.log("[Storage] Using custom DB path:", customPath);
+		// Note: The plugin-sql load function expects a connection string.
+		// If it's a file path, we prefix with sqlite:
+		return `sqlite:${customPath}/${DEFAULT_DB_NAME}`;
+	}
+	// Default behavior (relative to AppData)
+	return `sqlite:${DEFAULT_DB_NAME}`;
+};
 
 /**
  * Get or initialize the database connection
@@ -26,9 +44,11 @@ export const getDB = async (): Promise<Database> => {
 	}
 
 	// Start new initialization
-	console.log("[Storage] Initializing NEW SQLite database instance...");
+	const connectionString = getConnectionString();
+	console.log(`[Storage] Initializing NEW SQLite database instance at ${connectionString}...`);
+	
 	dbInitPromise = (async () => {
-		const db = await Database.load(DB_PATH);
+		const db = await Database.load(connectionString);
 
 		// Initialize Schema - Collections Architecture
 		try {
