@@ -186,23 +186,25 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						className={`w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm transition-transform duration-200 ease-out select-none`}
 						onLoad={handleImageLoad}
 						
-						// Enable Drag only when zoomed
-						drag={isZoomed}
-						dragConstraints={{ left: -2000, right: 2000, top: -2000, bottom: 2000 }}
-						dragElastic={0.05}     // Reduce elasticity for more stability
-						dragMomentum={false}   // No momentum for precise control
+						// Enable Drag ALWAYS to ensure listeners are ready, but constrain it when not zoomed
+						drag
+						dragConstraints={
+							isZoomed 
+							? { left: -2000, right: 2000, top: -2000, bottom: 2000 } 
+							: { top: 0, left: 0, right: 0, bottom: 0 }
+						}
+						dragElastic={isZoomed ? 0.05 : 0}
+						dragMomentum={false}
 						
-						// Handle Click to Unzoom on the image itself
+						// Handle Click to Zoom/Unzoom
 						onTap={() => {
-							if (isZoomed) setIsZoomed(false);
+							setIsZoomed(!isZoomed);
 						}}
 
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ 
 							opacity: 1, 
 							scale: isZoomed ? 2.5 : 1,
-							// When zoomed, we leave x/y to the drag gesture (undefined). 
-							// When unzoomed, we force 0 to re-center.
 							x: isZoomed ? undefined : 0,
 							y: isZoomed ? undefined : 0
 						}}
