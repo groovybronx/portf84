@@ -74,6 +74,21 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 		(f) => f.isVirtual && !f.sourceFolderId
 	);
 
+	// State for accordion sections
+	const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
+		new Set(["work", "collections", "colors"])
+	);
+
+	const toggleSection = (section: string) => {
+		const newSections = new Set(expandedSections);
+		if (newSections.has(section)) {
+			newSections.delete(section);
+		} else {
+			newSections.add(section);
+		}
+		setExpandedSections(newSections);
+	};
+
 	const drawerBody = (
 		<div className="flex flex-col h-full">
 			{/* Header */}
@@ -103,104 +118,121 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 				</div>
 			</div>
 
-						{/* Active Collection Banner */}
-						{activeCollection && (
-							<div className="mb-4 p-3 bg-blue-600/10 border border-blue-500/30 rounded-xl">
-								<div className="flex items-center justify-between">
-									<div className="flex-1">
-										<p className="text-xs text-blue-400 font-medium uppercase tracking-wide">
-											Projet Actif
-										</p>
-										<p className="text-sm text-white font-semibold truncate">
-											{activeCollection.name}
-										</p>
-									</div>
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={onManageCollections}
-										className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
-										title="Gérer les Projets"
-									>
-										<Settings size={16} />
-									</Button>
-								</div>
-							</div>
-						)}
+			{/* Active Collection Banner */}
+			{activeCollection && (
+				<div className="mb-4 p-3 bg-blue-600/10 border border-blue-500/30 rounded-xl">
+					<div className="flex items-center justify-between">
+						<div className="flex-1">
+							<p className="text-xs text-blue-400 font-medium uppercase tracking-wide">
+								Projet Actif
+							</p>
+							<p className="text-sm text-white font-semibold truncate">
+								{activeCollection.name}
+							</p>
+						</div>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onManageCollections}
+							className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
+							title="Gérer les Projets"
+						>
+							<Settings size={16} />
+						</Button>
+					</div>
+				</div>
+			)}
 
-						{/* No Collection State */}
-						{!activeCollection && (
-							<div className="mb-4 p-4 bg-yellow-600/10 border border-yellow-500/30 rounded-xl text-center">
-								<p className="text-xs text-yellow-400 mb-2">
-									Aucun Projet actif
-								</p>
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={onManageCollections}
-									className="text-yellow-300 hover:text-yellow-200 hover:bg-yellow-500/10 underline decoration-yellow-300/30 underline-offset-2"
-								>
-									Créer ou sélectionner un Projet
-								</Button>
-							</div>
-						)}
+			{/* No Collection State */}
+			{!activeCollection && (
+				<div className="mb-4 p-4 bg-yellow-600/10 border border-yellow-500/30 rounded-xl text-center">
+					<p className="text-xs text-yellow-400 mb-2">
+						Aucun Projet actif
+					</p>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={onManageCollections}
+						className="text-yellow-300 hover:text-yellow-200 hover:bg-yellow-500/10 underline decoration-yellow-300/30 underline-offset-2"
+					>
+						Créer ou sélectionner un Projet
+					</Button>
+				</div>
+			)}
 
-						<div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-							{/* All Photos Option */}
-							<button
-								onClick={() => {
-									onSelectFolder("all");
-									onColorFilterChange?.(null);
-								}}
-								className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group border ${
-									activeFolderId.has("all")
-										? "bg-blue-600/10 border-blue-500/50 text-white shadow-lg shadow-blue-900/10"
-										: "hover:bg-glass-bg-accent border-transparent text-gray-400 hover:text-white"
-								}`}
+			<div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+				{/* All Photos Option */}
+				<button
+					onClick={() => {
+						onSelectFolder("all");
+						onColorFilterChange?.(null);
+					}}
+					className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group border ${
+						activeFolderId.has("all")
+							? "bg-blue-600/10 border-blue-500/50 text-white shadow-lg shadow-blue-900/10"
+							: "hover:bg-glass-bg-accent border-transparent text-gray-400 hover:text-white"
+					}`}
+				>
+					<div
+						className={`p-2 rounded-lg ${
+							activeFolderId.has("all")
+								? "bg-blue-600 text-white"
+								: "bg-glass-bg-accent group-hover:bg-glass-bg-active"
+						}`}
+					>
+						<Layers size={20} />
+					</div>
+					<div className="flex-1 text-left">
+						<p className="font-medium text-sm">Library</p>
+						<p className="text-xs opacity-60">{totalItems} items</p>
+					</div>
+					{activeFolderId.has("all") ? (
+						<CheckCircle2 size={18} className="text-blue-500" />
+					) : (
+						<Circle
+							size={18}
+							className="text-gray-600 group-hover:text-gray-400"
+						/>
+					)}
+				</button>
+
+				<div className="h-px bg-glass-border/10" />
+
+				{/* SHADOW FOLDERS SECTION */}
+				<div>
+					<button 
+						onClick={() => toggleSection("work")}
+						className="w-full flex items-center justify-between mb-2 px-2 hover:bg-white/5 rounded-lg py-1 transition-colors"
+					>
+						<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+							<HardDrive size={12} />
+							<span>Dossiers de Travail</span>
+						</p>
+						<div className="flex items-center gap-2">
+							<span className="text-[10px] text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded-full">
+								{shadowFolders.length}
+							</span>
+							<ChevronRight 
+								size={12} 
+								className={`text-gray-500 transition-transform duration-200 ${expandedSections.has("work") ? "rotate-90" : ""}`}
+							/>
+						</div>
+					</button>
+
+					<AnimatePresence>
+						{expandedSections.has("work") && (
+							<motion.div
+								initial={{ height: 0, opacity: 0 }}
+								animate={{ height: "auto", opacity: 1 }}
+								exit={{ height: 0, opacity: 0 }}
+								className="overflow-hidden"
 							>
-								<div
-									className={`p-2 rounded-lg ${
-										activeFolderId.has("all")
-											? "bg-blue-600 text-white"
-											: "bg-glass-bg-accent group-hover:bg-glass-bg-active"
-									}`}
-								>
-									<Layers size={20} />
-								</div>
-								<div className="flex-1 text-left">
-									<p className="font-medium text-sm">Library</p>
-									<p className="text-xs opacity-60">{totalItems} items</p>
-								</div>
-								{activeFolderId.has("all") ? (
-									<CheckCircle2 size={18} className="text-blue-500" />
-								) : (
-									<Circle
-										size={18}
-										className="text-gray-600 group-hover:text-gray-400"
-									/>
-								)}
-							</button>
-
-							<div className="h-px bg-glass-border/10" />
-
-							{/* SHADOW FOLDERS SECTION */}
-							<div>
-								<div className="flex items-center justify-between mb-2 px-2">
-									<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-										<HardDrive size={12} />
-										<span>Dossiers de Travail</span>
-									</p>
-									<span className="text-[10px] text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded-full">
-										{shadowFolders.length}
-									</span>
-								</div>
-
 								{shadowFolders.length === 0 ? (
 									<p className="text-xs text-gray-600 text-center py-3 italic">
 										Aucun dossier de travail
 									</p>
 								) : (
-									<div className="space-y-1">
+									<div className="space-y-1 pl-2">
 										{shadowFolders.map((folder) => {
 											const isActive = activeFolderId.has(folder.id);
 
@@ -261,109 +293,50 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 										})}
 									</div>
 								)}
-							</div>
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
 
-							<div className="h-px bg-glass-border/10" />
-							
-							{/* COLOR TAGS SECTION (Smart Folders) */}
-							<div>
-								<div className="flex items-center justify-between mb-2 px-2">
-									<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-										<Palette size={12} />
-										<span>Filtres Couleur</span>
-									</p>
-								</div>
-								
-								<div className="space-y-1">
-									{Object.entries(COLOR_PALETTE).map(([key, hex]) => {
-										const colorName = getColorName(hex);
-										// Count items with this color (unique items across all folders)
-										const uniqueItems = new Set();
-										folders.forEach(f => f.items.filter(i => i.colorTag === hex).forEach(i => uniqueItems.add(i.id)));
-										const count = uniqueItems.size;
-										
-										const isActive = activeColorFilter === hex;
-										
-										return (
-											<button
-												key={hex}
-												onClick={() => {
-													if (onColorFilterChange) {
-														// If already active, toggle off (or just keep it? usually toggle off or switch)
-														// UX: behave like a folder, so clicking it selects it.
-														// Clicking again could deselect, but folder logic usually just stays selected.
-														// Let's allow toggle off to return to "All" view without filter
-														if (isActive) {
-															onColorFilterChange(null);
-														} else {
-															onSelectFolder("all"); // Switch to "All" scope
-															onColorFilterChange(hex);
-														}
-													}
-												}}
-												className={`w-full group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
-													isActive
-														? "bg-glass-bg-active text-white border border-glass-border"
-														: "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
-												}`}
-											>
-												<div className="shrink-0">
-													{isActive ? (
-														<CheckCircle2 size={16} style={{ color: hex }} />
-													) : (
-														<Circle size={16} className="text-gray-600 group-hover:text-gray-400" />
-													)}
-												</div>
+				<div className="h-px bg-glass-border/10" />
+				
+				{/* MANUAL COLLECTIONS SECTION (moved up) */}
+				<div>
+					<button 
+						onClick={() => toggleSection("collections")}
+						className="w-full flex items-center justify-between mb-2 px-2 hover:bg-white/5 rounded-lg py-1 transition-colors"
+					>
+						<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+							<FolderHeart size={12} />
+							<span>Collections</span>
+						</p>
+						<div className="flex items-center gap-2">
+							{activeFolderId.size > 1 && !activeFolderId.has("all") && (
+								<span className="text-blue-400 text-[10px] bg-blue-500/10 px-2 py-0.5 rounded-full">
+									{activeFolderId.size} Sélectionnées
+								</span>
+							)}
+							<ChevronRight 
+								size={12} 
+								className={`text-gray-500 transition-transform duration-200 ${expandedSections.has("collections") ? "rotate-90" : ""}`}
+							/>
+						</div>
+					</button>
 
-												<div 
-													className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light transition-all"
-													style={{ 
-														backgroundColor: `${hex}15`, // 10% opacity hex
-														borderColor: isActive ? hex : 'transparent'
-													}}
-												>
-													<div 
-														className="w-3 h-3 rounded-full" 
-														style={{ backgroundColor: hex }}
-													/>
-												</div>
-
-												<div className="flex-1 min-w-0 text-left">
-													<p className={`font-medium text-sm truncate ${isActive ? "text-white" : ""}`}>
-														{colorName}
-													</p>
-													<p className="text-xs opacity-60">
-														{count} items
-													</p>
-												</div>
-											</button>
-										);
-									})}
-								</div>
-							</div>
-
-							<div className="h-px bg-glass-border/10" />
-
-							{/* MANUAL COLLECTIONS SECTION */}
-							<div>
-								<div className="flex items-center justify-between mb-2 px-2">
-									<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-										<FolderHeart size={12} />
-										<span>Collections</span>
-									</p>
-									{activeFolderId.size > 1 && !activeFolderId.has("all") && (
-										<span className="text-blue-400 text-[10px] bg-blue-500/10 px-2 py-0.5 rounded-full">
-											{activeFolderId.size} Sélectionnées
-										</span>
-									)}
-								</div>
-
+					<AnimatePresence>
+						{expandedSections.has("collections") && (
+							<motion.div
+								initial={{ height: 0, opacity: 0 }}
+								animate={{ height: "auto", opacity: 1 }}
+								exit={{ height: 0, opacity: 0 }}
+								className="overflow-hidden"
+							>
 								{manualCollections.length === 0 ? (
 									<p className="text-xs text-gray-600 text-center py-3 italic">
 										Aucune collection créée
 									</p>
 								) : (
-									<div className="space-y-1">
+									<div className="space-y-1 pl-2">
 										{manualCollections.map((folder) => {
 											const isActive = activeFolderId.has(folder.id);
 
@@ -442,8 +415,104 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 										})}
 									</div>
 								)}
-							</div>
-						</div>
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
+
+				<div className="h-px bg-glass-border/10" />
+
+				{/* COLOR TAGS SECTION (Smart Folders) - Moved to bottom */}
+				<div>
+					<button 
+						onClick={() => toggleSection("colors")}
+						className="w-full flex items-center justify-between mb-2 px-2 hover:bg-white/5 rounded-lg py-1 transition-colors"
+					>
+						<p className="text-xs uppercase text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+							<Palette size={12} />
+							<span>Filtres Couleur</span>
+						</p>
+						<ChevronRight 
+							size={12} 
+							className={`text-gray-500 transition-transform duration-200 ${expandedSections.has("colors") ? "rotate-90" : ""}`}
+						/>
+					</button>
+					
+					<AnimatePresence>
+						{expandedSections.has("colors") && (
+							<motion.div
+								initial={{ height: 0, opacity: 0 }}
+								animate={{ height: "auto", opacity: 1 }}
+								exit={{ height: 0, opacity: 0 }}
+								className="overflow-hidden"
+							>
+								<div className="space-y-1 pl-2">
+									{Object.entries(COLOR_PALETTE).map(([key, hex]) => {
+										const colorName = getColorName(hex);
+										// Count items with this color (unique items across all folders)
+										const uniqueItems = new Set();
+										folders.forEach(f => f.items.filter(i => i.colorTag === hex).forEach(i => uniqueItems.add(i.id)));
+										const count = uniqueItems.size;
+										
+										const isActive = activeColorFilter === hex;
+										
+										return (
+											<button
+												key={hex}
+												onClick={() => {
+													if (onColorFilterChange) {
+														if (isActive) {
+															onColorFilterChange(null);
+														} else {
+															onSelectFolder("all"); // Switch to "All" scope
+															onColorFilterChange(hex);
+														}
+													}
+												}}
+												className={`w-full group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
+													isActive
+														? "bg-glass-bg-active text-white border border-glass-border"
+														: "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
+												}`}
+											>
+												<div className="shrink-0">
+													{isActive ? (
+														<CheckCircle2 size={16} style={{ color: hex }} />
+													) : (
+														<Circle size={16} className="text-gray-600 group-hover:text-gray-400" />
+													)}
+												</div>
+
+												<div 
+													className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light transition-all"
+													style={{ 
+														backgroundColor: `${hex}15`, // 10% opacity hex
+														borderColor: isActive ? hex : 'transparent'
+													}}
+												>
+													<div 
+														className="w-3 h-3 rounded-full" 
+														style={{ backgroundColor: hex }}
+													/>
+												</div>
+
+												<div className="flex-1 min-w-0 text-left">
+													<p className={`font-medium text-sm truncate ${isActive ? "text-white" : ""}`}>
+														{colorName}
+													</p>
+													<p className="text-xs opacity-60">
+														{count} items
+													</p>
+												</div>
+											</button>
+										);
+									})}
+								</div>
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
+			</div>
 
 						{/* Action Buttons */}
 						<div className="mt-4 pt-4 border-t border-glass-border/10 space-y-2">
