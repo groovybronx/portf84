@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Save, Key, AlertTriangle, ExternalLink, Folder } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
+import { relaunch } from "@tauri-apps/plugin-process";
 
 interface SettingsModalProps {
 	isOpen: boolean;
@@ -160,16 +161,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 									</button>
 								</div>
 								{dbPath && (
-									<div className="flex justify-between items-center">
-										<p className="text-xs text-amber-400 flex items-center gap-1">
-											<AlertTriangle size={12} /> Restart required to apply changes
+									<div className="flex justify-between items-center bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+										<p className="text-xs text-amber-200 flex items-center gap-2">
+											<AlertTriangle size={14} /> Restart required
 										</p>
-										<button 
-											onClick={() => setDbPath("")}
-											className="text-xs text-red-400 hover:text-red-300 underline"
-										>
-											Reset to Default
-										</button>
+										<div className="flex gap-3 items-center">
+											<button 
+												onClick={() => setDbPath("")}
+												className="text-xs text-white/50 hover:text-white underline"
+											>
+												Reset
+											</button>
+											<button
+												onClick={async () => {
+													// Save immediately before restart
+													if (dbPath) localStorage.setItem("lumina_db_path", dbPath);
+													await relaunch();
+												}}
+												className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-lg transition-transform active:scale-95"
+											>
+												Restart Now
+											</button>
+										</div>
 									</div>
 								)}
 								<p className="text-xs text-white/40 leading-relaxed">

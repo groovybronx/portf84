@@ -18,6 +18,8 @@
 		"sql:allow-load",
 		"sql:allow-execute",
 		"sql:allow-select",
-		"os:default"
+		"os:default",
+		"process:default",
+		"process:allow-restart"
 	]
 }
