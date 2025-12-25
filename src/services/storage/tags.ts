@@ -74,6 +74,14 @@ export const removeTagFromItem = async (
 };
 
 /**
+ * Remove all tags from an item (used before full sync)
+ */
+export const removeAllTagsFromItem = async (itemId: string): Promise<void> => {
+	const db = await getDB();
+	await db.execute("DELETE FROM item_tags WHERE itemId = ?", [itemId]);
+};
+
+/**
  * Get all tags for an item
  */
 export const getTagsForItem = async (itemId: string): Promise<ParsedTag[]> => {

@@ -37,18 +37,18 @@ export const saveMetadata = async (
 				Date.now(),
 			]
 		);
-	console.log(`[Storage] Metadata saved for ${item.id || "unknown"}`);
+	console.log(`[Storage] Metadata saved for ${relativePath}`);
 
     // Sync tags to relational tables for Analysis/Fusion features
     try {
         // 1. Clear existing links for this item to avoid duplicates (safest approach on save)
-        await removeAllTagsFromItem(item.id!);
+        await removeAllTagsFromItem(relativePath);
 
         // 2. Sync AI Tags
         if (item.aiTags && item.aiTags.length > 0) {
             for (const tagName of item.aiTags) {
                 const tagId = await getOrCreateTag(tagName, "ai");
-                await addTagToItem(item.id!, tagId, 1.0); // Default confidence 1.0 for now
+                await addTagToItem(relativePath, tagId); // 2 args only
             }
         }
 
@@ -56,12 +56,12 @@ export const saveMetadata = async (
         if (item.manualTags && item.manualTags.length > 0) {
             for (const tagName of item.manualTags) {
                 const tagId = await getOrCreateTag(tagName, "manual");
-                await addTagToItem(item.id!, tagId, 1.0);
+                await addTagToItem(relativePath, tagId);
             }
         }
-        console.log(`[Storage] Tags synced to relational DB for ${item.id}`);
+        console.log(`[Storage] Tags synced to relational DB for ${relativePath}`);
     } catch (err) {
-        console.error(`[Storage] Failed to sync tags for ${item.id}:`, err);
+        console.error(`[Storage] Failed to sync tags for ${relativePath}:`, err);
         // Be careful not to throw here, we don't want to break the main metadata save
     }
 };
