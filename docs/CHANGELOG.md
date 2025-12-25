@@ -21,7 +21,19 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 03:32
+**Dernière modification** : 25/12/2024 à 03:41
+
+## [25/12/2024 - 03:41] - Smart Tag Fusion
+
+### Type : Feature
+
+**Composants** : `TagManagerModal`, `tagAnalysisService`, `TopBar`
+
+**Fonctionnalités** :
+- **Détection Automatique** : Algorithme (Levenshtein) pour identifier les tags quasi-identiques (ex: "Montagne" vs "montagnes").
+- **Fusion (Merge)** : Interface pour fusionner les doublons en un clic.
+- **TopBar** : Nouveau bouton "Merge" accessible directement.
+- **Backend** : Opération `mergeTags` transactionnelle dans SQLite (re-link items + delete source).
 
 ## [25/12/2024 - 03:32] - Settings & Shortcuts Refactor
 

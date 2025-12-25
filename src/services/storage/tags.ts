@@ -207,3 +207,44 @@ export const getTagsGroupedForItem = async (
 			.map((t) => ({ name: t.name, confidence: t.confidence ?? 0 })),
 	};
 };
+// ==================== TAG MERGING ====================
+
+/**
+ * Merge multiple tags into a single target tag
+ * 1. Links all items from source tags to target tag
+ * 2. Deletes source tags
+ * 3. Keeps target tag description/metadata
+ */
+export const mergeTags = async (
+	targetTagId: string,
+	sourceTagIds: string[]
+): Promise<void> => {
+	const db = await getDB();
+	
+	try {
+        // We simulate a transaction using sequential operations
+        // Since sqlite plugin doesn't support explicit BEGIN TRANSACTION in raw execute for all drivers
+        // But for this operation logic, we can proceed step by step.
+        
+		for (const sourceId of sourceTagIds) {
+			if (sourceId === targetTagId) continue;
+
+			// 1. Get all items associated with source tag
+			const itemsWithSource = await getItemsWithTag(sourceId);
+
+			// 2. For each item, add the target tag (ignore if already exists)
+			for (const itemId of itemsWithSource) {
+				await addTagToItem(itemId, targetTagId);
+			}
+
+			// 3. Delete the source tag (cascade will remove item_tags entries)
+			await deleteTag(sourceId);
+		}
+		
+		console.log(`[Storage] Merged ${sourceTagIds.length} tags into ${targetTagId}`);
+
+	} catch (error) {
+		console.error("Failed to merge tags:", error);
+		throw error;
+	}
+};
