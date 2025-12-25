@@ -38,6 +38,33 @@ export interface TagGroup {
     candidates: ParsedTag[];
 }
 
+// Stop words to ignore during advanced comparison
+const STOP_WORDS = new Set(["et", "and", "&", "le", "la", "les", "the", "a", "an", "de", "of", "in", "en"]);
+
+// Tokenize and clean string
+const tokenize = (str: string): Set<string> => {
+    return new Set(
+        str.toLowerCase()
+        .replace(/[^\w\s]/g, "") // remove punctuation
+        .split(/\s+/)
+        .filter(w => w.length > 0 && !STOP_WORDS.has(w))
+    );
+};
+
+// Check if two sets of tokens are essentially the same
+const areTokensSimilar = (a: Set<string>, b: Set<string>): boolean => {
+    if (a.size === 0 || b.size === 0) return false;
+    
+    // Intersection
+    const intersection = new Set([...a].filter(x => b.has(x)));
+    
+    // Jaccard Index
+    const unionSize = new Set([...a, ...b]).size;
+    const jaccard = intersection.size / unionSize;
+    
+    return jaccard >= 0.8; // High similarity threshold for tokens
+};
+
 export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
     const tags = await getAllTags();
     const groups: TagGroup[] = [];
@@ -46,7 +73,8 @@ export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
     // Normalize tags simply for comparison
     const simpleTags = tags.map(t => ({
         ...t,
-        simpleName: t.name.toLowerCase().trim().replace(/s$/, "") // Remove plural 's' roughly
+        simpleName: t.name.toLowerCase().trim().replace(/s$/, ""), // Remove plural 's' roughly
+        tokens: tokenize(t.name)
     }));
 
     for (let i = 0; i < simpleTags.length; i++) {
@@ -65,16 +93,16 @@ export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
             const dist = levenshteinDistance(root.simpleName, candidate.simpleName);
             
             // Criteria for similarity:
-            // 1. Direct inclusion (e.g., "landscape" vs "landscapes")
-            // 2. Very small Levenshtein distance (< 2) for longer words
-            // 3. Normalized equality
+            // 1. Direct inclusion (e.g., "landscape" vs "landscapes") - Levenshtein low
+            // 2. Token overlap (e.g., "noir et blanc" vs "noir blanc") - Jaccard high
             
-            const isSimilar = 
+            const isLevenshteinMatch = 
                 dist <= 1 || 
-                (dist <= 2 && root.simpleName.length > 5) ||
-                root.simpleName === candidate.simpleName;
+                (dist <= 2 && root.simpleName.length > 5);
 
-            if (isSimilar) {
+            const isTokenMatch = areTokensSimilar(root.tokens, candidate.tokens);
+
+            if (isLevenshteinMatch || isTokenMatch || root.simpleName === candidate.simpleName) {
                 group.candidates.push(candidate);
                 processedIds.add(candidate.id);
             }
