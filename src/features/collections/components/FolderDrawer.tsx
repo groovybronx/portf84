@@ -205,27 +205,25 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
 							expandedSections.has("work") 
 								? "bg-blue-500/10 border-blue-500/20 shadow-[0_0_15px_-5px_rgba(59,130,246,0.3)]" 
-								: "hover:bg-white/5 border-transparent"
+								: "hover:bg-blue-500/5 border-transparent"
 						}`}
 					>
-						<p className={`text-xs uppercase font-bold tracking-wider flex items-center gap-2 ${
-							expandedSections.has("work") ? "text-blue-400" : "text-gray-500"
-						}`}>
-							<HardDrive size={14} className={expandedSections.has("work") ? "text-blue-400" : "text-gray-500"} />
+						<p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-blue-400">
+							<HardDrive size={14} className="text-blue-400" />
 							<span>Dossiers de Travail</span>
 						</p>
 						<div className="flex items-center gap-2">
 							<span className={`text-[10px] px-2 py-0.5 rounded-full ${
 								expandedSections.has("work") 
 									? "bg-blue-500/20 text-blue-300" 
-									: "bg-gray-800/50 text-gray-600"
+									: "bg-blue-500/10 text-blue-400/70"
 							}`}>
 								{shadowFolders.length}
 							</span>
 							<ChevronRight 
 								size={14} 
-								className={`transition-transform duration-300 ${
-									expandedSections.has("work") ? "rotate-90 text-blue-400" : "text-gray-600"
+								className={`transition-transform duration-300 text-blue-400 ${
+									expandedSections.has("work") ? "rotate-90" : "opacity-50"
 								}`}
 							/>
 						</div>
@@ -319,13 +317,11 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
 							expandedSections.has("collections") 
 								? "bg-purple-500/10 border-purple-500/20 shadow-[0_0_15px_-5px_rgba(168,85,247,0.3)]" 
-								: "hover:bg-white/5 border-transparent"
+								: "hover:bg-purple-500/5 border-transparent"
 						}`}
 					>
-						<p className={`text-xs uppercase font-bold tracking-wider flex items-center gap-2 ${
-							expandedSections.has("collections") ? "text-purple-400" : "text-gray-500"
-						}`}>
-							<FolderHeart size={14} className={expandedSections.has("collections") ? "text-purple-400" : "text-gray-500"} />
+						<p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-purple-400">
+							<FolderHeart size={14} className="text-purple-400" />
 							<span>Collections</span>
 						</p>
 						<div className="flex items-center gap-2">
@@ -336,8 +332,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 							)}
 							<ChevronRight 
 								size={14} 
-								className={`transition-transform duration-300 ${
-									expandedSections.has("collections") ? "rotate-90 text-purple-400" : "text-gray-600"
+								className={`transition-transform duration-300 text-purple-400 ${
+									expandedSections.has("collections") ? "rotate-90" : "opacity-50"
 								}`}
 							/>
 						</div>
@@ -449,19 +445,17 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 						className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
 							expandedSections.has("colors") 
 								? "bg-amber-500/10 border-amber-500/20 shadow-[0_0_15px_-5px_rgba(245,158,11,0.3)]" 
-								: "hover:bg-white/5 border-transparent"
+								: "hover:bg-amber-500/5 border-transparent"
 						}`}
 					>
-						<p className={`text-xs uppercase font-bold tracking-wider flex items-center gap-2 ${
-							expandedSections.has("colors") ? "text-amber-400" : "text-gray-500"
-						}`}>
-							<Palette size={14} className={expandedSections.has("colors") ? "text-amber-400" : "text-gray-500"} />
+						<p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-amber-400">
+							<Palette size={14} className="text-amber-400" />
 							<span>Filtres Couleur</span>
 						</p>
 						<ChevronRight 
 							size={14} 
-							className={`transition-transform duration-300 ${
-								expandedSections.has("colors") ? "rotate-90 text-amber-400" : "text-gray-600"
+							className={`transition-transform duration-300 text-amber-400 ${
+								expandedSections.has("colors") ? "rotate-90" : "opacity-50"
 							}`}
 						/>
 					</button>
