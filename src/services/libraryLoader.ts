@@ -83,8 +83,8 @@ export const libraryLoader = {
 					aiTagsDetailed: meta.aiTagsDetailed,
 					colorTag: meta.colorTag || undefined,
 					manualTags: meta.manualTags,
-					virtualFolderId: meta.virtualFolderId || meta.folderId, // Prefer virtualFolderId
-					folderId: meta.virtualFolderId || meta.folderId, // Backward compat
+					virtualFolderId: meta.virtualFolderId || meta.folderId || undefined, // Prefer virtualFolderId
+					folderId: meta.virtualFolderId || meta.folderId || undefined, // Backward compat
 				};
 
 				// If the item belongs to a known virtual folder, return that ID
