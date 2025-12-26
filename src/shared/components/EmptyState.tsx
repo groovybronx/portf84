@@ -25,7 +25,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 			>
 				{/* Animated Icon */}
 				<div className="relative inline-block">
-					<div className="absolute inset-0 bg-blue-500 blur-xl opacity-20 rounded-full"></div>
+					<div className="absolute inset-0 bg-primary blur-xl opacity-20 rounded-full"></div>
 					<motion.div
 						animate={{
 							scale: [1, 1.1, 1],
@@ -38,7 +38,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 						}}
 						className="relative z-10 p-6 bg-glass-bg-accent rounded-full"
 					>
-						<FolderOpen className="w-16 h-16 text-blue-400" strokeWidth={1.5} />
+						<FolderOpen className="w-16 h-16 text-primary/70" strokeWidth={1.5} />
 						<motion.div
 							animate={{
 								opacity: [0.5, 1, 0.5],
@@ -70,7 +70,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
 						onClick={onAction}
-						className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl transition-all shadow-lg shadow-blue-900/30 hover:shadow-blue-900/50"
+						className="px-6 py-3 bg-primary hover:bg-primary/80 text-white font-medium rounded-xl transition-all shadow-lg shadow-primary/30 hover:shadow-primary/50"
 					>
 						{actionLabel}
 					</motion.button>

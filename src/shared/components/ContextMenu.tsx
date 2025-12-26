@@ -64,7 +64,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 			id: "open",
 			label: "Open Fullscreen",
 			icon: Eye,
-			color: "text-blue-400",
+			color: "text-primary",
 			action: () => onOpen(item),
 		},
 		{
@@ -85,7 +85,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 			id: "move",
 			label: "Move to Collection",
 			icon: FolderInput,
-			color: "text-blue-400",
+			color: "text-primary",
 			action: () => onMove(item),
 		},
 	];

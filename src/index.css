@@ -12,6 +12,17 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
   }
+  
+  /* Semantic Colors */
+  --color-glass-bg: rgba(10, 10, 10, 0.8);
+  --color-glass-bg-accent: rgba(255, 255, 255, 0.05);
+  --color-glass-bg-active: rgba(255, 255, 255, 0.1);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-glass-border-light: rgba(255, 255, 255, 0.05);
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-tertiary: rgba(255, 255, 255, 0.4);
 }
 
 :root {
@@ -33,15 +44,10 @@
   /* Layout */
   --layout-pt: 9rem; /* Equivalent to pt-36 */
 
-  /* Glassmorphism Tokens */
+  /* Glassmorphism Tokens (Default Theme) */
   --glass-blur: blur(12px);
   --glass-blur-lg: blur(24px);
   --surface-opacity: 0.8;
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-light: rgba(255, 255, 255, 0.05);
-  --glass-bg: rgba(10, 10, 10, 0.8);
-  --glass-bg-accent: rgba(255, 255, 255, 0.05);
-  --glass-bg-active: rgba(255, 255, 255, 0.1);
 }
 
 body {
@@ -85,28 +91,28 @@ img::-moz-selection {
 
 /* Utilities */
 .glass-surface {
-  background-color: var(--glass-bg);
+  background-color: var(--color-glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--color-glass-border);
 }
 
 .glass-surface-lg {
-  background-color: var(--glass-bg);
+  background-color: var(--color-glass-bg);
   backdrop-filter: var(--glass-blur-lg);
   -webkit-backdrop-filter: var(--glass-blur-lg);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--color-glass-border);
 }
 
 .glass-card {
-  background-color: var(--glass-bg-accent);
-  border: 1px solid var(--glass-border-light);
+  background-color: var(--color-glass-bg-accent);
+  border: 1px solid var(--color-glass-border-light);
   transition: all 0.2s ease-in-out;
 }
 
 .glass-card:hover {
-  background-color: var(--glass-bg-active);
-  border-color: var(--glass-border);
+  background-color: var(--color-glass-bg-active);
+  border-color: var(--color-glass-border);
 }
 
 .custom-scrollbar::-webkit-scrollbar {

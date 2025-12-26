@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layers, Pin, PinOff, Settings, ShieldAlert, Merge } from "lucide-react";
+import { Icon } from "../../../shared/components/Icon";
 import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
@@ -112,22 +112,22 @@ export const TopBar: React.FC<TopBarProps> = ({
 							size="icon"
 							onClick={() => setIsPinned(!isPinned)}
 							className={
-								isPinned ? "text-blue-400 bg-glass-bg-accent" : "text-gray-500"
+								isPinned ? "text-primary bg-glass-bg-accent" : "text-gray-500"
 							}
 							title={isPinned ? "Unpin Topbar" : "Pin Topbar"}
 						>
 							{isPinned ? (
-								<Pin size={16} fill="currentColor" />
+								<Icon action="pin" size={16} fill="currentColor" />
 							) : (
-								<PinOff size={16} />
+								<Icon action="unpin" size={16} />
 							)}
 						</Button>
 						<div className="h-6 w-px bg-glass-border/10 mx-1 hidden sm:block" />
 						<Button
 							variant="ghost"
 							onClick={onOpenFolders}
-							leftIcon={<Layers size={18} />}
-							className="text-blue-400 hover:text-white"
+							leftIcon={<Icon action="library" size={18} />}
+							className="text-primary hover:text-white"
 						>
 							<span className="hidden md:inline max-w-[100px] truncate">
 								{folderName || "Library"}
@@ -140,7 +140,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							className="text-gray-500 hover:text-purple-400"
 							title="Smart Tag Manager"
 						>
-							<Merge size={18} />
+							<Icon action="smart_tags" size={18} />
 						</Button>
 						<Button
 							variant="ghost"
@@ -149,14 +149,14 @@ export const TopBar: React.FC<TopBarProps> = ({
 							className="text-gray-500 hover:text-white"
 							title="Settings"
 						>
-							<Settings size={18} />
+							<Icon action="settings" size={18} />
 						</Button>
 					</div>
 
 					{/* AUTO-ANALYZE SAFETY INDICATOR */}
 					{autoAnalyzeEnabled && (
 						<div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/50 rounded-full animate-pulse mx-2 shrink-0 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-							<ShieldAlert size={14} className="text-red-500" />
+							<Icon action="alert" size={14} className="text-red-500" />
 							<span className="text-[10px] font-bold text-red-500 hidden lg:inline tracking-wider uppercase">
 								Auto-Analyze Active
 							</span>
@@ -192,7 +192,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 									step="1"
 									value={10 - gridColumns}
 									onChange={handleSliderChange}
-									className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
+									className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:bg-text-primary [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
 								/>
 							</div>
 						)}

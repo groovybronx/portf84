@@ -6,10 +6,12 @@ import { ProgressProvider } from "./contexts/ProgressContext";
 import { CollectionsProvider } from "./contexts/CollectionsContext";
 import { LibraryProvider } from "./contexts/LibraryContext";
 import { SelectionProvider } from "./contexts/SelectionContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ProgressProvider>
+    <ThemeProvider>
+      <ProgressProvider>
       <CollectionsProvider>
         <LibraryProvider>
           <SelectionProvider>
@@ -17,6 +19,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           </SelectionProvider>
         </LibraryProvider>
       </CollectionsProvider>
-    </ProgressProvider>
+      </ProgressProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );

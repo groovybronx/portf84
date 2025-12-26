@@ -188,7 +188,7 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 									onMove(folder.id);
 									onClose();
 								}}
-								className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-glass-bg-accent transition-colors group text-left border border-transparent hover:border-glass-border-light outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+								className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-glass-bg-accent transition-colors group text-left border border-transparent hover:border-glass-border-light outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
 							>
 								<div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
 									<FolderHeart size={20} />

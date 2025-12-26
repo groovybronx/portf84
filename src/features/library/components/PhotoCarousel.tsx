@@ -5,6 +5,11 @@ import { PortfolioItem } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
 import { LoadingSpinner } from "../../../shared/components/ui/LoadingSpinner";
 
+interface PhotoCarouselProps {
+	onSelect: (item: PortfolioItem) => void;
+	onFocusedItem?: (item: PortfolioItem) => void;
+}
+
 // ... (interfaces remain the same)
 
 export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
@@ -208,7 +213,6 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 								}
 							}}
 						>
-						>
 							<div className="relative max-w-3xl max-h-full flex items-center justify-center">
                                 {/* Loader */}
                                 {!loadedItems.has(item.id) && (
@@ -240,14 +244,14 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 
 								{isCurrent && showColorTags && item.colorTag && (
 									<div
-										className="absolute top-4 right-4 w-4 h-4 rounded-full shadow-lg border-2 border-white"
+										className="absolute top-4 right-4 w-4 h-4 rounded-full shadow-lg border-2 border-text-primary"
 										style={{ backgroundColor: item.colorTag }}
 									/>
 								)}
 
 								{isCurrent && (
 									<div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 	to-transparent p-6 rounded-b-lg">
-										<h3 className="text-white text-sm font-light mb-2 wrap-break-words">
+										<h3 className="text-text-primary text-sm font-light mb-2 wrap-break-words">
 											{item.name}
 										</h3>
 										{item.aiDescription && (
@@ -304,7 +308,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 				{/* Zone sensible élargie pour faciliter l'interaction */}
 				<div className="w-64 h-8 flex items-center justify-center cursor-pointer">
 					{/* Track background */}
-					<div className="w-full h-1 bg-white/20 rounded-full overflow-hidden relative group-hover:h-1.5 transition-all duration-300">
+					<div className="w-full h-1 bg-text-primary/20 rounded-full overflow-hidden relative group-hover:h-1.5 transition-all duration-300">
 						{/* Progress Bar */}
 						<div 
 							className="absolute top-0 left-0 h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-75 ease-linear"
@@ -316,7 +320,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 					
 					{/* Thumb (visible uniquement au hover ou drag) */}
 					<div 
-						className="absolute h-3 w-3 bg-white rounded-full shadow-lg transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+						className="absolute h-3 w-3 bg-text-primary rounded-full shadow-lg transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
 						style={{ 
 							left: `${((currentIndex + 0.5) / items.length) * 100}%` 
 						}}

@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Layers,
-  CheckCircle2,
-  Circle,
-  ChevronRight,
-  ChevronDown,
-  Folder,
-  Box,
-} from "lucide-react";
+import { Icon } from "../../../../shared/components/Icon";
 
 import {
   Folder as FolderType,
@@ -135,7 +127,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                             {/* Header */}
                             <motion.div layout="position" className="p-3 flex items-center gap-3 border-b border-emerald-500/20 bg-emerald-600/5">
                                 <div className="p-2 bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-900/20">
-                                    <Box size={18} className="text-white" />
+                                    <Icon action="box" size={18} className="text-white" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-white font-bold text-sm truncate leading-tight">
@@ -149,7 +141,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                     onClick={onManageCollections}
                                     className="p-2 hover:bg-emerald-500/20 rounded-lg text-emerald-300 transition-colors"
                                 >
-                                    <Settings size={14} />
+                                    <Icon action="settings" size={14} />
                                 </button>
                             </motion.div>
 
@@ -202,8 +194,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                             onClick={() => onSwitchCollection?.(collection.id)}
                             className="w-full flex items-center gap-3 p-2 rounded-lg text-emerald-100/60 hover:text-white hover:bg-emerald-500/10 hover:opacity-100 transition-all group"
                         >
-                            <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <Box size={16} className="text-emerald-500/70 group-hover:text-emerald-400" />
+                            <Icon action="next" size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Icon action="box" size={16} className="text-emerald-500/70 group-hover:text-emerald-400" />
                             <span className="text-sm font-medium truncate">{collection.name}</span>
                         </motion.button>
                     )}

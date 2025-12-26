@@ -80,7 +80,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                     <p className="text-xs text-white/50">Clean up your library by merging duplicate tags</p>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-white/50 hover:text-white transition-colors">
+                            <button onClick={onClose} className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
@@ -122,7 +122,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                             ) : (
                                 <div className="space-y-4">
                                     {groups.map((group) => (
-                                        <div key={group.target.id} className="bg-white/5 border border-white/10 rounded-lg p-4 flex items-center justify-between group-hover:border-white/20 transition-colors">
+                                        <div key={group.target.id} className="bg-glass-bg-accent border border-glass-border rounded-lg p-4 flex items-center justify-between group-hover:border-glass-border transition-colors">
                                             <div className="flex items-center flex-1 gap-4">
                                                 {/* Target Tag */}
                                                 <div className="flex items-center gap-2">

@@ -78,7 +78,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 						{/* Header */}
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-xl font-bold text-white flex items-center gap-2">
-								<Folder className="text-blue-500" />
+								<Folder className="text-primary" />
 								Mes Projets
 							</h2>
 							<button
@@ -109,7 +109,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 											exit={{ opacity: 0, x: 20 }}
 											className={`relative group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${
 												isActive
-													? "bg-blue-600/10 border-blue-500/50 text-white"
+													? "bg-primary/10 border-primary/50 text-white"
 													: "hover:bg-glass-bg-accent border-transparent text-gray-400 hover:text-white"
 											}`}
 											onClick={() =>
@@ -120,7 +120,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 											{isActive && (
 												<CheckCircle2
 													size={18}
-													className="text-blue-500 shrink-0"
+													className="text-primary shrink-0"
 												/>
 											)}
 
@@ -202,14 +202,14 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 									onChange={(e) => setNewCollectionName(e.target.value)}
 									onKeyDown={(e) => e.key === "Enter" && handleCreate()}
 									placeholder="Nom du Projet..."
-									className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
 									autoFocus
 								/>
 								<div className="flex gap-2">
 									<button
 										onClick={handleCreate}
 										disabled={!newCollectionName.trim()}
-										className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 text-white font-medium rounded-xl transition-all"
+										className="flex-1 py-2 bg-primary hover:bg-primary/80 disabled:bg-gray-700 disabled:text-gray-500 text-white font-medium rounded-xl transition-all"
 									>
 										Créer
 									</button>
@@ -227,7 +227,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 						) : (
 							<button
 								onClick={() => setIsCreating(true)}
-								className="w-full py-3 border-2 border-dashed border-gray-700 hover:border-blue-500 rounded-xl text-gray-400 hover:text-blue-400 transition-all flex items-center justify-center gap-2 font-medium"
+								className="w-full py-3 border-2 border-dashed border-gray-700 hover:border-primary rounded-xl text-gray-400 hover:text-primary transition-all flex items-center justify-center gap-2 font-medium"
 							>
 								<Plus size={18} />
 								Nouveau Projet
