@@ -40,6 +40,7 @@ src/features/
 │   └── ImageViewer.tsx     # Plein écran + métadonnées
 ├── tags/components/
 │   └── AddTagModal.tsx     # Modal ajout tags
+
 └── shared/
     ├── components/
     │   ├── ContextMenu.tsx     # Menu clic-droit
@@ -704,3 +705,23 @@ npm test
 ```
 
 **Résultats** : 40 tests passent (32 nouveaux + 8 existants) en 2.62s
+
+---
+
+## 12. Loading System & Feedback
+
+Système global pour gérer les états de chargement et retours visuels.
+
+### `LoadingSpinner`
+Composant UI pur de spinner animé.
+- **Props** : `size` (sm/md/lg/xl), `variant` (primary/white).
+- **Usage** : Placeholders, Boutons en état loading.
+
+### `LoadingOverlay`
+Overlay plein écran ou partiel.
+- **Transition** : Fade in/out fluide via `AnimatePresence`.
+- **Usage** : Démarrage de l'app, Initialisation de collection.
+
+### Strategie de Chargement
+- **PhotoCarousel** : Chaque image gère son propre état de chargement avec un spinner local.
+- **PhotoList** : Vignettes avec effet `pulse` squelette avant apparition (`opacity-0` -> `opacity-100`).

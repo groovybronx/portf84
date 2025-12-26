@@ -25,6 +25,9 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 	const { processedItems: items, selectedTag } = useLibrary();
 	const { selectionMode, selectedIds, toggleSelection, registerItemRef } =
 		useSelection();
+    
+    // Track loaded thumbnails
+    const [loadedItems, setLoadedItems] = React.useState<Set<string>>(new Set());
 
 	const showColorTags = true;
 
@@ -82,12 +85,19 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 							)}
 
 							{/* Thumbnail */}
-							<div className="shrink-0 w-32 h-32 rounded-lg overflow-hidden bg-glass-bg-accent">
+							<div className={`shrink-0 w-32 h-32 rounded-lg overflow-hidden bg-glass-bg-accent ${!loadedItems.has(item.id) ? "animate-pulse" : ""}`}>
 								<img
 									src={item.url}
 									alt={item.name}
-									className="w-full h-full object-cover"
+									className={`w-full h-full object-cover transition-opacity duration-300 ${loadedItems.has(item.id) ? "opacity-100" : "opacity-0"}`}
 									loading="lazy"
+                                    onLoad={() => {
+                                        setLoadedItems(prev => {
+                                            const newSet = new Set(prev);
+                                            newSet.add(item.id);
+                                            return newSet;
+                                        });
+                                    }}
 								/>
 							</div>
 

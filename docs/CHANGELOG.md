@@ -25,6 +25,24 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 **Dernière modification** : 26/12/2024 à 10:30
 
+## [26/12/2024 - 11:55] - Loading Polish & Animations
+    
+### Type : UI / UX
+
+**Composants** : `App.tsx`, `PhotoCarousel.tsx`, `PhotoList.tsx`, `LoadingSpinner`, `LoadingOverlay`
+
+**Changements** :
+
+- **Global Loader** : Ajout d'un `LoadingOverlay` au démarrage de l'application pour masquer l'initialisation des collections.
+- **Carousel Loading** : Ajout d'un spinner de chargement et d'une transition d'opacité fluide pour les images haute résolution.
+- **List Loading** : Ajout d'un effet `pulse` (Squelette) sur les vignettes en attendant le chargement des images.
+- **UI Kit** : Création du composant réutilisable `LoadingSpinner`.
+
+**Impact** : Élimination des "flashs" blancs et des affichages partiels. Sensation de fluidité accrue.
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md`
+
 ## [26/12/2024 - 11:30] - Rotation Circulaire des Projets & Animations
     
 ### Type : Feature / UI

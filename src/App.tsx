@@ -34,6 +34,8 @@ import {
 } from "./shared/hooks";
 import { storageService } from "./services/storageService";
 
+import { LoadingOverlay } from "./shared/components/LoadingOverlay";
+
 const App: React.FC = () => {
   // --- 0. Local State (Moved up for dependencies) ---
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
@@ -256,12 +258,26 @@ const App: React.FC = () => {
 
       const selected = await open({
         directory: true,
-        multiple: false,
-        title: "Sélectionner un Dossier Source",
+        multiple: true,
+        title: "Sélectionner des Dossiers Source",
       });
-      if (selected && typeof selected === "string") {
-        await addSourceFolder(selected);
-        await loadFromPath(selected);
+
+      if (selected) {
+        const paths = Array.isArray(selected) ? selected : [selected];
+        
+        // Filter out existing source folders to prevent duplicates
+        const existingPaths = new Set(sourceFolders.map(f => f.path));
+        const newPaths = paths.filter(path => !existingPaths.has(path));
+
+        if (newPaths.length < paths.length) {
+          const skippedCount = paths.length - newPaths.length;
+          alert(`${skippedCount} dossier(s) ignoré(s) car déjà présent(s) dans le projet.`);
+        }
+        
+        for (const path of newPaths) {
+            await addSourceFolder(path);
+            await loadFromPath(path);
+        }
       }
     } catch (e) {
       console.log("Cancelled", e);
@@ -315,6 +331,8 @@ const App: React.FC = () => {
       onMouseMove={(e) => handleMouseMove(e, processedItems)}
       onMouseUp={handleMouseUp}
     >
+      <LoadingOverlay isVisible={collectionsLoading} />
+      
       {/* Drag Selection Box */}
       {isDragSelecting && dragBox && (
         <div
@@ -390,6 +408,8 @@ const App: React.FC = () => {
             onDeleteFolder={deleteFolder}
             activeCollection={activeCollection}
             sourceFolders={sourceFolders}
+            collections={collections}
+            onSwitchCollection={switchCollection}
             onManageCollections={() => setIsCollectionManagerOpen(true)}
             onRemoveSourceFolder={async (path) => {
               await removeSourceFolder(path);

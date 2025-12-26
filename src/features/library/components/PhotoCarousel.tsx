@@ -3,27 +3,10 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 import { useLibrary } from "../../../contexts/LibraryContext";
+import { LoadingSpinner } from "../../../shared/components/ui/LoadingSpinner";
 
-/**
- * Interface pour les propriétés du composant PhotoCarousel.
- */
-interface PhotoCarouselProps {
-	/** Action déclenchée lors du clic sur l'image active */
-	onSelect: (item: PortfolioItem) => void;
-	/** Action déclenchée pour notifier l'item actuellement mis en avant (au milieu) */
-	onFocusedItem?: (item: PortfolioItem) => void;
-}
+// ... (interfaces remain the same)
 
-/**
- * Composant PhotoCarousel
- * 
- * Un carrousel d'images avec effet "coverflow" qui affiche :
- * - L'image centrale en pleine taille
- * - 2 images de chaque côté en taille réduite
- * - Navigation par flèches (clavier et boutons)
- * - Glisser-déposer (Drag & Swipe) manuel
- * - Animations fluides de transition via Framer Motion
- */
 export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	onSelect,
 	onFocusedItem,
@@ -35,6 +18,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isDragging, setIsDragging] = useState(false);
+	const [loadedItems, setLoadedItems] = useState<Set<string>>(new Set());
 	
 	const dragStartX = useRef(0);
 	const dragCurrentX = useRef(0);
@@ -224,17 +208,34 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 								}
 							}}
 						>
-							<div className="relative max-w-3xl max-h-full">
+						>
+							<div className="relative max-w-3xl max-h-full flex items-center justify-center">
+                                {/* Loader */}
+                                {!loadedItems.has(item.id) && (
+                                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                                        <LoadingSpinner size={isCurrent ? "xl" : "md"} variant="white" />
+                                    </div>
+                                )}
+
 								<img
 									src={item.url}
 									alt={item.name}
 									data-item-id={item.id}
 									loading="lazy"
 									decoding="async"
-									className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+									className={`max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl transition-opacity duration-300 ${
+                                        loadedItems.has(item.id) ? "opacity-100" : "opacity-0"
+                                    }`}
 									style={{
 										filter: isCurrent ? "none" : "brightness(1)",
 									}}
+                                    onLoad={() => {
+                                        setLoadedItems(prev => {
+                                            const newSet = new Set(prev);
+                                            newSet.add(item.id);
+                                            return newSet;
+                                        });
+                                    }}
 								/>
 
 								{isCurrent && showColorTags && item.colorTag && (
