@@ -7,7 +7,6 @@ import {
   ChevronRight,
   ChevronDown,
   Folder,
-  Settings,
   Box,
 } from "lucide-react";
 
@@ -92,7 +91,8 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
       <FolderDrawerHeader 
         isPinned={isPinned} 
         onTogglePin={onTogglePin} 
-        totalItems={totalItems} 
+        totalItems={totalItems}
+        onAdd={onManageCollections}
       />
 
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -212,17 +212,6 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
             );
           })}
         </div>
-      </div>
-      
-      {/* Footer / Add Project */}
-      <div className="p-4 border-t border-glass-border bg-glass-bg/30">
-        <button
-            onClick={onManageCollections}
-            className="w-full py-2 flex items-center justify-center gap-2 text-xs text-gray-500 hover:text-white hover:bg-glass-bg-accent rounded-lg transition-colors"
-        >
-            <Settings size={14} />
-            Gérer les projets
-        </button>
       </div>
     </div>
   );

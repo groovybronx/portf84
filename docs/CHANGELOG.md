@@ -25,6 +25,20 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 **Dernière modification** : 26/12/2024 à 10:30
 
+## [26/12/2024 - 12:15] - Sidebar UX Refactor
+    
+### Type : UI / UX
+
+**Composants** : `FolderDrawer/index.tsx`, `FolderDrawerHeader.tsx`
+
+**Changements** :
+
+- **Header Simplifié** : Ajout d'un bouton `+` discret dans l'en-tête "Library" pour gérer les projets.
+- **Cleanup Footer** : Suppression de la zone footer "Gérer les projets" pour alléger l'interface et gagner de l'espace vertical.
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md`
+
 ## [26/12/2024 - 11:55] - Loading Polish & Animations
     
 ### Type : UI / UX
