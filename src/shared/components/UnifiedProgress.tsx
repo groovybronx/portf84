@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useProgress, ProgressTask } from "../../contexts/ProgressContext";
+import { useProgress, ProgressTask } from "../contexts/ProgressContext";
 import { CheckCircle2, AlertCircle, Loader2, X } from "lucide-react";
 
 export const UnifiedProgress: React.FC = () => {

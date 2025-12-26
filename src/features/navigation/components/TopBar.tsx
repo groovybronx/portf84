@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Icon } from "../../../shared/components/Icon";
 import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
-import { useLibrary } from "../../../contexts/LibraryContext";
-import { useSelection } from "../../../contexts/SelectionContext";
+import { useLibrary } from "../../../shared/contexts/LibraryContext";
+import { useSelection } from "../../../shared/contexts/SelectionContext";
 import { Button } from "../../../shared/components/ui";
 
 // Sub-components
@@ -137,7 +137,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							variant="ghost"
 							size="icon"
 							onClick={onOpenTagManager}
-							className="text-gray-500 hover:text-purple-400"
+							className="text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
 							title="Smart Tag Manager"
 						>
 							<Icon action="smart_tags" size={18} />
@@ -146,7 +146,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							variant="ghost"
 							size="icon"
 							onClick={onOpenSettings}
-							className="text-gray-500 hover:text-white"
+							className="text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
 							title="Settings"
 						>
 							<Icon action="settings" size={18} />
@@ -226,7 +226,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 										<div className="w-px h-6 bg-glass-border/10 mx-1 hidden sm:block" />
 										<button
 											onClick={handleToggleSelectionMode}
-											className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-glass-bg-accent border-glass-border-light text-gray-400 hover:text-white transition-colors"
+											className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-glass-bg-accent border-glass-border-light text-gray-400 hover:text-primary hover:border-primary/50 transition-colors"
 										>
 											<span className="text-sm font-medium hidden sm:inline">
 												Select

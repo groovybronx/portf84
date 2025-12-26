@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 26/12/2024 à 10:30
+Dernière mise à jour : 26 /12/2024 à 16:00
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,24 +8,66 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Refactoring & Optimisation
+**Session en cours** : Sauvegarde Git & GitHub
 
 **Progression** :
-- ✅ Feature Smart Folders (Couleurs) : 100% complétée
-- ✅ Refonte Sidebar (Accordéons) : 100% complétée
-- ✅ PhotoCarousel Scrubber : 100% complétée
-- ✅ Navigation Sync & Smooth Scroll : 100% complétée
-- ✅ Nouvelle Icône Application : 100% complétée
-- ✅ Import Multi-Dossiers : 100% complétée
-- ✅ Refactoring FolderDrawer : 100% complétée
+- ✅ Migration Contexts vers src/shared/ : 100% complétée
+- ✅ Extension Système d'Icônes : 100% complétée  
+- ✅ Icon Picker Settings : 100% complétée
+- ✅ Documentation mise à jour : 100% complétée
 
 **Prochaines étapes** :
-- [ ] Commit final documentation
-- [ ] Fusion master
+- [ ] Commit Git avec message détaillé
+- [ ] Push vers GitHub
 
-**Dernière modification** : 26/12/2024 à 10:30
+**Dernière modification** : 26/12/2024 à 16:00
 
-## [26/12/2024 - 12:15] - Sidebar UX Refactor
+## [26/12/2024 - 16:00] - Migration Contexts & Extension Icônes
+
+### Type : Refactorisation + Feature
+
+**Composants** : 
+- `src/shared/contexts/` (nouveau)
+- `src/shared/components/Icon.tsx`
+- `src/shared/components/SettingsModal.tsx`
+- Tous les imports dans l'application
+
+**Changements** :
+
+**1. Migration Contexts Architecture** :
+- Déplacement de `src/contexts/` vers `src/shared/contexts/` pour cohérence architecturale
+- Mise à jour de tous les imports dans l'application (App.tsx, FolderDrawer, TopBar, ViewRenderer, etc.)
+- Suppression de l'ancien dossier `src/contexts/`
+- Aucun changement fonctionnel, migration iso-fonctionnelle
+
+**2. Extension Système d'Icônes** :
+- Ajout de 30+ nouvelles icônes dans le registre `Icon.tsx`
+- Nouvelles catégories : 
+  - **Business** : box, briefcase, trophy, star, crown, award, target, rocket, flag
+  - **Media** : camera, film, video, image
+  - **Effects** : sparkles, zap, flame
+- Total : ~40 icônes disponibles pour personnalisation
+
+**3. Icon Picker dans Settings** :
+- Nouvelle UI de sélection d'icônes pour chaque thème de couleur (Appearance tab)
+- Clic sur la pastille de couleur → Grille de sélection d'icônes (8 colonnes, scrollable)
+- Détection intelligente : Icônes déjà utilisées par d'autres thèmes grisées et non-sélectionnables
+- Animation fluide d'expansion/collapse (Framer Motion)
+- Intégration avec `ThemeContext` pour persistance
+- Permet de personnaliser 5 catégories : Primary, AI, Collections, Work Folders, Projects
+
+**Impact** :
+- **Architecture** : Structure plus cohérente avec tous les éléments partagés dans `src/shared/`
+- **UX** : Personnalisation visuelle complète des thèmes (couleur + icône)
+- **Design** : Cohérence visuelle renforcée entre sidebar, badges et UI
+
+**Documentation mise à jour** :
+- `docs/ARCHITECTURE.md` : Nouvelle structure src/shared/contexts/
+- `docs/COMPONENTS.md` : Icon Picker et liste complète IconAction
+- `docs/INTERACTIONS.md` : Horodatage
+- `docs/CHANGELOG.md` : Entrée complète
+
+
     
 ### Type : UI / UX
 

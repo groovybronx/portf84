@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Palette, ChevronRight, CheckCircle2, Circle } from "lucide-react";
 import { Folder as FolderType, COLOR_PALETTE } from "../../../../shared/types";
 import { getColorName } from "../../../../services/storage/folders";
+import { Icon } from "../../../../shared/components/Icon";
+import { useTheme } from "../../../../shared/contexts/ThemeContext";
 
 interface ColorFiltersSectionProps {
   folders: FolderType[];
@@ -17,6 +19,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
   onColorFilterChange,
   onSelectFolder,
 }) => {
+  const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleSection = () => setIsExpanded(!isExpanded);
@@ -27,17 +30,17 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
         onClick={toggleSection}
         className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
           isExpanded
-            ? "bg-amber-500/10 border-amber-500/20 shadow-[0_0_15px_-5px_rgba(245,158,11,0.3)]"
-            : "hover:bg-amber-500/5 border-transparent"
+            ? "bg-primary/10 border-primary/20 shadow-[0_0_15px_-5px_var(--color-primary)]"
+            : "hover:bg-primary/5 border-transparent"
         }`}
       >
-        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-amber-400">
-          <Palette size={14} className="text-amber-400" />
+        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-primary">
+          <Icon action={settings.filtersIcon} size={14} className="text-primary" />
           <span>Filtres Couleur</span>
         </p>
         <ChevronRight
           size={14}
-          className={`transition-transform duration-300 text-amber-400 ${
+          className={`transition-transform duration-300 text-primary ${
             isExpanded ? "rotate-90" : "opacity-50"
           }`}
         />

@@ -3,8 +3,13 @@
 @theme {
   --color-background: #0a0a0a;
   --color-surface: #121212;
-  --color-primary: #3b82f6;
-  --color-accent: #f59e0b;
+  /* Dynamic Theme Colors (Linked to ThemeContext) */
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary); 
+  --color-tertiary: var(--color-tertiary);
+  --color-quaternary: var(--color-quaternary);
+  --color-quinary: var(--color-quinary);
+  --color-accent: var(--color-accent);
 
   --animate-float: float 6s ease-in-out infinite;
 
@@ -21,11 +26,22 @@
   --color-glass-border-light: rgba(255, 255, 255, 0.05);
   
   --color-text-primary: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.6);
-  --color-text-tertiary: rgba(255, 255, 255, 0.4);
+  /* Rename these if they conflict with new semantic colors, 
+     but usually text-secondary is gray text, while color-secondary is brand color.
+     Refactoring to avoid conflict: Keeping standard text-* names for now. */
+  --color-text-secondary-dim: rgba(255, 255, 255, 0.6);
+  --color-text-tertiary-dim: rgba(255, 255, 255, 0.4);
 }
 
 :root {
+  /* Dynamic Theme Defaults */
+  --color-primary: #3b82f6;
+  --color-secondary: #a855f7;
+  --color-tertiary: #10b981;
+  --color-quaternary: #f59e0b;
+  --color-quinary: #f43f5e;
+  --color-accent: #f59e0b;
+
   /* Z-Index Scale */
   --z-base: 0;
   --z-grid-item: 10;

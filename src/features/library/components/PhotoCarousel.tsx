@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
-import { useLibrary } from "../../../contexts/LibraryContext";
+import { useLibrary } from "../../../shared/contexts/LibraryContext";
 import { LoadingSpinner } from "../../../shared/components/ui/LoadingSpinner";
 
 interface PhotoCarouselProps {
@@ -260,10 +260,10 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 											</p>
 										)}
 										<div className="flex gap-2 flex-wrap">
-											{item.aiTags?.map((tag) => (
+											{item.aiTags?.map((tag: string) => (
 												<span
 													key={tag}
-													className="px-2 py-1 bg-blue-500/30 text-blue-200 text-xs rounded-full"
+													className="px-2 py-1 bg-primary/30 text-primary text-xs rounded-full"
 												>
 													{tag}
 												</span>

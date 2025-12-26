@@ -45,7 +45,7 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				size="icon"
 				onClick={onShareSelected}
 				disabled={selectedCount === 0}
-				className="bg-blue-600/20 border-blue-500/30 hover:bg-blue-600/40 text-blue-400"
+				className="bg-glass-bg-accent border-glass-border-light hover:bg-primary/10 hover:border-primary/30 text-primary"
 				title="Share"
 			>
 				<Share2 size={18} />
@@ -55,12 +55,12 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				size="icon"
 				onClick={onRunBatchAI}
 				disabled={selectedCount === 0 || isBatchAIProcessing}
-				className="bg-purple-600/20 border-purple-500/30 hover:bg-purple-600/40 text-purple-400 relative overflow-hidden"
+				className="bg-glass-bg-accent border-glass-border-light hover:bg-secondary/10 hover:border-secondary/30 text-secondary relative overflow-hidden"
 				title="Analyze Selected"
 			>
 				{isBatchAIProcessing ? (
 					<div
-						className="absolute inset-0 bg-purple-500/20"
+						className="absolute inset-0 bg-secondary/20"
 						style={{ width: `${batchAIProgress * 100}%` }}
 					/>
 				) : (

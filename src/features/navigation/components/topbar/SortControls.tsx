@@ -21,7 +21,7 @@ export const SortControls: React.FC<SortControlsProps> = ({
 			<select
 				value={sortOption}
 				onChange={(e) => onSortChange(e.target.value as SortOption)}
-				className="bg-black/50 text-white border border-glass-border-light text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer w-20 appearance-none"
+				className="bg-glass-bg-accent text-white border border-glass-border-light text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer w-20 appearance-none transition-colors hover:bg-glass-bg-active"
 			>
 				<option value="date" className="bg-gray-900">
 					Date
