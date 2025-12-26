@@ -33,7 +33,7 @@ export const createCollection = async (name: string): Promise<string> => {
 export const getCollections = async (): Promise<ParsedCollection[]> => {
 	const db = await getDB();
 	const collections = await db.select<DBCollection[]>(
-		"SELECT * FROM collections ORDER BY lastOpenedAt DESC"
+		"SELECT * FROM collections ORDER BY createdAt ASC"
 	);
 	return collections.map((c) => ({
 		...c,

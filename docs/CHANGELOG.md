@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 25/12/2024 à 04:31
+Dernière mise à jour : 26/12/2024 à 10:30
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Branding & Finalisation
+**Session en cours** : Refactoring & Optimisation
 
 **Progression** :
 - ✅ Feature Smart Folders (Couleurs) : 100% complétée
@@ -16,12 +16,102 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ✅ PhotoCarousel Scrubber : 100% complétée
 - ✅ Navigation Sync & Smooth Scroll : 100% complétée
 - ✅ Nouvelle Icône Application : 100% complétée
+- ✅ Import Multi-Dossiers : 100% complétée
+- ✅ Refactoring FolderDrawer : 100% complétée
 
 **Prochaines étapes** :
 - [ ] Commit final documentation
 - [ ] Fusion master
 
-**Dernière modification** : 25/12/2024 à 04:30
+**Dernière modification** : 26/12/2024 à 10:30
+
+## [26/12/2024 - 11:30] - Rotation Circulaire des Projets & Animations
+    
+### Type : Feature / UI
+
+**Composants** : `FolderDrawer/index.tsx`, `storage/collections.ts`
+
+**Changements** :
+
+- **Rotation Circulaire (Smart Navigation)** : 
+  - Lors de la sélection d'un projet, celui-ci "glisse" vers le haut (position active).
+  - La liste se réorganise circulairement : le projet précédemment actif descend, et les autres suivent le mouvement sans perdre leur ordre relatif.
+  - Correction du tri en base de données : Passage de `lastOpenedAt` à `createdAt` pour garantir une stabilité parfaite de la liste pendant la rotation.
+- **Animations Premium** :
+  - **Physique Fluide** : Utilisation de transitions `spring` (stiffness: 200, damping: 20) pour un effet organique avec un léger "rebond" à l'arrivée.
+  - **Layout Sync** : Correction des distorsions de texte pendant l'animation en synchronisant le layout des contenus internes.
+- **Interface Projet** :
+  - Icône `Box` (Emerald) pour distinguer les Projets des dossiers physiques.
+  - Design "Carte" proéminent pour le projet actif vs bouton simple pour les inactifs.
+
+**Impact** : Une navigation entre projets ultra-fluide et spatialement cohérente ("Mental Model" de carrousel vertical).
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md`
+- `docs/COMPONENTS.md`
+- `docs/INTERACTIONS.md`
+
+## [26/12/2024 - 10:30] - Sidebar en Tree View & Navigation Projets
+
+### Type : Feature / UI
+
+**Composants** : `FolderDrawer/index.tsx`, `App.tsx`
+
+**Changements** :
+
+- **Tree View Navigation** : 
+  - Transformation de la liste plate en une structure arborescente "Projets".
+  - Cliquer sur un projet inactive le bascule immédiatement comme actif.
+  - Le projet actif s'étend pour afficher ses contenus (Library, Dossiers, Collections).
+- **Intégration "Library"** :
+  - Le bouton "Library" (All Photos) est intégré comme premier élément du projet actif.
+- **Support Multi-Projets** :
+  - Visualisation immédiate de tous les projets disponibles dans la barre latérale.
+  - Switch rapide entre projets sans passer par une modale.
+
+**Impact** : Amélioration majeure de la navigation pour les utilisateurs gérant plusieurs projets simultanément.
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md`
+
+## [26/12/2024 - 09:45] - Refactoring FolderDrawer
+
+### Type : Refactorisation
+
+**Composants** : `src/features/collections/components/FolderDrawer/`
+
+**Changements** :
+
+- **Atomisation** : Découpage du fichier unique `FolderDrawer.tsx` (600+ lignes) en une structure modulaire de 6 composants dédiés.
+- **Nouveaux Composants** :
+  - `FolderDrawerHeader` & `ActiveCollectionBanner` pour l'entête.
+  - `FolderItem` : Composant réutilisable pour l'affichage des lignes.
+  - `ShadowFoldersSection`, `ManualCollectionsSection`, `ColorFiltersSection` : Sections isolées gérant leur propre état d'ouverture.
+- **Maintenance** : Amélioration drastique de la lisibilité et de la séparation des responsabilités.
+
+**Impact** : Aucune changement visible pour l'utilisateur (Iso-fonctionnel), mais base de code plus robuste.
+
+**Documentation mise à jour** :
+- `docs/COMPONENTS.md`
+- `docs/CHANGELOG.md`
+
+## [26/12/2024 - 09:24] - Import Multi-Dossiers
+
+### Type : Feature / UX
+
+**Composants** : `src/App.tsx`
+
+**Changements** :
+
+- **Sélection Multiple** : La modale d'importation de dossiers permet désormais de sélectionner plusieurs dossiers sources simultanément (via Cmd/Ctrl + Click ou Shift + Click).
+- **Import Séquentiel** : L'application traite automatiquement la liste des dossiers sélectionnés pour les ajouter un par un à la collection active.
+- **Prévention Doublons** : Empêche la réimportation d'un dossier déjà présent et avertit l'utilisateur le cas échéant.
+- **Micro-Actions Sidebar** : Les gros boutons d'action sont remplacés par des icônes `+` discrètes au survol des en-têtes de section, épurant l'interface.
+
+**Impact** : Gain de temps significatif lors de l'initialisation d'une collection avec de nombreux sous-dossiers dispersés.
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md`
 
 ## [25/12/2024 - 04:30] - Tag Fusion UI Sync & Library Fixes
 

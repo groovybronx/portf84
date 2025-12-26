@@ -25,7 +25,14 @@ src/features/
 │   ├── TopBar.tsx          # Barre d'outils principale
 │   └── topbar/             # Sous-composants (Search, ColorFilter, etc.)
 ├── collections/components/
-│   ├── FolderDrawer.tsx    # Panneau latéral navigation (Projets)
+│   ├── FolderDrawer/       # Panneau latéral navigation (Projets)
+│   │   ├── index.tsx         # Assemblage principal
+│   │   ├── FolderDrawerHeader.tsx
+│   │   ├── ActiveCollectionBanner.tsx
+│   │   ├── ShadowFoldersSection.tsx
+│   │   ├── ManualCollectionsSection.tsx
+│   │   ├── ColorFiltersSection.tsx
+│   │   └── FolderItem.tsx
 │   ├── CollectionManager.tsx
 │   ├── CreateFolderModal.tsx
 │   └── MoveToFolderModal.tsx
@@ -476,8 +483,11 @@ Composant de navigation principal permettant de gérer les dossiers de travail, 
 - **Structure Accordéon** : Trois sections pliables (`Dossiers de Travail`, `Collections`, `Filtres Couleur`).
 - **État Persistant** : Les sections peuvent être ouvertes/fermées individuellement. Par défaut, elles sont fermées au démarrage.
 - **Smart Color Folders** : Section générée dynamiquement affichant toutes les images par couleur, sans dossier physique.
+- **Tree View (Projets)** : Navigation hiérarchique centrée sur le **Projet Actif**.
+- **Rotation Circulaire** : Le projet actif est toujours affiché en haut sous forme étendue (Carte). Les autres projets sont listés en dessous. Cliquer sur un projet le fait remonter (animation slide) et déplace l'ancien actif dans la file.
+- **Contenu Projet** : Chaque projet contient sa propre "Library" (All Photos), ses Dossiers physiques et ses Collections virtuelles.
 
-### Sections
+### Sections (Dans un Projet Actif)
 
 1.  **Dossiers de Travail (Bleu)** : Dossiers sources physiques sur le disque.
 2.  **Collections (Violet)** : Dossiers virtuels crées manuellement dans l'app.

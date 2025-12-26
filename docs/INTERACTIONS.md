@@ -147,18 +147,20 @@ Filtrage rapide via les pastilles colorées dans la TopBar.
 
 La barre latérale s'active via l'icône `Layers` dans la TopBar ou en glissant depuis le bord gauche.
 
-### Structure & Accordéons
+### Structure & Navigation Projets
 
-La navigation est organisée en 3 sections pliables (Accordéons) :
+La barre latérale structure votre travail par **Projets** (Collections).
 
-| Section | Couleur | Description |
-| :--- | :--- | :--- |
-| **Dossiers de Travail** | 🔵 **Bleu** | Vos dossiers sources physiques (Hard Drive). |
-| **Collections** | 🟣 **Violet** | Vos albums virtuels créés dans Lumina. |
-| **Filtres Couleur** | 🟠 **Ambre** | **Smart Folders** : Cliquez pour voir toutes les images d'une couleur. |
+- **Rotation de Projet** :
+  - Le projet **Actif** est toujours en haut, affiché sous forme d'une grande carte.
+  - Les projets **Inactifs** sont listés en dessous sous forme compacte.
+  - **Clic** sur un projet inactif : Il "swape" sa place avec le projet actif via une animation fluide.
 
-> [!TIP]
-> Les sections sont fermées par défaut au démarrage pour une vue épurée. Cliquez sur les en-têtes colorés pour les déplier.
+- **Contenu d'un Projet** :
+  - **Library** : Toutes les photos du projet.
+  - **Dossiers de Travail (Bleu)** : Vos dossiers physiques.
+  - **Collections (Violet)** : Vos albums virtuels.
+  - **Filtres (Ambre)** : Accès rapide par couleur tag.
 
 ### Épinglage (Pinning)
 
