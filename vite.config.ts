@@ -7,9 +7,9 @@ export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, ".", "");
 	return {
 		server: {
-			port: 1420,
-			strictPort: true,
-			host: "0.0.0.0",
+			port: parseInt(env.VITE_PORT || "1420"),
+			strictPort: env.VITE_STRICT_PORT !== "false",
+			host: env.VITE_HOST || "0.0.0.0",
 		},
 		plugins: [react(), tailwindcss()],
 		build: {

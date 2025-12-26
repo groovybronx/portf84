@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 26 /12/2024 à 16:00
+Dernière mise à jour : 26/12/2024 à 22:08
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,19 +8,88 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Sauvegarde Git & GitHub
+**Session en cours** : Configuration Dynamique du Code
 
 **Progression** :
 - ✅ Migration Contexts vers src/shared/ : 100% complétée
 - ✅ Extension Système d'Icônes : 100% complétée  
 - ✅ Icon Picker Settings : 100% complétée
-- ✅ Documentation mise à jour : 100% complétée
+- ✅ Système de Constantes Centralisées : 100% complété
+- ✅ Configuration Dynamique : 100% complétée
+- ✅ Build vérifié : 100% complété
 
 **Prochaines étapes** :
-- [ ] Commit Git avec message détaillé
+- [ ] Tester l'application avec les nouveaux changements
+- [ ] Commit des changements
 - [ ] Push vers GitHub
 
-**Dernière modification** : 26/12/2024 à 16:00
+**Dernière modification** : 26/12/2024 à 22:08
+
+## [26/12/2024 - 22:08] - Configuration Dynamique et Constantes Centralisées
+
+### Type : Refactorisation + Feature
+
+**Composants** :
+- `src/shared/constants/` (nouveau)
+- `vite.config.ts`
+- `src/services/storage/db.ts`
+- `src/shared/utils/fileHelpers.ts`
+- `src/features/vision/services/geminiService.ts`
+- `src/shared/hooks/useLocalShortcuts.ts`
+- `.env.example` (nouveau)
+
+**Changements** :
+
+**1. Système de Constantes Centralisées** :
+- Création de `src/shared/constants/storage.ts` :
+  - Centralisation de toutes les clés localStorage (API_KEY, SHORTCUTS, DB_PATH, THEME, APP_TITLE, ANIMATION_PRESET)
+  - Type-safe avec TypeScript
+- Création de `src/shared/constants/fileTypes.ts` :
+  - Liste des extensions d'images supportées (png, jpg, jpeg, gif, webp, svg, bmp, ico, tiff, tif)
+  - Helper `isImageFile()` pour validation
+  - Helper `getImageExtensionRegex()` pour génération de regex
+  - Map `IMAGE_MIME_TYPES` pour types MIME
+- Création de `src/shared/constants/animations.ts` :
+  - Presets d'animations configurables (soft/normal/snappy)
+  - Helpers `getCurrentAnimationPreset()` et `setAnimationPreset()`
+  - Fonction `getSpringTransition()` pour Framer Motion
+- Création de `src/shared/constants/index.ts` pour exports centralisés
+
+**2. Migration vers Constantes** :
+- **geminiService.ts** : Utilisation de `STORAGE_KEYS.API_KEY` au lieu de "gemini_api_key" hardcodé
+- **useLocalShortcuts.ts** : Utilisation de `STORAGE_KEYS.SHORTCUTS` au lieu de "lumina_shortcuts_config"
+- **db.ts** : Utilisation de `STORAGE_KEYS.DB_PATH` et variable d'env `VITE_DB_NAME`
+- **fileHelpers.ts** : Utilisation de `isImageFile()` et `IMAGE_MIME_TYPES` au lieu de regex hardcodé
+
+**3. Configuration Serveur Dynamique** :
+- **vite.config.ts** : 
+  - Port configurable via `VITE_PORT` (défaut: 1420)
+  - Host configurable via `VITE_HOST` (défaut: 0.0.0.0)
+  - StrictPort configurable via `VITE_STRICT_PORT` (défaut: true)
+  - Nom de DB configurable via `VITE_DB_NAME` (défaut: lumina.db)
+
+**4. Fichier .env.example** :
+- Documentation complète de toutes les variables d'environnement disponibles
+- Sections : Gemini AI, Database, Dev Server, Supported Formats
+- Guide pour configuration personnalisée
+
+**Impact** :
+- **Maintenabilité** : Élimination des chaînes hardcodées, réduction drastique des erreurs de typo
+- **Flexibilité** : Configuration facile multi-environnement (dev/staging/prod)
+- **Extensibilité** : Ajout de nouveaux formats d'images simplifié
+- **Type-Safety** : TypeScript garantit l'utilisation correcte des constantes
+- **Multi-Instance** : Support de plusieurs bases de données et configurations
+
+**Bénéfices** :
+- ✅ Centralisation : Toutes les constantes dans un seul endroit
+- ✅ Type-Safe : Pas de "magic strings", autocomplete IDE
+- ✅ Configurable : Variables d'environnement pour tous les paramètres critiques
+- ✅ Évolutif : Architecture prête pour plugins et extensions futures
+
+**Documentation mise à jour** :
+- `docs/CHANGELOG.md` : Entrée complète
+- `docs/ARCHITECTURE.md` : À mettre à jour
+- `.env.example` : Créé avec documentation complète
 
 ## [26/12/2024 - 16:00] - Migration Contexts & Extension Icônes
 

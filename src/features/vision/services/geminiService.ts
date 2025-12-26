@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { PortfolioItem, AiTagDetailed } from "../../../shared/types";
+import { STORAGE_KEYS } from "../../../shared/constants";
 
 // Helper to convert File/Blob to Base64 (Standard implementation)
 const processFileToBase64 = (file: File): Promise<string> => {
@@ -24,7 +25,7 @@ const processFileToBase64 = (file: File): Promise<string> => {
 };
 
 const getApiKey = (): string => {
-	const storedKey = localStorage.getItem("gemini_api_key");
+	const storedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
 	if (storedKey) return storedKey;
 
 	// Note: standard Vite env access
