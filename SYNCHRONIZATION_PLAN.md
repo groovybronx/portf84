@@ -19,7 +19,7 @@ La branche `develop` contient tout le travail de développement des derniers moi
 - Architecture refactorisée (Context API, feature-based)
 - Optimisations de performance
 - Nouvelle UI (carousels 3D, grille virtuelle)
-- 84 tests unitaires
+- 104 tests unitaires
 - Documentation technique complète
 
 ---
@@ -94,7 +94,7 @@ Les conflits entre main et develop ont été résolus lors de la fusion main →
 - Structure du CHANGELOG conservée
 
 ### Tests
-- ✅ 84 tests passent sur develop
+- ✅ 104 tests passent sur develop
 - ⏳ À vérifier sur main après la fusion
 
 ### Breaking Changes
