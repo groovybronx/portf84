@@ -11,7 +11,8 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 **Session en cours** : Synchronisation GitHub & Évolution Système de Tags
 
 **Progression** :
-- ✅ Synchronisation GitHub (develop) : 100% complété
+- ✅ Synchronisation GitHub (develop & main) : 100% complété
+- ✅ Intégration Agents Copilot Spécialisés (.github/agents/) : 100% complété
 - ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
 - ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
 - ✅ Couverture Tests (84 tests au total) : 100% complété
@@ -21,7 +22,29 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Optimisation des performances sur les grandes collections de tags
 - [ ] Exploration de la fusion sémantique via Gemini AI
 
-**Dernière modification** : 30/12/2025 à 19:05
+**Dernière modification** : 30/12/2025 à 19:35
+
+## [30/12/2025 - 19:35] - Synchronisation Globale & Agents Copilot Spécialisés
+
+### Type : Maintenance / CI/CD / Documentation
+
+**Composants** :
+- `.github/agents/` (Nouveaux agents Copilot)
+- Gestion des branches `main` et `develop`
+
+**Changements** :
+
+**1. Synchronisation des Branches** :
+- Mise à jour de la branche `main` locale par alignement avec `origin/main`.
+- Fusion de `main` dans `develop` pour assurer la cohérence des outils de développement.
+
+**2. Agents Copilot Spécialisés** :
+- Intégration d'une suite d'instructions spécialisées pour GitHub Copilot couvrant les domaines clés du repository : Architecture, Frontend React, Backend Tauri/Rust, SQLite, Tests Vitest, et Intégration Gemini AI.
+- Ces agents permettent une assistance au code plus contextuelle et précise.
+
+**Impact** : Environnement de développement parfaitement synchronisé avec le dépôt distant et amélioration notable de l'assistance IA grâce aux agents spécialisés.
+
+---
 
 ## [30/12/2025 - 19:05] - Évolution Majeure : Système de Tags & Synchronisation GitHub
 
