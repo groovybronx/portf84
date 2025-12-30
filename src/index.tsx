@@ -7,6 +7,7 @@ import { CollectionsProvider } from "./shared/contexts/CollectionsContext";
 import { LibraryProvider } from "./shared/contexts/LibraryContext";
 import { SelectionProvider } from "./shared/contexts/SelectionContext";
 import { ThemeProvider } from "./shared/contexts/ThemeContext";
+import { ErrorBoundary } from "./shared/components/ErrorBoundary";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <CollectionsProvider>
         <LibraryProvider>
           <SelectionProvider>
-            <App />
+            <ErrorBoundary featureName="Root Application">
+              <App />
+            </ErrorBoundary>
           </SelectionProvider>
         </LibraryProvider>
       </CollectionsProvider>

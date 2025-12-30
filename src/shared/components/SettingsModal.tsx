@@ -5,6 +5,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { useLocalShortcuts, ShortcutMap } from "../hooks/useLocalShortcuts";
 import { useTheme } from "../contexts/ThemeContext";
+import { secureStorage } from "../../services/secureStorage";
 
 interface SettingsModalProps {
 	isOpen: boolean;
@@ -29,14 +30,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	const { shortcuts, updateShortcut, resetToDefaults } = useLocalShortcuts();
 	const { settings, updateSetting, resetTheme } = useTheme();
 
+
+
 	useEffect(() => {
 		if (isOpen) {
-			const storedKey = localStorage.getItem("gemini_api_key");
-			const storedPath = localStorage.getItem("lumina_db_path");
-			if (storedKey) setApiKey(storedKey);
-			if (storedPath) setDbPath(storedPath);
-			else setDbPath(""); 
-			setIsSaved(false);
+			const loadSettings = async () => {
+				// Load API Key
+				try {
+					const secureKey = await secureStorage.getApiKey();
+					if (secureKey) setApiKey(secureKey);
+					else {
+						// Fallback check
+						const storedKey = localStorage.getItem("gemini_api_key");
+						if (storedKey) setApiKey(storedKey);
+					}
+				} catch (e) {
+					console.error("Failed to load secure key:", e);
+				}
+
+				// Load DB Path
+				const storedPath = localStorage.getItem("lumina_db_path");
+				if (storedPath) setDbPath(storedPath);
+				else setDbPath(""); 
+				
+				setIsSaved(false);
+			};
+			loadSettings();
 		}
 	}, [isOpen]);
 
@@ -55,11 +74,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 		}
 	};
 
-	const handleSave = () => {
+	const handleSave = async () => {
 		if (apiKey.trim()) {
-			localStorage.setItem("gemini_api_key", apiKey.trim());
-		} else {
+			await secureStorage.saveApiKey(apiKey.trim());
+			// Clear legacy localstorage if present to avoid confusion
 			localStorage.removeItem("gemini_api_key");
+		} else {
+			await secureStorage.clearApiKey();
 		}
 
 		if (dbPath) {
@@ -75,8 +96,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 		}, 800);
 	};
 
-	const handleClear = () => {
-		localStorage.removeItem("gemini_api_key");
+	const handleClear = async () => {
+		await secureStorage.clearApiKey();
 		setApiKey("");
 	};
 
