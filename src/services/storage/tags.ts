@@ -14,7 +14,7 @@ import type {
 // ==================== UTILITIES ====================
 
 /**
- * Generate a unique ID by combining a prefix with a nanoid
+ * Generate a unique ID with a given prefix using nanoid
  */
 const generateId = (prefix: string): string => {
 	return `${prefix}-${nanoid()}`;
