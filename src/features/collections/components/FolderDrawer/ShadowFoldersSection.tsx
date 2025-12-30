@@ -4,6 +4,7 @@ import { Icon } from "../../../../shared/components/Icon";
 import { Button } from "../../../../shared/components/ui";
 import { Folder as FolderType, Collection } from "../../../../shared/types";
 import { FolderItem } from "./FolderItem";
+import { useTheme } from "../../../../shared/contexts/ThemeContext";
 
 interface ShadowFoldersSectionProps {
   folders: FolderType[];
@@ -22,6 +23,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
   activeCollection,
   onColorFilterChange,
 }) => {
+  const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSelect = (id: string) => {
@@ -37,19 +39,19 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
         onClick={toggleSection}
         className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
           isExpanded
-            ? "bg-primary/10 border-primary/20 shadow-lg shadow-primary/20"
-            : "hover:bg-primary/5 border-transparent"
+            ? "bg-quaternary/10 border-quaternary/20 shadow-lg shadow-quaternary/20"
+            : "hover:bg-quaternary/5 border-transparent"
         }`}
       >
-        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-primary">
-          <Icon action="hard_drive" size={14} className="text-primary" />
+        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-quaternary">
+          <Icon action={settings.quaternaryIcon} size={14} className="text-quaternary" />
           <span>Dossiers de Travail</span>
         </p>
           <span
             className={`text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
               isExpanded
-                ? "bg-primary/20 text-primary"
-                : "bg-primary/10 text-primary/70"
+                ? "bg-quaternary/20 text-quaternary"
+                : "bg-quaternary/10 text-quaternary/70"
             }`}
           >
             {folders.length}
@@ -63,7 +65,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
               onImportFolder();
             }}
             disabled={!activeCollection}
-            className="h-6 w-6 text-primary hover:text-white hover:bg-primary/20 rounded-md transition-colors"
+            className="h-6 w-6 text-quaternary hover:text-white hover:bg-quaternary/20 rounded-md transition-colors"
             title="Ajouter un dossier source"
           >
             <Icon action="add" size={14} />
@@ -71,7 +73,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
 
           <Icon action="next"
             size={14}
-            className={`transition-transform duration-300 text-primary ${
+            className={`transition-transform duration-300 text-quaternary ${
               isExpanded ? "rotate-90" : "opacity-50"
             }`}
           />
@@ -100,8 +102,8 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
                     isActive={activeFolderId.has(folder.id)}
                     onSelect={handleSelect}
                     iconAction="hard_drive"
-                    iconColorClass="text-primary"
-                    iconBgClass="bg-primary/10"
+                    iconColorClass="text-quaternary"
+                    iconBgClass="bg-quaternary/10"
                   />
                 ))}
               </div>

@@ -23,9 +23,9 @@ import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./shared/types";
 import { AnimatePresence, motion } from "framer-motion";
 
 // Contexts
-import { useCollections } from "./contexts/CollectionsContext";
-import { useLibrary } from "./contexts/LibraryContext";
-import { useSelection } from "./contexts/SelectionContext";
+import { useCollections } from "./shared/contexts/CollectionsContext";
+import { useLibrary } from "./shared/contexts/LibraryContext";
+import { useSelection } from "./shared/contexts/SelectionContext";
 import {
   useBatchAI,
   useKeyboardShortcuts,

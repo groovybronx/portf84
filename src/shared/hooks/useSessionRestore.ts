@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { storageService } from "../../services/storageService";
 import { verifyPermission } from "../utils";
-import { useProgress } from "../../contexts/ProgressContext";
+import { useProgress } from "../contexts/ProgressContext";
 
 export const useSessionRestore = (
   loadPath: (path: string) => Promise<void>,
@@ -45,6 +45,7 @@ export const useSessionRestore = (
 
       for (let i = 0; i < storedItems.length; i++) {
         const item = storedItems[i];
+        if (!item) continue;
 
         if (!item.isRoot) {
           await loadPath(item.id); // item.id is the path in our SQLite implementation

@@ -2,6 +2,7 @@ import { PortfolioItem } from "../types";
 import { readDir, stat } from "@tauri-apps/plugin-fs";
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { join } from "@tauri-apps/api/path";
+import { isImageFile, IMAGE_MIME_TYPES } from "../constants";
 
 // Recursive function to walk directory path using Tauri FS
 export async function scanDirectory(
@@ -24,7 +25,7 @@ export async function scanDirectory(
 		const entryFullPath = await join(basePath, relativePath);
 
 		if (entry.isFile) {
-			if (entry.name.match(/\.(png|jpe?g|gif|webp|svg)$/i)) {
+			if (isImageFile(entry.name)) {
 				const fileStat = await stat(entryFullPath);
 
 				const assetUrl = convertFileSrc(entryFullPath);
@@ -46,9 +47,8 @@ export async function scanDirectory(
 					console.warn(`Failed to get dimensions for ${entry.name}`, e);
 				}
 
-				const ext = entry.name.split(".").pop()?.toLowerCase();
-				const mimeType =
-					ext === "jpg" || ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
+				const ext = entry.name.split(".").pop()?.toLowerCase() as keyof typeof IMAGE_MIME_TYPES;
+				const mimeType = IMAGE_MIME_TYPES[ext] || `image/${ext}`;
 
 				const item: PortfolioItem = {
 					id: entryFullPath, // Using full path as ID

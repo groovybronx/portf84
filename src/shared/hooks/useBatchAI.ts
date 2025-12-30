@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { PortfolioItem } from "../types";
 
 import { analyzeImage } from "../../features/vision";
-import { useProgress } from "../../contexts/ProgressContext";
+import { useProgress } from "../contexts/ProgressContext";
 
 export const useBatchAI = (updateItem: (item: PortfolioItem) => void) => {
   const [aiQueue, setAiQueue] = useState<PortfolioItem[]>([]);

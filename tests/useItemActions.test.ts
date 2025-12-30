@@ -10,17 +10,19 @@ vi.mock("../src/features/vision/services/geminiService", () => ({
 }));
 
 describe("useItemActions", () => {
-	let mockUpdateItem: ReturnType<typeof vi.fn>;
-	let mockClearSelection: ReturnType<typeof vi.fn>;
-	let mockSetSelectedIds: ReturnType<typeof vi.fn>;
-	let mockCreateVirtualFolder: ReturnType<typeof vi.fn>;
-	let mockMoveItemsToFolder: ReturnType<typeof vi.fn>;
-	let mockSetIsMoveModalOpen: ReturnType<typeof vi.fn>;
+	let mockUpdateItem: any;
+	let mockUpdateItems: any;
+	let mockClearSelection: any;
+	let mockSetSelectedIds: any;
+	let mockCreateVirtualFolder: any;
+	let mockMoveItemsToFolder: any;
+	let mockSetIsMoveModalOpen: any;
 	let mockItems: PortfolioItem[];
 	let mockSelectedIds: Set<string>;
 
 	beforeEach(() => {
 		mockUpdateItem = vi.fn();
+		mockUpdateItems = vi.fn();
 		mockClearSelection = vi.fn();
 		mockSetSelectedIds = vi.fn();
 		mockCreateVirtualFolder = vi.fn().mockReturnValue("new-folder-id");
@@ -75,26 +77,30 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			await result.current.addTagsToSelection("new-tag");
 
-			expect(mockUpdateItem).toHaveBeenCalledTimes(2);
-			expect(mockUpdateItem).toHaveBeenCalledWith({
-				...mockItems[0],
-				manualTags: ["existing-tag", "new-tag"],
-			});
-			expect(mockUpdateItem).toHaveBeenCalledWith({
-				...mockItems[1],
-				manualTags: ["new-tag"],
-			});
+			expect(mockUpdateItems).toHaveBeenCalledTimes(1);
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{
+					...mockItems[0],
+					manualTags: ["existing-tag", "new-tag"],
+				},
+				{
+					...mockItems[1],
+					manualTags: ["new-tag"],
+				}
+			]);
 		});
 
 		it("should add tag to context menu item when no selection", async () => {
@@ -105,24 +111,28 @@ describe("useItemActions", () => {
 					selectedItem: null,
 					focusedId: null,
 					selectionMode: false,
-					contextMenuItem: mockItems[2],
+					contextMenuItem: mockItems[2] ?? null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			await result.current.addTagsToSelection("context-tag");
 
-			expect(mockUpdateItem).toHaveBeenCalledTimes(1);
-			expect(mockUpdateItem).toHaveBeenCalledWith({
-				...mockItems[2],
-				manualTags: ["context-tag"],
-			});
+			expect(mockUpdateItems).toHaveBeenCalledTimes(1);
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{
+					...mockItems[2],
+					manualTags: ["context-tag"],
+				}
+			]);
 		});
 
 		it("should not duplicate existing tags", async () => {
@@ -137,18 +147,25 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			await result.current.addTagsToSelection("existing-tag");
 
-			expect(mockUpdateItem).not.toHaveBeenCalled();
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{
+					...mockItems[0],
+					// no change expected, existing tag remains
+				}
+			]);
 		});
 
 		it("should do nothing when no items to update", async () => {
@@ -161,18 +178,20 @@ describe("useItemActions", () => {
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			await result.current.addTagsToSelection("tag");
 
-			expect(mockUpdateItem).not.toHaveBeenCalled();
+			expect(mockUpdateItems).not.toHaveBeenCalled();
 		});
 	});
 
@@ -182,26 +201,30 @@ describe("useItemActions", () => {
 				useItemActions({
 					currentItems: mockItems,
 					selectedIds: new Set(),
-					selectedItem: mockItems[0],
+					selectedItem: mockItems[0] ?? null,
 					focusedId: null,
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			result.current.applyColorTagToSelection("#ff0000");
 
-			expect(mockUpdateItem).toHaveBeenCalledWith({
-				...mockItems[0],
-				colorTag: "#ff0000",
-			});
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{
+					...mockItems[0],
+					colorTag: "#ff0000",
+				}
+			]);
 		});
 
 		it("should apply color to multiple selected items in selection mode", () => {
@@ -217,18 +240,24 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			result.current.applyColorTagToSelection("#00ff00");
 
-			expect(mockUpdateItem).toHaveBeenCalledTimes(2);
+			expect(mockUpdateItems).toHaveBeenCalledTimes(1);
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{ ...mockItems[0], colorTag: "#00ff00" },
+				{ ...mockItems[1], colorTag: "#00ff00" }
+			]);
 		});
 
 		it("should apply color to focused item when no selection", () => {
@@ -241,21 +270,25 @@ describe("useItemActions", () => {
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			result.current.applyColorTagToSelection("#0000ff");
 
-			expect(mockUpdateItem).toHaveBeenCalledWith({
-				...mockItems[1],
-				colorTag: "#0000ff",
-			});
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{
+					...mockItems[1],
+					colorTag: "#0000ff",
+				}
+			]);
 		});
 
 		it("should remove color tag when undefined", () => {
@@ -263,27 +296,32 @@ describe("useItemActions", () => {
 				useItemActions({
 					currentItems: mockItems,
 					selectedIds: new Set(),
-					selectedItem: mockItems[0],
+					selectedItem: mockItems[0] ?? null,
 					focusedId: null,
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
 			result.current.applyColorTagToSelection(undefined);
 
-			expect(mockUpdateItem).toHaveBeenCalledWith({
-				...mockItems[0],
-				colorTag: undefined,
-			});
+			expect(mockUpdateItems).toHaveBeenCalledWith([
+				{
+					...mockItems[0],
+					colorTag: undefined,
+				}
+			]);
 		});
+
 	});
 
 	describe("analyzeItem", () => {
@@ -310,16 +348,18 @@ describe("useItemActions", () => {
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
-			await result.current.analyzeItem(mockItems[0]);
+			await result.current.analyzeItem(mockItems[0]!);
 
 			expect(visionModule.analyzeImage).toHaveBeenCalledWith(mockItems[0]);
 			expect(mockUpdateItem).toHaveBeenCalledWith({
@@ -351,16 +391,18 @@ describe("useItemActions", () => {
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
-			await result.current.analyzeItem(mockItems[0]);
+			await result.current.analyzeItem(mockItems[0]!);
 
 			expect(consoleErrorSpy).toHaveBeenCalled();
 			expect(mockUpdateItem).not.toHaveBeenCalled();
@@ -383,11 +425,13 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
@@ -417,11 +461,13 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
@@ -450,11 +496,13 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: null,
 				})
 			);
@@ -477,16 +525,18 @@ describe("useItemActions", () => {
 					selectionMode: false,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
-			result.current.handleContextMove(mockItems[0]);
+			result.current.handleContextMove(mockItems[0]!);
 
 			expect(mockClearSelection).toHaveBeenCalled();
 			expect(mockSetSelectedIds).toHaveBeenCalledWith(new Set(["1"]));
@@ -506,16 +556,18 @@ describe("useItemActions", () => {
 					selectionMode: true,
 					contextMenuItem: null,
 					updateItem: mockUpdateItem,
+					updateItems: mockUpdateItems,
 					clearSelection: mockClearSelection,
 					setSelectedIds: mockSetSelectedIds,
 					createVirtualFolder: mockCreateVirtualFolder,
 					moveItemsToFolder: mockMoveItemsToFolder,
 					setIsMoveModalOpen: mockSetIsMoveModalOpen,
+					setIsAddTagModalOpen: vi.fn(),
 					activeCollection: { id: "col1", name: "Collection 1" },
 				})
 			);
 
-			result.current.handleContextMove(mockItems[0]);
+			result.current.handleContextMove(mockItems[0]!);
 
 			expect(mockClearSelection).not.toHaveBeenCalled();
 			expect(mockSetSelectedIds).not.toHaveBeenCalled();

@@ -78,14 +78,14 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 					<div
 						className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
 							locationInfo.isShadowFolder
-								? "bg-blue-500/10 border border-blue-500/20"
-								: "bg-purple-500/10 border border-purple-500/20"
+								? "bg-quaternary/10 border border-quaternary/20"
+								: "bg-tertiary/10 border border-tertiary/20"
 						}`}
 					>
 						{locationInfo.isShadowFolder ? (
-							<HardDrive size={14} className="text-blue-400" />
+							<HardDrive size={14} className="text-quaternary" />
 						) : (
-							<FolderHeart size={14} className="text-purple-400" />
+							<FolderHeart size={14} className="text-tertiary" />
 						)}
 					</div>
 					<span className="text-xs text-gray-400 truncate">
@@ -132,8 +132,8 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 								onClick={() => onTagClick?.(tag)}
 								className={`px-3 py-1 border rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 ${
 									isSelected
-										? "bg-blue-500 text-white border-blue-400 shadow-lg shadow-blue-500/20"
-										: "bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40"
+										? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+										: "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:border-primary/40"
 								}`}
 							>
 								<Tag size={12} /> {tag}
@@ -148,8 +148,8 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 								onClick={() => onTagClick?.(tag)}
 								className={`px-3 py-1 border rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 ${
 									isSelected
-										? "bg-purple-500 text-white border-purple-400 shadow-lg shadow-purple-500/20"
-										: "bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/40"
+										? "bg-secondary text-white border-secondary shadow-lg shadow-secondary/20"
+										: "bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/20 hover:border-secondary/40"
 								}`}
 							>
 								<Sparkles size={12} /> {tag}

@@ -37,6 +37,34 @@ import {
   Database,
   RotateCcw,
   Palette,
+  // NEW: Extended icon set
+  Briefcase,
+  Package,
+  Archive,
+  Inbox,
+  BookOpen,
+  FolderOpen,
+  FolderClosed,
+  FileBox,
+  Files,
+  Heart,
+  Star,
+  Bookmark,
+  Tag,
+  Tags,
+  Image,
+  Camera,
+  Film,
+  Video,
+  Sparkles,
+  Zap,
+  Flame,
+  Trophy,
+  Target,
+  Rocket,
+  Flag,
+  Crown,
+  Award,
   LucideProps
 } from "lucide-react";
 
@@ -78,7 +106,35 @@ export type IconAction =
   | "layout_grid"
   | "database"
   | "reset"
-  | "palette";
+  | "palette"
+  // NEW: Extended icons
+  | "briefcase"
+  | "package"
+  | "archive"
+  | "inbox"
+  | "book_open"
+  | "folder_open"
+  | "folder_closed"
+  | "file_box"
+  | "files"
+  | "heart"
+  | "star"
+  | "bookmark"
+  | "tag"
+  | "tags"
+  | "image"
+  | "camera"
+  | "film"
+  | "video"
+  | "sparkles"
+  | "zap"
+  | "flame"
+  | "trophy"
+  | "target"
+  | "rocket"
+  | "flag"
+  | "crown"
+  | "award";
 
 // 2. Mapping Registry
 const iconMap: Record<IconAction, React.FC<LucideProps>> = {
@@ -119,6 +175,34 @@ const iconMap: Record<IconAction, React.FC<LucideProps>> = {
   database: Database,
   reset: RotateCcw,
   palette: Palette,
+  // NEW: Extended mappings
+  briefcase: Briefcase,
+  package: Package,
+  archive: Archive,
+  inbox: Inbox,
+  book_open: BookOpen,
+  folder_open: FolderOpen,
+  folder_closed: FolderClosed,
+  file_box: FileBox,
+  files: Files,
+  heart: Heart,
+  star: Star,
+  bookmark: Bookmark,
+  tag: Tag,
+  tags: Tags,
+  image: Image,
+  camera: Camera,
+  film: Film,
+  video: Video,
+  sparkles: Sparkles,
+  zap: Zap,
+  flame: Flame,
+  trophy: Trophy,
+  target: Target,
+  rocket: Rocket,
+  flag: Flag,
+  crown: Crown,
+  award: Award,
 };
 
 interface IconProps extends LucideProps {

@@ -1,8 +1,8 @@
 import React from "react";
 import { PortfolioItem } from "../../../shared/types";
 import { motion } from "framer-motion";
-import { useLibrary } from "../../../contexts/LibraryContext";
-import { useSelection } from "../../../contexts/SelectionContext";
+import { useLibrary } from "../../../shared/contexts/LibraryContext";
+import { useSelection } from "../../../shared/contexts/SelectionContext";
 
 interface PhotoListProps {
 	onSelect: (item: PortfolioItem) => void;
@@ -59,8 +59,8 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 							className={`
                 glass-surface rounded-xl p-4 flex gap-4 cursor-pointer
                 hover:border-glass-border-light transition-all
-                ${isFocused ? "ring-2 ring-blue-500" : ""}
-                ${isSelected ? "bg-blue-500/10 border-blue-500/50" : ""}
+                ${isFocused ? "ring-2 ring-primary" : ""}
+                ${isSelected ? "bg-primary/10 border-primary/50" : ""}
               `}
 							onClick={() => onSelect(item)}
 							onMouseEnter={() => onHover?.(item)}
@@ -79,7 +79,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 										checked={isSelected}
 										onChange={() => toggleSelection(item.id)}
 										onClick={(e) => e.stopPropagation()}
-										className="w-5 h-5 rounded border-glass-border-light bg-glass-bg checked:bg-blue-500 cursor-pointer"
+										className="w-5 h-5 rounded border-glass-border-light bg-glass-bg checked:bg-primary cursor-pointer"
 									/>
 								</div>
 							)}
@@ -134,8 +134,8 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                         px-2 py-1 text-xs rounded-full transition-colors
                         ${
 													selectedTag === tag
-														? "bg-blue-500 text-white"
-														: "bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
+														? "bg-primary text-white"
+														: "bg-primary/20 text-primary hover:bg-primary/30"
 												}
                       `}
 										>
@@ -153,8 +153,8 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                         px-2 py-1 text-xs rounded-full transition-colors
                         ${
 													selectedTag === tag
-														? "bg-purple-500 text-white"
-														: "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
+														? "bg-secondary text-white"
+														: "bg-secondary/20 text-secondary hover:bg-secondary/30"
 												}
                       `}
 										>

@@ -2,8 +2,8 @@ import React, { useRef, useMemo, useState, useEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { PortfolioItem, Folder, Collection } from "../../../shared/types";
 import { PhotoCard } from "./PhotoCard";
-import { useLibrary } from "../../../contexts/LibraryContext";
-import { useSelection } from "../../../contexts/SelectionContext";
+import { useLibrary } from "../../../shared/contexts/LibraryContext";
+import { useSelection } from "../../../shared/contexts/SelectionContext";
 
 interface PhotoGridProps {
 	onSelect: (item: PortfolioItem) => void;
