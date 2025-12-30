@@ -43,6 +43,10 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
    - Système de tagging couleur
    - Drag & Drop
    - Sélection multiple
+5. [Knowledge Base](KnowledgeBase/01_Project_Overview.md)
+   - Aperçu complet du projet
+   - Détails techniques approfondis
+   - Guide développeur & FAQ
 
 ---
 
