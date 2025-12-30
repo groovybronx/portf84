@@ -1,0 +1,17 @@
+{
+  "generic": "Une erreur est survenue",
+  "tryAgain": "Veuillez réessayer",
+  "failedToLoad": "Échec du chargement des données",
+  "failedToSave": "Échec de l'enregistrement",
+  "apiKeyMissing": "La clé API est manquante",
+  "apiKeyInvalid": "La clé API est invalide",
+  "apiKeyError": "Échec de l'authentification avec l'API",
+  "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
+  "databaseError": "Erreur de base de données",
+  "fileNotFound": "Fichier introuvable",
+  "permissionDenied": "Permission refusée",
+  "invalidFormat": "Format de fichier invalide",
+  "analysisError": "L'analyse IA a échoué",
+  "analysisFailed": "Échec de l'analyse de l'image",
+  "noApiKey": "Aucune clé API configurée. Veuillez ajouter votre clé API Gemini dans les Paramètres."
+}

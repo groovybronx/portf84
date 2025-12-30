@@ -9,6 +9,10 @@ import tagsEN from './locales/en/tags.json';
 import tagsFR from './locales/fr/tags.json';
 import settingsEN from './locales/en/settings.json';
 import settingsFR from './locales/fr/settings.json';
+import libraryEN from './locales/en/library.json';
+import libraryFR from './locales/fr/library.json';
+import errorsEN from './locales/en/errors.json';
+import errorsFR from './locales/fr/errors.json';
 
 // Configure i18next
 i18n
@@ -20,16 +24,20 @@ i18n
         common: commonEN,
         tags: tagsEN,
         settings: settingsEN,
+        library: libraryEN,
+        errors: errorsEN,
       },
       fr: {
         common: commonFR,
         tags: tagsFR,
         settings: settingsFR,
+        library: libraryFR,
+        errors: errorsFR,
       },
     },
     fallbackLng: 'en', // Default language if detection fails
     defaultNS: 'common', // Default namespace
-    ns: ['common', 'tags', 'settings'],
+    ns: ['common', 'tags', 'settings', 'library', 'errors'],
     
     interpolation: {
       escapeValue: false, // React already escapes values
