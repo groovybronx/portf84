@@ -37,7 +37,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - `backup-dec23-1433`, `feat/macos-deployment-tauri`, `fix/black-screen-restoration`
 - `luminaV2`, `optimization-grid`, `optimization/core-refactor`, `refactor/code-cleanup-dec24`
 
-**2. Suppression de Branches Distantes (8 branches)** :
+**2. Suppression de Branches Distantes (9 branches)** :
 - Suppression sur GitHub des 7 branches vides ci-dessus
 - Suppression également de `lumina-v2.01` et `luminav2.011` (contenu non fusionné mais obsolète)
 
