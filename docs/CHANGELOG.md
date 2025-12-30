@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 30/12/2025 à 17:20
+Dernière mise à jour : 30/12/2025 à 19:05
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,19 +8,103 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Nettoyage & Organisation du Repository
+**Session en cours** : Synchronisation GitHub & Évolution Système de Tags
 
 **Progression** :
-- ✅ Réorganisation documentation (docs/KnowledgeBase/) : 100% complété
-- ✅ Suppression code mort (geminiService.ts legacy) : 100% complété
-- ✅ Configuration GitHub (Templates PR/Issues) : 100% complété
-- ✅ Vérification Build & Tests : 100% complété
+- ✅ Synchronisation GitHub (develop & main) : 100% complété
+- ✅ Intégration Agents Copilot Spécialisés (.github/agents/) : 100% complété
+- ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
+- ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
+- ✅ Couverture Tests (84 tests au total) : 100% complété
 
 **Prochaines étapes** :
-- [ ] Continuer l'implémentation des fonctionnalités Phase 4
-- [ ] Optimisation des performances sur les grandes collections
+- [ ] Stabiliser les nouvelles fonctionnalités de fusion d'alias
+- [ ] Optimisation des performances sur les grandes collections de tags
+- [ ] Exploration de la fusion sémantique via Gemini AI
 
-**Dernière modification** : 30/12/2025 à 17:20
+**Dernière modification** : 30/12/2025 à 19:40
+
+## [30/12/2025 - 19:40] - Nettoyage des Branches Git Obsolètes
+
+### Type : Maintenance / Cleanup
+
+**Composants** :
+- Branches locales et distantes
+
+**Changements** :
+
+**1. Suppression de Branches Locales (7 branches vides)** :
+- `backup-dec23-1433`, `feat/macos-deployment-tauri`, `fix/black-screen-restoration`
+- `luminaV2`, `optimization-grid`, `optimization/core-refactor`, `refactor/code-cleanup-dec24`
+
+**2. Suppression de Branches Distantes (9 branches)** :
+- Suppression sur GitHub des 7 branches vides ci-dessus
+- Suppression également de `lumina-v2.01` et `luminav2.011` (contenu non fusionné mais obsolète)
+
+**3. Branches Conservées** :
+- `main` et `develop` (branches principales)
+- `copilot/improve-tags-system-analysis` (travail sur le système de tags)
+- `feat/theme-system-v4` (migration des Contexts)
+- `feat/app-development` (développement en cours)
+
+**Impact** : Repository beaucoup plus propre et lisible, avec seulement les branches actives conservées.
+
+---
+
+## [30/12/2025 - 19:35] - Synchronisation Globale & Agents Copilot Spécialisés
+
+### Type : Maintenance / CI/CD / Documentation
+
+**Composants** :
+- `.github/agents/` (Nouveaux agents Copilot)
+- Gestion des branches `main` et `develop`
+
+**Changements** :
+
+**1. Synchronisation des Branches** :
+- Mise à jour de la branche `main` locale par alignement avec `origin/main`.
+- Fusion de `main` dans `develop` pour assurer la cohérence des outils de développement.
+
+**2. Agents Copilot Spécialisés** :
+- Intégration d'une suite d'instructions spécialisées pour GitHub Copilot couvrant les domaines clés du repository : Architecture, Frontend React, Backend Tauri/Rust, SQLite, Tests Vitest, et Intégration Gemini AI.
+- Ces agents permettent une assistance au code plus contextuelle et précise.
+
+**Impact** : Environnement de développement parfaitement synchronisé avec le dépôt distant et amélioration notable de l'assistance IA grâce aux agents spécialisés.
+
+---
+
+## [30/12/2025 - 19:05] - Évolution Majeure : Système de Tags & Synchronisation GitHub
+
+### Type : Feature / Refactor / Documentation / Testing
+
+**Composants** :
+- `src/features/tags/` (TagManager, TagManagerModal)
+- `src/services/storage/` (db.ts, tags.ts)
+- `src/services/tagAnalysisService.ts`
+- `docs/TAG_SYSTEM_GUIDE.md` (Nouveau)
+- `docs/TAG_SYSTEM_README.md` (Nouveau)
+- `tests/tagSystem.test.ts` (Nouveau)
+
+**Changements** :
+
+**1. Système de Tags Robuste** :
+- **Gestion des Alias** : Création de la table `tag_aliases` pour lier des termes similaires (typos, pluriels) à un tag parent. Suggestions intelligentes dans l'UI.
+- **Historique de Fusion** : Création de la table `tag_merges` pour garder une trace d'audit de toutes les fusions effectuées.
+- **Fusion par Lot (Batch Merge)** : Possibilité de fusionner toutes les suggestions de redondance en une seule opération sécurisée.
+- **Normalisation Avancée** : Amélioration de la détection de similarité (Levenshtein, Jaccard, suppression des stop words FR/EN).
+
+**2. Documentation Technique** :
+- Création d'un guide complet (`TAG_SYSTEM_GUIDE.md`) détaillant les algorithmes, les schémas de base de données et les flux de données.
+- Création d'un README rapide pour les opérations courantes.
+
+**3. Qualité et Tests** :
+- Ajout de 41 nouveaux tests unitaires pour le système de tags, portant le total à 84 tests.
+- 100% de réussite sur l'ensemble de la suite de tests.
+- Optimisation pour les large datasets (> 5000 tags).
+
+**Impact** : Une gestion de bibliothèque beaucoup plus intelligente et robuste, éliminant la fragmentation des tags et offrant une base technique documentée pour les évolutions IA futures.
+
+---
 
 ## [30/12/2025 - 17:20] - Nettoyage et Organisation du Repository
 
