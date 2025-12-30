@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Icon, type IconAction } from "./Icon";
 import { open } from "@tauri-apps/plugin-dialog";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { useTranslation } from "react-i18next";
 import { useLocalShortcuts, ShortcutMap } from "../hooks/useLocalShortcuts";
 import { useTheme } from "../contexts/ThemeContext";
 import { secureStorage } from "../../services/secureStorage";
@@ -14,7 +15,7 @@ interface SettingsModalProps {
 	onToggleCinematicCarousel?: (enabled: boolean) => void;
 }
 
-type SettingsTab = "general" | "appearance" | "storage" | "shortcuts";
+type SettingsTab = "general" | "language" | "appearance" | "storage" | "shortcuts";
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
 	isOpen,
@@ -22,6 +23,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	useCinematicCarousel = false,
 	onToggleCinematicCarousel,
 }) => {
+	const { t, i18n } = useTranslation(['settings', 'common']);
 	const [activeTab, setActiveTab] = useState<SettingsTab>("general");
 	const [apiKey, setApiKey] = useState("");
 	const [dbPath, setDbPath] = useState("");
@@ -133,6 +135,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 								onClick={() => setActiveTab("general")} 
 								icon={<Icon action="key" size={18} />} 
 								label="General & AI" 
+							/>
+							<NavButton 
+								active={activeTab === "language"} 
+								onClick={() => setActiveTab("language")} 
+								icon={<Icon action="globe" size={18} />} 
+								label="Language" 
 							/>
 							<NavButton 
 								active={activeTab === "appearance"} 
@@ -248,7 +256,71 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 								
 
 									</div>
-								)}
+									)}
+
+				{/* TAB: LANGUAGE */}
+				{activeTab === "language" && (
+					<div className="space-y-8 max-w-lg">
+						<div className="space-y-4">
+							<div className="space-y-2">
+								<label className="text-sm font-medium text-white/70">
+									Select Language / Sélectionner la langue
+								</label>
+								<p className="text-xs text-white/40 leading-relaxed">
+									Choose your preferred language for the interface.
+								</p>
+							</div>
+
+							{/* Language Selection */}
+							<div className="space-y-3">
+								{[
+									{ code: 'en', name: 'English', flag: '🇬🇧', nativeName: 'English' },
+									{ code: 'fr', name: 'Français', flag: '🇫🇷', nativeName: 'Français' },
+								].map((lang) => (
+									<button
+										key={lang.code}
+										onClick={() => i18n.changeLanguage(lang.code)}
+										className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all group ${
+											i18n.language === lang.code || i18n.language.startsWith(lang.code)
+												? 'bg-primary/10 border-primary/50 ring-2 ring-primary/20'
+												: 'bg-glass-bg-accent border-glass-border hover:border-glass-border-light hover:bg-glass-bg-active'
+										}`}
+									>
+										<div className="flex items-center gap-4">
+											<span className="text-4xl">{lang.flag}</span>
+											<div className="text-left">
+												<div className="text-sm font-semibold text-white">
+													{lang.nativeName}
+												</div>
+												<div className="text-xs text-white/50">
+													{lang.name}
+												</div>
+											</div>
+										</div>
+										{(i18n.language === lang.code || i18n.language.startsWith(lang.code)) && (
+											<div className="flex items-center gap-2">
+												<span className="text-xs font-medium text-primary">Active</span>
+												<Icon action="check" size={18} className="text-primary" />
+											</div>
+										)}
+									</button>
+								))}
+							</div>
+
+							{/* Info Box */}
+							<div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 flex gap-3 mt-6">
+								<Icon action="alert" className="w-5 h-5 text-blue-400 shrink-0" />
+								<div className="text-xs text-blue-200/80 space-y-1">
+									<p className="font-medium">Language Preference Saved</p>
+									<p className="text-blue-200/60">
+										Your language choice is automatically saved and will be remembered across sessions.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+
 
 								{/* TAB: APPEARANCE */}
 								{activeTab === "appearance" && (
