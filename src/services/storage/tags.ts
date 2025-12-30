@@ -2,6 +2,7 @@
  * Tags Management Module
  * CRUD operations for normalized tags
  */
+import { nanoid } from "nanoid";
 import { getDB } from "./db";
 import type {
 	DBTag,
