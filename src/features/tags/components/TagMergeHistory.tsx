@@ -20,10 +20,12 @@ const ITEMS_PER_PAGE = 20;
 export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClose }) => {
     const [history, setHistory] = useState<MergeHistoryEntry[]>([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
 
     const loadHistory = async () => {
         setLoading(true);
+        setError(null);
         try {
             const db = await getDB();
             
@@ -49,6 +51,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
             setHistory(enrichedHistory);
         } catch (e) {
             console.error("Failed to load merge history", e);
+            setError("Failed to load merge history. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -134,6 +137,20 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                     <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
                                     <p className="text-sm text-white/50">Loading history...</p>
                                 </div>
+                            ) : error ? (
+                                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                                    <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
+                                        <X className="w-8 h-8 text-red-400" />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-white">Error Loading History</h3>
+                                    <p className="text-sm text-white/40 max-w-xs mx-auto text-center">{error}</p>
+                                    <button 
+                                        onClick={loadHistory}
+                                        className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 rounded-lg text-blue-300 text-sm font-medium transition-colors"
+                                    >
+                                        Try Again
+                                    </button>
+                                </div>
                             ) : history.length === 0 ? (
                                 <div className="text-center py-12 space-y-3">
                                     <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto">
@@ -145,14 +162,13 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                     </p>
                                 </div>
                             ) : (
-                                <div className="space-y-3">
+                                <div className="space-y-3" role="table" aria-label="Tag merge history">
                                     {/* Table Header */}
-                                    <div className="grid grid-cols-12 gap-4 px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10">
-                                        <div className="col-span-3">Date</div>
-                                        <div className="col-span-3">Target Tag</div>
-                                        <div className="col-span-3">Source Tag</div>
-                                        <div className="col-span-2">Merge Type</div>
-                                        <div className="col-span-1">Action</div>
+                                    <div className="grid grid-cols-11 gap-4 px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10" role="row">
+                                        <div className="col-span-3" role="columnheader">Date</div>
+                                        <div className="col-span-4" role="columnheader">Target Tag</div>
+                                        <div className="col-span-3" role="columnheader">Source Tag</div>
+                                        <div className="col-span-1" role="columnheader">Type</div>
                                     </div>
 
                                     {/* Table Rows */}
@@ -161,22 +177,23 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                             key={entry.id}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="grid grid-cols-12 gap-4 px-4 py-3 bg-glass-bg-accent border border-glass-border rounded-lg hover:border-white/20 transition-colors items-center"
+                                            className="grid grid-cols-11 gap-4 px-4 py-3 bg-glass-bg-accent border border-glass-border rounded-lg hover:border-white/20 transition-colors items-center"
+                                            role="row"
                                         >
-                                            <div className="col-span-3 text-sm text-white/70">
+                                            <div className="col-span-3 text-sm text-white/70" role="cell">
                                                 {formatDate(entry.mergedAt)}
                                             </div>
-                                            <div className="col-span-3">
+                                            <div className="col-span-4" role="cell">
                                                 <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-500/30 inline-block">
                                                     {entry.targetTagName}
                                                 </span>
                                             </div>
-                                            <div className="col-span-3">
+                                            <div className="col-span-3" role="cell">
                                                 <span className="px-3 py-1.5 rounded-full bg-red-500/10 text-red-300/70 text-sm border border-red-500/20 inline-block line-through decoration-red-400/50">
                                                     {entry.sourceTagName}
                                                 </span>
                                             </div>
-                                            <div className="col-span-2">
+                                            <div className="col-span-1" role="cell">
                                                 <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                     entry.mergedBy === 'auto' 
                                                         ? 'bg-purple-500/20 text-purple-200 border border-purple-500/30'
@@ -184,9 +201,6 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                                 }`}>
                                                     {formatMergeType(entry.mergedBy)}
                                                 </span>
-                                            </div>
-                                            <div className="col-span-1 text-xs text-white/30">
-                                                —
                                             </div>
                                         </motion.div>
                                     ))}
@@ -205,6 +219,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                         disabled={currentPage === 1}
                                         className="p-2 rounded-lg bg-glass-bg-accent border border-glass-border hover:border-white/30 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                        aria-label="Previous page"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>
@@ -215,6 +230,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                                         disabled={currentPage === totalPages}
                                         className="p-2 rounded-lg bg-glass-bg-accent border border-glass-border hover:border-white/30 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                        aria-label="Next page"
                                     >
                                         <ChevronRight size={16} />
                                     </button>
