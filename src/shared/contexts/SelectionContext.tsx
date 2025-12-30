@@ -5,7 +5,7 @@ import React, {
 	useCallback,
 	useRef,
 } from "react";
-import { PortfolioItem, ViewMode } from "../shared/types";
+import { PortfolioItem, ViewMode } from "../types";
 
 // Types
 interface SelectionState {

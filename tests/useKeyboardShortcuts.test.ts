@@ -4,15 +4,15 @@ import { useKeyboardShortcuts } from "../src/shared/hooks/useKeyboardShortcuts";
 import { PortfolioItem, COLOR_PALETTE } from "../src/shared/types";
 
 describe("useKeyboardShortcuts", () => {
-	let mockSetFocusedId: ReturnType<typeof vi.fn>;
-	let mockSetSelectedItem: ReturnType<typeof vi.fn>;
-	let mockApplyColorTagToSelection: ReturnType<typeof vi.fn>;
+	let mockSetFocusedId: (id: string) => void;
+	let mockSetSelectedItem: (item: PortfolioItem) => void;
+	let mockApplyColorTagToSelection: (color: string | undefined) => void;
 	let mockItems: PortfolioItem[];
 
 	beforeEach(() => {
-		mockSetFocusedId = vi.fn();
-		mockSetSelectedItem = vi.fn();
-		mockApplyColorTagToSelection = vi.fn();
+		mockSetFocusedId = vi.fn() as (id: string) => void;
+		mockSetSelectedItem = vi.fn() as (item: PortfolioItem) => void;
+		mockApplyColorTagToSelection = vi.fn() as (color: string | undefined) => void;
 
 		// Create mock items
 		mockItems = [

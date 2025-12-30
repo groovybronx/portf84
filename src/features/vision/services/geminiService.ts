@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { PortfolioItem, AiTagDetailed } from "../../../shared/types";
+import { STORAGE_KEYS } from "../../../shared/constants";
 
 // Helper to convert File/Blob to Base64 (Standard implementation)
 const processFileToBase64 = (file: File): Promise<string> => {
@@ -23,8 +24,37 @@ const processFileToBase64 = (file: File): Promise<string> => {
 	});
 };
 
-const getApiKey = (): string => {
-	const storedKey = localStorage.getItem("gemini_api_key");
+export class GeminiError extends Error {
+  constructor(message: string, public code: string) {
+    super(message);
+    this.name = "GeminiError";
+  }
+}
+
+export class ApiKeyError extends GeminiError {
+  constructor() {
+    super("Missing Gemini API Key. Please configure it in Settings.", "MISSING_API_KEY");
+    this.name = "ApiKeyError";
+  }
+}
+
+export class NetworkError extends GeminiError {
+  constructor(originalError: any) {
+    super("Network connection failed. Please check your internet connection.", "NETWORK_ERROR");
+    this.name = "NetworkError";
+    this.cause = originalError;
+  }
+}
+
+import { secureStorage } from "../../../services/secureStorage";
+
+const getApiKey = async (): Promise<string> => {
+	// First try secure storage (App Data DB/File)
+	const secureKey = await secureStorage.getApiKey();
+	if (secureKey) return secureKey;
+
+	// Fallback to localStorage (Legacy/Dev)
+	const storedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
 	if (storedKey) return storedKey;
 
 	// Note: standard Vite env access
@@ -42,7 +72,7 @@ const getApiKey = (): string => {
 		return process.env.API_KEY;
 	}
 
-	throw new Error("Missing Gemini API Key. Please configure it in Settings.");
+	throw new ApiKeyError();
 };
 
 export const analyzeImage = async (
@@ -52,7 +82,7 @@ export const analyzeImage = async (
 	tags: string[];
 	tagsDetailed: AiTagDetailed[];
 }> => {
-	const apiKey = getApiKey();
+	const apiKey = await getApiKey();
 
 	if (!item.file && !item.url) {
 		throw new Error("Cannot analyze image: File object and URL not available.");
@@ -129,9 +159,17 @@ export const analyzeImage = async (
 			tags,
 			tagsDetailed,
 		};
-	} catch (error) {
+	} catch (error: any) {
 		console.error("Gemini Analysis Error:", error);
-		throw error;
+		if (error instanceof GeminiError) throw error;
+		
+		if (error.message?.includes("API key")) {
+			throw new ApiKeyError();
+		}
+		if (error.message?.includes("network") || error.message?.includes("fetch")) {
+			throw new NetworkError(error);
+		}
+		throw new GeminiError(error.message || "Unknown error during analysis", "UNKNOWN_ERROR");
 	}
 };
 
@@ -144,7 +182,7 @@ export const analyzeImageStream = async (
 	tags: string[];
 	tagsDetailed: AiTagDetailed[];
 }> => {
-	const apiKey = getApiKey();
+	const apiKey = await getApiKey();
 
 	if (!item.file && !item.url) {
 		throw new Error("Cannot analyze image: File object and URL not available.");
@@ -276,8 +314,16 @@ export const analyzeImageStream = async (
 			tags,
 			tagsDetailed,
 		};
-	} catch (error) {
+	} catch (error: any) {
 		console.error("Gemini Stream Error:", error);
-		throw error;
+		if (error instanceof GeminiError) throw error;
+
+		if (error.message?.includes("API key")) {
+			throw new ApiKeyError();
+		}
+		if (error.message?.includes("network") || error.message?.includes("fetch")) {
+			throw new NetworkError(error);
+		}
+		throw new GeminiError(error.message || "Unknown error during stream analysis", "UNKNOWN_ERROR");
 	}
 };

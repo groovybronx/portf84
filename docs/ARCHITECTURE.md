@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 25/12/2024 à 04:31
+Dernière mise à jour : 26/12/2024 à 16:00
 
 ## Vue d'Ensemble
 
@@ -61,15 +61,16 @@ src/
   │   └── tags/           # Système de tagging
 ├── shared/             # Ressources transverses
 │   ├── components/     # UI Kit (Button, Modal, GlassCard)
+│   ├── contexts/       # État global optimisé (React Contexts)
+│   │   ├── CollectionsContext.tsx
+│   │   ├── LibraryContext.tsx    # Split en State/Dispatch
+│   │   ├── SelectionContext.tsx
+│   │   ├── ThemeContext.tsx
+│   │   └── ProgressContext.tsx
 │   ├── hooks/          # Hooks réutilisables
 │   ├── types/          # Types globaux (PortfolioItem)
 │   ├── utils/          # Fonctions utilitaires
 │   └── theme/          # Design Tokens
-├── contexts/           # État global optimisé
-│   ├── CollectionsContext.tsx
-│   ├── LibraryContext.tsx    # Split en State/Dispatch
-│   ├── SelectionContext.tsx
-│   └── ProgressContext.tsx
 ├── services/           # Logique métier externe
 │   ├── geminiService.ts
 │   ├── libraryLoader.ts

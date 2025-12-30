@@ -1,4 +1,4 @@
-Dernière mise à jour : 25/12/2024 à 03:36
+Dernière mise à jour : 26/12/2024 à 16:00
 
 # Composants UI & UX
 
@@ -506,20 +506,48 @@ Composant dédié à la gestion des tags manuels.
 
 ---
 
-## 8. SettingsModal (Paramètres)
+## 8. Settings Modal (Paramètres)
 
-Modale de configuration globale.
+Modale de configuration globale avec structure à onglets.
 
 - **Accès** : Icône "Roue crantée" dans la TopBar
-- **Fonction principale** : Définir la **Clé API Gemini**
+- **Onglets** : General & AI, Appearance, Storage, Shortcuts
 - **Persistance** : `localStorage` (survit aux sessions)
 
-```typescript
-const handleSaveKey = (key: string) => {
-  localStorage.setItem("gemini_api_key", key);
-  setIsSettingsOpen(false);
-};
-```
+### Icon Picker (Appearance Tab)
+
+**Nouveau composant intégré pour la sélection d'icônes de thème** (26/12/2024) :
+
+- **Interface** : Chaque ligne de couleur (`ColorRow`) affiche un bouton coloré contenant l'icône actuelle
+- **Interaction** : Clic sur le bouton → Ouverture d'une grille de sélection (8 colonnes, max-height 192px scrollable)
+- **Pool d'icônes** : 40+ icônes disponibles catégorisées :
+  - **Projects/Business** : `box`, `briefcase`, `package`, `archive`, `trophy`, `star`, `crown`, `award`, `target`, `rocket`, `flag`, `inbox`, `book_open`
+  - **Folders/Storage** : `hard_drive`, `folder`, `folder_open`, `folder_closed`, `file_box`, `files`, `database`
+  - **Collections/Favorites** : `folder_heart`, `heart`, `bookmark`, `tag`, `tags`, `library`, `star`
+  - **Visual/Media** : `palette`, `image`, `camera`, `film`, `video`
+  - **Effects** : `sparkles`, `zap`, `flame`
+- **Détection intelligente** : Icônes déjà utilisées par d'autres thèmes grisées et non-cliquables
+- **Animation** : Expansion/collapse fluide via `AnimatePresence` (Framer Motion)
+- **Usage** : Clic sur une icône disponible → Fermeture automatique + Application immédiate
+
+**Composants de thème** :
+- **Primary Interface** (Boutons, focus rings)
+- **AI Intelligence** (Analyse, tags intelligents)
+- **Collections** (Albums virtuels)
+- **Work Folders** (Dossiers physiques)
+- **Projects** (Espaces de travail)
+
+### Icon Component (Extension)
+
+**Système d'icônes unifié avec noms sémantiques** (Extension 26/12/2024) :
+
+- **Registre** : `iconMap` dans [`Icon.tsx`](/Users/davidmichels/gravity app/portf84/src/shared/components/Icon.tsx) (40+ icônes Lucide React)
+- **Type** : `IconAction` (union type avec ~40 noms sémantiques)
+- **Usage** : `<Icon action="box" size={20} className="text-primary" />`
+
+**Actions disponibles** : `settings`, `library`, `folder`, `delete`, `add`, `pin`, `unpin`, `search`, `grid`, `maximize`, `prev`, `next`, `more`, `check`, `close`, `alert`, `info`, `edit`, `share`, `download`, `upload`, `refresh`, `smart_tags`, `chevron_down`, `check_circle`, `circle`, `box`, `hard_drive`, `folder_heart`, `save`, `key`, `external_link`, `keyboard`, `layout_grid`, `database`, `reset`, `palette`, `briefcase`, `package`, `archive`, `inbox`, `book_open`, `folder_open`, `folder_closed`, `file_box`, `files`, `heart`, `star`, `bookmark`, `tag`, `tags`, `image`, `camera`, `film`, `video`, `sparkles`, `zap`, `flame`, `trophy`, `target`, `rocket`, `flag`, `crown`, `award`
+
+**Bénéfice** : Cohérence visuelle personnalisée entre sidebar (FolderDrawer), badges PhotoCards, et UI globale.
 
 ---
 

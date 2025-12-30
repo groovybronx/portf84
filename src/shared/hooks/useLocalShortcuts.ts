@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { STORAGE_KEYS } from "../constants";
 
 export interface ShortcutMap {
 	NAV_UP: string[];
@@ -30,14 +31,12 @@ const DEFAULT_SHORTCUTS: ShortcutMap = {
 	TAG_REMOVE: ["0"],
 };
 
-const STORAGE_KEY = "lumina_shortcuts_config";
-
 export const useLocalShortcuts = () => {
 	const [shortcuts, setShortcuts] = useState<ShortcutMap>(DEFAULT_SHORTCUTS);
 
 	// Load from storage on mount
 	useEffect(() => {
-		const stored = localStorage.getItem(STORAGE_KEY);
+		const stored = localStorage.getItem(STORAGE_KEYS.SHORTCUTS);
 		if (stored) {
 			try {
 				const parsed = JSON.parse(stored);
@@ -52,14 +51,14 @@ export const useLocalShortcuts = () => {
 	const updateShortcut = (action: keyof ShortcutMap, keys: string[]) => {
 		setShortcuts((prev) => {
 			const updated = { ...prev, [action]: keys };
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+			localStorage.setItem(STORAGE_KEYS.SHORTCUTS, JSON.stringify(updated));
 			return updated;
 		});
 	};
 
 	const resetToDefaults = () => {
 		setShortcuts(DEFAULT_SHORTCUTS);
-		localStorage.removeItem(STORAGE_KEY);
+		localStorage.removeItem(STORAGE_KEYS.SHORTCUTS);
 	};
 
 	return { shortcuts, updateShortcut, resetToDefaults };

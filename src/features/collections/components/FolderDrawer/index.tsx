@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
+import { useTheme } from "../../../../shared/contexts/ThemeContext";
 
 import {
   Folder as FolderType,
@@ -54,6 +55,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   activeColorFilter,
   onColorFilterChange,
 }) => {
+  const { settings } = useTheme();
   const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
 
   // Separate shadow folders (linked to source) from manual collections
@@ -89,7 +91,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
 
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
         <div className="space-y-4">
-          <div className="px-1 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+          <div className="px-1 text-xs font-bold text-quinary uppercase tracking-wider mb-2">
             Projets
           </div>
           
@@ -122,24 +124,24 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.3 }} // Faster fade for inner content switch
-                            className="bg-emerald-600/10 border border-emerald-500/30 rounded-xl overflow-hidden mb-4 relative z-10"
+                            className="bg-quinary/10 border border-quinary/30 rounded-xl overflow-hidden mb-4 relative z-10"
                         >
                             {/* Header */}
-                            <motion.div layout="position" className="p-3 flex items-center gap-3 border-b border-emerald-500/20 bg-emerald-600/5">
-                                <div className="p-2 bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-900/20">
-                                    <Icon action="box" size={18} className="text-white" />
+                            <motion.div layout="position" className="p-3 flex items-center gap-3 border-b border-quinary/20 bg-quinary/5">
+                                <div className="p-2 bg-quinary text-white rounded-lg shadow-lg shadow-quinary/20">
+                                    <Icon action={settings.quinaryIcon} size={18} className="text-white" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-white font-bold text-sm truncate leading-tight">
                                         {collection.name}
                                     </h3>
-                                    <p className="text-[10px] text-emerald-200/60 uppercase tracking-wider font-medium">
+                                    <p className="text-[10px] text-quinary/60 uppercase tracking-wider font-medium">
                                         Projet Actif
                                     </p>
                                 </div>
                                 <button 
                                     onClick={onManageCollections}
-                                    className="p-2 hover:bg-emerald-500/20 rounded-lg text-emerald-300 transition-colors"
+                                    className="p-2 hover:bg-quinary/20 rounded-lg text-quinary transition-colors"
                                 >
                                     <Icon action="settings" size={14} />
                                 </button>
@@ -192,10 +194,10 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
                             onClick={() => onSwitchCollection?.(collection.id)}
-                            className="w-full flex items-center gap-3 p-2 rounded-lg text-emerald-100/60 hover:text-white hover:bg-emerald-500/10 hover:opacity-100 transition-all group"
+                            className="w-full flex items-center gap-3 p-2 rounded-lg text-quinary/60 hover:text-white hover:bg-quinary/10 hover:opacity-100 transition-all group"
                         >
                             <Icon action="next" size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <Icon action="box" size={16} className="text-emerald-500/70 group-hover:text-emerald-400" />
+                            <Icon action={settings.quinaryIcon} size={16} className="text-quinary/70 group-hover:text-quinary" />
                             <span className="text-sm font-medium truncate">{collection.name}</span>
                         </motion.button>
                     )}

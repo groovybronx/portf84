@@ -5,8 +5,8 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { Collection, SourceFolder } from "../shared/types";
-import { storageService } from "../services/storageService";
+import { Collection, SourceFolder } from "../types";
+import { storageService } from "../../services/storageService";
 
 // Types
 interface CollectionsState {

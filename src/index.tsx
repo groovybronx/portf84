@@ -2,11 +2,12 @@ import React from "react";
 import "./index.css";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { ProgressProvider } from "./contexts/ProgressContext";
-import { CollectionsProvider } from "./contexts/CollectionsContext";
-import { LibraryProvider } from "./contexts/LibraryContext";
-import { SelectionProvider } from "./contexts/SelectionContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { ProgressProvider } from "./shared/contexts/ProgressContext";
+import { CollectionsProvider } from "./shared/contexts/CollectionsContext";
+import { LibraryProvider } from "./shared/contexts/LibraryContext";
+import { SelectionProvider } from "./shared/contexts/SelectionContext";
+import { ThemeProvider } from "./shared/contexts/ThemeContext";
+import { ErrorBoundary } from "./shared/components/ErrorBoundary";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <CollectionsProvider>
         <LibraryProvider>
           <SelectionProvider>
-            <App />
+            <ErrorBoundary featureName="Root Application">
+              <App />
+            </ErrorBoundary>
           </SelectionProvider>
         </LibraryProvider>
       </CollectionsProvider>

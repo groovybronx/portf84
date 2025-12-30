@@ -3,15 +3,16 @@
  * Handles SQLite initialization and provides the DB instance
  */
 import Database from "@tauri-apps/plugin-sql";
+import { STORAGE_KEYS } from "../../shared/constants";
 
 // Default path is relative to AppData usually
-const DEFAULT_DB_NAME = "lumina.db";
+const DEFAULT_DB_NAME = import.meta.env.VITE_DB_NAME || "lumina.db";
 
 let dbInstance: Database | null = null;
 let dbInitPromise: Promise<Database> | null = null;
 
 const getConnectionString = () => {
-	const customPath = localStorage.getItem("lumina_db_path");
+	const customPath = localStorage.getItem(STORAGE_KEYS.DB_PATH);
 	if (customPath) {
 		// Custom absolute path requires specific handling or just passing the path depending on OS/Plugin
 		// For sql plugin, usually `sqlite:/path/to/db` works for absolute paths on some platforms

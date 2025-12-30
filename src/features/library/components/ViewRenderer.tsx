@@ -15,7 +15,7 @@ export interface ViewRendererProps {
   onHover: (item: PortfolioItem | null) => void;
   onContextMenu: (e: React.MouseEvent, item: PortfolioItem) => void;
   onTagClick: (tag: string) => void;
-  onFocusChange: (id: string) => void;
+  onFocusChange: (id: string | null) => void;
   folders?: Folder[];
   collections?: Collection[];
 }

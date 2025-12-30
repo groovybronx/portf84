@@ -53,7 +53,7 @@ export const FolderItem: React.FC<FolderItemProps> = ({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className={`font-medium text-sm truncate ${isActive ? "text-white" : ""}`}>
+          <p className={`font-medium text-sm truncate ${isActive ? "text-white" : iconColorClass}`}>
             {folder.name}
           </p>
         </div>

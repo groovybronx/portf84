@@ -122,8 +122,16 @@ export const useItemActions = ({
           aiTags: res.tags,
           aiTagsDetailed: res.tagsDetailed,
         });
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
+        if (e.name === "ApiKeyError") {
+          alert(e.message);
+          // TODO: Open Settings Modal automatically
+        } else if (e.name === "NetworkError") {
+          alert("Connection failed. Please check your internet.");
+        } else {
+          alert(`Analysis failed: ${e.message || "Unknown error"}`);
+        }
       }
     },
     [updateItem]

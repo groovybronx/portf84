@@ -12,10 +12,10 @@ import {
   ViewMode,
   SortOption,
   SortDirection,
-} from "../shared/types";
+} from "../types";
 import { useCollections } from "./CollectionsContext";
-import { storageService } from "../services/storageService";
-import { libraryLoader } from "../services/libraryLoader";
+import { storageService } from "../../services/storageService";
+import { libraryLoader } from "../../services/libraryLoader";
 
 // Types
 interface LibraryState {
