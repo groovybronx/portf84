@@ -14,10 +14,10 @@ import type {
 // ==================== UTILITIES ====================
 
 /**
- * Generate a unique ID with a given prefix
+ * Generate a unique ID with a given prefix using nanoid
  */
 const generateId = (prefix: string): string => {
-	return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	return `${prefix}-${nanoid()}`;
 };
 
 // ==================== TAG CRUD ====================
