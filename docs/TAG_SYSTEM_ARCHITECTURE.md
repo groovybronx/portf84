@@ -181,6 +181,8 @@ CREATE INDEX idx_tag_aliases_target ON tag_aliases(targetTagId);
 
 ### Tag Addition Flow
 
+> **Note**: The diagrams below use Mermaid syntax. They will render automatically on GitHub and in most modern markdown viewers. If your viewer doesn't support Mermaid, you can view the rendered diagrams on GitHub or use a tool like [Mermaid Live Editor](https://mermaid.live/).
+
 ```mermaid
 sequenceDiagram
     participant UI as UI Component

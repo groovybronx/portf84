@@ -182,8 +182,16 @@ const syncAllTagsFromMetadata = async (): Promise<number> => {
         let aiTags: string[] = [];
         let manualTags: string[] = [];
         
-        try { aiTags = JSON.parse(metadata.aiTags || '[]'); } catch {}
-        try { manualTags = JSON.parse(metadata.manualTags || '[]'); } catch {}
+        try { 
+            aiTags = JSON.parse(metadata.aiTags || '[]'); 
+        } catch (e) {
+            console.warn('Failed to parse aiTags:', e);
+        }
+        try { 
+            manualTags = JSON.parse(metadata.manualTags || '[]'); 
+        } catch (e) {
+            console.warn('Failed to parse manualTags:', e);
+        }
         
         if (aiTags.length === 0 && manualTags.length === 0) continue;
         
