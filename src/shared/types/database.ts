@@ -157,3 +157,20 @@ export interface DBItemTag {
   tagId: string;
   addedAt: number;
 }
+
+/** Raw tag merge record from database */
+export interface DBTagMerge {
+  id: string;
+  targetTagId: string;
+  sourceTagId: string;
+  mergedAt: number;
+  mergedBy: string | null;
+}
+
+/** Raw tag alias from database */
+export interface DBTagAlias {
+  id: string;
+  aliasName: string;
+  targetTagId: string;
+  createdAt: number;
+}
