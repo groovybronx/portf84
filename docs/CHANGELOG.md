@@ -40,7 +40,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 **2. Clean Code** :
 - Élimination de la redondance du service Gemini en supprimant la version legacy de `src/services/`.
-- Libération de la logique vers le dossier feature vision.
+- La logique a été déplacée vers le dossier de la fonctionnalité 'vision'.
 
 **3. GitHub Setup** :
 - Standardisation des contributions via des templates d'Issue (Bug, Feature) et de Pull Request.
