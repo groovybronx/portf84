@@ -22,7 +22,34 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Optimisation des performances sur les grandes collections de tags
 - [ ] Exploration de la fusion sémantique via Gemini AI
 
-**Dernière modification** : 30/12/2025 à 19:35
+**Dernière modification** : 30/12/2025 à 19:40
+
+## [30/12/2025 - 19:40] - Nettoyage des Branches Git Obsolètes
+
+### Type : Maintenance / Cleanup
+
+**Composants** :
+- Branches locales et distantes
+
+**Changements** :
+
+**1. Suppression de Branches Locales (7 branches vides)** :
+- `backup-dec23-1433`, `feat/macos-deployment-tauri`, `fix/black-screen-restoration`
+- `luminaV2`, `optimization-grid`, `optimization/core-refactor`, `refactor/code-cleanup-dec24`
+
+**2. Suppression de Branches Distantes (8 branches)** :
+- Suppression sur GitHub des 7 branches vides ci-dessus
+- Suppression également de `lumina-v2.01` et `luminav2.011` (contenu non fusionné mais obsolète)
+
+**3. Branches Conservées** :
+- `main` et `develop` (branches principales)
+- `copilot/improve-tags-system-analysis` (travail sur le système de tags)
+- `feat/theme-system-v4` (migration des Contexts)
+- `feat/app-development` (développement en cours)
+
+**Impact** : Repository beaucoup plus propre et lisible, avec seulement les branches actives conservées.
+
+---
 
 ## [30/12/2025 - 19:35] - Synchronisation Globale & Agents Copilot Spécialisés
 
