@@ -50,6 +50,14 @@ await mergeTags(targetTagId, [sourceId1, sourceId2]);
 // Consolidates all items to target tag
 ```
 
+### Choose Merge Direction
+```typescript
+// In Smart Tag Fusion UI:
+// - Click on the ⇄ arrow to cycle through tags as target
+// - Click on any candidate tag to set it as the new target
+// - The tag in BLUE is kept, tags with STRIKETHROUGH are deleted
+```
+
 ### Create Tag Alias
 ```typescript
 import { createTagAlias } from './services/storage/tags';

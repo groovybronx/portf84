@@ -1,0 +1,21 @@
+{
+  "close": "Fermer",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "add": "Ajouter",
+  "remove": "Retirer",
+  "search": "Rechercher",
+  "loading": "Chargement...",
+  "yes": "Oui",
+  "no": "Non",
+  "confirm": "Confirmer",
+  "back": "Retour",
+  "next": "Suivant",
+  "ok": "OK",
+  "error": "Erreur",
+  "success": "Succès",
+  "warning": "Attention",
+  "info": "Info"
+}

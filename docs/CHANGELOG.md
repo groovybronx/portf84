@@ -1,8 +1,66 @@
 # Changelog
 
-Dernière mise à jour : 30/12/2025 à 19:05
+Dernière mise à jour : 31/12/2024 à 00:27
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
+
+---
+
+## 🎯 État Actuel du Projet
+
+**Session en cours** : Amélioration Smart Tag Fusion
+
+**Progression** :
+- ✅ Synchronisation GitHub (develop & main) : 100% complété
+- ✅ Intégration Agents Copilot Spécialisés (.github/agents/) : 100% complété
+- ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
+- ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
+- ✅ Couverture Tests (84 tests au total) : 100% complété
+- ✅ Contrôle du sens de fusion (Merge Direction Control) : 100% complété
+
+**Prochaines étapes** :
+- [ ] Stabiliser les nouvelles fonctionnalités de fusion d'alias
+- [ ] Optimisation des performances sur les grandes collections de tags
+- [ ] Exploration de la fusion sémantique via Gemini AI
+
+**Dernière modification** : 31/12/2024 à 00:27
+
+---
+
+## [31/12/2024 - 00:27] - Contrôle du Sens de Fusion des Tags
+
+### Type : Amélioration / UX
+
+**Composant** : `src/features/tags/components/TagManagerModal.tsx`
+
+**Changements** :
+
+**1. Flèche Bidirectionnelle Interactive** :
+- Remplacement de la flèche unidirectionnelle `→` par une flèche bidirectionnelle cliquable `⇄`
+- Clic sur la flèche pour cycler à travers tous les tags du groupe
+- Indication visuelle claire du sens de fusion
+
+**2. Tags Candidats Cliquables** :
+- Les tags candidats (barrés) sont maintenant cliquables
+- Clic direct sur un tag pour le définir comme nouveau target
+- Tooltips explicatifs sur chaque élément interactif
+
+**3. État Local de Personnalisation** :
+- Ajout de l'état `customTargets` (Map) pour tracker les choix utilisateur
+- Fonctions `toggleMergeDirection()` et `setCustomTarget()` pour gérer les sélections
+- Modification de `handleMerge()` pour utiliser le target sélectionné par l'utilisateur
+
+**4. Indicateurs Visuels Améliorés** :
+- Tag target: Fond bleu avec bordure, effet hover scale
+- Tags candidats: Fond gris, line-through, effet hover
+- Animations fluides lors du changement de target
+
+**Impact** : L'utilisateur a maintenant un contrôle total sur le choix du tag à conserver lors d'une fusion, évitant la perte accidentelle du tag préféré. L'interface est intuitive avec des tooltips explicatifs et des animations fluides.
+
+**Documentation mise à jour** :
+- `docs/TAG_SYSTEM_README.md` : Section "Choose Merge Direction"
+- `docs/TAG_SYSTEM_GUIDE.md` : Phase de Review mise à jour
+- `docs/CHANGELOG.md` : Entrée complète
 
 ---
 
