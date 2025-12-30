@@ -10,6 +10,15 @@ import type {
 	TagType,
 } from "../../shared/types/database";
 
+// ==================== UTILITIES ====================
+
+/**
+ * Generate a unique ID with a given prefix
+ */
+const generateId = (prefix: string): string => {
+	return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+};
+
 // ==================== TAG CRUD ====================
 
 /**
@@ -35,7 +44,7 @@ export const getOrCreateTag = async (
 	}
 
 	// Create new tag
-	const id = `tag-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	const id = generateId('tag');
 	await db.execute(
 		"INSERT INTO tags (id, name, normalizedName, type, confidence, createdAt) VALUES (?, ?, ?, ?, ?, ?)",
 		[id, name, normalizedName, type, confidence ?? null, Date.now()]
@@ -222,12 +231,14 @@ export const getTagsGroupedForItem = async (
 /**
  * Merge multiple tags into a single target tag
  * 1. Links all items from source tags to target tag
- * 2. Deletes source tags
- * 3. Keeps target tag description/metadata
+ * 2. Records merge in history
+ * 3. Deletes source tags
+ * 4. Keeps target tag description/metadata
  */
 export const mergeTags = async (
 	targetTagId: string,
-	sourceTagIds: string[]
+	sourceTagIds: string[],
+	mergedBy: string = "user"
 ): Promise<void> => {
 	const db = await getDB();
 	
@@ -247,7 +258,14 @@ export const mergeTags = async (
 				await addTagToItem(itemId, targetTagId);
 			}
 
-			// 3. Delete the source tag (cascade will remove item_tags entries)
+			// 3. Record merge in history
+			const mergeId = generateId('merge');
+			await db.execute(
+				"INSERT INTO tag_merges (id, targetTagId, sourceTagId, mergedAt, mergedBy) VALUES (?, ?, ?, ?, ?)",
+				[mergeId, targetTagId, sourceId, Date.now(), mergedBy]
+			);
+
+			// 4. Delete the source tag (cascade will remove item_tags entries)
 			await deleteTag(sourceId);
 		}
 		
@@ -298,4 +316,99 @@ export const syncAllTagsFromMetadata = async (): Promise<number> => {
 
     console.log(`[Storage] Resync complete. Processed ${count} items.`);
     return count;
+};
+
+// ==================== TAG ALIASES ====================
+
+/**
+ * Create a tag alias (synonym)
+ * Allows users to type an alias and get suggestions for the canonical tag
+ */
+export const createTagAlias = async (
+	aliasName: string,
+	targetTagId: string
+): Promise<void> => {
+	const db = await getDB();
+	const id = generateId('alias');
+	
+	await db.execute(
+		"INSERT INTO tag_aliases (id, aliasName, targetTagId, createdAt) VALUES (?, ?, ?, ?)",
+		[id, aliasName.toLowerCase().trim(), targetTagId, Date.now()]
+	);
+	
+	console.log(`[Storage] Alias created: ${aliasName} → ${targetTagId}`);
+};
+
+/**
+ * Get the target tag for an alias
+ */
+export const getTagByAlias = async (aliasName: string): Promise<ParsedTag | null> => {
+	const db = await getDB();
+	const normalized = aliasName.toLowerCase().trim();
+	
+	const rows = await db.select<Array<{ id: string; name: string; type: TagType; confidence: number | null }>>(
+		`SELECT t.id, t.name, t.type, t.confidence
+		 FROM tags t
+		 INNER JOIN tag_aliases a ON t.id = a.targetTagId
+		 WHERE a.aliasName = ?`,
+		[normalized]
+	);
+	
+	if (rows.length === 0) return null;
+	
+	const tag = rows[0];
+	if (!tag) return null;
+	
+	return {
+		id: tag.id,
+		name: tag.name,
+		type: tag.type,
+		confidence: tag.confidence ?? undefined,
+	};
+};
+
+/**
+ * Get all aliases for a tag
+ */
+export const getAliasesForTag = async (tagId: string): Promise<string[]> => {
+	const db = await getDB();
+	const rows = await db.select<Array<{ aliasName: string }>>(
+		"SELECT aliasName FROM tag_aliases WHERE targetTagId = ? ORDER BY aliasName",
+		[tagId]
+	);
+	return rows.map(r => r.aliasName);
+};
+
+/**
+ * Delete a tag alias
+ */
+export const deleteTagAlias = async (aliasName: string): Promise<void> => {
+	const db = await getDB();
+	await db.execute(
+		"DELETE FROM tag_aliases WHERE aliasName = ?",
+		[aliasName.toLowerCase().trim()]
+	);
+	console.log(`[Storage] Alias deleted: ${aliasName}`);
+};
+
+/**
+ * Get merge history for a tag
+ */
+export const getMergeHistory = async (tagId: string): Promise<Array<{
+	id: string;
+	sourceTagId: string;
+	mergedAt: number;
+	mergedBy: string | null;
+}>> => {
+	const db = await getDB();
+	const rows = await db.select<Array<{
+		id: string;
+		sourceTagId: string;
+		mergedAt: number;
+		mergedBy: string | null;
+	}>>(
+		"SELECT id, sourceTagId, mergedAt, mergedBy FROM tag_merges WHERE targetTagId = ? ORDER BY mergedAt DESC",
+		[tagId]
+	);
+	return rows;
 };

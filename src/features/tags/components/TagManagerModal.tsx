@@ -15,6 +15,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
     const [groups, setGroups] = useState<TagGroup[]>([]);
     const [loading, setLoading] = useState(false);
     const [mergingId, setMergingId] = useState<string | null>(null);
+    const [mergingAll, setMergingAll] = useState(false);
 
     const loadAnalysis = async () => {
         setLoading(true);
@@ -49,6 +50,44 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
             console.error("Merge failed", e);
         } finally {
             setMergingId(null);
+        }
+    };
+
+    const handleMergeAll = async () => {
+        if (!confirm(`Merge all ${groups.length} tag groups? This action cannot be undone.`)) {
+            return;
+        }
+
+        setMergingAll(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        try {
+            // Process merges with individual error handling
+            for (const group of groups) {
+                try {
+                    const sourceIds = group.candidates.map(c => c.id);
+                    await mergeTags(group.target.id, sourceIds, "auto");
+                    successCount++;
+                } catch (e) {
+                    console.error(`Failed to merge group for ${group.target.name}:`, e);
+                    failCount++;
+                }
+            }
+            
+            console.log(`[TagManagerModal] Batch merge complete: ${successCount} succeeded, ${failCount} failed`);
+            
+            // Refresh to show remaining groups
+            await loadAnalysis();
+            
+            if (onTagsUpdated) onTagsUpdated();
+            
+        } catch (e) {
+            console.error("Batch merge failed", e);
+            // Refresh to show remaining groups
+            await loadAnalysis();
+        } finally {
+            setMergingAll(false);
         }
     };
 
@@ -121,6 +160,30 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                 </div>
                             ) : (
                                 <div className="space-y-4">
+                                    {/* Batch Actions Header */}
+                                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                                        <div className="text-sm text-white/60">
+                                            Found <span className="font-bold text-white">{groups.length}</span> tag group{groups.length !== 1 ? 's' : ''} to merge
+                                        </div>
+                                        <button
+                                            onClick={handleMergeAll}
+                                            disabled={mergingAll || mergingId !== null}
+                                            className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
+                                        >
+                                            {mergingAll ? (
+                                                <>
+                                                    <RefreshCw className="w-3 h-3 animate-spin" />
+                                                    Merging...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Merge className="w-3 h-3" />
+                                                    Merge All
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+
                                     {groups.map((group) => (
                                         <div key={group.target.id} className="bg-glass-bg-accent border border-glass-border rounded-lg p-4 flex items-center justify-between group-hover:border-glass-border transition-colors">
                                             <div className="flex items-center flex-1 gap-4">
@@ -145,7 +208,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
 
                                             <button
                                                 onClick={() => handleMerge(group)}
-                                                disabled={mergingId === group.target.id}
+                                                disabled={mergingId === group.target.id || mergingAll}
                                                 className="ml-4 px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
                                             >
                                                 {mergingId === group.target.id ? (

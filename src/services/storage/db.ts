@@ -176,6 +176,47 @@ export const getDB = async (): Promise<Database> => {
       `);
 			console.log("[Storage] Tags tables created/verified");
 
+			// ==================== TAG MERGES HISTORY ====================
+			await db.execute(`
+        CREATE TABLE IF NOT EXISTS tag_merges (
+          id TEXT PRIMARY KEY,
+          targetTagId TEXT NOT NULL,
+          sourceTagId TEXT NOT NULL,
+          mergedAt INTEGER NOT NULL,
+          mergedBy TEXT,
+          FOREIGN KEY (targetTagId) REFERENCES tags(id) ON DELETE CASCADE
+        )
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_tag_merges_target 
+        ON tag_merges(targetTagId)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_tag_merges_merged_at 
+        ON tag_merges(mergedAt)
+      `);
+			console.log("[Storage] Tag merges history table created/verified");
+
+			// ==================== TAG ALIASES ====================
+			await db.execute(`
+        CREATE TABLE IF NOT EXISTS tag_aliases (
+          id TEXT PRIMARY KEY,
+          aliasName TEXT NOT NULL,
+          targetTagId TEXT NOT NULL,
+          createdAt INTEGER NOT NULL,
+          FOREIGN KEY (targetTagId) REFERENCES tags(id) ON DELETE CASCADE
+        )
+      `);
+			await db.execute(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_tag_aliases_name 
+        ON tag_aliases(aliasName)
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_tag_aliases_target 
+        ON tag_aliases(targetTagId)
+      `);
+			console.log("[Storage] Tag aliases table created/verified");
+
 			console.log("[Storage] Schema initialized successfully");
 			dbInstance = db;
 			return db;
