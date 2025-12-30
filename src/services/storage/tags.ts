@@ -15,10 +15,9 @@ import type {
 
 /**
  * Generate a unique ID with a given prefix
- * Uses nanoid for cryptographically strong random IDs
  */
 const generateId = (prefix: string): string => {
-	return `${prefix}-${nanoid()}`;
+	return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 };
 
 // ==================== TAG CRUD ====================
