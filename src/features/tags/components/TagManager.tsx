@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Tag, Plus, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Tag, Plus, X, Sparkles } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 import { storageService } from "../../../services/storageService";
+import { getTagByAlias } from "../../../services/storage/tags";
 
 interface TagManagerProps {
 	item: PortfolioItem;
@@ -16,6 +17,31 @@ export const TagManager: React.FC<TagManagerProps> = ({
 }) => {
 	const [newTag, setNewTag] = useState("");
 	const [showSuggestions, setShowSuggestions] = useState(false);
+	const [aliasSuggestion, setAliasSuggestion] = useState<string | null>(null);
+
+	// Check for alias suggestions when user types
+	useEffect(() => {
+		const checkAlias = async () => {
+			if (newTag.trim().length < 2) {
+				setAliasSuggestion(null);
+				return;
+			}
+
+			try {
+				const aliasTag = await getTagByAlias(newTag.trim());
+				if (aliasTag && !item.manualTags?.includes(aliasTag.name)) {
+					setAliasSuggestion(aliasTag.name);
+				} else {
+					setAliasSuggestion(null);
+				}
+			} catch {
+				setAliasSuggestion(null);
+			}
+		};
+
+		const timer = setTimeout(checkAlias, 300); // Debounce
+		return () => clearTimeout(timer);
+	}, [newTag, item.manualTags]);
 
 	const suggestions = availableTags
 		.filter(
@@ -42,6 +68,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		}
 		setNewTag("");
 		setShowSuggestions(false);
+		setAliasSuggestion(null);
 	};
 
 	const handleRemoveTag = async (tagToRemove: string) => {
@@ -127,8 +154,24 @@ export const TagManager: React.FC<TagManagerProps> = ({
 					</button>
 				</div>
 
+				{/* Alias Suggestion Banner */}
+				{aliasSuggestion && newTag && (
+					<div className="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg flex items-center gap-2">
+						<Sparkles size={14} className="text-purple-400 flex-shrink-0" />
+						<div className="flex-1 text-xs">
+							<span className="text-gray-400">Did you mean: </span>
+							<button
+								onClick={() => handleAddTag(aliasSuggestion)}
+								className="text-purple-300 hover:text-purple-200 font-medium underline"
+							>
+								{aliasSuggestion}
+							</button>
+						</div>
+					</div>
+				)}
+
 				{/* Suggestions Dropdown */}
-				{showSuggestions && newTag && suggestions.length > 0 && (
+				{showSuggestions && newTag && suggestions.length > 0 && !aliasSuggestion && (
 					<div className="absolute top-full left-0 right-10 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-10 overflow-hidden">
 						{suggestions.map((suggestion) => (
 							<button
