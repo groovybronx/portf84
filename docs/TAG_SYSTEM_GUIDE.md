@@ -352,11 +352,16 @@ Parent component re-renders
    - Displays count of similar tag groups found
 
 2. **Review Phase**:
-   - Lists each group: Target → [Candidates]
-   - Visual distinction: Target (blue), Candidates (gray)
+   - Lists each group with interactive controls
+   - **Choose target tag**: 
+     - Click on the ⇄ bidirectional arrow to cycle through tags
+     - Click on any candidate tag to set it as the new target
+   - Visual distinction: Target (blue, kept), Candidates (gray, strikethrough, deleted)
+   - Hover tooltips explain each action
    - "Merge" button per group
 
 3. **Execution Phase**:
+   - Uses the user-selected target (or default if not changed)
    - Calls `mergeTags()` for selected group
    - Shows spinner during merge
    - Removes merged group from list

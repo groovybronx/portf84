@@ -1,0 +1,21 @@
+{
+  "close": "Close",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+  "remove": "Remove",
+  "search": "Search",
+  "loading": "Loading...",
+  "yes": "Yes",
+  "no": "No",
+  "confirm": "Confirm",
+  "back": "Back",
+  "next": "Next",
+  "ok": "OK",
+  "error": "Error",
+  "success": "Success",
+  "warning": "Warning",
+  "info": "Info"
+}

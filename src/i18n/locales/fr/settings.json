@@ -1,0 +1,17 @@
+{
+  "settings": "Paramètres",
+  "general": "Général",
+  "appearance": "Apparence",
+  "language": "Langue",
+  "theme": "Thème",
+  "colorScheme": "Schéma de Couleurs",
+  "animations": "Animations",
+  "shortcuts": "Raccourcis",
+  "storage": "Stockage",
+  "databasePath": "Chemin de la Base de Données",
+  "changePath": "Changer le Chemin",
+  "restart": "Redémarrer l'Application",
+  "apiKey": "Clé API",
+  "geminiApiKey": "Clé API Gemini",
+  "saveApiKey": "Enregistrer la Clé API"
+}
