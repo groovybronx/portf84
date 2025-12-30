@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 30/12/2025 à 14:48
+Dernière mise à jour : 30/12/2025 à 17:20
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,23 +8,51 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Sécurisation API & Tests Critiques (Commercial Audit Fixes)
+**Session en cours** : Nettoyage & Organisation du Repository
 
 **Progression** :
-- ✅ Sécurisation Clé API (Secure Storage + Encryption) : 100% complété
-- ✅ Gestion Robuste des Erreurs (Boundary + Types Spécifiques) : 100% complété
-- ✅ Ajout Tests Critiques (Smoke Test, Error Units) : 100% complété
-- ✅ Correction Mock Tests (Vitest) : 100% complété
-- ✅ Correction Erreurs TypeScript Tests : 100% complété (71 erreurs résolues)
+- ✅ Réorganisation documentation (docs/KnowledgeBase/) : 100% complété
+- ✅ Suppression code mort (geminiService.ts legacy) : 100% complété
+- ✅ Configuration GitHub (Templates PR/Issues) : 100% complété
+- ✅ Vérification Build & Tests : 100% complété
 
 **Prochaines étapes** :
-- [ ] Aborder les problèmes "Moyens" et "Mineurs" de l'audit
-- [ ] Push des changements
-- [ ] Vérifier la CI/CD (si applicable)
+- [ ] Continuer l'implémentation des fonctionnalités Phase 4
+- [ ] Optimisation des performances sur les grandes collections
 
-**Dernière modification** : 30/12/2025 à 14:48
+**Dernière modification** : 30/12/2025 à 17:20
 
-## [30/12/2025 - 14:48] - Correction Erreurs TypeScript Tests
+## [30/12/2025 - 17:20] - Nettoyage et Organisation du Repository
+
+### Type : Maintenance / Documentation
+
+**Composants** :
+- `docs/KnowledgeBase/` (anciennement `Knowledgedoc/`)
+- `src/services/geminiService.ts` (supprimé)
+- `.github/` (templates ajoutés)
+
+**Changements** :
+
+**1. Documentation** :
+- Centralisation de la base de connaissances dans `docs/KnowledgeBase/`.
+- Suppression des fichiers et dossiers temporaires de documentation.
+- Mise à jour du README pour inclure la nouvelle structure.
+
+**2. Clean Code** :
+- Élimination de la redondance du service Gemini en supprimant la version legacy de `src/services/`.
+- Libération de la logique vers le dossier feature vision.
+
+**3. GitHub Setup** :
+- Standardisation des contributions via des templates d'Issue (Bug, Feature) et de Pull Request.
+
+**Impact** : Meilleure clarté du code pour les développeurs, structure de documentation unifiée, et standardisation des processus collaboratifs.
+
+**Documentation mise à jour** :
+- `docs/README.md`
+- `docs/CHANGELOG.md`
+- `docs/KnowledgeBase/`
+
+---
 
 ### Type : Correction / Quality Assurance
 
