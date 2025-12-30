@@ -22,6 +22,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Optimisation des performances sur les grandes collections de tags
 - [ ] Exploration de la fusion sémantique via Gemini AI
 
+
 **Dernière modification** : 30/12/2025 à 19:40
 
 ## [30/12/2025 - 19:40] - Nettoyage des Branches Git Obsolètes
@@ -70,6 +71,40 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - Ces agents permettent une assistance au code plus contextuelle et précise.
 
 **Impact** : Environnement de développement parfaitement synchronisé avec le dépôt distant et amélioration notable de l'assistance IA grâce aux agents spécialisés.
+
+---
+
+## [30/12/2025 - 19:05] - Évolution Majeure : Système de Tags & Synchronisation GitHub
+
+### Type : Feature / Refactor / Documentation / Testing
+
+**Composants** :
+- `src/features/tags/` (TagManager, TagManagerModal)
+- `src/services/storage/` (db.ts, tags.ts)
+- `src/services/tagAnalysisService.ts`
+- `docs/TAG_SYSTEM_GUIDE.md` (Nouveau)
+- `docs/TAG_SYSTEM_README.md` (Nouveau)
+- `tests/tagSystem.test.ts` (Nouveau)
+
+**Changements** :
+
+**1. Système de Tags Robuste** :
+- **Gestion des Alias** : Création de la table `tag_aliases` pour lier des termes similaires (typos, pluriels) à un tag parent. Suggestions intelligentes dans l'UI.
+- **Historique de Fusion** : Création de la table `tag_merges` pour garder une trace d'audit de toutes les fusions effectuées.
+- **Fusion par Lot (Batch Merge)** : Possibilité de fusionner toutes les suggestions de redondance en une seule opération sécurisée.
+- **Normalisation Avancée** : Amélioration de la détection de similarité (Levenshtein, Jaccard, suppression des stop words FR/EN).
+
+**2. Documentation Technique** :
+- Création d'un guide complet (`TAG_SYSTEM_GUIDE.md`) détaillant les algorithmes, les schémas de base de données et les flux de données.
+- Création d'un README rapide pour les opérations courantes.
+
+**3. Qualité et Tests** :
+- Ajout de 41 nouveaux tests unitaires pour le système de tags, portant le total à 84 tests.
+- 100% de réussite sur l'ensemble de la suite de tests.
+- Optimisation pour les large datasets (> 5000 tags).
+
+**Impact** : Une gestion de bibliothèque beaucoup plus intelligente et robuste, éliminant la fragmentation des tags et offrant une base technique documentée pour les évolutions IA futures.
+
 
 ---
 
