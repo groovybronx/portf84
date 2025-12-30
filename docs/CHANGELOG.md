@@ -22,7 +22,6 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Optimisation des performances sur les grandes collections de tags
 - [ ] Exploration de la fusion sémantique via Gemini AI
 
-
 **Dernière modification** : 30/12/2025 à 19:40
 
 ## [30/12/2025 - 19:40] - Nettoyage des Branches Git Obsolètes
