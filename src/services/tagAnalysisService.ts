@@ -42,6 +42,9 @@ export interface TagGroup {
 // Stop words to ignore during advanced comparison
 const STOP_WORDS = new Set(["et", "and", "&", "le", "la", "les", "the", "a", "an", "de", "of", "in", "en"]);
 
+// Performance threshold for large datasets
+const LARGE_DATASET_THRESHOLD = 5000;
+
 // Tokenize and clean string
 const tokenize = (str: string): Set<string> => {
     return new Set(
@@ -66,10 +69,14 @@ const areTokensSimilar = (a: Set<string>, b: Set<string>): boolean => {
     return jaccard >= 0.8; // High similarity threshold for tokens
 };
 
-export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
+export const analyzeTagRedundancy = async (maxTags?: number): Promise<TagGroup[]> => {
     const tags = await getAllTags();
     console.log(`[TagAnalysis] Analyzing ${tags.length} tags for redundancy...`);
-    // console.log("Tags sample:", tags.slice(0, 5).map(t => t.name));
+    
+    // Performance optimization: For very large datasets, warn the user
+    if (tags.length > LARGE_DATASET_THRESHOLD) {
+        console.warn(`[TagAnalysis] Large dataset detected (${tags.length} tags). Analysis may take longer.`);
+    }
 
     const groups: TagGroup[] = [];
     const processedIds = new Set<string>();
@@ -81,8 +88,11 @@ export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
         tokens: tokenize(t.name)
     }));
 
-    for (let i = 0; i < simpleTags.length; i++) {
-        const root = simpleTags[i];
+    // Apply limit if specified (for testing or preview)
+    const tagsToProcess = maxTags ? simpleTags.slice(0, maxTags) : simpleTags;
+
+    for (let i = 0; i < tagsToProcess.length; i++) {
+        const root = tagsToProcess[i];
         if (!root) continue;
         if (processedIds.has(root.id)) continue;
 
@@ -120,5 +130,6 @@ export const analyzeTagRedundancy = async (): Promise<TagGroup[]> => {
         }
     }
 
+    console.log(`[TagAnalysis] Found ${groups.length} groups with duplicates`);
     return groups;
 };

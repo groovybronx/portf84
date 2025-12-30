@@ -24,9 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots or screen recordings to help explain your problem.
 
 **Environment (please complete the following information):**
-- OS: [e.g. macOS Sonoma 14.1]
-- Lumina Version: [e.g. 0.1.0 or commit hash]
-- Browser (if applicable): [e.g. Chrome 120]
+- OS:
+- Lumina Version:
+- Browser (if applicable):
 
 **Additional context**
 Add any other context about the problem here.
