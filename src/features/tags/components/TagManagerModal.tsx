@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Merge, RefreshCw, Tag as TagIcon, ArrowRight } from 'lucide-react';
+import { X, Merge, RefreshCw, Tag as TagIcon, ArrowRight, History } from 'lucide-react';
 import { analyzeTagRedundancy, TagGroup } from '../../../services/tagAnalysisService';
 import { mergeTags } from '../../../services/storage/tags';
 import { ParsedTag } from '../../../shared/types/database';
+import { TagMergeHistory } from './TagMergeHistory';
 
 interface TagManagerModalProps {
     isOpen: boolean;
@@ -16,6 +17,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
     const [loading, setLoading] = useState(false);
     const [mergingId, setMergingId] = useState<string | null>(null);
     const [mergingAll, setMergingAll] = useState(false);
+    const [showHistory, setShowHistory] = useState(false);
 
     const loadAnalysis = async () => {
         setLoading(true);
@@ -92,22 +94,23 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
     };
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-background border border-white/10 rounded-xl shadow-2xl z-(--z-modal) flex flex-col max-h-[80vh]"
-                    >
+        <>
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={onClose}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-background border border-white/10 rounded-xl shadow-2xl z-(--z-modal) flex flex-col max-h-[80vh]"
+                        >
                         {/* Header */}
                         <div className="p-6 border-b border-white/10 flex justify-between items-center">
                             <div className="flex items-center gap-3">
@@ -119,9 +122,19 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                     <p className="text-xs text-white/50">Clean up your library by merging duplicate tags</p>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors">
-                                <X size={20} />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={() => setShowHistory(true)} 
+                                    className="px-3 py-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300 text-sm font-medium transition-colors flex items-center gap-2"
+                                    title="View merge history"
+                                >
+                                    <History size={16} />
+                                    History
+                                </button>
+                                <button onClick={onClose} className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Content */}
@@ -227,5 +240,12 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                 </>
             )}
         </AnimatePresence>
+        
+        {/* Tag Merge History Modal */}
+        <TagMergeHistory 
+            isOpen={showHistory} 
+            onClose={() => setShowHistory(false)} 
+        />
+    </>
     );
 };

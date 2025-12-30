@@ -4,6 +4,8 @@
 
 The Lumina Portfolio tag system is a robust, dual-persistence architecture that enables efficient organization, search, and analysis of portfolio items. The system supports both AI-generated and manual tags, with advanced features for similarity detection and intelligent merging.
 
+> 📖 **For detailed technical documentation**, including algorithms, data flows, and API reference, see [TAG_SYSTEM_ARCHITECTURE.md](./TAG_SYSTEM_ARCHITECTURE.md)
+
 ## Architecture
 
 ### Storage Strategy: Dual Persistence
