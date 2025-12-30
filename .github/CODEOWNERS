@@ -1,0 +1,32 @@
+# Propriétaires du Code - Lumina Portfolio
+
+# Ce fichier définit qui doit reviewer les changements critiques
+
+# Configuration et Build
+/src-tauri/**         @groovybronx
+/vite.config.ts       @groovybronx
+/package.json         @groovybronx
+/tsconfig.json        @groovybronx
+
+# Services Critiques (API, Storage, Security)
+/src/services/**      @groovybronx
+/src/shared/hooks/**  @groovybronx
+/src/shared/contexts/**  @groovybronx
+
+# Features Principales
+/src/features/vision/**  @groovybronx
+
+# Tests
+/tests/**             @groovybronx
+/vitest.config.ts     @groovybronx
+
+# Documentation
+/docs/**              @groovybronx
+README.md             @groovybronx
+CHANGELOG.md          @groovybronx
+
+# Configuration GitHub
+/.github/**           @groovybronx
+
+# Tout par défaut (si rien ne match ci-dessus)
+*                     @groovybronx
