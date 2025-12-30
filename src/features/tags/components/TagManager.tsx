@@ -4,6 +4,9 @@ import { PortfolioItem } from "../../../shared/types";
 import { storageService } from "../../../services/storageService";
 import { getTagByAlias } from "../../../services/storage/tags";
 
+// Constants
+const ALIAS_CHECK_DEBOUNCE_MS = 300;
+
 interface TagManagerProps {
 	item: PortfolioItem;
 	onUpdateItem: (item: PortfolioItem) => void;
@@ -39,7 +42,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 			}
 		};
 
-		const timer = setTimeout(checkAlias, 300); // Debounce
+		const timer = setTimeout(checkAlias, ALIAS_CHECK_DEBOUNCE_MS);
 		return () => clearTimeout(timer);
 	}, [newTag, item.manualTags]);
 

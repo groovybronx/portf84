@@ -59,14 +59,26 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
         }
 
         setMergingAll(true);
+        let successCount = 0;
+        let failCount = 0;
+
         try {
+            // Process merges with individual error handling
             for (const group of groups) {
-                const sourceIds = group.candidates.map(c => c.id);
-                await mergeTags(group.target.id, sourceIds, "auto");
+                try {
+                    const sourceIds = group.candidates.map(c => c.id);
+                    await mergeTags(group.target.id, sourceIds, "auto");
+                    successCount++;
+                } catch (e) {
+                    console.error(`Failed to merge group for ${group.target.name}:`, e);
+                    failCount++;
+                }
             }
             
-            // Clear all groups
-            setGroups([]);
+            console.log(`[TagManagerModal] Batch merge complete: ${successCount} succeeded, ${failCount} failed`);
+            
+            // Refresh to show remaining groups
+            await loadAnalysis();
             
             if (onTagsUpdated) onTagsUpdated();
             

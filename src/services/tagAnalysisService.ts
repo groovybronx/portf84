@@ -42,6 +42,9 @@ export interface TagGroup {
 // Stop words to ignore during advanced comparison
 const STOP_WORDS = new Set(["et", "and", "&", "le", "la", "les", "the", "a", "an", "de", "of", "in", "en"]);
 
+// Performance threshold for large datasets
+const LARGE_DATASET_THRESHOLD = 5000;
+
 // Tokenize and clean string
 const tokenize = (str: string): Set<string> => {
     return new Set(
@@ -70,9 +73,8 @@ export const analyzeTagRedundancy = async (maxTags?: number): Promise<TagGroup[]
     const tags = await getAllTags();
     console.log(`[TagAnalysis] Analyzing ${tags.length} tags for redundancy...`);
     
-    // Performance optimization: For very large datasets (>5000 tags), 
-    // we could warn the user or process in batches
-    if (tags.length > 5000) {
+    // Performance optimization: For very large datasets, warn the user
+    if (tags.length > LARGE_DATASET_THRESHOLD) {
         console.warn(`[TagAnalysis] Large dataset detected (${tags.length} tags). Analysis may take longer.`);
     }
 

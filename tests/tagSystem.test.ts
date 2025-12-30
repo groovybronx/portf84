@@ -5,7 +5,19 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 
-// Levenshtein distance implementation for tests
+// Constants
+const LARGE_DATASET_THRESHOLD = 5000;
+
+/**
+ * Levenshtein distance implementation
+ * Calculates the minimum number of single-character edits (insertions, deletions, or substitutions)
+ * required to change one string into another.
+ * 
+ * Time complexity: O(m*n) where m and n are the lengths of the two strings
+ * Space complexity: O(m*n) for the matrix
+ * 
+ * Used for detecting typos, plurals, and minor variations in tag names.
+ */
 const levenshteinDistance = (a: string, b: string): number => {
   const matrix: number[][] = [];
 
@@ -23,13 +35,10 @@ const levenshteinDistance = (a: string, b: string): number => {
       if (b.charAt(i - 1) === a.charAt(j - 1)) {
         matrix[i]![j] = matrix[i - 1]![j - 1]!;
       } else {
-        matrix[i]![j] = Math.min(
-          matrix[i - 1]![j - 1]! + 1, // substitution
-          Math.min(
-            matrix[i]![j - 1]! + 1, // insertion
-            matrix[i - 1]![j]! + 1 // deletion
-          )
-        );
+        const substitution = matrix[i - 1]![j - 1]! + 1;
+        const insertion = matrix[i]![j - 1]! + 1;
+        const deletion = matrix[i - 1]![j]! + 1;
+        matrix[i]![j] = Math.min(substitution, insertion, deletion);
       }
     }
   }

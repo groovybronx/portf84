@@ -10,6 +10,15 @@ import type {
 	TagType,
 } from "../../shared/types/database";
 
+// ==================== UTILITIES ====================
+
+/**
+ * Generate a unique ID with a given prefix
+ */
+const generateId = (prefix: string): string => {
+	return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+};
+
 // ==================== TAG CRUD ====================
 
 /**
@@ -35,7 +44,7 @@ export const getOrCreateTag = async (
 	}
 
 	// Create new tag
-	const id = `tag-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	const id = generateId('tag');
 	await db.execute(
 		"INSERT INTO tags (id, name, normalizedName, type, confidence, createdAt) VALUES (?, ?, ?, ?, ?, ?)",
 		[id, name, normalizedName, type, confidence ?? null, Date.now()]
@@ -250,7 +259,7 @@ export const mergeTags = async (
 			}
 
 			// 3. Record merge in history
-			const mergeId = `merge-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+			const mergeId = generateId('merge');
 			await db.execute(
 				"INSERT INTO tag_merges (id, targetTagId, sourceTagId, mergedAt, mergedBy) VALUES (?, ?, ?, ?, ?)",
 				[mergeId, targetTagId, sourceId, Date.now(), mergedBy]
@@ -320,7 +329,7 @@ export const createTagAlias = async (
 	targetTagId: string
 ): Promise<void> => {
 	const db = await getDB();
-	const id = `alias-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	const id = generateId('alias');
 	
 	await db.execute(
 		"INSERT INTO tag_aliases (id, aliasName, targetTagId, createdAt) VALUES (?, ?, ?, ?)",
