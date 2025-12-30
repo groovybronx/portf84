@@ -2,6 +2,7 @@
  * Tags Management Module
  * CRUD operations for normalized tags
  */
+import { nanoid } from "nanoid";
 import { getDB } from "./db";
 import type {
 	DBTag,
@@ -14,9 +15,10 @@ import type {
 
 /**
  * Generate a unique ID with a given prefix
+ * Uses nanoid for cryptographically strong random IDs
  */
 const generateId = (prefix: string): string => {
-	return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	return `${prefix}-${nanoid()}`;
 };
 
 // ==================== TAG CRUD ====================
