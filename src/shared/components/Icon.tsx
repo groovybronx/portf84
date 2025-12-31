@@ -65,6 +65,7 @@ import {
   Flag,
   Crown,
   Award,
+  Globe,
   LucideProps
 } from "lucide-react";
 
@@ -134,7 +135,8 @@ export type IconAction =
   | "rocket"
   | "flag"
   | "crown"
-  | "award";
+  | "award"
+  | "globe";
 
 // 2. Mapping Registry
 const iconMap: Record<IconAction, React.FC<LucideProps>> = {
@@ -203,6 +205,7 @@ const iconMap: Record<IconAction, React.FC<LucideProps>> = {
   flag: Flag,
   crown: Crown,
   award: Award,
+  globe: Globe,
 };
 
 interface IconProps extends LucideProps {
