@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon } from "../../../shared/components/Icon";
 import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
@@ -42,6 +43,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	onToggleColorTags,
 	isSidebarPinned = false,
 }) => {
+	const { t } = useTranslation(["navigation", "common"]);
 	// Context consumption
 	const {
 		searchTerm,
@@ -114,7 +116,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							className={
 								isPinned ? "text-primary bg-glass-bg-accent" : "text-gray-500"
 							}
-							title={isPinned ? "Unpin Topbar" : "Pin Topbar"}
+							title={isPinned ? t('navigation:unpin') : t('navigation:pin')}
 						>
 							{isPinned ? (
 								<Icon action="pin" size={16} fill="currentColor" />
@@ -130,7 +132,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							className="text-primary hover:text-white"
 						>
 							<span className="hidden md:inline max-w-[100px] truncate">
-								{folderName || "Library"}
+								{folderName || t('navigation:library')}
 							</span>
 						</Button>
 						<Button
@@ -138,7 +140,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							size="icon"
 							onClick={onOpenTagManager}
 							className="text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
-							title="Smart Tag Manager"
+							title={t('navigation:smartTagManager')}
 						>
 							<Icon action="smart_tags" size={18} />
 						</Button>
@@ -147,7 +149,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							size="icon"
 							onClick={onOpenSettings}
 							className="text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
-							title="Settings"
+							title={t('navigation:settings')}
 						>
 							<Icon action="settings" size={18} />
 						</Button>
@@ -158,7 +160,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 						<div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/50 rounded-full animate-pulse mx-2 shrink-0 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
 							<Icon action="alert" size={14} className="text-red-500" />
 							<span className="text-[10px] font-bold text-red-500 hidden lg:inline tracking-wider uppercase">
-								Auto-Analyze Active
+								{t('navigation:autoAnalyzeActive')}
 							</span>
 						</div>
 					)}
@@ -229,7 +231,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 											className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-glass-bg-accent border-glass-border-light text-gray-400 hover:text-primary hover:border-primary/50 transition-colors"
 										>
 											<span className="text-sm font-medium hidden sm:inline">
-												Select
+												{t('navigation:select')}
 											</span>
 										</button>
 									</>

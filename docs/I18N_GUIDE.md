@@ -255,22 +255,19 @@ i18n.init({
 | Composant | Namespace(s) | Statut |
 |-----------|-------------|--------|
 | `TagManagerModal` | tags, common | ✅ 100% |
-| `SettingsModal` (nav) | settings, common | ✅ 100% |
+| `TagMergeHistory` | tags | ✅ 100% |
+| `SettingsModal` | settings, common | ✅ 100% |
+| `TopBar` | navigation, common | ✅ 100% |
+| `FolderDrawer` | library, common | ✅ 100% |
+| `PhotoCard` | library, common | ✅ 100% |
+| `ContextMenu` | library, common | ✅ 100% |
+| `App.tsx` | library, common | ✅ 100% |
+| `geminiService` | errors | ✅ 100% |
 | Language Selector | settings | ✅ 100% |
-
-### 🔄 Partiellement traduits
-
-| Composant | Namespace(s) | Statut |
-|-----------|-------------|--------|
-| `SettingsModal` (content) | settings, common | 🔄 20% |
 
 ### ⏳ À traduire
 
-- `TopBar`
-- `FolderDrawer`
-- `PhotoCard`
-- `ContextMenu`
-- Messages d'erreur globaux
+- Aucun (Migration 100% terminée)
 
 ---
 
@@ -323,13 +320,23 @@ Les types sont auto-générés depuis les fichiers JSON.
 
 ## Roadmap
 
-### Court terme
-- [ ] Migrer tous les composants UI
-- [ ] Traduire les messages d'erreur
-- [ ] Tests de changement de langue
+### Session en cours : Finalisation Implémentation Multilangage (i18n)
+
+**Progression** :
+- ✅ Synchronisation GitHub (develop & main) : 100% complété
+- ✅ Intégration Agents Copilot Spécialisés (.github/agents/) : 100% complété
+- ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
+- ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
+- ✅ Support Fichiers RAW (Photo) : 100% complété
+- ✅ Migration i18n Multilangage (EN/FR) : 100% complété
+
+**Prochaines étapes** :
+- [ ] Tests de non-régression sur le build de production
+- [ ] Déploiement v0.9.5
+
+**Dernière modification** : 31/12/2024 à 01:50
 
 ### Moyen terme
-- [ ] Ajouter l'espagnol (es)
 - [ ] Ajouter l'allemand (de)
 - [ ] Lazy loading des namespaces
 

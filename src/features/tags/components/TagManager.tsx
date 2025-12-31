@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Tag, Plus, X, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { PortfolioItem } from "../../../shared/types";
 import { storageService } from "../../../services/storageService";
 import { getTagByAlias } from "../../../services/storage/tags";
@@ -18,6 +19,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 	onUpdateItem,
 	availableTags,
 }) => {
+	const { t } = useTranslation(["tags", "library"]);
 	const [newTag, setNewTag] = useState("");
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const [aliasSuggestion, setAliasSuggestion] = useState<string | null>(null);
@@ -91,7 +93,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		<div className="bg-glass-bg-accent rounded-lg p-4 space-y-3 border border-glass-border-light relative">
 			<div className="flex items-center gap-2 mb-2">
 				<Tag size={16} className="text-blue-400" />
-				<h4 className="text-sm font-medium text-white">Tags</h4>
+				<h4 className="text-sm font-medium text-white">{t('tags')}</h4>
 			</div>
 
 			<div className="flex flex-wrap gap-2">
@@ -116,14 +118,14 @@ export const TagManager: React.FC<TagManagerProps> = ({
 					<span
 						key={`ai-${idx}`}
 						className="px-2 py-1 bg-white/5 text-gray-400 text-xs rounded-full border border-white/5"
-						title="AI Generated"
+						title={t('tags:aiGenerated')}
 					>
 						{tag}
 					</span>
 				))}
 
 				{!item.manualTags?.length && !item.aiTags?.length && (
-					<span className="text-xs text-gray-500 italic">No tags yet.</span>
+					<span className="text-xs text-gray-500 italic">{t('tags:noTagsYet')}</span>
 				)}
 			</div>
 
@@ -145,7 +147,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 								handleAddTag();
 							}
 						}}
-						placeholder="Add manual tag..."
+						placeholder={t('tags:addManualTag')}
 						className="flex-1 bg-black/50 border border-glass-border text-white text-xs px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50"
 					/>
 					<button
@@ -160,9 +162,9 @@ export const TagManager: React.FC<TagManagerProps> = ({
 				{/* Alias Suggestion Banner */}
 				{aliasSuggestion && newTag && (
 					<div className="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg flex items-center gap-2">
-						<Sparkles size={14} className="text-purple-400 flex-shrink-0" />
+						<Sparkles size={14} className="text-purple-400 shrink-0" />
 						<div className="flex-1 text-xs">
-							<span className="text-gray-400">Did you mean: </span>
+							<span className="text-gray-400">{t('tags:didYouMean')}</span>
 							<button
 								onClick={() => handleAddTag(aliasSuggestion)}
 								className="text-purple-300 hover:text-purple-200 font-medium underline"

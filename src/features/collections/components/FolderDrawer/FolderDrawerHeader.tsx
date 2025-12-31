@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Icon } from "../../../../shared/components/Icon";
 import { Button } from "../../../../shared/components/ui";
 
@@ -15,25 +16,26 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
   totalItems = 0,
   onAdd,
 }) => {
+  const { t } = useTranslation(["library", "navigation"]);
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex flex-col">
         <div className="flex items-center gap-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Icon action="library" className="text-primary" /> Library
+            <Icon action="library" className="text-primary" /> {t('library:library')}
             </h2>
             {onAdd && (
                 <button 
                     onClick={onAdd}
                     className="p-1 rounded-full hover:bg-glass-bg-accent text-text-secondary hover:text-text-primary transition-colors"
-                    title="Gérer les projets"
+                    title={t('library:manageProjects')}
                 >
                     <Icon action="add" size={16} />
                 </button>
             )}
         </div>
         <span className="text-xs text-gray-500 font-medium ml-8">
-            {totalItems} éléments
+            {t('library:itemCount', { count: totalItems })}
         </span>
       </div>
       <div className="flex items-center gap-1">
@@ -47,7 +49,7 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
                 ? "text-primary bg-primary/10 shadow-lg shadow-primary/20"
                 : "text-text-secondary hover:text-text-primary hover:bg-glass-bg-accent"
             }`}
-            title={isPinned ? "Détacher la bibliothèque" : "Fixer la bibliothèque"}
+            title={isPinned ? t('navigation:unpinLibrary') : t('navigation:pinLibrary')}
           >
             <Icon
               action="pin"

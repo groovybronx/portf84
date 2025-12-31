@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Palette, ChevronRight, CheckCircle2, Circle } from "lucide-react";
 import { Folder as FolderType, COLOR_PALETTE } from "../../../../shared/types";
@@ -19,6 +20,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
   onColorFilterChange,
   onSelectFolder,
 }) => {
+  const { t } = useTranslation("library");
   const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -34,10 +36,11 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
             : "hover:bg-primary/5 border-transparent"
         }`}
       >
-        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-primary">
-          <Icon action={settings.filtersIcon} size={14} className="text-primary" />
-          <span>Filtres Couleur</span>
-        </p>
+        <div className="flex items-center justify-between">
+          <h3 className="text-secondary-bright/40 uppercase text-[10px] font-bold tracking-widest flex items-center gap-2">
+            <Palette size={12} /> {t('colorFiltersTitle')}
+          </h3>
+        </div>
         <ChevronRight
           size={14}
           className={`transition-transform duration-300 text-primary ${
@@ -119,7 +122,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                       >
                         {colorName}
                       </p>
-                      <p className="text-xs opacity-60">{count} items</p>
+                      <p className="text-xs opacity-60">{count} {t('items')}</p>
                     </div>
                   </button>
                 );

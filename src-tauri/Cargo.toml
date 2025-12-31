@@ -31,4 +31,4 @@ imagesize = "0.12"
 tauri-plugin-process = "2.3.1"
 
 # RAW image support - EXIF metadata extraction
-kamadak-exif = "0.5"
+exif = { package = "kamadak-exif", version = "0.5" }

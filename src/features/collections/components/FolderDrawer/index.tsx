@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
@@ -55,6 +56,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   activeColorFilter,
   onColorFilterChange,
 }) => {
+  const { t } = useTranslation(["library", "navigation"]);
   const { settings } = useTheme();
   const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
 
@@ -92,7 +94,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
         <div className="space-y-4">
           <div className="px-1 text-xs font-bold text-quinary uppercase tracking-wider mb-2">
-            Projets
+            {t('library:activeProject')}
           </div>
           
             {sortedCollections.map((collection) => {
@@ -136,7 +138,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                         {collection.name}
                                     </h3>
                                     <p className="text-[10px] text-quinary/60 uppercase tracking-wider font-medium">
-                                        Projet Actif
+                                        {t('library:activeProjectLabel')}
                                     </p>
                                 </div>
                                 <button 

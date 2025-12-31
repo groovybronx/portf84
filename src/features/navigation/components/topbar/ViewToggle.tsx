@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	ChevronDown,
@@ -18,11 +19,7 @@ interface ViewToggleProps {
 	useCinematicCarousel?: boolean;
 }
 
-const viewModes: { id: ViewMode; icon: LucideIcon; label: string }[] = [
-	{ id: ViewMode.GRID, icon: LayoutGrid, label: "Grid" },
-	{ id: ViewMode.CAROUSEL, icon: Layers, label: "Flow" },
-	{ id: ViewMode.LIST, icon: LayoutList, label: "Detail" },
-];
+
 
 export const ViewToggle: React.FC<ViewToggleProps> = ({
 	currentViewMode,
@@ -31,8 +28,16 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 	setIsViewMenuOpen,
 	useCinematicCarousel = false,
 }) => {
-	const currentModeData =
-		viewModes.find((m) => m.id === currentViewMode) || viewModes[0]!;
+	const { t } = useTranslation("navigation");
+
+	const viewModes: { id: ViewMode; icon: LucideIcon; label: string }[] = [
+		{ id: ViewMode.GRID, icon: LayoutGrid, label: t('viewGrid') },
+		{ id: ViewMode.CAROUSEL, icon: Layers, label: t('viewFlow') },
+		{ id: ViewMode.LIST, icon: LayoutList, label: t('viewDetail') },
+	];
+
+	const currentModeData = viewModes.find((m) => m.id === currentViewMode) || viewModes[0];
+	if (!currentModeData) return null; // Defensive check for TypeScript
 
 	return (
 		<div className="relative">

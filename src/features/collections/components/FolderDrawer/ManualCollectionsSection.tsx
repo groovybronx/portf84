@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
 import { Button } from "../../../../shared/components/ui";
@@ -25,6 +26,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
   activeCollection,
   onColorFilterChange,
 }) => {
+  const { t } = useTranslation("library");
   const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -50,12 +52,12 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
       >
         <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-tertiary">
           <Icon action={settings.tertiaryIcon} size={14} className="text-tertiary" />
-          <span>Collections</span>
+          <span>{t('collections')}</span>
         </p>
         <div className="flex items-center gap-2">
           {selectedCount > 0 && !activeFolderId.has("all") && (
             <span className="text-tertiary text-[10px] bg-tertiary/10 px-2 py-0.5 rounded-full">
-              {selectedCount} Sélectionnées
+              {t('selectedCount', { count: selectedCount })}
             </span>
           )}
           
@@ -68,7 +70,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
             }}
             disabled={!activeCollection}
             className="h-6 w-6 text-tertiary hover:text-white hover:bg-tertiary/20 rounded-md transition-colors"
-            title="Nouvelle Collection Virtuelle"
+            title={t('addCollection')}
           >
             <Icon action="add" size={14} />
           </Button>
@@ -93,7 +95,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
           >
             {folders.length === 0 ? (
               <p className="text-xs text-gray-600 text-center py-3 italic">
-                Aucune collection créée
+                {t('noCollectionsCreated')}
               </p>
             ) : (
               <div className="space-y-1 pl-2">

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { XCircle, Eye, EyeOff, Palette } from "lucide-react";
 import { COLOR_PALETTE } from "../../../../shared/types";
 
@@ -17,6 +18,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   onToggleColorTags,
   selectionMode,
 }) => {
+  const { t } = useTranslation("navigation");
   return (
     <div className="hidden lg:flex items-center gap-2 bg-glass-bg-accent px-3 py-2 rounded-xl border border-glass-border-light shrink-0">
       {Object.entries(COLOR_PALETTE).map(([key, hex]) => (
@@ -42,6 +44,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             ? "opacity-30 cursor-default"
             : ""
         }`}
+        title={t('clearFilter')}
       >
         <XCircle size={14} />
       </button>
@@ -51,6 +54,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         className={`w-4 h-4 flex items-center justify-center rounded-full transition-colors ${
           showColorTags ? "text-white" : "text-gray-500 hover:text-white"
         }`}
+        title={t('toggleColorTags')}
       >
         {showColorTags ? <Eye size={14} /> : <EyeOff size={14} />}
       </button>

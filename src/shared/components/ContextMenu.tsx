@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	Sparkles,
@@ -39,6 +40,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 	onMove,
 	onColorTag,
 }) => {
+	const { t } = useTranslation("library");
 	const menuRef = useRef<HTMLDivElement>(null);
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
@@ -62,28 +64,28 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 	const menuItems = [
 		{
 			id: "open",
-			label: "Open Fullscreen",
+			label: t('openFullscreen'),
 			icon: Eye,
 			color: "text-primary",
 			action: () => onOpen(item),
 		},
 		{
 			id: "analyze",
-			label: "Analyze with AI",
+			label: t('analyzeAI'),
 			icon: Sparkles,
 			color: "text-purple-400",
 			action: () => onAnalyze(item),
 		},
 		{
 			id: "tags",
-			label: "Add Tag",
+			label: t('addTag'),
 			icon: Tag,
 			color: "text-green-400",
 			action: () => onAddTags(item),
 		},
 		{
 			id: "move",
-			label: "Move to Collection",
+			label: t('moveToCollection'),
 			icon: FolderInput,
 			color: "text-primary",
 			action: () => onMove(item),
@@ -112,7 +114,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 				<button
 					onClick={onClose}
 					className="p-1 -mr-2 rounded-full hover:bg-glass-bg-accent text-gray-400 hover:text-white transition-colors"
-					title="Close Menu"
+					title={t('closeMenu')}
 				>
 					<X size={14} />
 				</button>
@@ -155,7 +157,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
 			<div className="px-4 py-2">
 				<p className="text-xs text-gray-500 uppercase mb-2 flex items-center gap-2">
-					<Palette size={12} /> Color Tag
+					<Palette size={12} /> {t('colorTag')}
 				</p>
 				<div className="flex justify-between">
 					{Object.entries(COLOR_PALETTE).map(([key, hex]) => (
@@ -177,7 +179,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 							onClose();
 						}}
 						className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-gray-500 hover:text-white hover:border-white transition-all hover:scale-125"
-						title="Remove Tag"
+						title={t('removeTag')}
 					>
 						<X size={12} />
 					</button>
@@ -213,7 +215,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 					size={16}
 					className="relative z-10 transition-transform group-hover:scale-110"
 				/>
-				<span className="relative z-10 font-medium">Delete Item</span>
+				<span className="relative z-10 font-medium">{t('deleteItem')}</span>
 			</button>
 		</motion.div>
 	);

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
 import { Button } from "../../../../shared/components/ui";
@@ -23,6 +24,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
   activeCollection,
   onColorFilterChange,
 }) => {
+  const { t } = useTranslation("library");
   const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -45,7 +47,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
       >
         <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-quaternary">
           <Icon action={settings.quaternaryIcon} size={14} className="text-quaternary" />
-          <span>Dossiers de Travail</span>
+          <span>{t('workFolders')}</span>
         </p>
           <span
             className={`text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
@@ -66,7 +68,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
             }}
             disabled={!activeCollection}
             className="h-6 w-6 text-quaternary hover:text-white hover:bg-quaternary/20 rounded-md transition-colors"
-            title="Ajouter un dossier source"
+            title={t('addFolder')}
           >
             <Icon action="add" size={14} />
           </Button>
@@ -91,7 +93,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
           >
             {folders.length === 0 ? (
               <p className="text-xs text-gray-600 text-center py-3 italic">
-                Aucun dossier de travail
+                {t('noWorkFolders')}
               </p>
             ) : (
               <div className="space-y-1 pl-2">

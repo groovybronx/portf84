@@ -3,12 +3,14 @@
  * Back face of the card showing metadata, tags, and file info
  */
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	Maximize2,
 	Tag,
 	Sparkles,
 	HardDrive,
 	FolderHeart,
+	Camera,
 } from "lucide-react";
 import { PortfolioItem, Folder } from "../../../../shared/types";
 import { GlassCard } from "../../../../shared/components/ui";
@@ -28,6 +30,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 	onFlip,
 	onTagClick,
 }) => {
+	const { t } = useTranslation("library");
 	// Compute location name
 	const locationInfo = useMemo(() => {
 		if (!item.virtualFolderId) return null;
@@ -56,7 +59,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 						<div
 							className="w-3 h-3 rounded-full shrink-0 shadow-sm border border-white/20"
 							style={{ backgroundColor: item.colorTag }}
-							title="Color Tag"
+							title={t('colorTag')}
 						/>
 					)}
 					<h4 className="text-[10px] font-medium text-white/80 line-clamp-1 leading-tight">
@@ -66,7 +69,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 				<button
 					onClick={onFlip}
 					className="p-1.5 -mr-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
-					title="Close info"
+					title={t('closeInfo')}
 				>
 					<Maximize2 size={16} />
 				</button>
@@ -107,7 +110,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 				) : (
 					<div className="flex flex-col items-center justify-center py-6 border border-dashed border-white/10 rounded-xl bg-white/5">
 						<Sparkles size={24} className="text-gray-600 mb-2 opacity-50" />
-						<p className="text-xs text-gray-500">No AI analysis yet</p>
+						<p className="text-xs text-gray-500">{t('noAiAnalysis')}</p>
 					</div>
 				)}
 			</div>
@@ -117,12 +120,12 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 			{/* 3. Tags */}
 			<div className="flex-1 min-h-0 flex flex-col gap-2">
 				<span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">
-					Tags
+					{t('tags')}
 				</span>
 				<div className="flex flex-wrap gap-2">
 					{(item.manualTags || []).length === 0 &&
 						(item.aiTags || []).length === 0 && (
-							<p className="text-xs text-gray-600 italic">No tags</p>
+							<p className="text-xs text-gray-600 italic">{t('noTags')}</p>
 						)}
 					{item.manualTags?.map((tag) => {
 						const isSelected = selectedTag === tag;
@@ -161,11 +164,58 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 
 			<div className="h-px bg-white/10 w-full shrink-0" />
 
+			<div className="h-px bg-white/10 w-full shrink-0" />
+
+			{/* RAW Metadata */}
+			{item.isRaw && (
+				<>
+					<div className="flex flex-col gap-2 shrink-0">
+						<span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold flex items-center gap-1.5">
+							<Camera size={12} /> {t('cameraSettings')}
+						</span>
+						<div className="bg-white/5 rounded-lg p-3 border border-white/5 space-y-2">
+							{item.cameraModel && (
+								<div className="text-xs text-white/90 font-medium border-b border-white/10 pb-1.5 mb-1.5">
+									{item.cameraModel}
+								</div>
+							)}
+							<div className="grid grid-cols-3 gap-2 text-[10px] font-mono text-gray-400">
+								{item.iso && (
+									<div className="flex flex-col">
+										<span className="text-[8px] uppercase tracking-widest text-gray-600">
+											{t('iso')}
+										</span>
+										<span className="text-white/80">{item.iso}</span>
+									</div>
+								)}
+								{item.aperture && (
+									<div className="flex flex-col">
+										<span className="text-[8px] uppercase tracking-widest text-gray-600">
+											{t('aperture')}
+										</span>
+										<span className="text-white/80">{item.aperture}</span>
+									</div>
+								)}
+								{item.shutterSpeed && (
+									<div className="flex flex-col">
+										<span className="text-[8px] uppercase tracking-widest text-gray-600">
+											{t('shutter')}
+										</span>
+										<span className="text-white/80">{item.shutterSpeed}</span>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+					<div className="h-px bg-white/10 w-full shrink-0" />
+				</>
+			)}
+
 			{/* 4. File Info */}
 			<div className="grid grid-cols-2 gap-x-4 gap-y-3 text-[11px] font-mono shrink-0">
 				<div className="flex flex-col gap-0.5">
 					<span className="text-[9px] uppercase tracking-widest text-gray-500">
-						Type
+						{t('type')}
 					</span>
 					<span className="text-gray-300">
 						{item.type.split("/")[1]?.toUpperCase() || "UNKNOWN"}
@@ -173,7 +223,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 				</div>
 				<div className="flex flex-col gap-0.5">
 					<span className="text-[9px] uppercase tracking-widest text-gray-500">
-						Size
+						{t('size')}
 					</span>
 					<span className="text-gray-300">
 						{(item.size / 1024 / 1024).toFixed(2)} MB
@@ -182,7 +232,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 				{item.width && (
 					<div className="flex flex-col gap-0.5 col-span-2 pt-1">
 						<span className="text-[9px] uppercase tracking-widest text-gray-500">
-							Resolution
+							{t('resolution')}
 						</span>
 						<span className="text-gray-300">
 							{item.width} x {item.height} px

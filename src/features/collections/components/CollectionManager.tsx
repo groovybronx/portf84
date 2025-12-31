@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	X,
@@ -29,6 +30,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 	onSwitchCollection,
 	onDeleteCollection,
 }) => {
+	const { t } = useTranslation(["library", "common"]);
 	const [isCreating, setIsCreating] = useState(false);
 	const [newCollectionName, setNewCollectionName] = useState("");
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -79,7 +81,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-xl font-bold text-white flex items-center gap-2">
 								<Folder className="text-primary" />
-								Mes Projets
+								{t('library:myProjects')}
 							</h2>
 							<button
 								onClick={onClose}
@@ -93,7 +95,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 						<div className="space-y-2 mb-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
 							{collections.length === 0 ? (
 								<p className="text-sm text-gray-500 text-center py-8 italic">
-									Aucun Projet. Créez-en un pour commencer !
+									{t('library:noProjectsCreated')}
 								</p>
 							) : (
 								collections.map((collection) => {
@@ -160,7 +162,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 												>
 													<AlertCircle size={16} className="text-red-400" />
 													<span className="text-xs text-red-400 font-medium">
-														Confirmer ?
+														{t('common:confirm')}
 													</span>
 													<button
 														onClick={(e) => {
@@ -169,7 +171,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 														}}
 														className="text-xs text-red-400 hover:text-red-300 underline"
 													>
-														Oui
+														{t('common:yes')}
 													</button>
 													<button
 														onClick={(e) => {
@@ -178,7 +180,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 														}}
 														className="text-xs text-gray-400 hover:text-white underline"
 													>
-														Non
+														{t('common:no')}
 													</button>
 												</motion.div>
 											)}
@@ -201,7 +203,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 									value={newCollectionName}
 									onChange={(e) => setNewCollectionName(e.target.value)}
 									onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-									placeholder="Nom du Projet..."
+									placeholder={t('library:projectNamePlaceholder')}
 									className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
 									autoFocus
 								/>
@@ -211,7 +213,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 										disabled={!newCollectionName.trim()}
 										className="flex-1 py-2 bg-primary hover:bg-primary/80 disabled:bg-gray-700 disabled:text-gray-500 text-white font-medium rounded-xl transition-all"
 									>
-										Créer
+										{t('common:create')}
 									</button>
 									<button
 										onClick={() => {
@@ -220,7 +222,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 										}}
 										className="flex-1 py-2 bg-glass-bg-accent hover:bg-glass-bg-active text-gray-300 hover:text-white font-medium rounded-xl transition-all"
 									>
-										Annuler
+										{t('common:cancel')}
 									</button>
 								</div>
 							</motion.div>
@@ -230,7 +232,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 								className="w-full py-3 border-2 border-dashed border-gray-700 hover:border-primary rounded-xl text-gray-400 hover:text-primary transition-all flex items-center justify-center gap-2 font-medium"
 							>
 								<Plus size={18} />
-								Nouveau Projet
+								{t('library:newProject')}
 							</button>
 						)}
 					</motion.div>

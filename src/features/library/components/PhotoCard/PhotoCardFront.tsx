@@ -3,6 +3,7 @@
  * Front face of the card showing the image and overlay info
  */
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import { PortfolioItem } from "../../../../shared/types";
@@ -32,7 +33,8 @@ export const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
 	onLoad,
 	onFlip,
 }) => {
-	return (
+  const { t } = useTranslation("library");
+  return (
 		<GlassCard
 			className="backface-hidden overflow-hidden h-full group border-0 bg-gray-900/50"
 			variant="accent"
@@ -89,7 +91,7 @@ export const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
 						<button
 							onClick={onFlip}
 							className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors border border-white/10"
-							title="View Info"
+							title={t('viewInfo')}
 						>
 							<Info size={16} />
 						</button>
