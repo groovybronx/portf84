@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 31/12/2024 à 00:27
+Dernière mise à jour : 31/12/2024 à 01:10
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Amélioration Smart Tag Fusion
+**Session en cours** : Implémentation Multilangage (i18n)
 
 **Progression** :
 - ✅ Synchronisation GitHub (develop & main) : 100% complété
@@ -17,13 +17,67 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
 - ✅ Couverture Tests (84 tests au total) : 100% complété
 - ✅ Contrôle du sens de fusion (Merge Direction Control) : 100% complété
+- 🔄 Système i18n Multilangage (EN/FR) : 50% complété
 
 **Prochaines étapes** :
-- [ ] Stabiliser les nouvelles fonctionnalités de fusion d'alias
-- [ ] Optimisation des performances sur les grandes collections de tags
-- [ ] Exploration de la fusion sémantique via Gemini AI
+- [ ] Finaliser la migration i18n des composants restants
+- [ ] Tests de changement de langue en production
+- [ ] Documentation utilisateur multilingue
 
-**Dernière modification** : 31/12/2024 à 00:27
+**Dernière modification** : 31/12/2024 à 01:10
+
+---
+
+## [31/12/2024 - 01:10] - Implémentation Système i18n Multilangage
+
+### Type : Ajout
+
+**Composants** : Infrastructure i18n, TagManagerModal, SettingsModal
+
+**Changements** :
+
+**Infrastructure i18n**
+- ✅ Installation et configuration de `react-i18next`
+- ✅ Détection automatique de la langue (navigateur + localStorage)
+- ✅ Support EN (🇬🇧) et FR (🇫🇷)
+- ✅ 5 namespaces créés : common, tags, settings, library, errors
+- ✅ Types TypeScript avec autocomplete des clés
+
+**Sélecteur de Langue**
+- ✅ Nouvel onglet "Language" dans Settings
+- ✅ Interface avec drapeaux et noms natifs
+- ✅ Indication visuelle de la langue active (checkmark)
+- ✅ Changement dynamique sans rechargement
+- ✅ Persistance automatique dans localStorage
+
+**Composants Traduits**
+- ✅ `TagManagerModal` : 100% traduit (header, tooltips, labels, pluriels)
+- ✅ `SettingsModal` : Navigation traduite (header, tabs)
+- ✅ Indicateurs visuels améliorés (vert/rouge) avec labels traduits
+
+**Fichiers de Traduction**
+- `src/i18n/locales/en/common.json` - Textes communs (close, save, cancel, etc.)
+- `src/i18n/locales/en/tags.json` - Système de tags complet
+- `src/i18n/locales/en/settings.json` - Paramètres
+- `src/i18n/locales/en/library.json` - Bibliothèque
+- `src/i18n/locales/en/errors.json` - Messages d'erreur
+- Versions FR pour tous les fichiers ci-dessus
+
+**Impact** :
+- L'application supporte maintenant 2 langues
+- Changement de langue instantané et persistant
+- Foundation prête pour ajouter d'autres langues (DE, ES, etc.)
+- Amélioration de l'accessibilité internationale
+
+**Documentation mise à jour** :
+- `docs/I18N_GUIDE.md` : Guide complet d'utilisation et contribution
+- `docs/CHANGELOG.md` : Entrée de cette fonctionnalité
+
+**Commits** :
+- `feat: Setup i18n infrastructure with react-i18next`
+- `feat(i18n): Add language selector in SettingsModal`
+- `feat(i18n): Add library and errors translation namespaces`
+- `feat(i18n): Migrate SettingsModal navigation to i18n`
 
 ---
 
