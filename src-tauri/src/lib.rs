@@ -41,7 +41,7 @@ const RAW_EXTENSIONS: &[&str] = &[
     "fff", "mef", "mdc", "mos", "mrw", "pxn", "r3d", "x3f",
 ];
 
-/// Check if file has a RAW extension
+/// Check if file hasا RAW extension
 fn is_raw_extension(path: &str) -> bool {
     if let Some(ext) = path.split('.').last() {
         RAW_EXTENSIONS.contains(&ext.to_lowercase().as_str())
@@ -72,7 +72,7 @@ fn get_dimensions_from_exif(path: &str) -> Result<(usize, usize), String> {
     Ok((width as usize, height as usize))
 }
 
-/// Extract optional EXIF metadata (ISO, aperture, shutter, camera model)
+/// Extract optional EXIF metadata (ISO, aperture, shutter speed, camera model)
 fn extract_exif_metadata(path: &str) -> (Option<u32>, Option<String>, Option<String>, Option<String>) {
     let file = match File::open(path) {
         Ok(f) => f,
@@ -92,15 +92,31 @@ fn extract_exif_metadata(path: &str) -> (Option<u32>, Option<String>, Option<Str
     
     let aperture = exif
         .get_field(Tag::FNumber, In::PRIMARY)
-        .map(|f| format!("f/{}", f.display_value().with_unit(&exif)));
+        .map(|f| {
+            // Format the aperture value
+            let val = f.value.get_uint(0).unwrap_or(0);
+            format!("f/{:.1}", val as f64 / 10.0)
+        });
     
     let shutter = exif
         .get_field(Tag::ExposureTime, In::PRIMARY)
-        .map(|f| format!("{}", f.display_value().with_unit(&exif)));
+        .map(|f| {
+            // Get rational value for exposure time
+            if let Some((num, denom)) = f.value.get_rational(0) {
+                if num == 1 {
+                    format!("1/{}", denom)
+                } else {
+                    format!("{}/{}", num, denom)
+                }
+            } else {
+                String::from("Unknown")
+            }
+        });
     
     let camera = exif
         .get_field(Tag::Model, In::PRIMARY)
-        .map(|f| format!("{}", f.display_value().with_unit(&exif)));
+        .and_then(|f| f.value.get_ascii(0))
+        .map(|ascii| String::from_utf8_lossy(ascii).trim().to_string());
     
     (iso, aperture, shutter, camera)
 }

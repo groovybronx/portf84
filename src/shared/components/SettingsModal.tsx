@@ -429,20 +429,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										<div className="space-y-4">
 											<div className="space-y-2">
 												<label className="text-sm font-medium text-white/70">
-													Database Location
+													{t('settings:databaseLocation')}
 												</label>
 												<div className="flex gap-2">
 													<input
 														type="text"
 														readOnly
-														value={dbPath || "Default System Folder"}
+														value={dbPath || t('settings:defaultFolder')}
 														className="flex-1 bg-glass-bg-accent border border-glass-border rounded-lg px-4 py-3 text-white/50 text-xs font-mono truncate cursor-not-allowed"
 													/>
 													<button
 														onClick={handleSelectDbPath}
 														className="px-4 py-2 bg-glass-bg hover:bg-glass-bg-active border border-glass-border rounded-lg text-white text-sm transition-colors whitespace-nowrap"
 													>
-														Change...
+														{t('settings:change')}
 													</button>
 												</div>
 											</div>
@@ -450,14 +450,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 											{dbPath && (
 												<div className="flex justify-between items-center bg-amber-500/10 p-4 rounded-lg border border-amber-500/20">
 													<p className="text-xs text-amber-200 flex items-center gap-2">
-														<Icon action="alert" size={14} /> Restart required
+														<Icon action="alert" size={14} /> {t('settings:restartRequired')}
 													</p>
 													<div className="flex gap-3 items-center">
 														<button 
 															onClick={() => setDbPath("")}
 															className="text-xs text-white/50 hover:text-white underline"
 														>
-															Reset Default
+															{t('settings:resetDefault')}
 														</button>
 														<button
 															onClick={async () => {
@@ -466,15 +466,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 															}}
 															className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-lg transition-transform active:scale-95"
 														>
-															Restart Now
+															{t('settings:restartNow')}
 														</button>
 													</div>
 												</div>
 											)}
 											
 											<div className="text-xs text-white/40 space-y-2 leading-relaxed p-4 bg-white/5 rounded-lg">
-												<p><strong>Note:</strong> Moving the database location will create a new, empty library at the destination. Your existing data will remain in the default location but won't be visible.</p>
-												<p>Useful if you want to store your library index on an external portable drive.</p>
+												<p><strong>Note:</strong> {t('settings:dbNote')}</p>
+												<p>{t('settings:dbNoteUseful')}</p>
 											</div>
 										</div>
 									</div>
@@ -484,39 +484,39 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 								{activeTab === "shortcuts" && (
 									<div className="space-y-6 max-w-2xl">
 										<div className="flex justify-between items-end border-b border-white/10 pb-4">
-											<p className="text-sm text-white/60">Customize your workflow. Click on a key to rebind it.</p>
+											<p className="text-sm text-white/60">{t('settings:customizeWorkflow')}</p>
 											<button 
 												onClick={resetToDefaults}
 												className="text-xs flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
 											>
-												<Icon action="reset" size={12} /> Reset to Defaults
+												<Icon action="reset" size={12} /> {t('settings:resetDefaults')}
 											</button>
 										</div>
 
 										<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
 											{/* Group: Navigation */}
 											<div className="space-y-4">
-												<h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">Navigation</h4>
+												<h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">{t('settings:navigation')}</h4>
 												<div className="space-y-3">
-													<KeyRow label="Move Up" action="NAV_UP" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Move Down" action="NAV_DOWN" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Move Left" action="NAV_LEFT" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Move Right" action="NAV_RIGHT" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Open / Fullscreen" action="OPEN_VIEW" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:moveUp')} action="NAV_UP" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:moveDown')} action="NAV_DOWN" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:moveLeft')} action="NAV_LEFT" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:moveRight')} action="NAV_RIGHT" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:openFullscreen')} action="OPEN_VIEW" shortcuts={shortcuts} update={updateShortcut} />
 												</div>
 											</div>
 
 											{/* Group: Tagging */}
 											<div className="space-y-4">
-												<h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">Color Tags</h4>
+												<h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">{t('settings:colorTags')}</h4>
 												<div className="space-y-3">
-													<KeyRow label="Red" action="TAG_RED" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Orange" action="TAG_ORANGE" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Yellow" action="TAG_YELLOW" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Green" action="TAG_GREEN" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Blue" action="TAG_BLUE" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Purple" action="TAG_PURPLE" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label="Clear Tag" action="TAG_REMOVE" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:red')} action="TAG_RED" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:orange')} action="TAG_ORANGE" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:yellow')} action="TAG_YELLOW" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:green')} action="TAG_GREEN" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:blue')} action="TAG_BLUE" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:purple')} action="TAG_PURPLE" shortcuts={shortcuts} update={updateShortcut} />
+													<KeyRow label={t('settings:clearTag')} action="TAG_REMOVE" shortcuts={shortcuts} update={updateShortcut} />
 												</div>
 											</div>
 										</div>
