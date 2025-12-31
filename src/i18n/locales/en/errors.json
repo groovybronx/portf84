@@ -13,5 +13,14 @@
   "invalidFormat": "Invalid file format",
   "analysisError": "AI analysis failed",
   "analysisFailed": "Failed to analyze image",
-  "noApiKey": "No API key configured. Please add your Gemini API key in Settings."
+  "noApiKey": "No API key configured. Please add your Gemini API key in Settings.",
+  "missingApiKey": "Missing Gemini API Key. Please configure it in Settings.",
+  "networkFailed": "Network connection failed. Please check your internet connection.",
+  "fileUrlMissing": "Cannot analyze image: File object and URL not available.",
+  "failedToLoadImage": "Failed to load image file from disk.",
+  "emptyAiResponse": "Empty response from AI",
+  "noDescriptionGenerated": "No description generated.",
+  "unknownAnalysisError": "Unknown error during analysis",
+  "noJsonFound": "Failed to parse AI response: No JSON found.",
+  "unknownStreamError": "Unknown error during stream analysis"
 }

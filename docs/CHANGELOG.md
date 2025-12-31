@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 31/12/2024 à 01:10
+Dernière mise à jour : 31/12/2024 à 01:25
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,23 +8,53 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Implémentation Multilangage (i18n)
+**Session en cours** : Finalisation Implémentation Multilangage (i18n)
 
 **Progression** :
 - ✅ Synchronisation GitHub (develop & main) : 100% complété
 - ✅ Intégration Agents Copilot Spécialisés (.github/agents/) : 100% complété
 - ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
 - ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
-- ✅ Couverture Tests (84 tests au total) : 100% complété
-- ✅ Contrôle du sens de fusion (Merge Direction Control) : 100% complété
-- 🔄 Système i18n Multilangage (EN/FR) : 50% complété
+- ✅ Support Fichiers RAW (Photo) : 100% complété
+- ✅ Migration i18n Multilangage (EN/FR) : 100% complété
 
 **Prochaines étapes** :
-- [ ] Finaliser la migration i18n des composants restants
-- [ ] Tests de changement de langue en production
-- [ ] Documentation utilisateur multilingue
+- [ ] Tests de non-régression sur le build de production
+- [ ] Déploiement v0.9.5
 
-**Dernière modification** : 31/12/2024 à 01:10
+**Dernière modification** : 31/12/2024 à 02:00
+
+---
+
+## [31/12/2024 - 01:25] - Support des Fichiers RAW (Photo)
+
+### Type : Feature / Backend
+
+**Composants** : `src-tauri/src/lib.rs`, `fileHelpers.ts`, `PhotoCardBack.tsx`
+
+**Changements** :
+
+**1. Support Natif des Formats RAW** :
+- **Formats supportés** : Canon (`.cr2`, `.cr3`), Nikon (`.nef`, `.nrw`), Sony (`.arw`), Fuji (`.raf`), Olympus (`.orf`), Panasonic (`.rw2`), Adobe (`.dng`), et 20+ autres formats professionnels.
+- **Extraction Preview** : Utilisation de la bibliothèque Rust `exif` (anciennement kamadak-exif) pour extraire les previews JPEG embarqués, garantissant un affichage instantané sans décodage lourd.
+- **Detection Intelligente** : `fileHelpers.ts` et `lib.rs` identifient automatiquement les fichiers RAW et adaptent la méthode d'extraction.
+
+**2. Extraction de Métadonnées EXIF** :
+- Extraction automatique des données de prise de vue :
+  - **ISO** (Sensibilité)
+  - **Ouverture** (f/stop)
+  - **Vitesse d'obturation** (Shutter speed)
+  - **Modèle de Caméra**
+
+**3. Interface Utilisateur Enrichie** :
+- Mise à jour de `PhotoCardBack` pour afficher une nouvelle section "Camera Settings" sur les photos RAW.
+- Affichage clair des paramètres techniques pour les photographes.
+
+**Impact** : Ouvre l'application aux photographes professionnels qui peuvent désormais visualiser et organiser leurs fichiers bruts.
+
+**Documentation mise à jour** :
+- `docs/ARCHITECTURE.md` : Liste des formats supportés
+- `docs/CHANGELOG.md` : Entrée complète
 
 ---
 
@@ -78,6 +108,9 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - `feat(i18n): Add language selector in SettingsModal`
 - `feat(i18n): Add library and errors translation namespaces`
 - `feat(i18n): Migrate SettingsModal navigation to i18n`
+- `feat(i18n): Migrate TagMergeHistory and geminiService to i18n`
+- `docs(i18n): Update Architecture, README and I18N Guide`
+- `fix(i18n): Standardize pluralization and fix JSON syntax errors`
 
 ---
 

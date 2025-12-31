@@ -66,7 +66,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 			const selected = await open({
 				directory: true,
 				multiple: false,
-				title: "Select Database Location",
+				title: t('settings:selectDbLocation'),
 			});
 			if (selected && typeof selected === "string") {
 				setDbPath(selected);
@@ -167,7 +167,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 							{/* Header */}
 							<div className="h-16 border-b border-glass-border flex items-center justify-between px-8 shrink-0">
 								<h3 className="text-lg font-medium text-white capitalize">
-									{activeTab === "general" ? "General Settings" : activeTab === "appearance" ? "Appearance & Theme" : activeTab === "storage" ? "Storage Configuration" : "Keyboard Shortcuts"}
+									{activeTab === "general" ? t('settings:tabGeneral') : activeTab === "appearance" ? t('settings:tabAppearance') : activeTab === "storage" ? t('settings:tabStorage') : t('settings:tabShortcuts')}
 								</h3>
 								<button
 									onClick={onClose}
@@ -264,18 +264,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						<div className="space-y-4">
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-white/70">
-									Select Language / Sélectionner la langue
+									{t('settings:selectLanguage')}
 								</label>
 								<p className="text-xs text-white/40 leading-relaxed">
-									Choose your preferred language for the interface.
+									{t('settings:languageDesc')}
 								</p>
 							</div>
 
 							{/* Language Selection */}
 							<div className="space-y-3">
 								{[
-									{ code: 'en', name: 'English', flag: '🇬🇧', nativeName: 'English' },
-									{ code: 'fr', name: 'Français', flag: '🇫🇷', nativeName: 'Français' },
+									{ code: 'en', name: t('settings:langEnglish'), flag: '🇬🇧', nativeName: 'English' },
+									{ code: 'fr', name: t('settings:langFrench'), flag: '🇫🇷', nativeName: 'Français' },
 								].map((lang) => (
 									<button
 										key={lang.code}
@@ -299,7 +299,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										</div>
 										{(i18n.language === lang.code || i18n.language.startsWith(lang.code)) && (
 											<div className="flex items-center gap-2">
-												<span className="text-xs font-medium text-primary">Active</span>
+												<span className="text-xs font-medium text-primary">{t('settings:active')}</span>
 												<Icon action="check" size={18} className="text-primary" />
 											</div>
 										)}
@@ -311,9 +311,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 							<div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 flex gap-3 mt-6">
 								<Icon action="alert" className="w-5 h-5 text-blue-400 shrink-0" />
 								<div className="text-xs text-blue-200/80 space-y-1">
-									<p className="font-medium">Language Preference Saved</p>
+									<p className="font-medium">{t('settings:langSaved')}</p>
 									<p className="text-blue-200/60">
-										Your language choice is automatically saved and will be remembered across sessions.
+										{t('settings:langSavedDesc')}
 									</p>
 								</div>
 							</div>
@@ -387,14 +387,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
 										<div className="space-y-4 pt-6 border-t border-glass-border">
 											<div className="flex justify-between items-center">
-												<h4 className="text-sm font-medium text-white/70">Glass Opacity</h4>
-												<span className="text-xs text-white/40">{settings.glassBg.includes("0.9") ? "High" : settings.glassBg.includes("0.5") ? "Low" : "Medium"}</span>
+												<h4 className="text-sm font-medium text-white/70">{t('settings:glassOpacity')}</h4>
+												<span className="text-xs text-white/40">{settings.glassBg.includes("0.9") ? t('settings:high') : settings.glassBg.includes("0.5") ? t('settings:low') : t('settings:medium')}</span>
 											</div>
 											<div className="flex gap-2 bg-glass-bg-accent p-1 rounded-lg border border-glass-border-light">
 												{[
-													{ label: "High Coverage", value: "rgba(10, 10, 10, 0.95)" },
-													{ label: "Balanced", value: "rgba(10, 10, 10, 0.8)" },
-													{ label: "Frosted", value: "rgba(10, 10, 10, 0.5)" },
+													{ label: t('settings:highCoverage'), value: "rgba(10, 10, 10, 0.95)" },
+													{ label: t('settings:balanced'), value: "rgba(10, 10, 10, 0.8)" },
+													{ label: t('settings:frosted'), value: "rgba(10, 10, 10, 0.5)" },
 												].map((option) => (
 													<button
 														key={option.value}
@@ -417,7 +417,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										        onClick={resetTheme}
 										        className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-2"
 										    >
-										        <Icon action="reset" size={12} /> Reset Theme to Defaults
+										        <Icon action="reset" size={12} /> {t('settings:resetTheme')}
 										    </button>
 										</div>
 									</div>
@@ -536,10 +536,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 								>
 									<div className="relative z-10 flex items-center gap-2">
 										{isSaved ? (
-											<>Saved!</>
+											<>{t('settings:saved')}</>
 										) : (
 											<>
-												<Icon action="save" size={16} /> Save Changes
+												<Icon action="save" size={16} /> {t('settings:saveChanges')}
 											</>
 										)}
 									</div>
@@ -572,18 +572,19 @@ const ColorRow = ({
 	onIconChange?: (icon: IconAction) => void,
 	usedIcons?: IconAction[]
 }) => {
+	const { t } = useTranslation(['settings']);
 	const [showIconPicker, setShowIconPicker] = useState(false);
 	const colors = [
-		{ name: "Blue", value: "#3b82f6" },
-		{ name: "Purple", value: "#a855f7" },
-		{ name: "Emerald", value: "#10b981" },
-		{ name: "Rose", value: "#f43f5e" },
-		{ name: "Amber", value: "#f59e0b" },
-		{ name: "Cyan", value: "#06b6d4" },
-		{ name: "Violet", value: "#8b5cf6" },
-		{ name: "Fuchsia", value: "#d946ef" },
-		{ name: "Lime", value: "#84cc16" },
-		{ name: "Orange", value: "#f97316" },
+		{ name: t('settings:colorBlue'), value: "#3b82f6" },
+		{ name: t('settings:colorPurple'), value: "#a855f7" },
+		{ name: t('settings:colorEmerald'), value: "#10b981" },
+		{ name: t('settings:colorRose'), value: "#f43f5e" },
+		{ name: t('settings:colorAmber'), value: "#f59e0b" },
+		{ name: t('settings:colorCyan'), value: "#06b6d4" },
+		{ name: t('settings:colorViolet'), value: "#8b5cf6" },
+		{ name: t('settings:colorFuchsia'), value: "#d946ef" },
+		{ name: t('settings:colorLime'), value: "#84cc16" },
+		{ name: t('settings:colorOrange'), value: "#f97316" },
 	];
 
 	return (
@@ -599,7 +600,7 @@ const ColorRow = ({
 						icon && onIconChange ? 'cursor-pointer hover:scale-105 hover:ring-2 hover:ring-white/30' : 'cursor-default'
 					}`}
 					style={{ backgroundColor: value }}
-					title={icon && onIconChange ? "Click to change icon" : undefined}
+					title={icon && onIconChange ? t('settings:clickToChangeIcon') : undefined}
 				>
 					{icon && <Icon action={icon} size={20} className="text-white drop-shadow-md" />}
 				</button>
@@ -632,7 +633,7 @@ const ColorRow = ({
 						className="overflow-hidden"
 					>
 						<div className="mt-3 pt-3 border-t border-glass-border">
-							<div className="text-xs text-white/50 mb-2">Select Icon</div>
+							<div className="text-xs text-white/50 mb-2">{t('settings:selectIcon')}</div>
 							<div className="grid grid-cols-8 gap-1.5 max-h-48 overflow-y-auto">
 								{ALL_ICONS.map((iconAction) => {
 									const isUsed = usedIcons.includes(iconAction) && iconAction !== icon;
@@ -653,7 +654,7 @@ const ColorRow = ({
 													? "bg-glass-bg opacity-30 cursor-not-allowed"
 													: "bg-glass-bg hover:bg-glass-bg-active opacity-60 hover:opacity-100"
 											}`}
-											title={isUsed ? `${iconAction} (already used)` : iconAction}
+											title={isUsed ? `${iconAction} ${t('settings:alreadyUsed')}` : iconAction}
 										>
 											<Icon 
 												action={iconAction} 
@@ -801,7 +802,8 @@ const NavButton = ({ active, onClick, icon, label }: { active: boolean, onClick:
 );
 
 const KeyRow = ({ label, action, shortcuts, update }: { label: string, action: keyof ShortcutMap, shortcuts: ShortcutMap, update: (k: keyof ShortcutMap, v: string[]) => void }) => {
-	const currentKey = shortcuts[action][0] || "None";
+	const { t } = useTranslation(["settings", "common"]);
+	const currentKey = shortcuts[action][0] || t('common:none');
 	const [isListening, setIsListening] = useState(false);
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -825,17 +827,18 @@ const KeyRow = ({ label, action, shortcuts, update }: { label: string, action: k
 					: "bg-white/5 text-white/70 border-white/10 hover:border-white/30 hover:bg-white/10"
 				}`}
 			>
-				{isListening ? "Press key..." : formatKeyLabel(currentKey)}
+				{isListening ? t('settings:pressKey') : formatKeyLabel(currentKey, t)}
 			</button>
 		</div>
 	);
 };
 
-const formatKeyLabel = (key: string) => {
+const formatKeyLabel = (key: string, t: any) => {
 	if (key === " ") return "Space";
 	if (key === "ArrowUp") return "↑";
 	if (key === "ArrowDown") return "↓";
 	if (key === "ArrowLeft") return "←";
 	if (key === "ArrowRight") return "→";
+	if (key === "None") return t('common:none');
 	return key.toUpperCase();
 };

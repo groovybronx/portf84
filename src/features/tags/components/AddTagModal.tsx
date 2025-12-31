@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag, X, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface AddTagModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
   selectedCount,
   availableTags,
 }) => {
+  const { t } = useTranslation(["tags", "common"]);
   const [tag, setTag] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -64,7 +66,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                 <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
                   <Tag size={20} />
                 </div>
-                <h2 className="text-xl font-bold text-white">Add Tag</h2>
+                <h2 className="text-xl font-bold text-white">{t('tags:addTagTitle')}</h2>
               </div>
               <button
                 onClick={onClose}
@@ -75,9 +77,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
             </div>
 
             <p className="text-sm text-gray-400 mb-4">
-              Adding tag to{" "}
-              <span className="text-white font-medium">{selectedCount}</span>{" "}
-              item{selectedCount > 1 ? "s" : ""}.
+              {t('tags:addingTagTo', { count: selectedCount })}.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,7 +93,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                   onBlur={() =>
                     setTimeout(() => setShowSuggestions(false), 200)
                   }
-                  placeholder="Enter tag name..."
+                  placeholder={t('tags:enterTagName')}
                   className="w-full bg-black/40 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
                   autoFocus
                 />
@@ -127,7 +127,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                   onClick={onClose}
                   className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
                 >
-                  Cancel
+                  {t('common:cancel')}
                 </button>
                 <button
                   type="submit"
@@ -135,7 +135,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                   className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
                 >
                   <Plus size={16} />
-                  Add Tag
+                  {t('tags:addTag')}
                 </button>
               </div>
             </form>

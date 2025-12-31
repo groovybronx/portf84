@@ -8,14 +8,16 @@
   "remove": "Remove",
   "search": "Search",
   "loading": "Loading...",
+  "create": "Create",
+  "confirm": "Confirm?",
   "yes": "Yes",
   "no": "No",
-  "confirm": "Confirm",
   "back": "Back",
   "next": "Next",
   "ok": "OK",
   "error": "Error",
   "success": "Success",
   "warning": "Warning",
-  "info": "Info"
+  "info": "Info",
+  "none": "None"
 }

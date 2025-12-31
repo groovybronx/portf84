@@ -14,7 +14,8 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 | **SQLite**                  | via plugin    | Persistance locale      |
 | **@tanstack/react-virtual** | 3.13          | Virtualisation UI       |
 | **Framer Motion**           | 12.x          | Animations              |
-| **Gemini AI**               | @google/genai | Analyse d'images        |
+| **Gemini AI**               | @google/genai | Image analysis          |
+| **i18next**                 | 24.x          | Multilanguage support   |
 | **Vitest**                  | 4.x           | Tests unitaires         |
 
 ---
@@ -38,12 +39,16 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
    - Streaming & Thinking Process
    - Ingénierie du Prompt
    - Batch processing
-4. [Interactions & Raccourcis](INTERACTIONS.md)
-   - Gestion du clavier (Auto-Scroll)
-   - Système de tagging couleur
+4. [Interactions & Shortcuts](INTERACTIONS.md)
+   - Keyboard management (Auto-Scroll)
+   - Color tagging system
    - Drag & Drop
-   - Sélection multiple
-5. [Knowledge Base](KnowledgeBase/01_Project_Overview.md)
+   - Multi-selection
+5. [Multilanguage Support (i18n)](I18N_GUIDE.md)
+   - Configuration & Namespaces
+   - Adding a new language
+   - Best practices
+6. [Knowledge Base](KnowledgeBase/01_Project_Overview.md)
    - Aperçu complet du projet
    - Détails techniques approfondis
    - Guide développeur & FAQ

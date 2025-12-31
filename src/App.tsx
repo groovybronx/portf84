@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { TopBar } from "./features/navigation";
 import { ViewRenderer } from "./features/library/components/ViewRenderer";
 import { ImageViewer, analyzeImage } from "./features/vision";
@@ -37,6 +38,7 @@ import { storageService } from "./services/storageService";
 import { LoadingOverlay } from "./shared/components/LoadingOverlay";
 
 const App: React.FC = () => {
+  const { t } = useTranslation(["library", "common"]);
   // --- 0. Local State (Moved up for dependencies) ---
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
@@ -251,7 +253,7 @@ const App: React.FC = () => {
   const handleDirectoryPicker = async () => {
     try {
       if (!activeCollection) {
-        alert("Veuillez d'abord créer ou sélectionner un Projet");
+        alert(t('library:selectProjectPrompt'));
         setIsCollectionManagerOpen(true);
         return;
       }
@@ -271,7 +273,7 @@ const App: React.FC = () => {
 
         if (newPaths.length < paths.length) {
           const skippedCount = paths.length - newPaths.length;
-          alert(`${skippedCount} dossier(s) ignoré(s) car déjà présent(s) dans le projet.`);
+          alert(t('library:foldersSkipped', { count: skippedCount }));
         }
         
         for (const path of newPaths) {
@@ -288,8 +290,8 @@ const App: React.FC = () => {
   const handleRunBatchAI = () => {
     const itemsToProcess = processedItems.filter((item) => !item.aiDescription);
     if (itemsToProcess.length === 0)
-      return alert("No unanalyzed items in view.");
-    if (confirm(`Start AI analysis for ${itemsToProcess.length} items?`)) {
+      return alert(t('library:noUnanalyzedItems'));
+    if (confirm(t('library:startAiAnalysisConfirm', { count: itemsToProcess.length }))) {
       addToQueue(itemsToProcess);
     }
   };
@@ -431,15 +433,15 @@ const App: React.FC = () => {
         <div className="flex-1 relative overflow-hidden flex flex-col h-full">
           <ErrorBoundary featureName="library">
             <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full">
-          {currentItems.length === 0 ? (
-            <div className="flex items-center justify-center h-full min-h-[60vh]">
-              <p className="text-gray-500 text-center">
-                {!activeCollection
-                  ? "Ouvrez le tiroir (icône en haut à gauche) pour créer une Collection"
-                  : "Aucune image. Ajoutez un dossier source depuis le tiroir."}
-              </p>
-            </div>
-          ) : (
+              {currentItems.length === 0 ? (
+                <div className="flex items-center justify-center h-full min-h-[60vh]">
+                  <p className="text-gray-500 text-center">
+                    {!activeCollection
+                      ? t('library:openDrawerToCreate')
+                      : t('library:noItemsAddSource')}
+                  </p>
+                </div>
+              ) : (
             <AnimatePresence mode="wait">
               <ViewRenderer
                 viewMode={viewMode}

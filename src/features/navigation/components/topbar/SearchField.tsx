@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Search, Tag, X } from "lucide-react";
 
 interface SearchFieldProps {
@@ -16,6 +17,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
   onTagSelect,
   selectedTag,
 }) => {
+  const { t } = useTranslation("navigation");
   const [isFocused, setIsFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
         <input
           type="text"
-          placeholder={selectedTag ? "Search in tag..." : "Search..."}
+          placeholder={selectedTag ? t('searchInTag') : t('searchPlaceholder')}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
@@ -101,7 +103,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
       {isFocused && suggestions.length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
           <div className="px-3 py-2 text-xs text-gray-500 font-medium uppercase tracking-wider border-b border-white/5">
-            Suggestions
+            {t('suggestions')}
           </div>
           {suggestions.map((tag) => (
             <button

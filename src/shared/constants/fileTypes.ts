@@ -27,6 +27,8 @@ export const RAW_IMAGE_EXTENSIONS = [
   "rwl", "rwz",
   // Adobe / Universal
   "dng",
+  // TIFF formats (moved to RAW to enable EXIF metadata)
+  "tiff", "tif",
   // Autres formats professionnels
   "raw", "3fr", "ari", "bay", "cap", "iiq", "eip", "erf", 
   "fff", "mef", "mdc", "mos", "mrw", "pxn", "r3d", "x3f",
@@ -44,8 +46,6 @@ export const STANDARD_IMAGE_EXTENSIONS = [
   "svg",
   "bmp",
   "ico",
-  "tiff",
-  "tif",
 ] as const;
 
 /**

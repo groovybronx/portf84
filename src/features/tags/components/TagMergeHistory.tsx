@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, History, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { getAllTags } from '../../../services/storage/tags';
 import { getDB } from '../../../services/storage/db';
+import { useTranslation } from 'react-i18next';
 import { DBTagMerge, ParsedTag } from '../../../shared/types/database';
 
 interface TagMergeHistoryProps {
@@ -18,6 +19,7 @@ interface MergeHistoryEntry extends DBTagMerge {
 const ITEMS_PER_PAGE = 20;
 
 export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClose }) => {
+    const { t, i18n } = useTranslation(['tags', 'errors']);
     const [history, setHistory] = useState<MergeHistoryEntry[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -44,14 +46,14 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
             // Enrich merge records with tag names
             const enrichedHistory: MergeHistoryEntry[] = merges.map(merge => ({
                 ...merge,
-                targetTagName: tagMap.get(merge.targetTagId) || 'Unknown',
-                sourceTagName: tagMap.get(merge.sourceTagId) || 'Deleted',
+                targetTagName: tagMap.get(merge.targetTagId) || t('tags:unknown'),
+                sourceTagName: tagMap.get(merge.sourceTagId) || t('tags:deleted'),
             }));
 
             setHistory(enrichedHistory);
         } catch (e) {
             console.error("Failed to load merge history", e);
-            setError("Failed to load merge history. Please try again.");
+            setError(t('tags:errorLoadingHistory'));
         } finally {
             setLoading(false);
         }
@@ -71,7 +73,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
 
     const formatDate = (timestamp: number) => {
         const date = new Date(timestamp);
-        return date.toLocaleString('en-US', {
+        return date.toLocaleString(i18n.language, {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -81,7 +83,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
     };
 
     const formatMergeType = (mergedBy: string | null) => {
-        if (!mergedBy) return 'auto';
+        if (!mergedBy || mergedBy === 'auto') return t('tags:auto');
         return mergedBy;
     };
 
@@ -109,15 +111,15 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                     <History className="w-5 h-5 text-blue-400" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-white">Merge History</h2>
-                                    <p className="text-xs text-white/50">Track all tag consolidation operations</p>
+                                    <h2 className="text-xl font-bold text-white">{t('tags:mergeHistory')}</h2>
+                                    <p className="text-xs text-white/50">{t('tags:historyDesc')}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <button 
                                     onClick={loadHistory}
                                     className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors"
-                                    title="Refresh"
+                                    title={t('tags:refresh')}
                                 >
                                     <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
                                 </button>
@@ -135,20 +137,20 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                             {loading ? (
                                 <div className="flex flex-col items-center justify-center py-12 space-y-4">
                                     <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-                                    <p className="text-sm text-white/50">Loading history...</p>
+                                    <p className="text-sm text-white/50">{t('tags:loadingHistory')}</p>
                                 </div>
                             ) : error ? (
                                 <div className="flex flex-col items-center justify-center py-12 space-y-4">
                                     <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
                                         <X className="w-8 h-8 text-red-400" />
                                     </div>
-                                    <h3 className="text-lg font-medium text-white">Error Loading History</h3>
+                                    <h3 className="text-lg font-medium text-white">{t('tags:errorLoadingHistory')}</h3>
                                     <p className="text-sm text-white/40 max-w-xs mx-auto text-center">{error}</p>
                                     <button 
                                         onClick={loadHistory}
                                         className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 rounded-lg text-blue-300 text-sm font-medium transition-colors"
                                     >
-                                        Try Again
+                                        {t('tags:tryAgain')}
                                     </button>
                                 </div>
                             ) : history.length === 0 ? (
@@ -156,19 +158,19 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                     <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto">
                                         <History className="w-8 h-8 text-blue-400" />
                                     </div>
-                                    <h3 className="text-lg font-medium text-white">No merge history</h3>
+                                    <h3 className="text-lg font-medium text-white">{t('tags:noHistory')}</h3>
                                     <p className="text-sm text-white/40 max-w-xs mx-auto">
-                                        Tag merges will appear here once you start consolidating similar tags.
+                                        {t('tags:noHistoryDesc')}
                                     </p>
                                 </div>
                             ) : (
                                 <div className="space-y-3" role="table" aria-label="Tag merge history">
                                     {/* Table Header */}
                                     <div className="grid grid-cols-11 gap-4 px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10" role="row">
-                                        <div className="col-span-3" role="columnheader">Date</div>
-                                        <div className="col-span-4" role="columnheader">Target Tag</div>
-                                        <div className="col-span-3" role="columnheader">Source Tag</div>
-                                        <div className="col-span-1" role="columnheader">Type</div>
+                                        <div className="col-span-3" role="columnheader">{t('tags:date')}</div>
+                                        <div className="col-span-4" role="columnheader">{t('tags:targetTag')}</div>
+                                        <div className="col-span-3" role="columnheader">{t('tags:sourceTag')}</div>
+                                        <div className="col-span-1" role="columnheader">{t('tags:type')}</div>
                                     </div>
 
                                     {/* Table Rows */}
@@ -212,7 +214,11 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                         {history.length > ITEMS_PER_PAGE && (
                             <div className="p-4 border-t border-white/10 flex items-center justify-between">
                                 <div className="text-sm text-white/50">
-                                    Showing {startIndex + 1}-{Math.min(endIndex, history.length)} of {history.length} entries
+                                    {t('tags:showingEntries', { 
+                                        start: startIndex + 1, 
+                                        end: Math.min(endIndex, history.length), 
+                                        total: history.length 
+                                    })}
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button
@@ -224,7 +230,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                         <ChevronLeft size={16} />
                                     </button>
                                     <span className="text-sm text-white/70 min-w-[80px] text-center">
-                                        Page {currentPage} of {totalPages}
+                                        {t('tags:pageCount', { current: currentPage, total: totalPages })}
                                     </span>
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}

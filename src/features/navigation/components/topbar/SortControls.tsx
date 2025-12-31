@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowUpDown } from "lucide-react";
 import { SortOption, SortDirection } from "../../../../shared/types";
 import { Button } from "../../../../shared/components/ui";
@@ -16,6 +17,7 @@ export const SortControls: React.FC<SortControlsProps> = ({
 	onSortChange,
 	onSortDirectionChange,
 }) => {
+	const { t } = useTranslation("navigation");
 	return (
 		<div className="hidden lg:flex items-center gap-1">
 			<select
@@ -24,13 +26,13 @@ export const SortControls: React.FC<SortControlsProps> = ({
 				className="bg-glass-bg-accent text-white border border-glass-border-light text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer w-20 appearance-none transition-colors hover:bg-glass-bg-active"
 			>
 				<option value="date" className="bg-gray-900">
-					Date
+					{t('date')}
 				</option>
 				<option value="name" className="bg-gray-900">
-					Name
+					{t('name')}
 				</option>
 				<option value="size" className="bg-gray-900">
-					Size
+					{t('size')}
 				</option>
 			</select>
 			<Button

@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { PortfolioItem, AiTagDetailed } from "../../../shared/types";
 import { STORAGE_KEYS } from "../../../shared/constants";
+import i18next from "i18next";
 
 // Helper to convert File/Blob to Base64 (Standard implementation)
 const processFileToBase64 = (file: File): Promise<string> => {
@@ -33,14 +34,14 @@ export class GeminiError extends Error {
 
 export class ApiKeyError extends GeminiError {
   constructor() {
-    super("Missing Gemini API Key. Please configure it in Settings.", "MISSING_API_KEY");
+    super(i18next.t('errors:missingApiKey'), "MISSING_API_KEY");
     this.name = "ApiKeyError";
   }
 }
 
 export class NetworkError extends GeminiError {
   constructor(originalError: any) {
-    super("Network connection failed. Please check your internet connection.", "NETWORK_ERROR");
+    super(i18next.t('errors:networkFailed'), "NETWORK_ERROR");
     this.name = "NetworkError";
     this.cause = originalError;
   }
@@ -85,7 +86,7 @@ export const analyzeImage = async (
 	const apiKey = await getApiKey();
 
 	if (!item.file && !item.url) {
-		throw new Error("Cannot analyze image: File object and URL not available.");
+		throw new Error(i18next.t('errors:fileUrlMissing'));
 	}
 
 	try {
@@ -102,7 +103,7 @@ export const analyzeImage = async (
 				base64Data = await processFileToBase64(file);
 			} catch (err) {
 				console.error("Failed to fetch image from URL:", err);
-				throw new Error("Failed to load image file from disk.");
+				throw new Error(i18next.t('errors:failedToLoadImage'));
 			}
 		}
 
@@ -142,7 +143,7 @@ export const analyzeImage = async (
 
 		const text = response.text;
 		if (!text) {
-			throw new Error("Empty response from AI");
+			throw new Error(i18next.t('errors:emptyAiResponse'));
 		}
 
 		const json = JSON.parse(text);
@@ -155,7 +156,7 @@ export const analyzeImage = async (
 		const tags = tagsDetailed.map((t) => t.name);
 
 		return {
-			description: json.description || "No description generated.",
+			description: json.description || i18next.t('errors:noDescriptionGenerated'),
 			tags,
 			tagsDetailed,
 		};
@@ -169,7 +170,7 @@ export const analyzeImage = async (
 		if (error.message?.includes("network") || error.message?.includes("fetch")) {
 			throw new NetworkError(error);
 		}
-		throw new GeminiError(error.message || "Unknown error during analysis", "UNKNOWN_ERROR");
+		throw new GeminiError(error.message || i18next.t('errors:unknownAnalysisError'), "UNKNOWN_ERROR");
 	}
 };
 
@@ -185,7 +186,7 @@ export const analyzeImageStream = async (
 	const apiKey = await getApiKey();
 
 	if (!item.file && !item.url) {
-		throw new Error("Cannot analyze image: File object and URL not available.");
+		throw new Error(i18next.t('errors:fileUrlMissing'));
 	}
 
 	try {
@@ -203,7 +204,7 @@ export const analyzeImageStream = async (
 				base64Data = await processFileToBase64(file);
 			} catch (err) {
 				console.error("Failed to fetch image from URL:", err);
-				throw new Error("Failed to load image file from disk.");
+				throw new Error(i18next.t('errors:failedToLoadImage'));
 			}
 		}
 		const modelId = "gemini-3-flash-preview";
@@ -288,7 +289,7 @@ export const analyzeImageStream = async (
 				if (jsonStart !== -1) {
 					jsonString = fullText.substring(jsonStart);
 				} else {
-					throw new Error("Failed to parse AI response: No JSON found.");
+					throw new Error(i18next.t('errors:noJsonFound'));
 				}
 			} else {
 				jsonString = parts[1] || "";
@@ -310,7 +311,7 @@ export const analyzeImageStream = async (
 		const tags = tagsDetailed.map((t) => t.name);
 
 		return {
-			description: json.description || "No description generated.",
+			description: json.description || i18next.t('errors:noDescriptionGenerated'),
 			tags,
 			tagsDetailed,
 		};
@@ -324,6 +325,6 @@ export const analyzeImageStream = async (
 		if (error.message?.includes("network") || error.message?.includes("fetch")) {
 			throw new NetworkError(error);
 		}
-		throw new GeminiError(error.message || "Unknown error during stream analysis", "UNKNOWN_ERROR");
+		throw new GeminiError(error.message || i18next.t('errors:unknownStreamError'), "UNKNOWN_ERROR");
 	}
 };

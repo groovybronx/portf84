@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconAction } from "../../../../shared/components/Icon";
 import { Button } from "../../../../shared/components/ui";
 import { Folder as FolderType } from "../../../../shared/types";
@@ -22,6 +23,7 @@ export const FolderItem: React.FC<FolderItemProps> = ({
   iconColorClass,
   iconBgClass,
 }) => {
+  const { t } = useTranslation("library");
   return (
     <div
       className={`group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
@@ -57,7 +59,9 @@ export const FolderItem: React.FC<FolderItemProps> = ({
             {folder.name}
           </p>
         </div>
-        <p className="text-xs opacity-60">{folder.items.length} items</p>
+        						<span className="text-xs text-secondary-bright/50">
+							{t('itemCount', { count: folder.items.length })}
+						</span>
       </div>
 
       {onDelete && (
@@ -69,7 +73,7 @@ export const FolderItem: React.FC<FolderItemProps> = ({
             onDelete(folder.id);
           }}
           className="opacity-0 group-hover:opacity-100 h-7 w-7 text-gray-500 hover:text-red-400 hover:bg-red-500/20"
-          title="Supprimer cette collection"
+          					title={t("deleteCollection")}
         >
           <Icon action="delete" size={14} />
         </Button>

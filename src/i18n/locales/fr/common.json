@@ -8,14 +8,16 @@
   "remove": "Retirer",
   "search": "Rechercher",
   "loading": "Chargement...",
+  "create": "Créer",
+  "confirm": "Confirmer ?",
   "yes": "Oui",
   "no": "Non",
-  "confirm": "Confirmer",
   "back": "Retour",
   "next": "Suivant",
   "ok": "OK",
   "error": "Erreur",
   "success": "Succès",
   "warning": "Attention",
-  "info": "Info"
+  "info": "Info",
+  "none": "Aucun"
 }
