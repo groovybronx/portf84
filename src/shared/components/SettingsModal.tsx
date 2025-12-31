@@ -127,38 +127,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						<div className="w-64 bg-glass-bg-accent border-r border-glass-border p-4 flex flex-col gap-2">
 							<h2 className="text-xl font-semibold text-white px-2 mb-4 flex items-center gap-2">
 								<Icon action="layout_grid" className="w-5 h-5 text-primary" />
-								Settings
+								{t('settings:settings')}
 							</h2>
 							
 							<NavButton 
 								active={activeTab === "general"} 
 								onClick={() => setActiveTab("general")} 
 								icon={<Icon action="key" size={18} />} 
-								label="General & AI" 
+								label={t('settings:general')} 
 							/>
 							<NavButton 
 								active={activeTab === "language"} 
 								onClick={() => setActiveTab("language")} 
 								icon={<Icon action="globe" size={18} />} 
-								label="Language" 
+								label={t('settings:language')} 
 							/>
 							<NavButton 
 								active={activeTab === "appearance"} 
 								onClick={() => setActiveTab("appearance")} 
 								icon={<Icon action="palette" size={18} />} // using palette or Grid? I added layout_grid. Palette is not in registry. I should use `brush` or reuse `layout_grid`? Or add `palette`.
-								label="Appearance" 
+								label={t('settings:appearance')} 
 							/>
 							<NavButton 
 								active={activeTab === "storage"} 
 								onClick={() => setActiveTab("storage")} 
 								icon={<Icon action="database" size={18} />} 
-								label="Storage" 
+								label={t('settings:storage')} 
 							/>
 							<NavButton 
 								active={activeTab === "shortcuts"} 
 								onClick={() => setActiveTab("shortcuts")} 
 								icon={<Icon action="keyboard" size={18} />} 
-								label="Shortcuts" 
+								label={t('settings:shortcuts')} 
 							/>
 						</div>
 
