@@ -187,7 +187,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										<div className="space-y-4">
 											<div className="space-y-2">
 												<label className="text-sm font-medium text-white/70">
-													Google Gemini API Key
+													{t('settings:geminiApiKey')}
 												</label>
 												<div className="relative">
 													<input
@@ -199,28 +199,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 													/>
 												</div>
 												<p className="text-xs text-white/40 leading-relaxed">
-													Required for AI Vision analysis features. Stored locally.
+													{t('settings:apiKeyRequired')}
 												</p>
 											</div>
 
 											<div className="bg-primary/10 border border-primary/20 rounded-lg p-4 flex gap-3">
 												<Icon action="alert" className="w-5 h-5 text-primary shrink-0" />
 												<div className="text-xs text-primary/80 space-y-1">
-													<p>Don't have a key?</p>
+													<p>{t('settings:apiKeyHelp')}</p>
 													<a
 														href="https://aistudio.google.com/app/apikey"
 														target="_blank"
 														rel="noopener noreferrer"
 														className="inline-flex items-center gap-1 text-primary hover:text-primary/80 hover:underline"
 													>
-														Get a free Gemini API key <Icon action="external_link" size={10} />
+														{t('settings:getApiKey')} <Icon action="external_link" size={10} />
 													</a>
 												</div>
 											</div>
 											
 											{apiKey && (
 												<button onClick={handleClear} className="text-sm text-red-400 hover:text-red-300 underline">
-													Remove Stored Key
+													{t('settings:removeKey')}
 												</button>
 											)}
 										</div>
