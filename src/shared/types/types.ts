@@ -38,6 +38,12 @@ export interface PortfolioItem {
 	virtualFolderId?: string; // RENAMED from folderId for clarity
 	colorTag?: string; // Hex code for the color tag
 	manualTags?: string[];
+	// RAW file EXIF metadata
+	iso?: number;
+	aperture?: string;
+	shutterSpeed?: string;
+	cameraModel?: string;
+	isRaw?: boolean;
 	// Legacy support
 	folderId?: string; // @deprecated - use virtualFolderId instead
 }

@@ -228,14 +228,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										{/* Experiments Section */}
 										{onToggleCinematicCarousel && (
 											<div className="space-y-4 pt-6 border-t border-white/10">
-												<h4 className="text-sm font-medium text-white/50 uppercase tracking-wider">Experimental</h4>
+												<h4 className="text-sm font-medium text-white/50 uppercase tracking-wider">{t('settings:experimental')}</h4>
 												<label className="flex items-center justify-between cursor-pointer group p-3 rounded-lg hover:bg-white/5 transition-colors -mx-3">
 													<div className="space-y-1">
 														<div className="text-sm text-white font-medium">
-															Cinematic 3D Carousel
+															{t('settings:cinematicCarousel')}
 														</div>
 														<div className="text-xs text-white/40">
-															Enable immersive 3D perspective view
+															{t('settings:cinematicCarouselDesc')}
 														</div>
 													</div>
 													<div
@@ -327,19 +327,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 									<div className="space-y-8 max-w-lg">
 										<div className="space-y-6">
 											<div className="flex items-center justify-between">
-												<h4 className="text-sm font-medium text-white/70">Theme Colors</h4>
+												<h4 className="text-sm font-medium text-white/70">{t('settings:themeColors')}</h4>
 												<button 
 													onClick={resetTheme}
 													className="text-xs text-white/40 hover:text-white transition-colors"
 												>
-													Reset Defaults
+													{t('settings:resetDefaults')}
 												</button>
 											</div>
 
 											<div className="space-y-4">
 												<ColorRow 
-													label="Primary Interface" 
-													description="Buttons, focus rings, and active states."
+													label={t('settings:primaryInterface')} 
+													description={t('settings:primaryInterfaceDesc')}
 													value={settings.primaryColor}
 													onChange={(c) => updateSetting("primaryColor", c)}
 													icon={settings.primaryIcon}
@@ -347,8 +347,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 													usedIcons={[settings.secondaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
 												/>
 												<ColorRow 
-													label="AI Intelligence" 
-													description="AI analysis, smart tags, and automation."
+													label={t('settings:aiIntelligence')} 
+													description={t('settings:aiIntelligenceDesc')}
 													value={settings.secondaryColor}
 													onChange={(c) => updateSetting("secondaryColor", c)}
 													icon={settings.secondaryIcon}
@@ -356,8 +356,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 													usedIcons={[settings.primaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
 												/>
 												<ColorRow 
-													label="Collections" 
-													description="Virtual collections and organization."
+													label={t('settings:collections')} 
+													description={t('settings:collectionsDesc')}
 													value={settings.tertiaryColor}
 													onChange={(c) => updateSetting("tertiaryColor", c)}
 													icon={settings.tertiaryIcon}
@@ -365,8 +365,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 													usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
 												/>
 												<ColorRow 
-													label="Work Folders" 
-													description="Physical source folders and directories."
+													label={t('settings:workFolders')} 
+													description={t('settings:workFoldersDesc')}
 													value={settings.quaternaryColor}
 													onChange={(c) => updateSetting("quaternaryColor", c)}
 													icon={settings.quaternaryIcon}
@@ -374,8 +374,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 													usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.tertiaryIcon, settings.quinaryIcon, settings.filtersIcon]}
 												/>
 												<ColorRow 
-													label="Projects" 
-													description="Projects and special assignments."
+													label={t('settings:projects')} 
+													description={t('settings:projectsDesc')}
 													value={settings.quinaryColor}
 													onChange={(c) => updateSetting("quinaryColor", c)}
 													icon={settings.quinaryIcon}
