@@ -71,5 +71,18 @@
   "smartCollections": "Smart Collections",
   "manageTags": "Manage Tags",
   "confirmBulkDelete": "Are you sure you want to delete {{count}} tags? This will remove them from all associated images.",
-  "createSmartCollectionFromSelection": "Create Smart Collection from Selection"
+  "createSmartCollectionFromSelection": "Create Smart Collection from Selection",
+  "tagIs": "Tag is",
+  "tagIsNot": "Tag is NOT",
+  "colorIs": "Color is",
+  "enterTagName": "Enter tag name...",
+  "appearanceColorLabel": "Color",
+  "noSmartCollectionsYet": "No smart collections yet",
+  "deleteSmartCollectionConfirm": "Delete this smart collection?",
+  "searchTags": "Search tags...",
+  "sortByPopularity": "Sort by Popularity",
+  "sortByName": "Sort by Name",
+  "sortByDate": "Sort by Date",
+  "deleteSelected": "Delete Selected",
+  "tagStudio": "Tag Studio"
 }

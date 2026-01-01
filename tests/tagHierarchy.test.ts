@@ -20,6 +20,9 @@ describe('Tag Hierarchy', () => {
   });
 
   it('should allow setting a parent for a tag', async () => {
+    // Mock the select call for circular reference check
+    mockDb.select.mockResolvedValue([{ parentId: null }]);
+    
     await setTagParent('tag-child', 'tag-parent');
     expect(mockDb.execute).toHaveBeenCalledWith(
       "UPDATE tags SET parentId = ? WHERE id = ?",

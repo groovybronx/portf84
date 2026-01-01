@@ -18,13 +18,15 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 	const { activeCollection } = useCollections();
 	const { loadSmartCollections } = useLibrary();
 	const [tags, setTags] = useState<TagWithUsage[]>([]);
-	// ... existing state
 
 	const handleCreateSmartCollection = async () => {
 		if (selectedTagIds.size === 0 || !activeCollection) return;
 		
 		const selectedTags = tags.filter(t => selectedTagIds.has(t.id));
-		const name = selectedTags.map(t => t.name).join(' + ').substring(0, 30) + '...';
+		const joinedName = selectedTags.map(t => t.name).join(' + ');
+		const name = joinedName.length > 30
+			? joinedName.substring(0, 30) + '...'
+			: joinedName;
 		
 		const rules = selectedTags.map(tag => ({
 			id: nanoid(),
@@ -122,7 +124,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 					initial={{ opacity: 0, scale: 0.98 }}
 					animate={{ opacity: 1, scale: 1 }}
 					exit={{ opacity: 0, scale: 0.98 }}
-					className="fixed inset-0 z-(--z-modal) bg-background flex flex-col"
+					className="fixed inset-0 z-[--z-modal] bg-background flex flex-col"
 				>
 					{/* Header */}
 					<header className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5 backdrop-blur-md sticky top-0 z-10">
@@ -131,7 +133,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								<Tag className="w-6 h-6 text-blue-400" />
 							</div>
 							<div>
-								<h1 className="text-xl font-bold text-white">Tag Studio</h1>
+								<h1 className="text-xl font-bold text-white">{t('library:tagStudio')}</h1>
 								<p className="text-xs text-gray-400">{tags.length} tags total • {selectedTagIds.size} selected</p>
 							</div>
 						</div>
@@ -141,7 +143,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
 								<input 
 									type="text" 
-									placeholder="Search tags..."
+									placeholder={t('library:searchTags')}
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
 									className="bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 w-64 transition-all"
@@ -180,9 +182,9 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								onChange={(e) => setSortBy(e.target.value as any)}
 								className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
 							>
-								<option value="usage">Sort by Popularity</option>
-								<option value="name">Sort by Name</option>
-								<option value="date">Sort by Date</option>
+								<option value="usage">{t('library:sortByPopularity')}</option>
+								<option value="name">{t('library:sortByName')}</option>
+								<option value="date">{t('library:sortByDate')}</option>
 							</select>
 
 							<button 
@@ -210,7 +212,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 										onClick={handleDeleteSelected}
 										className="px-3 py-1.5 bg-red-500/20 text-red-400 text-xs font-bold rounded-lg hover:bg-red-500/30 transition-all flex items-center gap-2"
 									>
-										<Trash2 size={14} /> Delete Selected
+										<Trash2 size={14} /> {t('library:deleteSelected')}
 									</button>
 								</motion.div>
 							)}

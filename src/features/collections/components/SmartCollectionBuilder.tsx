@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save, Plus, Trash2, Filter, Tag, Palette } from 'lucide-react';
+import { X, Save, Plus, Trash2, Filter } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { nanoid } from 'nanoid';
 import { SmartCollection, SmartCollectionInput, createSmartCollection, updateSmartCollection } from '../../../services/smartCollectionService';
 import { COLOR_PALETTE } from '../../../shared/types';
 import { useCollections } from '../../../shared/contexts/CollectionsContext';
@@ -39,7 +40,7 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 			try {
 				const query = JSON.parse(editingCollection.query);
 				setOperator(query.operator || 'AND');
-				setRules(query.rules?.map((r: any) => ({ ...r, id: Math.random().toString(36).substr(2, 9) })) || []);
+				setRules(query.rules?.map((r: any) => ({ ...r, id: nanoid() })) || []);
 			} catch (error) {
 				console.error('Failed to parse smart collection query:', error);
 				setOperator('AND');
@@ -50,12 +51,12 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 		} else {
 			setName('');
 			setOperator('AND');
-			setRules([{ id: Math.random().toString(36).substr(2, 9), type: 'tag', value: '' }]);
+			setRules([{ id: nanoid(), type: 'tag', value: '' }]);
 		}
 	}, [editingCollection, isOpen]);
 
 	const addRule = () => {
-		setRules([...rules, { id: Math.random().toString(36).substr(2, 9), type: 'tag', value: '' }]);
+		setRules([...rules, { id: nanoid(), type: 'tag', value: '' }]);
 	};
 
 	const removeRule = (id: string) => {
@@ -102,13 +103,13 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={onClose}
-						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
+						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[--z-modal-overlay]"
 					/>
 					<motion.div
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ opacity: 1, scale: 1 }}
 						exit={{ opacity: 0, scale: 0.95 }}
-						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-background border border-white/10 rounded-xl shadow-2xl z-(--z-modal) flex flex-col max-h-[80vh]"
+						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-background border border-white/10 rounded-xl shadow-2xl z-[--z-modal] flex flex-col max-h-[80vh]"
 					>
 						{/* Header */}
 						<div className="p-6 border-b border-white/10 flex justify-between items-center">
@@ -175,9 +176,9 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 												onChange={(e) => updateRule(rule.id, { type: e.target.value as any, value: '' })}
 												className="bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-white focus:outline-none"
 											>
-												<option value="tag">Tag is</option>
-												<option value="not_tag">Tag is NOT</option>
-												<option value="color">Color is</option>
+												<option value="tag">{t('library:tagIs')}</option>
+												<option value="not_tag">{t('library:tagIsNot')}</option>
+												<option value="color">{t('library:colorIs')}</option>
 											</select>
 
 											<div className="flex-1">
@@ -199,7 +200,7 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 														type="text"
 														value={rule.value}
 														onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-														placeholder="Enter tag name..."
+														placeholder={t('library:enterTagName')}
 														className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-600 focus:outline-none"
 													/>
 												)}
@@ -229,7 +230,7 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 							{/* Appearance Section */}
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
-									<label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Color</label>
+									<label className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('library:appearanceColorLabel')}</label>
 									<div className="flex gap-2">
 										{['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'].map(c => (
 											<button 

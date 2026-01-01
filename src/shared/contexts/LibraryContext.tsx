@@ -142,9 +142,9 @@ function libraryReducer(
           );
 
           // 2. Add truly new items (that weren't already in the folder)
-          const existingIds = new Set(folder.items.map((i) => i.id));
+          const existingItemIds = new Set(folder.items.map((i) => i.id));
           const distinctNewItems = newItems.filter(
-            (i) => !existingIds.has(i.id)
+            (i) => !existingItemIds.has(i.id)
           );
 
           return {
@@ -692,9 +692,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   // Re-resolve active smart collection if library content changes (metadata updates, refreshes)
   useEffect(() => {
     if (state.activeSmartCollectionId) {
-      setActiveSmartCollectionId(state.activeSmartCollectionId);
+      resolveActiveSmartCollection();
     }
-  }, [state.folders, state.activeSmartCollectionId, setActiveSmartCollectionId]);
+  }, [state.folders, state.activeSmartCollectionId, resolveActiveSmartCollection]);
 
   // --- 1. State Value (Memoized separately) ---
   const stateValue: LibraryContextState = useMemo(

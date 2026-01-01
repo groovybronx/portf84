@@ -270,10 +270,9 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                 </div>
                             ) : activeTab === 'fusion' ? (
                                 <div className="space-y-4">
-                                    {/* ... existing fusion code ... */}
                                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
                                         <div className="text-sm text-white/60">
-                                            <Trans ns="tags" i18nKey="foundGroups" count={groups.length} components={[<span className="font-bold text-white" />]} />
+                                            <Trans i18nKey="tags:foundGroups" count={groups.length} components={[<span className="font-bold text-white" />]} />
                                         </div>
                                         <button
                                             onClick={handleMergeAll}

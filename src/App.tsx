@@ -447,7 +447,7 @@ const App: React.FC = () => {
               setIsSmartCollectionBuilderOpen(true);
             }}
             onDeleteSmartCollection={async (id) => {
-              if (confirm("Supprimer cette collection intelligente ?")) {
+              if (confirm(t("library:deleteSmartCollectionConfirm"))) {
                 await deleteSmartCollection(id);
                 loadSmartCollections();
                 if (activeSmartCollectionId === id) setActiveSmartCollectionId(null);

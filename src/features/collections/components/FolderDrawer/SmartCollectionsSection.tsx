@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Plus, Edit2, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { SmartCollection } from '../../../services/smartCollectionService';
+import { SmartCollection } from '../../../../services/smartCollectionService';
 
 interface SmartCollectionsSectionProps {
 	collections: SmartCollection[];
@@ -81,7 +81,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 				
 				{collections.length === 0 && (
 					<div className="py-4 text-center text-[11px] text-gray-600 italic">
-						No smart collections yet
+						{t('library:noSmartCollectionsYet')}
 					</div>
 				)}
 			</div>

@@ -88,6 +88,12 @@ export const updateSmartCollection = async (id: string, updates: Partial<SmartCo
  * Resolve a smart collection to a list of item IDs
  */
 export const resolveSmartCollection = async (id: string, collectionId: string): Promise<string[]> => {
+	// Validate collectionId format
+	const validIdPattern = /^[a-zA-Z0-9_-]+$/;
+	if (!validIdPattern.test(id) || !validIdPattern.test(collectionId)) {
+		throw new Error("Invalid smart collection or collection ID format");
+	}
+
 	const db = await getDB();
 	const rows = await db.select<Array<{ query: string }>>(
 		"SELECT query FROM smart_collections WHERE id = ? AND collectionId = ?",
@@ -96,7 +102,15 @@ export const resolveSmartCollection = async (id: string, collectionId: string): 
 	
 	const row = rows[0];
 	if (!row) return [];
-	const queryObj = JSON.parse(row.query);
+	
+	let queryObj: any;
+	try {
+		queryObj = JSON.parse(row.query);
+	} catch (error) {
+		console.error("[SmartCollection] Failed to parse query JSON:", error);
+		// Malformed or corrupted query JSON: return empty results gracefully
+		return [];
+	}
 	
 	// Build SQL query dynamically based on rules
 	// We use EXISTS subqueries to correctly handle both AND/OR without multiple joins
