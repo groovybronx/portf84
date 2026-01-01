@@ -103,8 +103,8 @@ const createMockDB = () => {
                 }
             }
             if (query.includes('INSERT INTO tag_merges')) {
-                const [id, targetTagId, sourceTagId, mergedAt, mergedBy] = params || [];
-                tagMerges.push({ id, targetTagId, sourceTagId, mergedAt, mergedBy });
+                const [id, targetTagId, sourceTagId, sourceTagName, mergedAt, mergedBy] = params || [];
+                tagMerges.push({ id, targetTagId, sourceTagId, sourceTagName, mergedAt, mergedBy });
             }
             if (query.includes('INSERT INTO tag_aliases')) {
                 const [id, aliasName, targetTagId, createdAt] = params || [];

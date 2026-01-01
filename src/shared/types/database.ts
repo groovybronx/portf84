@@ -170,6 +170,7 @@ export interface DBTagMerge {
   id: string;
   targetTagId: string;
   sourceTagId: string;
+  sourceTagName: string | null;
   mergedAt: number;
   mergedBy: string | null;
 }
