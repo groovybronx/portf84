@@ -211,6 +211,8 @@ import { Tabs, Tab } from "@/shared/components/ui";
 ```
 
 **✅ À UTILISER**:
+- **Opacity**: `bg-glass-bg` (80% opacity for readability).
+
 ```tsx
 <div className="bg-glass-bg">
 ```

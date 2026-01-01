@@ -194,7 +194,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 							{/* Header */}
 							<div className="h-16 border-b border-glass-border flex items-center justify-between px-8 shrink-0">
 								<h3 className="text-lg font-medium text-white capitalize">
-									{activeTab === "general" ? t('settings:tabGeneral') : activeTab === "appearance" ? t('settings:tabAppearance') : activeTab === "storage" ? t('settings:tabStorage') : activeTab === "language" ? t('settings:tabLanguage') : t('settings:tabShortcuts')}
+									{activeTab === "general" ? t('settings:tabGeneral') : activeTab === "appearance" ? t('settings:tabAppearance') : activeTab === "storage" ? t('settings:tabStorage') : activeTab === "language" ? t('settings:language') : t('settings:tabShortcuts')}
 								</h3>
 								<button
 									onClick={onClose}
@@ -609,20 +609,21 @@ const FormRow = ({ label, description, children }: { label: string, description:
 );
 
 // Helper for Shortcuts to clean up main component
-const ShortcutRow = ({ label, action, shortcuts, update }: { label: string, action: string, shortcuts: ShortcutMap, update: (a: string, k: string) => void }) => {
+const ShortcutRow = ({ label, action, shortcuts, update }: { label: string, action: keyof ShortcutMap, shortcuts: ShortcutMap, update: (action: keyof ShortcutMap, keys: string[]) => void }) => {
     return (
         <div className="flex items-center justify-between group">
             <span className="text-sm text-white/70 group-hover:text-white transition-colors">{label}</span>
             <button
-                className="px-3 py-1.5 bg-glass-bg rounded border border-glass-border text-xs font-mono text-primary min-w-[3rem] text-center hover:bg-glass-bg-active hover:border-primary/50 transition-all focus:ring-2 focus:ring-primary focus:outline-none"
+                className="px-3 py-1.5 bg-glass-bg rounded border border-glass-border text-xs font-mono text-primary min-w-12 text-center hover:bg-glass-bg-active hover:border-primary/50 transition-all focus:ring-2 focus:ring-primary focus:outline-none"
                 onClick={() => {
                    // Simple prompt for now, could be improved with a key recorder
                    const key = prompt("Press a key (e.g., ArrowUp, a, b, Enter)");
-                   if (key) update(action, key);
+                   if (key) update(action, [key]);
                 }}
             >
-                {shortcuts[action] || "..."}
+                {shortcuts[action] ? shortcuts[action].join(" + ") : "..."}
             </button>
         </div>
     );
 };
+
