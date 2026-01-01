@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "../../../shared/components/ui";
 import { PortfolioItem } from "../../../shared/types";
+import { Button } from "../../../shared/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	X,
@@ -131,7 +133,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 				onClick={onClose}
 			>
 				{/* Navigation Buttons (visible on hover or focus) */}
-				<button
+				<Button
 					onClick={(e) => {
 						e.stopPropagation();
 						onPrev();
@@ -139,8 +141,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					className="absolute left-4 p-4 rounded-full bg-glass-bg text-white/50 hover:text-white transition-all z-(--z-carousel) hidden sm:flex border border-glass-border"
 				>
 					<ChevronLeft size={32} />
-				</button>
-				<button
+				</Button>
+				<Button
 					onClick={(e) => {
 						e.stopPropagation();
 						onNext();
@@ -148,7 +150,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					className="absolute right-4 p-4 rounded-full bg-glass-bg text-white/50 hover:text-white transition-all z-(--z-carousel) hidden sm:flex border border-glass-border"
 				>
 					<ChevronRight size={32} />
-				</button>
+				</Button>
 
 				<div className="relative z-(--z-grid-item) w-full h-full flex items-center justify-center">
 					<motion.img
@@ -176,12 +178,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					)}
 				</div>
 
-				<button
+				<Button
 					onClick={onClose}
 					className="absolute top-6 left-6 p-3 bg-glass-bg hover:bg-glass-bg-active rounded-full text-white transition-colors z-(--z-carousel) border border-glass-border"
 				>
 					<X size={24} />
-				</button>
+				</Button>
 			</div>
 
 			{/* Sidebar / Info Panel */}
@@ -208,7 +210,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					</div>
 
 					{/* Metadata Toggle Button */}
-					<button
+					<Button
 						onClick={() => setShowMetadata(!showMetadata)}
 						className={`p-2 rounded-lg transition-colors ${
 							showMetadata
@@ -218,7 +220,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						title="Toggle Technical Metadata"
 					>
 						<FileText size={20} />
-					</button>
+					</Button>
 				</div>
 
 				<div className="h-px bg-glass-border/10" />
@@ -256,7 +258,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 										"#3b82f6",
 										"#a855f7",
 									].map((c, i) => (
-										<button
+										<Button
 											key={c}
 											onClick={() =>
 												onUpdateItem({
@@ -273,7 +275,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 											title={`Tag with color ${i + 1}`}
 										/>
 									))}
-									<button
+									<Button
 										onClick={() =>
 											onUpdateItem({ ...item, colorTag: undefined })
 										}
@@ -285,7 +287,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 										title="Remove Tag"
 									>
 										<X size={12} />
-									</button>
+									</Button>
 								</div>
 							</div>
 
@@ -321,7 +323,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
 								{!item.aiDescription && !analyzing ? (
 									<>
-										<button
+										<Button
 											onClick={handleAnalyze}
 											className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
 										>
@@ -330,7 +332,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 												className="group-hover:rotate-12 transition-transform"
 											/>
 											Generate Description
-										</button>
+										</Button>
 										<div className="flex items-center gap-2 justify-center mt-2">
 											<input
 												type="checkbox"
@@ -450,12 +452,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 				<div className="flex-1" />
 
 				<div className="grid grid-cols-2 gap-3">
-					<button
+					<Button
 						onClick={handleShare}
 						className="flex items-center justify-center gap-2 p-3 rounded-lg bg-glass-bg-accent hover:bg-glass-bg-active text-white border border-glass-border-light transition-colors"
 					>
 						<Share2 size={18} /> Share
-					</button>
+					</Button>
 					<a
 						href={item.url}
 						download={item.name}
