@@ -19,13 +19,44 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ↩️ Revert Support RAW (Retour état stable)
 
 **Prochaines étapes** :
-- [ ] Tests de non-régression sur le build de production
-- [ ] Déploiement v0.9.5
+- [x] Tests de non-régression sur le build de production (Validé)
+- [ ] Déploiement v0.9.5 (Prêt)
 
 **Dernière modification** : 01/01/2026 à 05:45
 
 ---
 
+## [01/01/2026 - 11:00] - Phase 4.3 Hotfix : Stabilisation et Corrections Build
+
+### Type : Bugfix / Stabilization
+
+**Composants** : 
+- `src/features/vision/components/ImageViewer.tsx`
+- `src/features/library/components/PhotoList.tsx`
+- `src/features/library/components/PhotoCarousel.tsx`
+- `src/features/library/components/CinematicCarousel.tsx`
+- `src/features/navigation/components/topbar/SearchField.tsx`
+- `src/features/tags/components/TagManagerModal.tsx`
+
+**Corrections** :
+
+**1. Doublons d'Imports (Duplicate Identifiers)** :
+- Correction d'erreurs TypeScript bloquantes dues à des imports dupliqués du composant `Button` dans `ImageViewer`, `PhotoList`, `PhotoCarousel` et `CinematicCarousel`.
+- Nettoyage des imports redundants pour optimiser le bundle.
+
+**2. Imports Manquants** :
+- Ajout de l'import manquant `GlassCard` dans `SearchField.tsx` qui provoquait une erreur "Cannot find name".
+
+**3. Types Props Mismatches** :
+- Correction d'une incompatibilité de props dans `TagManagerModal.tsx` pour le composant `TagTreeItem`.
+- Alignement des interfaces pour passer `tag` et `count` au lieu de l'objet `node`.
+
+**Impact** :
+- **Build Production** : Le build passe désormais avec **0 erreur**.
+- **Stabilité** : Élimination de crashs potentiels dus à des références manquantes ou types incorrects.
+- **Qualité Code** : Codebase stricte et conforme aux standards TypeScript.
+
+---
 ## [01/01/2026 - 10:50] - Phase 4 Refactorisation : Extraction Composants Formulaires
 
 ### Type : Refactorisation / Cleanup
