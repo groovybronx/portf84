@@ -8,7 +8,9 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Finalisation Implémentation Multilangage (i18n)
+## [v0.1.0-beta.1] - 01/01/2026
+
+**Session en cours** : Préparation Release Beta
 
 **Progression** :
 - ✅ Synchronisation GitHub (develop & main) : 100% complété
