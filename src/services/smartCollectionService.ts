@@ -96,7 +96,15 @@ export const resolveSmartCollection = async (id: string, collectionId: string): 
 	
 	const row = rows[0];
 	if (!row) return [];
-	const queryObj = JSON.parse(row.query);
+	
+	let queryObj: any;
+	try {
+		queryObj = JSON.parse(row.query);
+	} catch (error) {
+		// Malformed or corrupted query JSON: fail gracefully with no results
+		console.error(`[SmartCollection] Failed to parse query for collection ${id}:`, error);
+		return [];
+	}
 	
 	// Build SQL query dynamically based on rules
 	// We use EXISTS subqueries to correctly handle both AND/OR without multiple joins

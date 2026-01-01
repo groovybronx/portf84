@@ -24,7 +24,8 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 		if (selectedTagIds.size === 0 || !activeCollection) return;
 		
 		const selectedTags = tags.filter(t => selectedTagIds.has(t.id));
-		const name = selectedTags.map(t => t.name).join(' + ').substring(0, 30) + '...';
+		const rawName = selectedTags.map(t => t.name).join(' + ');
+		const name = rawName.length > 30 ? `${rawName.substring(0, 27)}...` : rawName;
 		
 		const rules = selectedTags.map(tag => ({
 			id: nanoid(),
@@ -131,8 +132,8 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								<Tag className="w-6 h-6 text-blue-400" />
 							</div>
 							<div>
-								<h1 className="text-xl font-bold text-white">Tag Studio</h1>
-								<p className="text-xs text-gray-400">{tags.length} tags total • {selectedTagIds.size} selected</p>
+								<h1 className="text-xl font-bold text-white">{t('library:tagStudio')}</h1>
+								<p className="text-xs text-gray-400">{t('library:tagStudioHeader', { total: tags.length, selected: selectedTagIds.size })}</p>
 							</div>
 						</div>
 
@@ -141,7 +142,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
 								<input 
 									type="text" 
-									placeholder="Search tags..."
+									placeholder={t('library:searchTagsPlaceholder')}
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
 									className="bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 w-64 transition-all"
@@ -180,9 +181,9 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								onChange={(e) => setSortBy(e.target.value as any)}
 								className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
 							>
-								<option value="usage">Sort by Popularity</option>
-								<option value="name">Sort by Name</option>
-								<option value="date">Sort by Date</option>
+								<option value="usage">{t('library:sortByPopularity')}</option>
+								<option value="name">{t('library:sortByName')}</option>
+								<option value="date">{t('library:sortByDate')}</option>
 							</select>
 
 							<button 
@@ -210,7 +211,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 										onClick={handleDeleteSelected}
 										className="px-3 py-1.5 bg-red-500/20 text-red-400 text-xs font-bold rounded-lg hover:bg-red-500/30 transition-all flex items-center gap-2"
 									>
-										<Trash2 size={14} /> Delete Selected
+										<Trash2 size={14} /> {t('common:deleteSelected')}
 									</button>
 								</motion.div>
 							)}

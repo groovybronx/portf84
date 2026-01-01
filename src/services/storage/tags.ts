@@ -288,7 +288,21 @@ export const mergeTags = async (
 // ... (existing syncAllTagsFromMetadata and tag alias methods)
 
 /**
- * Undo a previous merge operation
+ * Undo a previous tag merge operation recorded in the `tag_merges` table.
+ *
+ * This will:
+ * - Recreate the original source tag using the stored `sourceTagName` and `sourceTagId`.
+ * - Re-associate items that were linked from the source tag to the target tag
+ *   during the merge back to the restored source tag where possible.
+ *
+ * Note:
+ * - The undo process is **best-effort** and might not fully reconstruct the
+ *   exact pre-merge state if item–tag associations were modified after the
+ *   merge (for example, if tags were added or removed from items post-merge).
+ *
+ * @param mergeId - Identifier of the merge record in `tag_merges` to undo.
+ * @returns A promise that resolves when the undo operation completes.
+ * @throws If the merge record is not found or if any database operation fails.
  */
 export const undoMerge = async (mergeId: string): Promise<void> => {
 	const db = await getDB();
@@ -308,18 +322,12 @@ export const undoMerge = async (mergeId: string): Promise<void> => {
 	if (!merge) throw new Error("Merge record not found");
 	
 	try {
-		// 2. Re-create the source tag
-		// We use 'manual' if it was merged by user, or try to infer. 
-		// For now, let's assume 'manual' or get it from original type if we had it.
-		// Since we didn't store type, we'll use 'manual' as default or try to find common type.
-		await getOrCreateTag(merge.sourceTagName, 'manual');
-		const sourceTagId = merge.sourceTagId; // We reuse the original ID if possible
-		
-		// Actually, getOrCreateTag generates a new ID. 
-		// If we want to restore strictly, we should insert with original ID.
+		// 2. Re-create the source tag with its original ID.
+		// We use 'manual' as the type since the original type wasn't stored.
+		// INSERT OR IGNORE is used to prevent errors if the tag (with the same ID) was somehow restored by other means.
 		await db.execute(
-			"INSERT INTO tags (id, name, normalizedName, type, createdAt) VALUES (?, ?, ?, ?, ?)",
-			[sourceTagId, merge.sourceTagName, merge.sourceTagName.toLowerCase().trim(), 'manual', Date.now()]
+			"INSERT OR IGNORE INTO tags (id, name, normalizedName, type, createdAt) VALUES (?, ?, ?, ?, ?)",
+			[merge.sourceTagId, merge.sourceTagName, merge.sourceTagName.toLowerCase().trim(), 'manual', Date.now()]
 		);
 		
 		// 3. Find items that were part of this merge (difficult if other tags were added since)
@@ -516,9 +524,33 @@ export const setTagParent = async (
 ): Promise<void> => {
 	const db = await getDB();
 	
-	// Prevent circular references (shallow check: parent cannot be the tag itself)
-	if (parentId === tagId) {
-		throw new Error("A tag cannot be its own parent");
+	// Prevent circular references by walking the ancestor chain
+	if (parentId !== null) {
+		// Check shallow self-reference first
+		if (parentId === tagId) {
+			throw new Error("A tag cannot be its own parent");
+		}
+
+		let currentParentId: string | null = parentId;
+
+		// Traverse up the hierarchy until we hit the root or detect a cycle
+		while (currentParentId) {
+			if (currentParentId === tagId) {
+				throw new Error("Setting this parent would create a circular tag hierarchy");
+			}
+
+			const rows = await db.select<Array<{ parentId: string | null }>>(
+				"SELECT parentId FROM tags WHERE id = ?",
+				[currentParentId]
+			);
+
+			if (!rows.length) {
+				// Parent tag not found; treat as end of chain
+				break;
+			}
+
+			currentParentId = rows[0].parentId;
+		}
 	}
 
 	await db.execute(

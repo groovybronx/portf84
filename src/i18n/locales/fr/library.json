@@ -71,5 +71,17 @@
   "smartCollections": "Collections Intelligentes",
   "manageTags": "Gérer les Tags",
   "confirmBulkDelete": "Êtes-vous sûr de vouloir supprimer {{count}} tags ? Ils seront retirés de toutes les images associées.",
-  "createSmartCollectionFromSelection": "Créer une Collection Intelligente depuis la sélection"
+  "createSmartCollectionFromSelection": "Créer une Collection Intelligente depuis la sélection",
+  "noSmartCollectionsYet": "Aucune collection intelligente pour l'instant",
+  "tagStudioHeader": "{{total}} tags au total · {{selected}} sélectionnés",
+  "sortByPopularity": "Trier par Popularité",
+  "sortByName": "Trier par Nom",
+  "sortByDate": "Trier par Date",
+  "searchTagsPlaceholder": "Rechercher des tags...",
+  "tagStudio": "Studio de Tags",
+  "ruleTypeTag": "Tag est",
+  "ruleTypeNotTag": "Tag n'est PAS",
+  "ruleTypeColor": "Couleur est",
+  "enterTagName": "Entrer le nom du tag...",
+  "appearanceColorLabel": "Couleur"
 }

@@ -81,7 +81,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 				
 				{collections.length === 0 && (
 					<div className="py-4 text-center text-[11px] text-gray-600 italic">
-						No smart collections yet
+						{t('library:noSmartCollectionsYet')}
 					</div>
 				)}
 			</div>

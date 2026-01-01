@@ -19,5 +19,6 @@
   "success": "Succès",
   "warning": "Attention",
   "info": "Info",
-  "none": "Aucun"
+  "none": "Aucun",
+  "deleteSelected": "Supprimer la Sélection"
 }
