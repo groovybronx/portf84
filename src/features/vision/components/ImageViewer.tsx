@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "../../../shared/components/ui";
 import { PortfolioItem } from "../../../shared/types";
-import { Button } from "../../../shared/components/ui";
+
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	X,
