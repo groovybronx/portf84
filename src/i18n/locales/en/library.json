@@ -61,5 +61,15 @@
   "startAiAnalysisConfirm": "Start AI analysis for {{count}} item?",
   "startAiAnalysisConfirm_plural": "Start AI analysis for {{count}} items?",
   "openDrawerToCreate": "Open the drawer (top-left icon) to create a Collection",
-  "noItemsAddSource": "No images. Add a source folder from the drawer."
+  "noItemsAddSource": "No images. Add a source folder from the drawer.",
+  "editSmartCollection": "Edit Smart Collection",
+  "newSmartCollection": "New Smart Collection",
+  "collectionName": "Collection Name",
+  "smartCollectionNamePlaceholder": "e.g. My Favorite Landscapes",
+  "matchingRules": "Matching Rules",
+  "addRule": "Add Rule",
+  "smartCollections": "Smart Collections",
+  "manageTags": "Manage Tags",
+  "confirmBulkDelete": "Are you sure you want to delete {{count}} tags? This will remove them from all associated images.",
+  "createSmartCollectionFromSelection": "Create Smart Collection from Selection"
 }

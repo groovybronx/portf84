@@ -61,5 +61,15 @@
   "startAiAnalysisConfirm": "Démarrer l'analyse IA pour {{count}} élément ?",
   "startAiAnalysisConfirm_plural": "Démarrer l'analyse IA pour {{count}} éléments ?",
   "openDrawerToCreate": "Ouvrez le tiroir (icône en haut à gauche) pour créer une Collection",
-  "noItemsAddSource": "Aucune image. Ajoutez un dossier source depuis le tiroir."
+  "noItemsAddSource": "Aucune image. Ajoutez un dossier source depuis le tiroir.",
+  "editSmartCollection": "Modifier la Collection Intelligente",
+  "newSmartCollection": "Nouvelle Collection Intelligente",
+  "collectionName": "Nom de la Collection",
+  "smartCollectionNamePlaceholder": "ex: Mes Paysages Préférés",
+  "matchingRules": "Règles de Correspondance",
+  "addRule": "Ajouter une Règle",
+  "smartCollections": "Collections Intelligentes",
+  "manageTags": "Gérer les Tags",
+  "confirmBulkDelete": "Êtes-vous sûr de vouloir supprimer {{count}} tags ? Ils seront retirés de toutes les images associées.",
+  "createSmartCollectionFromSelection": "Créer une Collection Intelligente depuis la sélection"
 }

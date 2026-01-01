@@ -16,6 +16,11 @@ import {
 import { useCollections } from "./CollectionsContext";
 import { storageService } from "../../services/storageService";
 import { libraryLoader } from "../../services/libraryLoader";
+import { 
+  SmartCollection, 
+  getAllSmartCollections, 
+  resolveSmartCollection 
+} from "../../services/smartCollectionService";
 
 // Types
 interface LibraryState {
@@ -35,6 +40,11 @@ interface LibraryState {
   autoAnalyzeEnabled: boolean;
   // Experimental Features
   useCinematicCarousel: boolean;
+  
+  // Smart Collections
+  smartCollections: SmartCollection[];
+  activeSmartCollectionId: string | null;
+  smartCollectionItemIds: Set<string> | null;
 }
 
 type LibraryAction =
@@ -60,10 +70,9 @@ type LibraryAction =
   | { type: "SET_SORT_OPTION"; payload: SortOption }
   | { type: "SET_SORT_OPTION"; payload: SortOption }
   | { type: "SET_SORT_DIRECTION"; payload: SortDirection }
-  | { type: "CLEAR_LIBRARY"; payload: void }
-  | { type: "SET_AUTO_ANALYZE"; payload: boolean }
-  | { type: "SET_CINEMATIC_CAROUSEL"; payload: boolean }
-  | { type: "BATCH_UPDATE_ITEMS"; payload: PortfolioItem[] };
+  | { type: "BATCH_UPDATE_ITEMS"; payload: PortfolioItem[] }
+  | { type: "SET_SMART_COLLECTIONS"; payload: SmartCollection[] }
+  | { type: "SET_ACTIVE_SMART_COLLECTION"; payload: { id: string | null; itemIds: Set<string> | null } };
 
 interface LibraryContextType extends LibraryState {
   // Computed values
@@ -125,14 +134,22 @@ function libraryReducer(
       const updatedFolders = state.folders.map((folder) => {
         if (folder.isVirtual && virtualFoldersMap.has(folder.id)) {
           const newItems = virtualFoldersMap.get(folder.id) || [];
-          // Merge items avoiding duplicates
+          const newItemsMap = new Map(newItems.map((i) => [i.id, i]));
+
+          // 1. Update existing items in the folder with any new data (tags, etc.)
+          const updatedExistingItems = folder.items.map((item) =>
+            newItemsMap.has(item.id) ? newItemsMap.get(item.id)! : item
+          );
+
+          // 2. Add truly new items (that weren't already in the folder)
           const existingIds = new Set(folder.items.map((i) => i.id));
           const distinctNewItems = newItems.filter(
             (i) => !existingIds.has(i.id)
           );
+
           return {
             ...folder,
-            items: [...folder.items, ...distinctNewItems],
+            items: [...updatedExistingItems, ...distinctNewItems],
           };
         }
         return folder;
@@ -233,6 +250,16 @@ function libraryReducer(
         }),
       };
     }
+    case "SET_SMART_COLLECTIONS":
+      return { ...state, smartCollections: action.payload };
+    case "SET_ACTIVE_SMART_COLLECTION":
+      return { 
+        ...state, 
+        activeSmartCollectionId: action.payload.id,
+        smartCollectionItemIds: action.payload.itemIds,
+        // Reset folder selection when activating a smart collection
+        activeFolderIds: action.payload.id ? new Set() : new Set(["all"])
+      };
     default:
       return state;
   }
@@ -277,6 +304,9 @@ interface LibraryContextActions {
   setSortDirection: (direction: SortDirection) => void;
   setAutoAnalyze: (enabled: boolean) => void;
   setCinematicCarousel: (enabled: boolean) => void;
+  loadSmartCollections: () => Promise<void>;
+  setActiveSmartCollectionId: (id: string | null) => Promise<void>;
+  refreshMetadata: () => Promise<void>;
 }
 
 // Provider
@@ -297,6 +327,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     sortDirection: "desc",
     autoAnalyzeEnabled: false,
     useCinematicCarousel: false,
+    smartCollections: [],
+    activeSmartCollectionId: null,
+    smartCollectionItemIds: null,
   });
 
   // Clear library when collection changes to null
@@ -343,6 +376,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Computed: Filter items by active folders
   const filteredByFolder = useMemo(() => {
+    if (state.activeSmartCollectionId && state.smartCollectionItemIds) {
+      return allItems.filter(item => state.smartCollectionItemIds?.has(item.id));
+    }
+
     if (state.activeFolderIds.has("all")) return allItems;
 
     // Get items from selected folders
@@ -595,6 +632,70 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch({ type: "SET_CINEMATIC_CAROUSEL", payload: enabled });
   }, []);
 
+  const loadSmartCollections = useCallback(async () => {
+    if (!activeCollection) return;
+    try {
+      const collections = await getAllSmartCollections(activeCollection.id);
+      dispatch({ type: "SET_SMART_COLLECTIONS", payload: collections });
+    } catch (e) {
+      console.error("Failed to load smart collections", e);
+    }
+  }, [activeCollection]);
+
+  const setActiveSmartCollectionId = useCallback(async (id: string | null) => {
+    if (!activeCollection) return;
+    if (!id) {
+      dispatch({ type: "SET_ACTIVE_SMART_COLLECTION", payload: { id: null, itemIds: null } });
+      return;
+    }
+
+    const itemIds = await resolveSmartCollection(id, activeCollection.id);
+    dispatch({ type: "SET_ACTIVE_SMART_COLLECTION", payload: { id, itemIds: new Set(itemIds) } });
+  }, [activeCollection]);
+
+  const refreshMetadata = useCallback(async () => {
+    if (!activeCollection) return;
+    
+    // Collect all paths from all current folders
+    const allPaths = state.folders.flatMap(f => f.items.map(i => i.path || i.name));
+    if (allPaths.length === 0) return;
+    
+    console.log(`[LibraryContext] Refreshing metadata for ${allPaths.length} items...`);
+    const metaMap = await storageService.getMetadataBatch(allPaths, activeCollection.id);
+    
+    const updatedFolders = state.folders.map(folder => ({
+      ...folder,
+      items: folder.items.map(item => {
+        const meta = metaMap.get(item.path || item.name);
+        if (meta) {
+          return {
+            ...item,
+            aiDescription: meta.aiDescription || undefined,
+            aiTags: meta.aiTags,
+            aiTagsDetailed: meta.aiTagsDetailed,
+            colorTag: meta.colorTag || undefined,
+            manualTags: meta.manualTags,
+          };
+        }
+        return item;
+      })
+    }));
+    
+    dispatch({ type: "SET_FOLDERS", payload: updatedFolders });
+  }, [state.folders, activeCollection]);
+
+  // Initial load of smart collections
+  useEffect(() => {
+    loadSmartCollections();
+  }, [loadSmartCollections]);
+
+  // Re-resolve active smart collection if library content changes (metadata updates, refreshes)
+  useEffect(() => {
+    if (state.activeSmartCollectionId) {
+      setActiveSmartCollectionId(state.activeSmartCollectionId);
+    }
+  }, [state.folders, state.activeSmartCollectionId, setActiveSmartCollectionId]);
+
   // --- 1. State Value (Memoized separately) ---
   const stateValue: LibraryContextState = useMemo(
     () => ({
@@ -628,6 +729,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       setSortDirection,
       setAutoAnalyze,
       setCinematicCarousel,
+      loadSmartCollections,
+      setActiveSmartCollectionId,
+      refreshMetadata,
     }),
     [
       loadFromPath,
@@ -649,6 +753,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       setSortDirection,
       setAutoAnalyze,
       setCinematicCarousel,
+      loadSmartCollections,
+      setActiveSmartCollectionId,
+      refreshMetadata,
     ]
   );
 

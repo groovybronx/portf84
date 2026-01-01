@@ -18,7 +18,10 @@ import {
   ErrorBoundary,
 } from "./shared/components";
 import { TagManagerModal } from "./features/tags/components/TagManagerModal";
+import { SmartCollectionBuilder } from "./features/collections/components/SmartCollectionBuilder";
+import { deleteSmartCollection, SmartCollection } from "./services/smartCollectionService";
 import { open } from "@tauri-apps/plugin-dialog";
+import { TagStudioOverlay } from "./features/tags/components/TagStudio/TagStudioOverlay";
 
 import { PortfolioItem, ViewMode, COLOR_PALETTE } from "./shared/types";
 import { AnimatePresence, motion } from "framer-motion";
@@ -91,6 +94,11 @@ const App: React.FC = () => {
     autoAnalyzeEnabled,
     useCinematicCarousel,
     setCinematicCarousel,
+    smartCollections,
+    activeSmartCollectionId,
+    setActiveSmartCollectionId,
+    loadSmartCollections,
+    refreshMetadata,
   } = useLibrary();
 
   const {
@@ -141,7 +149,12 @@ const App: React.FC = () => {
     setIsSettingsOpen,
     isCollectionManagerOpen,
     setIsCollectionManagerOpen,
+    isSmartCollectionBuilderOpen,
+    setIsSmartCollectionBuilderOpen,
+    isTagStudioOpen,
+    setIsTagStudioOpen,
   } = useModalState();
+  const [editingSmartCollection, setEditingSmartCollection] = useState<SmartCollection | null>(null);
   const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [showColorTags, setShowColorTags] = useState(true);
@@ -426,6 +439,25 @@ const App: React.FC = () => {
             }}
             activeColorFilter={activeColorFilter}
             onColorFilterChange={setActiveColorFilter}
+            smartCollections={smartCollections}
+            activeSmartCollectionId={activeSmartCollectionId}
+            onSelectSmartCollection={setActiveSmartCollectionId}
+            onEditSmartCollection={(c) => {
+              setEditingSmartCollection(c);
+              setIsSmartCollectionBuilderOpen(true);
+            }}
+            onDeleteSmartCollection={async (id) => {
+              if (confirm("Supprimer cette collection intelligente ?")) {
+                await deleteSmartCollection(id);
+                loadSmartCollections();
+                if (activeSmartCollectionId === id) setActiveSmartCollectionId(null);
+              }
+            }}
+            onCreateSmartCollection={() => {
+              setEditingSmartCollection(null);
+              setIsSmartCollectionBuilderOpen(true);
+            }}
+            onManageTags={() => setIsTagStudioOpen(true)}
           />
         </ErrorBoundary>
 
@@ -564,11 +596,27 @@ const App: React.FC = () => {
         onClose={() => setIsTagManagerOpen(false)}
         onTagsUpdated={async () => {
              console.log("[App] Tags merged, refreshing library...");
-             // Refresh all source folders to get updated metadata
-             for (const folder of sourceFolders) {
-                 await loadFromPath(folder.path);
-             }
+             await refreshMetadata();
         }}
+      />
+
+      <SmartCollectionBuilder 
+        isOpen={isSmartCollectionBuilderOpen}
+        onClose={() => {
+          setIsSmartCollectionBuilderOpen(false);
+          setEditingSmartCollection(null);
+        }}
+        onSave={() => {
+          loadSmartCollections();
+          setIsSmartCollectionBuilderOpen(false);
+          setEditingSmartCollection(null);
+        }}
+        editingCollection={editingSmartCollection}
+      />
+
+      <TagStudioOverlay 
+        isOpen={isTagStudioOpen}
+        onClose={() => setIsTagStudioOpen(false)}
       />
 
       <UnifiedProgress />
