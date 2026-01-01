@@ -21,9 +21,13 @@ NC='\033[0m' # No Color
 echo "📡 Fetching latest from remote..."
 git fetch origin --prune
 
+# Cache remote branch list for performance
+echo "📋 Caching remote branch list..."
+REMOTE_BRANCHES=$(git ls-remote --heads origin | awk '{print $2}' | sed 's|refs/heads/||')
+
 echo ""
 echo "📊 Current branch status:"
-git branch -r | wc -l | xargs echo "  Remote branches:"
+echo "$REMOTE_BRANCHES" | wc -l | xargs echo "  Remote branches:"
 git branch -l | wc -l | xargs echo "  Local branches:"
 
 echo ""
@@ -64,17 +68,24 @@ OLD_BRANCHES=(
 # Combine all branches to check for deletion
 ALL_CLEANUP_BRANCHES=("${OBSOLETE_BRANCHES[@]}" "${OLD_BRANCHES[@]}")
 
+# Function to check if branch exists in remote
+branch_exists() {
+	echo "$REMOTE_BRANCHES" | grep -qx "$1"
+}
+
 # Display protected branches
 echo -e "${GREEN}🛡️  Protected Branches (will NOT be deleted):${NC}"
 for branch in "${PROTECTED_BRANCHES[@]}"; do
-	if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
+	if branch_exists "$branch"; then
 		echo -e "  ${GREEN}✓${NC} $branch"
 	fi
 done
 
 # Function to get unique commit info for a branch
+# Returns: unique_from_main unique_from_develop unique_from_refactor
 get_unique_commits() {
 	local branch=$1
+	# Use variables that will be set in caller's scope
 	unique_from_main=$(git log origin/main..origin/"$branch" --oneline 2>/dev/null | wc -l)
 	unique_from_develop=$(git log origin/develop..origin/"$branch" --oneline 2>/dev/null | wc -l)
 	unique_from_refactor=$(git log origin/refactor..origin/"$branch" --oneline 2>/dev/null | wc -l)
@@ -90,7 +101,7 @@ UNMERGED_BRANCHES=(
 )
 
 for branch in "${UNMERGED_BRANCHES[@]}"; do
-	if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
+	if branch_exists "$branch"; then
 		# Get the minimum number of unique commits across main, develop, and refactor
 		get_unique_commits "$branch"
 		
@@ -116,10 +127,22 @@ echo -e "${RED}🗑️  Obsolete Branches (safe to delete):${NC}"
 # Check which branches actually exist
 EXISTING_BRANCHES=()
 for branch in "${ALL_CLEANUP_BRANCHES[@]}"; do
-	if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
+	if branch_exists "$branch"; then
 		EXISTING_BRANCHES+=("$branch")
 		# Check why it's obsolete - compare against main, develop, and refactor
 		get_unique_commits "$branch"
+		
+		# Determine which base branch has the fewest unique commits
+		min_unique=$unique_from_main
+		compared_to="main"
+		if [ "$unique_from_develop" -lt "$min_unique" ]; then
+			min_unique=$unique_from_develop
+			compared_to="develop"
+		fi
+		if [ "$unique_from_refactor" -lt "$min_unique" ]; then
+			min_unique=$unique_from_refactor
+			compared_to="refactor"
+		fi
 		
 		if [ "$unique_from_main" -eq 0 ]; then
 			echo -e "  ${GREEN}✓${NC} $branch (all commits in main)"
@@ -128,7 +151,7 @@ for branch in "${ALL_CLEANUP_BRANCHES[@]}"; do
 		elif [ "$unique_from_refactor" -eq 0 ]; then
 			echo -e "  ${GREEN}✓${NC} $branch (all commits in refactor)"
 		else
-			echo -e "  ${YELLOW}⚠${NC} $branch (${unique_from_refactor} unique commits vs refactor - verify manually)"
+			echo -e "  ${YELLOW}⚠${NC} $branch (${min_unique} unique commits vs ${compared_to} - verify manually)"
 		fi
 	fi
 done
