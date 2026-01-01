@@ -6,29 +6,49 @@ This directory contains utility scripts for repository management and maintenanc
 
 ### 🧹 `cleanup-branches.sh`
 
-Identifies and deletes old or merged branches from the remote repository.
+Intelligently identifies and deletes obsolete branches from the remote repository.
 
 **What it does:**
-- Fetches latest branch information
-- Lists branches marked for deletion (old copilot branches, merged features)
+- Fetches latest branch information with `--prune`
+- Analyzes branch status and merge state
+- Categorizes branches into:
+  - **Protected branches**: Never deleted (main, develop, refactor, releases)
+  - **Branches with unmerged work**: Flagged for review (not deleted)
+  - **Obsolete branches**: Safe to delete (work already merged)
+- Shows unique commit counts for unmerged branches
+- Verifies merge status before deletion
 - Prompts for confirmation before deletion
 - Deletes specified branches from remote
-- Provides summary of operations
+- Provides detailed summary of operations
 
 **Usage:**
 ```bash
 ./scripts/cleanup-branches.sh
 ```
 
-**Branches targeted for cleanup:**
-- Old `copilot/*` branches that have been merged
-- Completed `feature/*` branches
-- Temporary sub-PR branches
+**Branch categories:**
+1. **Protected branches** (🛡️ never deleted):
+   - `main` - Production branch
+   - `develop` - Main development branch
+   - `refactor` - Active refactoring work
+   - `release/*` - Release branches
+
+2. **Branches with unmerged work** (⚠️ review required):
+   - Shows unique commit count
+   - Should be manually reviewed before deletion
+   - May contain important work
+
+3. **Obsolete branches** (✓ safe to delete):
+   - Work has been merged elsewhere
+   - Old completed feature branches
+   - Closed PR branches
 
 **Safety features:**
 - Requires explicit "yes" confirmation
-- Shows list of branches before deletion
+- Shows detailed list with merge status
+- Identifies branches with unmerged commits
 - Reports success/failure for each deletion
+- Provides post-cleanup tips
 
 ---
 
