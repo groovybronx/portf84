@@ -26,6 +26,40 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ---
 
+## [01/01/2026 - 10:50] - Phase 4 Refactorisation : Extraction Composants Formulaires
+
+### Type : Refactorisation / Cleanup
+
+**Composants** : 
+- `src/shared/components/SettingsModal.tsx`
+- `src/shared/components/ui/form/` (nouveau)
+- `src/shared/components/ui/navigation/` (nouveau)
+
+**Changements** :
+
+**1. Extraction de Composants Réutilisables** :
+- **`SettingRow`** : Conteneur standard pour les lignes de configuration (Label + Description + Contrôle).
+- **`ColorPicker`** : Sélecteur de couleur unifié avec support intégré pour le sélecteur d'icônes.
+- **`IconPicker`** : Grille de sélection d'icônes utilisant le registre centralisé `ALL_ICONS`.
+- **`Tabs`** : Système de navigation par onglets composable (`TabList`, `TabTrigger`, `TabContent`).
+
+**2. Refactorisation `SettingsModal`** :
+- Remplacement du code inline monolithique par les nouveaux composants.
+- Réduction significative de la complexité et de la taille du fichier.
+- Correction des types TypeScript pour `ShortcutRow` et les traductions.
+
+**3. Build & Quality Fixes** :
+- Correction du warning `duplicate key` dans `tsconfig.json`.
+- Correction de la régression des props `Stack` (gap vs spacing) dans `SmartCollectionsSection.tsx`.
+- Nettoyage des warnings de linting dans la documentation.
+
+**Impact** : 
+- Codebase plus modulaire et maintenable.
+- Création d'une bibliothèque de composants de formulaire (`ui/form`) prête pour d'autres écrans.
+- Build de production parfaitement propre (0 warnings).
+
+---
+
 ## [01/01/2026 - 05:45] - Fix Hydration Error Sidebar
 
 ### Type : Correction Bug
