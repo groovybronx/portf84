@@ -104,6 +104,8 @@ Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
 - [Composants](./docs/features/COMPONENTS.md) - UI/UX détaillé
 - [AI Service](./docs/architecture/AI_SERVICE.md) - Intégration Gemini
 - [Interactions](./docs/features/INTERACTIONS.md) - Raccourcis clavier
+- [Stratégie de Branches](./docs/BRANCH_STRATEGY.md) - Workflow Git et gestion des branches
+- [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
 
 ---
 
