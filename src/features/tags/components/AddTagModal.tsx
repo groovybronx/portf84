@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag, X, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../../shared/components/ui";
+import { Button, GlassCard } from "../../../shared/components/ui";
 
 interface AddTagModalProps {
   isOpen: boolean;
@@ -55,12 +55,17 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-sm glass-surface rounded-2xl shadow-2xl p-6 border border-glass-border"
+          <GlassCard
+            variant="overlay"
+            padding="lg"
+            border
+            className="relative w-full max-w-sm rounded-2xl shadow-2xl"
           >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
