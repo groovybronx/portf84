@@ -36,9 +36,15 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 	useEffect(() => {
 		if (editingCollection) {
 			setName(editingCollection.name);
-			const query = JSON.parse(editingCollection.query);
-			setOperator(query.operator || 'AND');
-			setRules(query.rules?.map((r: any) => ({ ...r, id: Math.random().toString(36).substr(2, 9) })) || []);
+			try {
+				const query = JSON.parse(editingCollection.query);
+				setOperator(query.operator || 'AND');
+				setRules(query.rules?.map((r: any) => ({ ...r, id: Math.random().toString(36).substr(2, 9) })) || []);
+			} catch (error) {
+				console.error('Failed to parse smart collection query:', error);
+				setOperator('AND');
+				setRules([]);
+			}
 			setIcon(editingCollection.icon || 'filter');
 			setColor(editingCollection.color || '#3b82f6');
 		} else {
