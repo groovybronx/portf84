@@ -544,7 +544,7 @@ export const setTagParent = async (
 				[currentParentId]
 			);
 
-			if (!rows.length) {
+			if (!rows || !rows.length) {
 				// Parent tag not found; treat as end of chain
 				break;
 			}

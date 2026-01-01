@@ -261,7 +261,23 @@ export const getDB = async (): Promise<Database> => {
 				await db.execute("ALTER TABLE smart_collections ADD COLUMN collectionId TEXT");
 				console.log("[Storage] Migration: Added collectionId to smart_collections");
 			} catch (e) {
-				// Column likely already exists
+				// Only ignore the expected "column already exists" error; log and rethrow others
+				const message = e instanceof Error ? e.message : String(e);
+				if (
+					message.includes("duplicate column name") ||
+					message.includes("duplicate column") ||
+					message.includes("already exists")
+				) {
+					console.log(
+						"[Storage] Migration: collectionId column already exists on smart_collections, skipping"
+					);
+				} else {
+					console.error(
+						"[Storage] Migration: Failed to add collectionId to smart_collections:",
+						e
+					);
+					throw e;
+				}
 			}
 
 			await db.execute(`

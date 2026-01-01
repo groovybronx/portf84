@@ -333,6 +333,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSmartCollectionBuilderClose = () => {
+    setIsSmartCollectionBuilderOpen(false);
+    setEditingSmartCollection(null);
+  };
+
   const activeFolderName = activeFolderIds.has("all")
     ? "Library"
     : activeFolderIds.size === 1
@@ -602,14 +607,10 @@ const App: React.FC = () => {
 
       <SmartCollectionBuilder 
         isOpen={isSmartCollectionBuilderOpen}
-        onClose={() => {
-          setIsSmartCollectionBuilderOpen(false);
-          setEditingSmartCollection(null);
-        }}
+        onClose={handleSmartCollectionBuilderClose}
         onSave={() => {
           loadSmartCollections();
-          setIsSmartCollectionBuilderOpen(false);
-          setEditingSmartCollection(null);
+          handleSmartCollectionBuilderClose();
         }}
         editingCollection={editingSmartCollection}
       />
