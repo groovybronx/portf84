@@ -73,6 +73,71 @@ Continue? (yes/no): yes
 
 ---
 
+### 🔧 `maintain-github-config.sh`
+
+Validates and maintains GitHub configuration files in the `.github` directory.
+
+**What it does:**
+- Checks core configuration files (copilot-instructions.md, copilot-rules.json, copilot-settings.json)
+- Validates agents directory structure and content
+- Validates copilot rules directory and rule files
+- Checks workflows directory and YAML syntax
+- Validates additional configuration (CODEOWNERS, templates, etc.)
+- Performs consistency checks across related files
+- Provides detailed health report with color-coded output
+
+**Usage:**
+```bash
+./scripts/maintain-github-config.sh
+```
+
+**What it checks:**
+- ✅ File existence and valid structure
+- ✅ JSON syntax validation for config files
+- ✅ Content size validation (ensures files aren't empty)
+- ✅ Directory structure and organization
+- ✅ Cross-reference validation (e.g., agents mentioned in README)
+- ✅ Workflow file syntax (basic checks)
+
+**Output format:**
+```
+🔧 GitHub Configuration Maintenance
+====================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1️⃣  Checking Core Configuration Files
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ copilot-instructions.md exists
+  ✓ copilot-rules.json has valid JSON syntax
+  ...
+
+📊 Summary Report
+  Total checks performed: 28
+  Errors found:          0
+  Warnings found:        0
+
+✅ All checks passed! GitHub configuration is healthy.
+```
+
+**Exit codes:**
+- `0` - All checks passed or only warnings found
+- `1` - Critical errors found that need attention
+
+**When to use:**
+- Before committing changes to `.github` configuration
+- As part of CI/CD pipeline validation
+- Regular maintenance checks
+- After updating GitHub Copilot rules or agents
+- When troubleshooting Copilot configuration issues
+
+**Maintenance schedule:**
+- Run before major releases
+- Run after updating conventions or patterns
+- Run when adding new agents or rules
+- Include in pre-commit hooks if desired
+
+---
+
 ## Prerequisites
 
 All scripts require:
@@ -80,6 +145,10 @@ All scripts require:
 - Bash shell (Linux/macOS/WSL on Windows)
 - Proper permissions to push to the remote repository
 - Node.js (for version parsing in create-release-branch.sh)
+- `jq` command-line JSON processor (for maintain-github-config.sh)
+  - Install on Ubuntu/Debian: `sudo apt-get install jq`
+  - Install on macOS: `brew install jq`
+  - Install on Windows: `choco install jq` or download from [stedolan.github.io/jq](https://stedolan.github.io/jq/)
 
 ## Branch Management Strategy
 
