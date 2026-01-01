@@ -117,6 +117,8 @@ When working on architecture tasks, you should:
 
    # Testing
    npm run test         # Run Vitest tests
+   ```
+
    **package.json**: Dependencies and scripts
    ```json
    {
