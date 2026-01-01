@@ -231,3 +231,19 @@ export const Icon: React.FC<IconProps> = ({ action, className, ...props }) => {
     />
   );
 };
+// 3. Icon Sets
+export const ALL_ICONS: IconAction[] = [
+  // Projects/Business
+  "box", "briefcase", "package", "archive", "inbox", "book_open",
+  "trophy", "star", "target", "rocket", "flag", "crown", "award",
+  // Folders/Storage
+  "hard_drive", "folder", "folder_open", "folder_closed", "file_box", "files", "database",
+  // Collections/Favorites
+  "folder_heart", "heart", "bookmark", "tag", "tags", "library",
+  // Visual/Media
+  "palette", "image", "camera", "film", "video",
+  // Effects
+  "sparkles", "zap", "flame",
+  // UI
+  "grid", "layout_grid"
+];

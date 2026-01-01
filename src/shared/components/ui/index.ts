@@ -18,3 +18,11 @@ export * from "./primitives/Divider";
 // Surfaces
 export * from "./surfaces/Panel";
 export * from "./surfaces/Card";
+
+// Form
+export * from "./form/SettingRow";
+export * from "./form/ColorPicker";
+export * from "./form/IconPicker";
+
+// Navigation
+export * from "./navigation/Tabs";

@@ -25,7 +25,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 	const { t } = useTranslation(['library']);
 
 	return (
-		<Stack gap="sm" className="mt-6">
+		<Stack spacing="sm" className="mt-6">
 			<Flex justify="between" align="center" className="px-1 mb-2">
 				<Flex align="center" gap="sm">
 					<Sparkles size={14} className="text-blue-400" />
@@ -43,7 +43,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 				</Button>
 			</Flex>
 
-			<Stack gap="xs">
+			<Stack spacing="xs">
 				{collections.map((c) => (
 					<motion.div
 						key={c.id}
