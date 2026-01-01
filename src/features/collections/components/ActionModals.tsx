@@ -166,9 +166,10 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 					className="max-h-[300px] overflow-y-auto space-y-2 custom-scrollbar pr-2 -mr-2"
 				>
 					{/* Create New Option */}
-					<button
+					<Button
+						variant="ghost"
 						onClick={() => setIsCreating(true)}
-						className="w-full flex items-center gap-4 p-3 rounded-xl border border-dashed border-glass-border/20 hover:border-purple-500/50 hover:bg-purple-500/10 text-gray-300 hover:text-white transition-all group text-left mb-2 outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+						className="w-full justify-start gap-4 p-3 rounded-xl border border-dashed border-glass-border/20 hover:border-purple-500/50 hover:bg-purple-500/10 text-gray-300 hover:text-white h-auto"
 					>
 						<div className="w-10 h-10 rounded-lg bg-glass-bg-accent flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors">
 							<Plus size={20} />
@@ -177,18 +178,19 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 							<p className="font-medium">Create New Collection</p>
 							<p className="text-xs text-gray-500">Add folder and move items</p>
 						</div>
-					</button>
+					</Button>
 
 					{folders
 						.filter((f) => f.isVirtual && !f.sourceFolderId)
 						.map((folder) => (
-							<button
+							<Button
 								key={folder.id}
+								variant="ghost"
 								onClick={() => {
 									onMove(folder.id);
 									onClose();
 								}}
-								className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-glass-bg-accent transition-colors group text-left border border-transparent hover:border-glass-border-light outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+								className="w-full justify-start gap-4 p-3 rounded-xl hover:bg-glass-bg-accent border border-transparent hover:border-glass-border-light h-auto"
 							>
 								<div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
 									<FolderHeart size={20} />
@@ -199,7 +201,7 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 										{folder.items.length} items
 									</p>
 								</div>
-							</button>
+							</Button>
 						))}
 
 					{folders.length === 0 && (

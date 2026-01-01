@@ -1,197 +1,112 @@
-# 📚 Lumina Portfolio - Documentation Hub
+# Lumina Portfolio - Documentation Technique
 
-**Last update:** January 1, 2026
+Last update : 25/12/2024 à 01:23
 
-Welcome to the **Lumina Portfolio** documentation hub! This is a high-performance photo gallery application built with Tauri v2, offering a native desktop experience with integrated artificial intelligence.
+Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
 
----
+## Stack Technologique
 
-## 🗺️ Documentation Structure
-
-The documentation is organized into three main sections:
-
-> **📍 [View the Complete Documentation Map](./DOCUMENTATION_MAP.md)** - Visual guide to all documentation
-
-### 🚀 **[Getting Started](./getting-started/README.md)**
-**New to Lumina Portfolio? Start here!**
-- Quick setup guides
-- Installation instructions
-- First steps and configuration
-- Prerequisites and requirements
-
-### 📚 **[Technical Guides](./guides/README.md)**
-**Deep dive into the technical aspects**
-- **[Architecture](./guides/architecture/)** - System design, databases, AI integration
-- **[Features](./guides/features/)** - Components, interactions, i18n, tag system
-- **[Project](./guides/project/)** - Changelog, knowledge base, best practices
-
-### 🔄 **[Workflows](./workflows/README.md)**
-**Git, GitHub, and development processes**
-- Branch strategy and management
-- GitHub configuration guides
-- Release management
-- Pull request workflow
-
-### 📦 **[ARCHIVES](./ARCHIVES/)**
-**Historical documentation and deprecated content**
-- Previous implementation summaries
-- Migration guides
-- Old architecture documents
-
-### 🔍 **[AUDIT](./AUDIT/)**
-**Security and quality audits**
-- Comprehensive audit reports
-- Action plans
-- Completion notices
+| Technologie                 | Version       | Rôle                    |
+| --------------------------- | ------------- | ----------------------- |
+| **React**                   | 19.x          | Framework UI            |
+| **Tailwind CSS**            | 4.x           | Styling (@theme syntax) |
+| **Tauri**                   | 2.x           | Runtime natif           |
+| **SQLite**                  | via plugin    | Persistance locale      |
+| **@tanstack/react-virtual** | 3.13          | Virtualisation UI       |
+| **Framer Motion**           | 12.x          | Animations              |
+| **Gemini AI**               | @google/genai | Image analysis          |
+| **i18next**                 | 24.x          | Multilanguage support   |
+| **Vitest**                  | 4.x           | Tests unitaires         |
 
 ---
 
-## 🎯 Quick Links
+## Sommaire
 
-### Getting Started
-- **[Quick Start Guide](./getting-started/QUICK_START.md)** - 10-minute GitHub setup
-- **[Installation Guide](./getting-started/README.md#installation)** - Full installation steps
-
-### Architecture & Technical Design
-- **[System Architecture](./guides/architecture/ARCHITECTURE.md)** - Complete technical overview
-- **[AI Service](./guides/architecture/AI_SERVICE.md)** - Gemini AI integration
-- **[Database Schema](./guides/project/KnowledgeBase/03_Database_Schema_and_Storage.md)** - SQLite design
-
-### Features & Components
-- **[Component Library](./guides/features/COMPONENTS.md)** - All UI components
-- **[Interactions Guide](./guides/features/INTERACTIONS.md)** - Keyboard shortcuts and UX
-- **[Tag System](./guides/architecture/TAG_SYSTEM_ARCHITECTURE.md)** - Tag architecture
-- **[i18n Guide](./guides/features/I18N_GUIDE.md)** - Internationalization
-
-### Development
-- **[Developer Guide](./guides/project/KnowledgeBase/07_Developer_Guide.md)** - Development workflows
-- **[Best Practices](./guides/project/bonne-pratique.md)** - Coding conventions
-- **[Git Workflow](./workflows/BRANCH_STRATEGY.md)** - Branch strategy
-
-### Troubleshooting
-- **[FAQ & Troubleshooting](./guides/project/KnowledgeBase/08_Troubleshooting_and_FAQ.md)** - Common issues
-
----
-
-## 💻 Tech Stack
-
-| Technology                  | Version | Role                  |
-| --------------------------- | ------- | --------------------- |
-| **React**                   | 19.x    | UI framework          |
-| **TypeScript**              | ~5.8    | Type safety           |
-| **Tailwind CSS**            | 4.x     | Styling               |
-| **Tauri**                   | 2.x     | Native runtime        |
-| **SQLite**                  | plugin  | Local database        |
-| **@tanstack/react-virtual** | 3.13    | UI virtualization     |
-| **Framer Motion**           | 12.x    | Animations            |
-| **Gemini AI**               | latest  | Image analysis        |
-| **i18next**                 | 24.x    | Multilanguage support |
-| **Vitest**                  | 4.x     | Unit testing          |
+1. [Architecture & Données](architecture/ARCHITECTURE.md)
+   - Structure Feature-Based (src/features)
+   - Contexts Split (State/Dispatch)
+   - Base de données SQLite (Projets & Shadow Folders)
+   - Asset Protocol & permissions
+   - Déploiement & CI/CD
+2. [Composants UI & UX](features/COMPONENTS.md)
+   - Système de vues (Grid Virtuelle, Carousel, List)
+   - Navigation Sidebar (Accordéons & Smart Folders)
+   - PhotoCard (React.memo + Lazy Loading)
+   - Dialog natif Tauri
+   - Moteur d'animation
+3. [Service AI (Gemini)](architecture/AI_SERVICE.md)
+   - Intégration de l'API
+   - Streaming & Thinking Process
+   - Ingénierie du Prompt
+   - Batch processing
+4. [Interactions & Shortcuts](features/INTERACTIONS.md)
+   - Keyboard management (Auto-Scroll)
+   - Color tagging system
+   - Drag & Drop
+   - Multi-selection
+5. [Multilanguage Support (i18n)](features/I18N_GUIDE.md)
+   - Configuration & Namespaces
+   - Adding a new language
+   - Best practices
+6. [Knowledge Base](project/KnowledgeBase/01_Project_Overview.md)
+   - Aperçu complet du projet
+   - Détails techniques approfondis
+   - Guide développeur & FAQ
 
 ---
 
-## ⚡ Quick Start
+## Installation Rapide
 
-### Prerequisites
-- **[Node.js](https://nodejs.org/)** (LTS recommended)
-- **[Rust](https://rustup.rs/)** (stable toolchain)
-- **OS**: macOS 10.15+, Windows 10+, or Linux
+### Prérequis
 
-### Development Mode
+- **Node.js** (LTS recommandé)
+- **Rust** (stable toolchain)
+- **macOS** 10.15+ (pour le build natif)
+
+### Développement
 
 ```bash
-# Install dependencies
+# Installer les dépendances
 npm install
 
-# Launch full app (Frontend + Tauri)
+# Lancer en mode développement (Frontend + Tauri)
 npm run tauri:dev
 
-# Or frontend only (web browser)
+# Lancer uniquement le frontend (web)
 npm run dev
 ```
 
-### Production Build
+### Build Production
 
 ```bash
-# Build native application (.dmg/.exe/.AppImage)
+# Générer l'application native (.dmg pour macOS)
 npm run tauri:build
 ```
 
-### Testing
-
-```bash
-# Run test suite
-npm run test
-```
-
 ---
 
-## 📖 Documentation by Topic
-
-### For New Contributors
-1. [Getting Started](./getting-started/README.md)
-2. [Project Overview](./guides/project/KnowledgeBase/01_Project_Overview.md)
-3. [Developer Guide](./guides/project/KnowledgeBase/07_Developer_Guide.md)
-4. [Git Workflow](./workflows/BRANCH_STRATEGY.md)
-
-### For Feature Development
-- [Architecture Guide](./guides/architecture/ARCHITECTURE.md)
-- [Component Library](./guides/features/COMPONENTS.md)
-- [State Management](./guides/project/KnowledgeBase/09_State_Management.md)
-- [Best Practices](./guides/project/bonne-pratique.md)
-
-### For AI Integration
-- [AI Service Architecture](./guides/architecture/AI_SERVICE.md)
-- [AI Integration Details](./guides/project/KnowledgeBase/06_AI_Integration.md)
-- [Vision Feature](./guides/project/KnowledgeBase/12_Feature_Vision.md)
-
-### For UI/UX Work
-- [Components Guide](./guides/features/COMPONENTS.md)
-- [Interactions Guide](./guides/features/INTERACTIONS.md)
-- [i18n Guide](./guides/features/I18N_GUIDE.md)
-
----
-
-## 🎨 Code Conventions
+## Conventions de Code
 
 | Convention         | Description                                     |
 | ------------------ | ----------------------------------------------- |
-| **Feature-Based**  | Modular architecture (`src/features`)           |
-| **Context Split**  | State/Dispatch separation for performance       |
-| **React.memo**     | Optimized rendering for critical components     |
-| **Virtualization** | `@tanstack/react-virtual` for infinite grids   |
-| **Glassmorphism**  | `backdrop-blur` + semi-transparent colors       |
-| **Persistence**    | SQLite via `@tauri-apps/plugin-sql`             |
+| **Feature-Based**  | Architecture modulaire (`src/features`)         |
+| **Context Split**  | Séparation State/Dispatch pour performance      |
+| **React.memo**     | Optimisation rendu des composants critiques     |
+| **Virtualisation** | `@tanstack/react-virtual` pour grilles infinies |
+| **Glassmorphism**  | `backdrop-blur` + couleurs semi-transparentes   |
+| **Persistance**    | SQLite via `@tauri-apps/plugin-sql`             |
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-### Gemini API Key
+### Clé API Gemini
 
-Two methods:
+Deux méthodes :
 
-1. **Via UI**: Settings → Enter API key
-2. **Via Environment**: Create `.env.local` with `VITE_GEMINI_API_KEY=your_key`
+1. **Via l'interface** : Settings → Entrer la clé
+2. **Via environnement** : Créer `.env.local` avec `VITE_GEMINI_API_KEY=your_key`
 
 ### Tauri Capabilities
 
-Permissions are defined in `src-tauri/capabilities/default.json`. See the [Architecture Guide](./guides/architecture/ARCHITECTURE.md) for details.
-
----
-
-## 🆘 Need Help?
-
-- **[Troubleshooting Guide](./guides/project/KnowledgeBase/08_Troubleshooting_and_FAQ.md)** - Common issues
-- **[GitHub Issues](https://github.com/groovybronx/portf84/issues)** - Report bugs
-- **[GitHub Discussions](https://github.com/groovybronx/portf84/discussions)** - Ask questions
-
----
-
-## 📝 Contributing
-
-See our [Git Workflow Guide](./workflows/BRANCH_STRATEGY.md) and [Developer Guide](./guides/project/KnowledgeBase/07_Developer_Guide.md) for contribution guidelines.
-
----
-
-**Explore the documentation to master Lumina Portfolio! 🚀**
+Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir [ARCHITECTURE.md](architecture/ARCHITECTURE.md) pour les détails.

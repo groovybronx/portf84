@@ -1,16 +1,11 @@
 import React from "react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 import { Loader2 } from "lucide-react";
-
-// Utility for merging tailwind classes safely
-export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
-}
+import { cn } from "../../utils/cn";
+export { cn } from "../../utils/cn";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	variant?: "primary" | "secondary" | "ghost" | "danger" | "glass";
-	size?: "sm" | "md" | "lg" | "icon";
+	variant?: "primary" | "secondary" | "ghost" | "danger" | "glass" | "glass-icon" | "close" | "nav-arrow";
+	size?: "sm" | "md" | "lg" | "icon" | "icon-lg" | "icon-sm";
 	isLoading?: boolean;
 	leftIcon?: React.ReactNode;
 	rightIcon?: React.ReactNode;
@@ -51,6 +46,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 							variant === "danger",
 						"bg-glass-bg text-white border border-glass-border-light hover:bg-glass-bg-active hover:border-glass-border backdrop-blur-md":
 							variant === "glass",
+						"p-2 rounded-full hover:bg-white/5 text-white/50 hover:text-white transition-colors border-none":
+							variant === "glass-icon",
+						"p-2 rounded-full hover:bg-white/5 text-white/60 hover:text-white transition-colors border-none":
+							variant === "close",
+						"p-2 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-all border border-white/10":
+							variant === "nav-arrow",
 					},
 
 					// Sizes
@@ -59,6 +60,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 						"h-10 px-4 text-sm": size === "md",
 						"h-12 px-6 text-base": size === "lg",
 						"h-9 w-9 p-0": size === "icon",
+						"h-11 w-11 p-0": size === "icon-lg",
+						"h-7 w-7 p-0": size === "icon-sm",
 					},
 
 					className

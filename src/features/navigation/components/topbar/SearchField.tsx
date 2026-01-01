@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Tag, X } from "lucide-react";
+import { Button, GlassCard } from "../../../../shared/components/ui";
 
 interface SearchFieldProps {
   value: string;
@@ -77,15 +78,17 @@ export const SearchField: React.FC<SearchFieldProps> = ({
         {selectedTag && (
           <div className="flex items-center gap-1 bg-blue-500/20 text-blue-300 text-xs px-2 py-0.5 rounded-full mr-2 whitespace-nowrap">
             <span className="max-w-[80px] truncate">{selectedTag}</span>
-            <button
+            <Button
+              variant="close"
+              size="icon-sm"
               onClick={(e) => {
                 e.stopPropagation();
                 clearTag();
               }}
-              className="hover:text-white"
+              aria-label="Clear tag filter"
             >
               <X size={10} />
-            </button>
+            </Button>
           </div>
         )}
 
@@ -101,21 +104,22 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
       {/* Autocomplete Dropdown */}
       {isFocused && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
+        <GlassCard variant="overlay" className="absolute top-full left-0 right-0 mt-2 border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
           <div className="px-3 py-2 text-xs text-gray-500 font-medium uppercase tracking-wider border-b border-white/5">
             {t('suggestions')}
           </div>
           {suggestions.map((tag) => (
-            <button
+            <Button
               key={tag}
+              variant="ghost"
               onClick={() => handleSuggestionClick(tag)}
-              className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white flex items-center gap-2 transition-colors"
+              className="w-full justify-start gap-2 rounded-none"
             >
               <Tag size={12} className="text-blue-400" />
               {tag}
-            </button>
+            </Button>
           ))}
-        </div>
+        </GlassCard>
       )}
     </div>
   );

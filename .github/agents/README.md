@@ -189,10 +189,10 @@ Le script vérifie:
 ## 📚 Documentation Complémentaire
 
 Pour plus de détails techniques, consultez:
-- [`/docs/guides/architecture/ARCHITECTURE.md`](../../docs/guides/architecture/ARCHITECTURE.md) - Architecture système complète
-- [`/docs/guides/features/COMPONENTS.md`](../../docs/guides/features/COMPONENTS.md) - Documentation des composants UI
-- [`/docs/guides/architecture/AI_SERVICE.md`](../../docs/guides/architecture/AI_SERVICE.md) - Service d'intégration AI
-- [`/docs/guides/features/INTERACTIONS.md`](../../docs/guides/features/INTERACTIONS.md) - Raccourcis clavier et interactions
+- [`/docs/architecture/ARCHITECTURE.md`](../../docs/architecture/ARCHITECTURE.md) - Architecture système complète
+- [`/docs/features/COMPONENTS.md`](../../docs/features/COMPONENTS.md) - Documentation des composants UI
+- [`/docs/architecture/AI_SERVICE.md`](../../docs/architecture/AI_SERVICE.md) - Service d'intégration AI
+- [`/docs/features/INTERACTIONS.md`](../../docs/features/INTERACTIONS.md) - Raccourcis clavier et interactions
 - [`/README.md`](../../README.md) - Vue d'ensemble du projet
 
 ---

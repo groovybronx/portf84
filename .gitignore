@@ -55,6 +55,13 @@ secrets.json
 .temp/
 tmp/
 
+# Backup & Old Files
+*.backup
+*.bak
+*.old
+*~
+*-phase*.ts
+
 # Tests & Coverage
 coverage/
 .nyc_output/

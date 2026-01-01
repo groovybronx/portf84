@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Button } from "../../../shared/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
+
 import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 
@@ -81,16 +83,16 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
   return (
     <div className="fixed inset-0 z-(--z-modal) bg-black/95 backdrop-blur-xl">
       {/* Close button - HIGHEST z-index */}
-      <button
+      <Button
         onClick={onClose}
         className="absolute top-6 right-6 z-300 p-3 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
         title="Close (Esc)"
       >
         <X size={24} />
-      </button>
+      </Button>
 
       {/* Info toggle - HIGHEST z-index */}
-      <button
+      <Button
         onClick={() => setShowInfo(!showInfo)}
         className={`absolute top-6 left-6 z-300 p-3 rounded-full border transition-all hover:scale-110 shadow-lg ${
           showInfo
@@ -100,24 +102,24 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
         title="Toggle Info (I)"
       >
         <Info size={24} />
-      </button>
+      </Button>
 
       {/* Navigation arrows - HIGH z-index */}
-      <button
+      <Button
         onClick={goToPrev}
         className="absolute left-6 top-1/2 -translate-y-1/2 z-250 p-4 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
         title="Previous (←)"
       >
         <ChevronLeft size={32} />
-      </button>
+      </Button>
 
-      <button
+      <Button
         onClick={goToNext}
         className="absolute right-6 top-1/2 -translate-y-1/2 z-250 p-4 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition-all hover:scale-110 shadow-lg"
         title="Next (→)"
       >
         <ChevronRight size={32} />
-      </button>
+      </Button>
 
       {/* 3D Carousel Container */}
       <div

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag, X, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button, GlassCard } from "../../../shared/components/ui";
 
 interface AddTagModalProps {
   isOpen: boolean;
@@ -22,7 +23,6 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
   const [tag, setTag] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       setTag("");
@@ -46,7 +46,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-(--z-modal) flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -55,12 +55,17 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-sm glass-surface rounded-2xl shadow-2xl p-6 border border-glass-border"
+          <GlassCard
+            variant="overlay"
+            padding="lg"
+            border
+            className="relative w-full max-w-sm rounded-2xl shadow-2xl"
           >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
@@ -68,12 +73,9 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                 </div>
                 <h2 className="text-xl font-bold text-white">{t('tags:addTagTitle')}</h2>
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-              >
+              <Button variant="close" size="icon" onClick={onClose}>
                 <X size={20} />
-              </button>
+              </Button>
             </div>
 
             <p className="text-sm text-gray-400 mb-4">
@@ -102,10 +104,10 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                 {showSuggestions && tag && suggestions.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-20 overflow-hidden">
                     {suggestions.map((suggestion) => (
-                      <button
+                      <Button
                         key={suggestion}
-                        type="button"
-                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
+                        variant="ghost"
+                        className="w-full justify-start gap-2 rounded-none"
                         onMouseDown={() =>
                           handleSubmit(
                             { preventDefault: () => {} } as React.FormEvent,
@@ -115,32 +117,28 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                       >
                         <Tag size={12} className="text-gray-500" />
                         {suggestion}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 )}
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
-                >
+                <Button variant="ghost" onClick={onClose}>
                   {t('common:cancel')}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={!tag.trim()}
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
+                  leftIcon={<Plus size={16} />}
                 >
-                  <Plus size={16} />
                   {t('tags:addTag')}
-                </button>
+                </Button>
               </div>
             </form>
           </motion.div>
-        </div>
+        </GlassCard>
+          </div>
       )}
     </AnimatePresence>
   );
