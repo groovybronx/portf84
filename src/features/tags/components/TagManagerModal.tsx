@@ -45,7 +45,9 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
             
             // Cycle to next tag
             const newTargetIndex = (currentTargetIndex + 1) % allTags.length;
-            const newTargetId = allTags[newTargetIndex].id;
+            const nextTag = allTags[newTargetIndex];
+            if (!nextTag) return prev;
+            const newTargetId = nextTag.id;
             
             newMap.set(group.target.id, newTargetId);
             return newMap;

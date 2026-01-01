@@ -166,50 +166,6 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 
 			<div className="h-px bg-white/10 w-full shrink-0" />
 
-			{/* RAW Metadata */}
-			{item.isRaw && (
-				<>
-					<div className="flex flex-col gap-2 shrink-0">
-						<span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold flex items-center gap-1.5">
-							<Camera size={12} /> {t('cameraSettings')}
-						</span>
-						<div className="bg-white/5 rounded-lg p-3 border border-white/5 space-y-2">
-							{item.cameraModel && (
-								<div className="text-xs text-white/90 font-medium border-b border-white/10 pb-1.5 mb-1.5">
-									{item.cameraModel}
-								</div>
-							)}
-							<div className="grid grid-cols-3 gap-2 text-[10px] font-mono text-gray-400">
-								{item.iso && (
-									<div className="flex flex-col">
-										<span className="text-[8px] uppercase tracking-widest text-gray-600">
-											{t('iso')}
-										</span>
-										<span className="text-white/80">{item.iso}</span>
-									</div>
-								)}
-								{item.aperture && (
-									<div className="flex flex-col">
-										<span className="text-[8px] uppercase tracking-widest text-gray-600">
-											{t('aperture')}
-										</span>
-										<span className="text-white/80">{item.aperture}</span>
-									</div>
-								)}
-								{item.shutterSpeed && (
-									<div className="flex flex-col">
-										<span className="text-[8px] uppercase tracking-widest text-gray-600">
-											{t('shutter')}
-										</span>
-										<span className="text-white/80">{item.shutterSpeed}</span>
-									</div>
-								)}
-							</div>
-						</div>
-					</div>
-					<div className="h-px bg-white/10 w-full shrink-0" />
-				</>
-			)}
 
 			{/* 4. File Info */}
 			<div className="grid grid-cols-2 gap-x-4 gap-y-3 text-[11px] font-mono shrink-0">
