@@ -164,6 +164,26 @@ Les agents doivent être mis à jour quand:
 - Les dépendances majeures sont mises à jour (React, Tauri, etc.)
 - De nouvelles conventions de code sont établies
 
+### 🔧 Script de Maintenance
+
+Un script de maintenance automatique est disponible pour valider la configuration:
+
+```bash
+# Valider la configuration
+./scripts/maintain-github-config.sh
+
+# Mode interactif avec réparations
+./scripts/maintain-github-config.sh --fix
+```
+
+Le script vérifie:
+- ✅ Existence et contenu des fichiers agents
+- ✅ Références dans le README
+- ✅ Taille et qualité du contenu
+- ✅ Cohérence avec les règles Copilot
+
+**Documentation complète**: [`MAINTENANCE_GUIDE.md`](../MAINTENANCE_GUIDE.md)
+
 ---
 
 ## 📚 Documentation Complémentaire
