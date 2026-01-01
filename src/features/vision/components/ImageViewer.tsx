@@ -465,7 +465,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 					>
 						<Download size={18} /> Save
 					</a>
-				</GlassCard>
+				</div>
 			</motion.div>
 		</motion.div>
 	);
