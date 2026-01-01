@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Button } from "../../../shared/components/ui";
 import { motion } from "framer-motion";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 import { useLibrary } from "../../../shared/contexts/LibraryContext";
@@ -140,21 +142,21 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	return (
 		<div className="h-screen flex flex-col items-center justify-center px-8 pt-24 pb-0 relative">
 			{/* Boutons de navigation flottants */}
-			<button
+			<Button
 				onClick={handlePrev}
 				className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
 				aria-label="Précédent"
 			>
 				<ChevronLeft size={24} />
-			</button>
+			</Button>
 
-			<button
+			<Button
 				onClick={handleNext}
 				className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
 				aria-label="Suivant"
 			>
 				<ChevronRight size={24} />
-			</button>
+			</Button>
 
 			{/* Zone interactive du carrousel */}
 			<div

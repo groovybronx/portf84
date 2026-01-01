@@ -87,7 +87,7 @@ npm run tauri:info
 
 ## References
 
-- See `docs/guides/architecture/ARCHITECTURE.md` for database schema and data flows
+- See `docs/architecture/ARCHITECTURE.md` for database schema and data flows
 - Check `src-tauri/capabilities/default.json` for current permissions
 - Tauri v2 documentation: https://tauri.app/v2/
 - Rust edition: 2021
