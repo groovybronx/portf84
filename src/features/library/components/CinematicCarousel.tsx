@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "../../../shared/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "../../../shared/components/ui";
+
 import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 

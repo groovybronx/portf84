@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "../../../shared/components/ui";
 import { motion } from "framer-motion";
-import { Button } from "../../../shared/components/ui";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 import { useLibrary } from "../../../shared/contexts/LibraryContext";
