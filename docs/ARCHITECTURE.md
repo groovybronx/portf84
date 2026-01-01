@@ -44,22 +44,6 @@ Cette structure garantit que la galerie et la sidebar possèdent des zones de d�
 | **Système**        | `@tauri-apps/plugin-process`      | Redémarrage app (Relaunch)     |
 | **UI Native**      | `@tauri-apps/plugin-dialog`       | Sélecteur de dossiers natif    |
 | **Virtualisation** | `@tanstack/react-virtual` 3.13    | Rendu UI optimisé              |
-| **i18n**           | `react-i18next` + `i18next`      | Support multilangage           |
-
----
-
-## Formats Supportés
-
-### Images Standards
-PNG, JPG/JPEG, GIF, WebP, SVG, BMP, ICO
-
-### Images RAW & Professionnelles (Nouveau v0.9)
-L'application supporte désormais l'extraction de métadonnées EXIF pour les formats RAW et TIFF :
-
-- **RAW Constructeurs** : `.cr2`, `.cr3` (Canon), `.nef` (Nikon), `.arw` (Sony), `.raf` (Fuji), `.orf` (Olympus), `.rw2` (Panasonic), etc.
-- **Formats Professionnels** : `.dng` (Adobe Universal), `.tiff`, `.tif`
-
-> **Note Technique** : Pour les fichiers RAW, l'application n'effectue pas de dématricage complet (trop lent pour une galerie). Elle extrait le JPEG preview embarqué dans les métadonnées pour un affichage instantané. Les métadonnées EXIF (ISO, Aperture) sont également extraites.
 
 ---
 
@@ -137,20 +121,6 @@ export const useLibrary = () => ({
 | **CollectionsContext** | Gestion des workspaces multi-bibliothèques |
 | **SelectionContext**   | Sélection multiple, drag-select            |
 | **ProgressContext**    | Indicateurs de progression asynchrones     |
-
----
-
-## Internationalisation (i18n)
-
-L'application utilise **react-i18next** pour une gestion robuste des langues (EN/FR).
-
-### Architecture i18n
-- **Namespaces** : Découpage thématique (`common`, `library`, `settings`, `tags`, `errors`, `navigation`).
-- **Persistence** : Langue stockée dans `localStorage` (`lumina_language`).
-- **Types** : Types auto-générés pour une sécurité maximale lors des appels `t()`.
-- **Backend Sync** : `geminiService.ts` utilise `i18next` directement pour les erreurs traduites.
-
-Pour plus de détails, voir [I18N_GUIDE.md](I18N_GUIDE.md).
 
 ---
 

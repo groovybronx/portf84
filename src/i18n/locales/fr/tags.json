@@ -50,5 +50,6 @@
   "showingEntries": "Affichage de {{start}}-{{end}} sur {{total}} entrées",
   "pageCount": "Page {{current}} sur {{total}}",
   "unknown": "Inconnu",
-  "auto": "auto"
+  "auto": "auto",
+  "tags": "Tags"
 }

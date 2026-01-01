@@ -15,8 +15,8 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ✅ Intégration Agents Copilot Spécialisés (.github/agents/) : 100% complété
 - ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
 - ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
-- ✅ Support Fichiers RAW (Photo) : 100% complété
 - ✅ Migration i18n Multilangage (EN/FR) : 100% complété
+- ↩️ Revert Support RAW (Retour état stable)
 
 **Prochaines étapes** :
 - [ ] Tests de non-régression sur le build de production
@@ -26,35 +26,19 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ---
 
-## [31/12/2024 - 01:25] - Support des Fichiers RAW (Photo)
+## [31/12/2024 - 02:45] - Reversion Support RAW (Retour État Stable)
 
-### Type : Feature / Backend
+### Type : Revert
 
-**Composants** : `src-tauri/src/lib.rs`, `fileHelpers.ts`, `PhotoCardBack.tsx`
+**Raison** : Décision de revenir à l'implémentation précédente pour garantir la stabilité maximale, tout en conservant uniquement l'internationalisation.
 
 **Changements** :
+- **Retrait Backend** : Suppression des dépendances `rawloader`, `exif` et du code Rust associé.
+- **Retrait Frontend** : Suppression de la logique de preview RAW et des métadonnées étendues.
+- **Retrait Fix Hydration** : Retour à la structure originale des boutons de la sidebar (annulant le fix `validateDOMNesting` qui était couplé au RAW support).
 
-**1. Support Natif des Formats RAW** :
-- **Formats supportés** : Canon (`.cr2`, `.cr3`), Nikon (`.nef`, `.nrw`), Sony (`.arw`), Fuji (`.raf`), Olympus (`.orf`), Panasonic (`.rw2`), Adobe (`.dng`), et 20+ autres formats professionnels.
-- **Extraction Preview** : Utilisation de la bibliothèque Rust `exif` (anciennement kamadak-exif) pour extraire les previews JPEG embarqués, garantissant un affichage instantané sans décodage lourd.
-- **Detection Intelligente** : `fileHelpers.ts` et `lib.rs` identifient automatiquement les fichiers RAW et adaptent la méthode d'extraction.
-
-**2. Extraction de Métadonnées EXIF** :
-- Extraction automatique des données de prise de vue :
-  - **ISO** (Sensibilité)
-  - **Ouverture** (f/stop)
-  - **Vitesse d'obturation** (Shutter speed)
-  - **Modèle de Caméra**
-
-**3. Interface Utilisateur Enrichie** :
-- Mise à jour de `PhotoCardBack` pour afficher une nouvelle section "Camera Settings" sur les photos RAW.
-- Affichage clair des paramètres techniques pour les photographes.
-
-**Impact** : Ouvre l'application aux photographes professionnels qui peuvent désormais visualiser et organiser leurs fichiers bruts.
-
-**Documentation mise à jour** :
-- `docs/ARCHITECTURE.md` : Liste des formats supportés
-- `docs/CHANGELOG.md` : Entrée complète
+**État Conservé** :
+- **i18n** : L'ensemble du système de traduction (EN/FR) est intégralement préservé et fonctionnel.
 
 ---
 
