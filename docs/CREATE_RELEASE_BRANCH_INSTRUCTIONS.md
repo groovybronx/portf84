@@ -36,7 +36,9 @@ git checkout -b release/v0.2.0-beta.1
 
 # 3. Mettre à jour la version dans package.json
 # Changer "version": "0.1.0-beta.1" en "version": "0.2.0-beta.1"
-sed -i 's/"version": "0.1.0-beta.1"/"version": "0.2.0-beta.1"/' package.json
+sed -i.bak 's/"version": "0.1.0-beta.1"/"version": "0.2.0-beta.1"/' package.json
+rm package.json.bak 2>/dev/null || true
+# Note : Sur Linux (GNU sed), vous pouvez utiliser sed -i sans .bak
 
 # Ou éditer manuellement le fichier package.json
 

@@ -162,12 +162,11 @@ git pull origin develop
 # Créer la branche de release
 git checkout -b release/v0.2.0-beta.1
 
-# Mettre à jour la version dans package.json
-# Modifier manuellement ou utiliser npm version
+# Mettre à jour la version (package.json et package-lock.json si présent)
 npm version 0.2.0-beta.1 --no-git-tag-version
 
 # Commiter le changement
-git add package.json
+git add package.json package-lock.json
 git commit -m "chore: Bump version to 0.2.0-beta.1"
 
 # Pusher la nouvelle branche

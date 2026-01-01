@@ -19,15 +19,21 @@ NC='\033[0m' # No Color
 CURRENT_VERSION=$(node -p "require('./package.json').version")
 echo "📦 Current version: ${BLUE}$CURRENT_VERSION${NC}"
 
-# Parse version components
-IFS='.-' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
-MAJOR="${VERSION_PARTS[0]}"
-MINOR="${VERSION_PARTS[1]}"
-PATCH="${VERSION_PARTS[2]}"
-PRERELEASE="${VERSION_PARTS[3]}"
+# Validate and parse version components (expected: MAJOR.MINOR.PATCH-PRERELEASE.NUM, e.g., 0.1.0-beta.1)
+if [[ ! "$CURRENT_VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-([0-9A-Za-z]+)\.([0-9]+)$ ]]; then
+	echo "❌ Unsupported version format: $CURRENT_VERSION"
+	echo "   Expected format: MAJOR.MINOR.PATCH-PRERELEASE.NUM (e.g., 0.1.0-beta.1)"
+	exit 1
+fi
+
+MAJOR="${BASH_REMATCH[1]}"
+MINOR="${BASH_REMATCH[2]}"
+PATCH="${BASH_REMATCH[3]}"
+PRERELEASE="${BASH_REMATCH[4]}"
+PRERELEASE_NUM="${BASH_REMATCH[5]}"
 
 # Suggest next version
-NEXT_MINOR=$((MINOR + 1))
+NEXT_MINOR=$((10#$MINOR + 1))
 SUGGESTED_VERSION="$MAJOR.$NEXT_MINOR.0-beta.1"
 
 echo ""
@@ -47,28 +53,62 @@ echo ""
 read -p "Continue? (yes/no): " -r
 echo ""
 
-if [[ ! $REPLY =~ ^[Yy][Ee][Ss]$ ]]; then
+if [[ ! $REPLY =~ ^[Yy]([Ee][Ss])?$ ]]; then
 	echo "❌ Operation cancelled."
 	exit 0
 fi
 
+# Ensure working tree is clean before switching branches
+if [ -n "$(git status --porcelain)" ]; then
+	echo "❌ Your working directory has uncommitted changes."
+	echo "   Please commit or stash your changes before running this script."
+	exit 1
+fi
+
 # Make sure we're on develop and up to date
 echo "📡 Updating develop branch..."
-git checkout develop
-git pull origin develop
+
+# Switch to develop with explicit error handling
+if ! git checkout develop; then
+	echo "❌ Failed to switch to 'develop' branch."
+	echo "   Make sure the 'develop' branch exists and resolve any issues, then try again."
+	exit 1
+fi
+
+# Update develop from origin with explicit error handling
+if ! git pull origin develop; then
+	echo "❌ Failed to pull latest changes for 'develop' from 'origin'."
+	echo "   Check your network connection and resolve any merge conflicts, then try again."
+	exit 1
+fi
 
 # Create release branch
 BRANCH_NAME="release/v$NEW_VERSION"
 echo "🌱 Creating branch: $BRANCH_NAME..."
 git checkout -b "$BRANCH_NAME"
 
-# Update version in package.json
+# Update version in package.json and package-lock.json (if exists)
 echo "📝 Updating version in package.json..."
-sed -i.bak "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package.json
-rm package.json.bak 2>/dev/null || true
 
-# Stage the version change
-git add package.json
+# Use portable sed in-place editing (GNU vs BSD/macOS)
+if sed --version 2>/dev/null | grep -qi "gnu"; then
+	sed -i "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package.json
+else
+	sed -i '' "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package.json
+fi
+
+# Stage the version change (include package-lock.json if it exists)
+if [ -f package-lock.json ]; then
+	# Update package-lock.json as well
+	if sed --version 2>/dev/null | grep -qi "gnu"; then
+		sed -i "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package-lock.json
+	else
+		sed -i '' "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package-lock.json
+	fi
+	git add package.json package-lock.json
+else
+	git add package.json
+fi
 
 # Commit version bump
 echo "💾 Committing version bump..."

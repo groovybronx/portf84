@@ -73,7 +73,7 @@ echo ""
 read -p "Do you want to proceed with deletion? (yes/no): " -r
 echo ""
 
-if [[ ! $REPLY =~ ^[Yy][Ee][Ss]$ ]]; then
+if [[ ! $REPLY =~ ^[Yy]([Ee][Ss])?$ ]]; then
 	echo "❌ Cleanup cancelled."
 	exit 0
 fi
