@@ -241,9 +241,11 @@ const LibraryDispatchContext = createContext<Dispatch>();
 ### Code Comments
 - Comment **why**, not **what** (code should be self-explanatory)
 ### Documentation Files
-- Architecture docs: `/docs/architecture/` (ARCHITECTURE.md, TAG_SYSTEM_ARCHITECTURE.md, etc.)
-- Feature docs: `/docs/features/` (COMPONENTS.md, I18N_GUIDE.md, INTERACTIONS.md, etc.)
-- Project docs: `/docs/project/` (CHANGELOG.md, bonne-pratique.md, KnowledgeBase/)
+- Architecture docs: `/docs/guides/architecture/` (ARCHITECTURE.md, TAG_SYSTEM_ARCHITECTURE.md, etc.)
+- Feature docs: `/docs/guides/features/` (COMPONENTS.md, I18N_GUIDE.md, INTERACTIONS.md, etc.)
+- Project docs: `/docs/guides/project/` (CHANGELOG.md, bonne-pratique.md, KnowledgeBase/)
+- Git & GitHub workflows: `/docs/workflows/` (BRANCH_STRATEGY.md, CONFIGURATION_GITHUB_FR.md, etc.)
+- Getting started: `/docs/getting-started/` (QUICK_START.md, README.md)
 - Audit reports: `/docs/AUDIT/`
 - User-facing docs: README.md
 - Use Markdown for all documentation
