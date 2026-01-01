@@ -59,7 +59,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <Stack gap="xs" className="pl-2">
+            <Stack spacing="xs" className="pl-2">
               {Object.entries(COLOR_PALETTE).map(([key, hex]) => {
                 const colorName = getColorName(hex);
                 // Count items with this color (unique items across all folders)

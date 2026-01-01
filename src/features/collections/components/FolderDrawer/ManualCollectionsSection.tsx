@@ -56,7 +56,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
           <Icon action={settings.tertiaryIcon} size={14} className="text-tertiary" />
           <span>{t('collections')}</span>
         </p>
-        <Flex align="center" gap="sm">
+        <Flex align="center" spacing="sm">
           {selectedCount > 0 && !activeFolderId.has("all") && (
             <span className="text-tertiary text-[10px] bg-tertiary/10 px-2 py-0.5 rounded-full">
               {t('selectedCount', { count: selectedCount })}
@@ -100,7 +100,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
                 {t('noCollectionsCreated')}
               </p>
             ) : (
-              <Stack gap="xs" className="pl-2">
+              <Stack spacing="xs" className="pl-2">
                 {folders.map((folder) => (
                   <FolderItem
                     key={folder.id}

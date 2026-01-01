@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Plus, Edit2, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { SmartCollection } from '../../../services/smartCollectionService';
+import { SmartCollection } from '../../../../services/smartCollectionService';
 import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
 interface SmartCollectionsSectionProps {
@@ -25,9 +25,9 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 	const { t } = useTranslation(['library']);
 
 	return (
-		<Stack gap="sm" className="mt-6">
+		<Stack spacing="sm" className="mt-6">
 			<Flex justify="between" align="center" className="px-1 mb-2">
-				<Flex align="center" gap="sm">
+				<Flex align="center" spacing="sm">
 					<Sparkles size={14} className="text-blue-400" />
 					<span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
 						{t('library:smartCollections')}
@@ -43,7 +43,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 				</Button>
 			</Flex>
 
-			<Stack gap="xs">
+			<Stack spacing="xs">
 				{collections.map((c) => (
 					<motion.div
 						key={c.id}
@@ -59,7 +59,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 								: 'hover:bg-white/5 border border-transparent'
 						}`}
 					>
-						<Flex align="center" gap="sm" className="min-w-0">
+						<Flex align="center" spacing="sm" className="min-w-0">
 							<div 
 								className="w-2 h-2 rounded-full shadow-lg" 
 								style={{ backgroundColor: c.color || '#3b82f6', boxShadow: `0 0 8px ${c.color || '#3b82f6'}44` }} 
@@ -69,7 +69,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 							</span>
 							</Flex>
 
-						<Flex align="center" gap="xs" className="opacity-0 group-hover:opacity-100 transition-opacity">
+						<Flex align="center" spacing="xs" className="opacity-0 group-hover:opacity-100 transition-opacity">
 							<Button
 								variant="glass-icon"
 								size="icon-sm"
