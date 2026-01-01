@@ -22,33 +22,33 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 
 ## Sommaire
 
-1. [Architecture & Données](ARCHITECTURE.md)
+1. [Architecture & Données](architecture/ARCHITECTURE.md)
    - Structure Feature-Based (src/features)
    - Contexts Split (State/Dispatch)
    - Base de données SQLite (Projets & Shadow Folders)
    - Asset Protocol & permissions
    - Déploiement & CI/CD
-2. [Composants UI & UX](COMPONENTS.md)
+2. [Composants UI & UX](features/COMPONENTS.md)
    - Système de vues (Grid Virtuelle, Carousel, List)
    - Navigation Sidebar (Accordéons & Smart Folders)
    - PhotoCard (React.memo + Lazy Loading)
    - Dialog natif Tauri
    - Moteur d'animation
-3. [Service AI (Gemini)](AI_SERVICE.md)
+3. [Service AI (Gemini)](architecture/AI_SERVICE.md)
    - Intégration de l'API
    - Streaming & Thinking Process
    - Ingénierie du Prompt
    - Batch processing
-4. [Interactions & Shortcuts](INTERACTIONS.md)
+4. [Interactions & Shortcuts](features/INTERACTIONS.md)
    - Keyboard management (Auto-Scroll)
    - Color tagging system
    - Drag & Drop
    - Multi-selection
-5. [Multilanguage Support (i18n)](I18N_GUIDE.md)
+5. [Multilanguage Support (i18n)](features/I18N_GUIDE.md)
    - Configuration & Namespaces
    - Adding a new language
    - Best practices
-6. [Knowledge Base](KnowledgeBase/01_Project_Overview.md)
+6. [Knowledge Base](project/KnowledgeBase/01_Project_Overview.md)
    - Aperçu complet du projet
    - Détails techniques approfondis
    - Guide développeur & FAQ
@@ -109,4 +109,4 @@ Deux méthodes :
 
 ### Tauri Capabilities
 
-Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir [ARCHITECTURE.md](ARCHITECTURE.md) pour les détails.
+Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir [ARCHITECTURE.md](architecture/ARCHITECTURE.md) pour les détails.

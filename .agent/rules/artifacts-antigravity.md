@@ -13,9 +13,11 @@ trigger: always_on
 ## 1. Artifacts Concernés
 
 Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
-- `<appDataDir>/brain/<conversation-id>/`
+
+- `<appDataDir>/brain/<co nversation-id>/`
 
 **Types d'artifacts** :
+
 - `implementation_plan.md` - Plans d'implémentation
 - `task.md` - Listes de tâches
 - `walkthrough.md` - Documentation de vérification
@@ -28,6 +30,7 @@ Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
 ### Règle #1 : Ne Jamais Écraser un Artifact Non Terminé
 
 **INTERDICTION ABSOLUE** d'écraser ou de remplacer un artifact contenant :
+
 - Des tâches non commencées `[ ]`
 - Des tâches en cours `[/]`
 - Des sections marquées comme "en cours" ou "à faire"
@@ -47,6 +50,7 @@ Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
 ### Règle #3 : Préserver l'Historique
 
 **TOUJOURS préserver** :
+
 - Les tâches terminées `[x]` (historique de progression)
 - Les notes et commentaires
 - La structure existante
@@ -68,12 +72,14 @@ Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
 ### Options si Artifact Non Terminé Existe
 
 #### Option A : Compléter l'Artifact Existant
+
 - Continuer les tâches en cours
 - Ajouter de nouvelles tâches à la fin
 - Mettre à jour uniquement les sections concernées
 - Utiliser `replace_file_content` ou `multi_replace_file_content` (jamais `write_to_file` avec `Overwrite: true`)
 
 #### Option B : Créer un Artifact Additionnel
+
 - Créer un nouveau fichier avec suffixe descriptif
 - Exemples :
   - `implementation_plan.md` (principal)
@@ -83,6 +89,7 @@ Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
 - Référencer l'artifact principal si nécessaire
 
 #### Option C : Demander à l'Utilisateur via `notify_user`
+
 - Si incertitude sur la priorité
 - Si conflit potentiel entre ancien et nouveau plan
 - Si changement de direction détecté
@@ -95,6 +102,7 @@ Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
 ### Signes de Dérive
 
 **Indicateurs qu'on perd le fil** :
+
 - Nouvelle demande utilisateur non liée à l'artifact actif
 - Changement de contexte (bug urgent, nouvelle feature)
 - Tentative de créer un nouvel artifact alors qu'un artifact actif existe
@@ -170,6 +178,7 @@ Quand une dérive est détectée :
 #### Étape 2 : Lecture Complète
 
 **Si des artifacts sont trouvés** :
+
 1. **Lire TOUS les artifacts** avec `view_file`
 2. **Analyser leur contenu** :
    - Compter les tâches `[x]` (terminées)
@@ -212,6 +221,7 @@ Quand une dérive est détectée :
 #### Étape 4 : Attendre Confirmation
 
 **Ne PAS continuer automatiquement** sans avoir :
+
 - ✅ Rappelé le contexte à l'utilisateur
 - ✅ Obtenu sa confirmation sur la direction à prendre
 - ✅ Compris s'il veut continuer ou changer de direction
@@ -223,6 +233,7 @@ Quand une dérive est détectée :
 **Ne JAMAIS supposer** qu'un artifact est abandonné entre deux sessions.
 
 **Toujours** :
+
 - ✅ Vérifier l'existence d'artifacts actifs au démarrage
 - ✅ Lire leur contenu complet avant toute action
 - ✅ Rappeler le contexte à l'utilisateur
@@ -234,6 +245,7 @@ Quand une dérive est détectée :
 ### Cas Spécial : Relance d'Antigravity
 
 **Même workflow si l'utilisateur quitte et relance Antigravity** :
+
 - Considérer cela comme une nouvelle session
 - Appliquer le workflow complet de vérification
 - Rappeler le contexte même si la pause a été courte
@@ -303,6 +315,7 @@ write_to_file({
 ### Demande Urgente Pendant un Plan Actif
 
 **Action** :
+
 1. Lire `implementation_plan.md` et `task.md`
 2. Notifier l'utilisateur via `notify_user`
 3. Proposer de créer `implementation_plan_urgent.md` ou `task_bugfix.md`
@@ -312,6 +325,7 @@ write_to_file({
 ### Changement de Direction Demandé
 
 **Action** :
+
 1. Lire les artifacts actifs
 2. Rappeler la progression actuelle
 3. Demander confirmation explicite
@@ -321,6 +335,7 @@ write_to_file({
 ### Artifact Complété (100%)
 
 **Action autorisée** :
+
 1. Vérifier que TOUTES les tâches sont `[x]`
 2. Créer un nouvel artifact si nécessaire
 3. Optionnel : Renommer l'ancien avec suffixe `_completed`
@@ -343,6 +358,7 @@ write_to_file({
 ## 11. Responsabilité de l'Agent
 
 **En tant qu'agent Antigravity, je dois** :
+
 - ✅ Être le gardien de la continuité entre sessions
 - ✅ Rappeler à l'utilisateur ses plans/tâches en cours
 - ✅ Éviter la dérive et la perte de focus
