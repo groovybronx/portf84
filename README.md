@@ -98,18 +98,27 @@ npm run test
 
 ## 📚 Documentation
 
-Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
+La documentation est organisée en trois sections principales :
 
-- [Architecture](./docs/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
-- [Composants](./docs/features/COMPONENTS.md) - UI/UX détaillé
-- [AI Service](./docs/architecture/AI_SERVICE.md) - Intégration Gemini
-- [Interactions](./docs/features/INTERACTIONS.md) - Raccourcis clavier
+### 🚀 [Getting Started](./docs/getting-started/README.md)
+**Démarrage rapide et installation**
+- [Quick Start Guide](./docs/getting-started/QUICK_START.md) - Configuration GitHub en 10 minutes
+- Guide d'installation complet
+- Configuration de l'environnement
 
-### Gestion Git & GitHub
-- [🚀 Quick Start](./docs/QUICK_START.md) - Guide rapide en 10 minutes
-- [Résumé Configuration GitHub](./docs/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
-- [Stratégie de Branches](./docs/BRANCH_STRATEGY.md) - Workflow Git et gestion des branches
-- [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
+### 📖 [Technical Guides](./docs/guides/README.md)
+**Documentation technique approfondie**
+- **[Architecture](./docs/guides/architecture/ARCHITECTURE.md)** - Stack, SQLite, déploiement
+- **[Composants](./docs/guides/features/COMPONENTS.md)** - UI/UX détaillé
+- **[AI Service](./docs/guides/architecture/AI_SERVICE.md)** - Intégration Gemini
+- **[Interactions](./docs/guides/features/INTERACTIONS.md)** - Raccourcis clavier
+- **[Knowledge Base](./docs/guides/project/KnowledgeBase/01_Project_Overview.md)** - Documentation complète
+
+### 🔄 [Workflows](./docs/workflows/README.md)
+**Git, GitHub et processus de développement**
+- [Stratégie de Branches](./docs/workflows/BRANCH_STRATEGY.md) - Workflow Git
+- [Configuration GitHub](./docs/workflows/CONFIGURATION_GITHUB_FR.md) - Guide de configuration
+- [Gestion des Releases](./docs/workflows/CREATE_RELEASE_BRANCH_INSTRUCTIONS.md) - Création de releases
 - [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
 ### 🤖 GitHub Copilot Configuration
 

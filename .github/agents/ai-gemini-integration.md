@@ -210,7 +210,7 @@ if (!apiKey || apiKey.trim() === '') {
 
 ## References
 
-- See `docs/architecture/AI_SERVICE.md` for detailed AI integration documentation
+- See `docs/guides/architecture/AI_SERVICE.md` for detailed AI integration documentation
 - See `src/features/vision/` for vision feature implementation
 - See `src/features/vision/services/geminiService.ts` for API integration
 - Google GenAI SDK: https://github.com/google/generative-ai-js
