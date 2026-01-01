@@ -25,9 +25,9 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 	const { t } = useTranslation(['library']);
 
 	return (
-		<Stack spacing="sm" className="mt-6">
+		<Stack gap="sm" className="mt-6">
 			<Flex justify="between" align="center" className="px-1 mb-2">
-				<Flex align="center" spacing="sm">
+				<Flex align="center" gap="sm">
 					<Sparkles size={14} className="text-blue-400" />
 					<span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
 						{t('library:smartCollections')}
@@ -43,7 +43,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 				</Button>
 			</Flex>
 
-			<Stack spacing="xs">
+			<Stack gap="xs">
 				{collections.map((c) => (
 					<motion.div
 						key={c.id}
@@ -59,7 +59,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 								: 'hover:bg-white/5 border border-transparent'
 						}`}
 					>
-						<Flex align="center" spacing="sm" className="min-w-0">
+						<Flex align="center" gap="sm" className="min-w-0">
 							<div 
 								className="w-2 h-2 rounded-full shadow-lg" 
 								style={{ backgroundColor: c.color || '#3b82f6', boxShadow: `0 0 8px ${c.color || '#3b82f6'}44` }} 
@@ -69,7 +69,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 							</span>
 							</Flex>
 
-						<Flex align="center" spacing="xs" className="opacity-0 group-hover:opacity-100 transition-opacity">
+						<Flex align="center" gap="xs" className="opacity-0 group-hover:opacity-100 transition-opacity">
 							<Button
 								variant="glass-icon"
 								size="icon-sm"
