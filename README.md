@@ -111,6 +111,19 @@ Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
 - [Stratégie de Branches](./docs/BRANCH_STRATEGY.md) - Workflow Git et gestion des branches
 - [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
 - [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
+### 🤖 GitHub Copilot Configuration
+
+Ce projet inclut une configuration complète pour GitHub Copilot avec des règles personnalisées qui aident à générer du code conforme aux conventions du projet :
+
+- **[Copilot Instructions](/.github/copilot-instructions.md)** - Instructions principales pour Copilot
+- **[Copilot Rules](/.github/copilot-rules.json)** - Configuration JSON des règles
+- **[Règles TypeScript/React](/.github/copilot/typescript-react-rules.md)** - Conventions frontend
+- **[Règles Rust/Tauri](/.github/copilot/rust-tauri-rules.md)** - Conventions backend
+- **[Règles de Test](/.github/copilot/testing-rules.md)** - Patterns de test
+- **[Règles de Sécurité](/.github/copilot/security-rules.md)** - Bonnes pratiques de sécurité
+- **[Exemples](/.github/copilot/EXAMPLES.md)** - Exemples de code avec Copilot
+
+Consultez [`.github/copilot/README.md`](/.github/copilot/README.md) pour plus d'informations sur l'utilisation de ces règles.
 
 ---
 

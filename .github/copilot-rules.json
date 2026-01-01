@@ -1,0 +1,196 @@
+{
+	"$schema": "https://json.schemastore.org/copilot-rules.json",
+	"version": "1.0",
+	"rules": [
+		{
+			"name": "typescript-react-conventions",
+			"description": "TypeScript and React coding conventions for Lumina Portfolio",
+			"patterns": [
+				"**/*.ts",
+				"**/*.tsx"
+			],
+			"instructions": [
+				"Use strict TypeScript with explicit types for all function parameters, return values, and component props",
+				"Use React.FC for functional components with typed props using interfaces",
+				"Prefer named exports over default exports for better refactoring",
+				"Use tabs for indentation, double quotes for strings, and semicolons at end of statements",
+				"Import path alias @/ for all imports (maps to ./src/)",
+				"Group imports: React first, then libraries, then local imports with @/ prefix",
+				"Use feature-based architecture: organize code by domain (features/library, features/tags, etc.)",
+				"Use Context API with split contexts for performance (separate state/dispatch)",
+				"Custom hooks must start with 'use' prefix",
+				"Use React.memo() for expensive components to prevent unnecessary re-renders",
+				"Never mutate state directly - always create new objects/arrays",
+				"Avoid 'any' type - use 'unknown' if type is truly unknown",
+				"Use readonly for immutable data structures",
+				"Keep components small and focused - single responsibility principle",
+				"Prefer controlled components over uncontrolled",
+				"Use arrow functions for components and callbacks",
+				"Destructure props and context values",
+				"Keep lines under 100 characters when reasonable"
+			]
+		},
+		{
+			"name": "tailwind-css-conventions",
+			"description": "Tailwind CSS styling conventions",
+			"patterns": [
+				"**/*.tsx",
+				"**/*.jsx"
+			],
+			"instructions": [
+				"Use Tailwind CSS v4 utility classes exclusively",
+				"Follow mobile-first responsive design (sm:, md:, lg: breakpoints)",
+				"Use clsx or tailwind-merge for conditional classes",
+				"Prefer composition with utility classes over custom CSS",
+				"Glass morphism effects: backdrop-blur-xl bg-white/10 border border-white/20",
+				"Dark mode support: Use opacity variants and semi-transparent colors",
+				"Prefer Framer Motion for complex animations, Tailwind for simple transitions",
+				"Responsive grid: Use grid grid-cols-[auto-fit] with minmax() for photo galleries"
+			]
+		},
+		{
+			"name": "rust-tauri-conventions",
+			"description": "Rust and Tauri backend conventions",
+			"patterns": [
+				"src-tauri/**/*.rs"
+			],
+			"instructions": [
+				"Follow Rust standard conventions (rustfmt, clippy)",
+				"Use Result<T, E> for error handling",
+				"Prefer &str for borrowed strings, String for owned",
+				"Use derive macros for common traits (Debug, Clone, Serialize, etc.)",
+				"Keep Rust code minimal - business logic should be in TypeScript when possible",
+				"Use Tauri plugins for system access (fs, dialog, sql, etc.)",
+				"Commands should return Result<T, String> for JavaScript interop",
+				"Keep commands focused and single-purpose",
+				"Use @tauri-apps/plugin-sql for database access",
+				"Use prepared statements to prevent SQL injection",
+				"Use transactions for multi-step database operations"
+			]
+		},
+		{
+			"name": "testing-conventions",
+			"description": "Testing conventions with Vitest and React Testing Library",
+			"patterns": [
+				"**/*.test.ts",
+				"**/*.test.tsx",
+				"tests/**/*.ts",
+				"tests/**/*.tsx"
+			],
+			"instructions": [
+				"Use Vitest for unit tests",
+				"Use React Testing Library for component tests",
+				"Follow AAA pattern: Arrange, Act, Assert",
+				"Mock external dependencies (Tauri APIs, Gemini service)",
+				"Test edge cases and error states",
+				"Keep tests isolated - no shared state between tests",
+				"Use descriptive test names: it('should display error message when API key is invalid')",
+				"Mirror source structure in test directory",
+				"Test accessibility using screen.getByRole, screen.getByLabelText"
+			]
+		},
+		{
+			"name": "security-guidelines",
+			"description": "Security best practices",
+			"patterns": [
+				"**/*.ts",
+				"**/*.tsx",
+				"**/*.rs"
+			],
+			"instructions": [
+				"Never hardcode API keys or secrets in source code",
+				"Use environment variables for sensitive data",
+				"Validate and sanitize all user inputs",
+				"Use prepared statements for SQL queries to prevent injection",
+				"Follow principle of least privilege in Tauri capability files",
+				"Validate all inputs from frontend in Rust commands",
+				"Use Content Security Policy (CSP) appropriately"
+			]
+		},
+		{
+			"name": "performance-optimization",
+			"description": "Performance optimization patterns",
+			"patterns": [
+				"**/*.ts",
+				"**/*.tsx"
+			],
+			"instructions": [
+				"Use @tanstack/react-virtual for infinite scroll in photo grids",
+				"Lazy load images with Intersection Observer",
+				"Memoize expensive computations with useMemo",
+				"Debounce search inputs and AI batch operations",
+				"Use Tauri's asset protocol for fast image loading",
+				"Avoid large bundle sizes - lazy load features when possible",
+				"Avoid unnecessary re-renders - use React.memo and context splitting",
+				"Clean up event listeners and subscriptions to prevent memory leaks"
+			]
+		},
+		{
+			"name": "error-handling",
+			"description": "Error handling patterns",
+			"patterns": [
+				"**/*.ts",
+				"**/*.tsx",
+				"**/*.rs"
+			],
+			"instructions": [
+				"Use Error Boundaries for React component errors",
+				"Display user-friendly error messages",
+				"Handle async errors with try-catch blocks",
+				"Return descriptive error messages from Tauri commands",
+				"Use Rust's Result type consistently",
+				"Log errors with appropriate severity levels",
+				"Fail gracefully - don't crash the app"
+			]
+		},
+		{
+			"name": "accessibility",
+			"description": "Accessibility (a11y) guidelines",
+			"patterns": [
+				"**/*.tsx",
+				"**/*.jsx"
+			],
+			"instructions": [
+				"Use semantic HTML elements",
+				"Provide ARIA labels for icon buttons",
+				"Ensure keyboard navigation works",
+				"Maintain sufficient color contrast",
+				"Support screen readers",
+				"Test with keyboard-only navigation"
+			]
+		},
+		{
+			"name": "architecture-patterns",
+			"description": "Project-specific architecture patterns",
+			"patterns": [
+				"src/**/*.ts",
+				"src/**/*.tsx"
+			],
+			"instructions": [
+				"Use feature-based structure: features/ for domain-specific modules, shared/ for cross-cutting concerns, services/ for business logic",
+				"Context split pattern: separate state and dispatch contexts for performance",
+				"Service layer: geminiService.ts (AI), libraryLoader.ts (file system), storageService.ts (database)",
+				"Modal pattern: Use useModalState hook for modal state management",
+				"Selection pattern: Multi-select with Shift+Click for range, Cmd/Ctrl+Click for individual toggle",
+				"Layout pattern: Flexible layout with pinned sidebar (fixed) vs floating drawer (overlay)",
+				"Keep services pure and testable - no React dependencies"
+			]
+		},
+		{
+			"name": "documentation",
+			"description": "Code documentation standards",
+			"patterns": [
+				"**/*.ts",
+				"**/*.tsx",
+				"**/*.rs"
+			],
+			"instructions": [
+				"Comment why, not what (code should be self-explanatory)",
+				"Use JSDoc for public APIs and complex functions",
+				"Document edge cases and gotchas",
+				"Keep comments concise and up-to-date",
+				"Use descriptive variable and function names"
+			]
+		}
+	]
+}
