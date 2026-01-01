@@ -226,14 +226,15 @@ export const TopBar: React.FC<TopBarProps> = ({
 								{isSelectionSupported && (
 									<>
 										<div className="w-px h-6 bg-glass-border/10 mx-1 hidden sm:block" />
-										<button
+										<Button
+											variant="ghost"
 											onClick={handleToggleSelectionMode}
-											className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-glass-bg-accent border-glass-border-light text-gray-400 hover:text-primary hover:border-primary/50 transition-colors"
+											className="gap-2 border border-glass-border-light"
 										>
 											<span className="text-sm font-medium hidden sm:inline">
 												{t('navigation:select')}
 											</span>
-										</button>
+										</Button>
 									</>
 								)}
 							</div>
