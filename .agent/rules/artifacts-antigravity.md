@@ -14,7 +14,7 @@ trigger: always_on
 
 Ces règles s'appliquent à **TOUS** les artifacts Antigravity stockés dans :
 
-- `<appDataDir>/brain/<co nversation-id>/`
+- `<appDataDir>/brain/<conversation-id>/`
 
 **Types d'artifacts** :
 
