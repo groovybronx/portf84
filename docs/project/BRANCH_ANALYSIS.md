@@ -54,10 +54,10 @@ These branches contain commits that are not yet in `develop` or `refactor`. They
   - fix: address code review comments - i18n, validation, and code quality improvements
 - **Action**: Verify if this work was merged elsewhere or still needed
 
-### `copilot/resolve-conflicts-refactor-50`
-- **Status**: Active conflict resolution
-- **Purpose**: Merge develop into refactor to resolve conflicts for PR #50
-- **Action**: Keep until PR #50 is resolved
+### `copilot/reorganize-documentation-structure`
+- **Status**: Active documentation work
+- **Purpose**: Reorganizing repository documentation
+- **Action**: Keep until work is completed and merged
 
 ---
 

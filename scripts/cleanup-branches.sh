@@ -78,14 +78,29 @@ UNMERGED_BRANCHES=(
 	"copilot/execute-ui-audit-simplification"
 	"copilot/sub-pr-43"
 	"copilot/sub-pr-43-again"
-	"copilot/resolve-conflicts-refactor-50"
+	"copilot/reorganize-documentation-structure"
 )
 
 for branch in "${UNMERGED_BRANCHES[@]}"; do
 	if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
-		# Get the number of unique commits not in develop or refactor
-		unique_commits=$(git log origin/develop..origin/"$branch" --oneline 2>/dev/null | wc -l)
-		echo -e "  ${CYAN}ℹ${NC} $branch (${unique_commits} unique commits)"
+		# Get the minimum number of unique commits across main, develop, and refactor
+		unique_from_main=$(git log origin/main..origin/"$branch" --oneline 2>/dev/null | wc -l)
+		unique_from_develop=$(git log origin/develop..origin/"$branch" --oneline 2>/dev/null | wc -l)
+		unique_from_refactor=$(git log origin/refactor..origin/"$branch" --oneline 2>/dev/null | wc -l)
+		
+		# Show the minimum to give the best case scenario
+		min_unique=$unique_from_main
+		compared_to="main"
+		if [ "$unique_from_develop" -lt "$min_unique" ]; then
+			min_unique=$unique_from_develop
+			compared_to="develop"
+		fi
+		if [ "$unique_from_refactor" -lt "$min_unique" ]; then
+			min_unique=$unique_from_refactor
+			compared_to="refactor"
+		fi
+		
+		echo -e "  ${CYAN}ℹ${NC} $branch (${min_unique} unique commits vs ${compared_to})"
 	fi
 done
 
