@@ -90,6 +90,24 @@
 			]
 		},
 		{
+			"name": "systematic-verification",
+			"description": "Systematic verification rules for code quality (zero regression principle)",
+			"patterns": [
+				"**/*.ts",
+				"**/*.tsx",
+				"**/*.rs"
+			],
+			"instructions": [
+				"ZERO REGRESSION: Self-correct before returning control to the user",
+				"After every code modification, verify: 1) Check for new errors in current_problems, 2) Re-read modified files to verify syntax, imports, and types, 3) Run build/type-check for complex changes",
+				"Avoid common errors: Do not delete interfaces/types still in use, watch for character duplication (>> or }}), ensure all new components are imported",
+				"Run 'npm run type-check' or 'tsc --noEmit' when making complex TypeScript changes",
+				"Never claim 'done' without technical certainty that code compiles and executes without visible errors",
+				"Always verify: closing brackets/parentheses, import statements match usage, no missing dependencies",
+				"Self-verification checklist: syntax correctness, type safety, import completeness, build validation"
+			]
+		},
+		{
 			"name": "security-guidelines",
 			"description": "Security best practices",
 			"patterns": [

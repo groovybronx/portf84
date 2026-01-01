@@ -13,7 +13,9 @@ This directory contains the GitHub Copilot configuration and rule sets for the L
 │   ├── typescript-react-rules.md
 │   ├── rust-tauri-rules.md
 │   ├── testing-rules.md
-│   └── security-rules.md
+│   ├── security-rules.md
+│   ├── REGLES_VERIFICATION.md  # Systematic verification rules
+│   └── VALIDATION.md
 ```
 
 ## 🎯 Purpose
@@ -65,7 +67,15 @@ Covers:
 - Secure data storage
 - Rate limiting
 
-### 5. **copilot-rules.json**
+### 5. **REGLES_VERIFICATION.md**
+Covers:
+- Systematic verification checklist after code edits
+- Self-correction principles (zero regression)
+- Common errors to avoid (syntax, imports, types)
+- Build and type-check validation
+- Code quality commitment
+
+### 6. **copilot-rules.json**
 JSON-based configuration that defines:
 - Pattern-based rule application
 - File-specific instructions

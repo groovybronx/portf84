@@ -366,6 +366,31 @@ const LibraryDispatchContext = createContext<Dispatch>();
 
 ---
 
+## Code Quality and Verification
+
+### Systematic Verification Rules (Zero Regression)
+
+**Before completing any code change:**
+1. **Self-correct before returning** - Don't let users discover syntax, import, or type errors
+2. **After each edit, verify:**
+   - Check for new errors in current_problems
+   - Re-read modified files for syntax correctness
+   - Verify imports match usage
+   - Run type-check for complex changes: `npm run type-check` or `tsc --noEmit`
+
+### Common Errors to Avoid
+- Deleting types/interfaces still in use
+- Character duplication (e.g., `>>`, `}}`)
+- Missing imports for new components
+- Unclosed brackets or parentheses
+
+### Quality Commitment
+> "Never claim 'done' without technical certainty that code compiles and executes without visible errors"
+
+**See**: `.github/copilot/REGLES_VERIFICATION.md` for complete verification checklist
+
+---
+
 ## When in Doubt
 
 - Follow existing patterns in the codebase
