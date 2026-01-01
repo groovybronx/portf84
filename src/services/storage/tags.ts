@@ -327,7 +327,7 @@ export const undoMerge = async (mergeId: string): Promise<void> => {
 		// 2. Re-create the source tag with original ID
 		// First check if tag with this ID already exists
 		const existingTag = await db.select<Array<{ id: string }>>(
-			"SELECT id FROM tags WHERE id = ?",
+			"SELECT 1 FROM tags WHERE id = ?",
 			[sourceTagId]
 		);
 		
@@ -545,6 +545,9 @@ export const setTagParent = async (
 		}
 
 		// Traverse up the hierarchy to detect cycles
+		// Note: This performs multiple queries in a loop. For better performance,
+		// consider using a recursive CTE or loading the entire parent chain in one query.
+		// However, tag hierarchies are typically shallow, so the current approach is acceptable.
 		let currentParentId: string | null = parentId;
 
 		while (currentParentId) {

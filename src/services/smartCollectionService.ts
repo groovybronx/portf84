@@ -90,8 +90,11 @@ export const updateSmartCollection = async (id: string, updates: Partial<SmartCo
 export const resolveSmartCollection = async (id: string, collectionId: string): Promise<string[]> => {
 	// Validate collectionId format
 	const validIdPattern = /^[a-zA-Z0-9_-]+$/;
-	if (!validIdPattern.test(id) || !validIdPattern.test(collectionId)) {
-		throw new Error("Invalid smart collection or collection ID format");
+	if (!validIdPattern.test(id)) {
+		throw new Error("Invalid smart collection ID format");
+	}
+	if (!validIdPattern.test(collectionId)) {
+		throw new Error("Invalid collection ID format");
 	}
 
 	const db = await getDB();
