@@ -3,7 +3,7 @@
  * Front face of the card showing the image and overlay info
  */
 import React from "react";
-import { Button } from "../../../shared/components/ui";
+import { Button } from "../../../../shared/components/ui";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";

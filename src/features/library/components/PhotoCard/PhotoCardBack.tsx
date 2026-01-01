@@ -3,7 +3,7 @@
  * Back face of the card showing metadata, tags, and file info
  */
 import React, { useMemo } from "react";
-import { Button } from "../../../shared/components/ui";
+import { Button } from "../../../../shared/components/ui";
 import { useTranslation } from "react-i18next";
 import {
 	Maximize2,
