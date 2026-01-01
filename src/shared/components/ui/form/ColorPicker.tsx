@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon, type IconAction } from "../../Icon";
 import { IconPicker } from "./IconPicker";
-import { useTranslation } from "react-i18next"; // Access translations if needed, or pass labels
 
 interface ColorPickerProps {
   value: string;

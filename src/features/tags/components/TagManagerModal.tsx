@@ -382,7 +382,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                         <TagTreeItem 
                                             key={node.id} 
                                             tag={node.name}
-                                            count={0} // Count not yet available in TagNode
+                                            count={node.count ?? 0}
                                             isExpanded={true}
                                             hasChildren={node.children.length > 0}
                                         />

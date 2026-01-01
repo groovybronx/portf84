@@ -1,5 +1,9 @@
 import React from "react";
-import { cn } from "../../ui/Button"; // Reusing cn
+import type { ClassValue } from "clsx";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 interface TabsProps {
   value: string;

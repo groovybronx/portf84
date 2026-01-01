@@ -1,17 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Icon, type IconAction } from "../../Icon";
-
-// Import ALL_ICONS from Icon.tsx once verified/moved
-// Since I haven't moved it yet, I will define props to accept icons or use the export after I modify Icon.tsx.
-// Better workflow: Modify Icon.tsx first, then create this file using the import.
-// But since I'm in a tool call, I will write this assuming ALL_ICONS is available or passed as prop.
-// The plan said "icons (list)" as prop. So I will stick to props for maximum flexibility.
+import { Icon, type IconAction, ALL_ICONS } from "../../Icon";
 
 interface IconPickerProps {
   value: IconAction;
   onChange: (icon: IconAction) => void;
-  icons: IconAction[];
+  icons?: IconAction[];
   usedIcons?: IconAction[];
   label?: string;
   className?: string;
@@ -20,7 +14,7 @@ interface IconPickerProps {
 export const IconPicker: React.FC<IconPickerProps> = ({
   value,
   onChange,
-  icons,
+  icons = ALL_ICONS,
   usedIcons = [],
   label,
   className = "",

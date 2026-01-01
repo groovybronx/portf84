@@ -156,6 +156,7 @@ export interface ParsedTag {
 /** Hierarchical tag node for tree display */
 export interface TagNode extends ParsedTag {
   children: TagNode[];
+  count?: number;
 }
 
 /** Raw item-tag relation from database */

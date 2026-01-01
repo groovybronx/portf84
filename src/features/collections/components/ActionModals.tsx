@@ -174,7 +174,7 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 						<div className="w-10 h-10 rounded-lg bg-glass-bg-accent flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors">
 							<Plus size={20} />
 						</div>
-						<div className="flex-1 text-left">
+						<div className="flex-1">
 							<p className="font-medium">Create New Collection</p>
 							<p className="text-xs text-gray-500">Add folder and move items</p>
 						</div>
@@ -195,7 +195,7 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
 								<div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
 									<FolderHeart size={20} />
 								</div>
-								<div className="flex-1 text-left">
+								<div className="flex-1">
 									<p className="font-medium text-white">{folder.name}</p>
 									<p className="text-xs text-gray-500">
 										{folder.items.length} items
