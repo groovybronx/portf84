@@ -100,10 +100,10 @@ npm run test
 
 Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
 
-- [Architecture](./docs/ARCHITECTURE.md) - Stack, SQLite, déploiement
-- [Composants](./docs/COMPONENTS.md) - UI/UX détaillé
-- [AI Service](./docs/AI_SERVICE.md) - Intégration Gemini
-- [Interactions](./docs/INTERACTIONS.md) - Raccourcis clavier
+- [Architecture](./docs/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
+- [Composants](./docs/features/COMPONENTS.md) - UI/UX détaillé
+- [AI Service](./docs/architecture/AI_SERVICE.md) - Intégration Gemini
+- [Interactions](./docs/features/INTERACTIONS.md) - Raccourcis clavier
 
 ---
 
