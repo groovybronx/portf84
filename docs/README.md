@@ -10,6 +10,8 @@ Welcome to the **Lumina Portfolio** documentation hub! This is a high-performanc
 
 The documentation is organized into three main sections:
 
+> **📍 [View the Complete Documentation Map](./DOCUMENTATION_MAP.md)** - Visual guide to all documentation
+
 ### 🚀 **[Getting Started](./getting-started/README.md)**
 **New to Lumina Portfolio? Start here!**
 - Quick setup guides

@@ -98,6 +98,8 @@ npm run test
 
 ## 📚 Documentation
 
+> **📍 [Documentation Map](./docs/DOCUMENTATION_MAP.md)** - Complete visual guide to all documentation
+
 La documentation est organisée en trois sections principales :
 
 ### 🚀 [Getting Started](./docs/getting-started/README.md)
