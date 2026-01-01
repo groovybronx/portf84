@@ -10,7 +10,7 @@ import {
 	AlertCircle,
 } from "lucide-react";
 import { Collection } from "../../../shared/types";
-import { Button } from "../../../shared/components/ui";
+import { Button, GlassCard } from "../../../shared/components/ui";
 
 interface CollectionManagerProps {
 	isOpen: boolean;
@@ -71,13 +71,18 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 					/>
 
 					{/* Modal */}
-					<motion.div
-						initial={{ opacity: 0, scale: 0.9, y: 20 }}
-						animate={{ opacity: 1, scale: 1, y: 0 }}
-						exit={{ opacity: 0, scale: 0.9, y: 20 }}
-						transition={{ type: "spring", damping: 25, stiffness: 300 }}
-						className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md glass-surface-lg border border-glass-border z-[var(--z-modal)] p-6 rounded-2xl shadow-2xl"
+					<GlassCard
+						variant="overlay"
+						padding="lg"
+						border
+						className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-[var(--z-modal)] rounded-2xl shadow-2xl"
 					>
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9, y: 20 }}
+							animate={{ opacity: 1, scale: 1, y: 0 }}
+							exit={{ opacity: 0, scale: 0.9, y: 20 }}
+							transition={{ type: "spring", damping: 25, stiffness: 300 }}
+						>
 						{/* Header */}
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -246,7 +251,8 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 							</Button>
 						)}
 					</motion.div>
-				</>
+				</GlassCard>
+			</>
 			)}
 		</AnimatePresence>
 	);
