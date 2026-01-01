@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Icon, IconAction } from "../../../../shared/components/Icon";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex, Stack } from "../../../../shared/components/ui";
 import { Folder as FolderType } from "../../../../shared/types";
 
 interface FolderItemProps {
@@ -25,8 +25,10 @@ export const FolderItem: React.FC<FolderItemProps> = ({
 }) => {
   const { t } = useTranslation("library");
   return (
-    <div
-      className={`group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
+    <Flex
+      align="center"
+      gap="sm"
+      className={`group relative p-2 rounded-lg cursor-pointer transition-all text-sm ${
         isActive
           ? "bg-glass-bg-active text-white border border-glass-border"
           : "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
@@ -47,18 +49,20 @@ export const FolderItem: React.FC<FolderItemProps> = ({
         )}
       </div>
 
-      <div
-        className={`w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light ${iconBgClass}`}
+      <Flex
+        align="center"
+        justify="center"
+        className={`w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-glass-border-light ${iconBgClass}`}
       >
         <Icon action={iconAction} size={16} className={iconColorClass} />
-      </div>
+      </Flex>
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
+        <Flex align="center" gap="sm">
           <p className={`font-medium text-sm truncate ${isActive ? "text-white" : iconColorClass}`}>
             {folder.name}
           </p>
-        </div>
+        </Flex>
         						<span className="text-xs text-secondary-bright/50">
 							{t('itemCount', { count: folder.items.length })}
 						</span>
@@ -78,6 +82,6 @@ export const FolderItem: React.FC<FolderItemProps> = ({
           <Icon action="delete" size={14} />
         </Button>
       )}
-    </div>
+    </Flex>
   );
 };

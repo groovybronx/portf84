@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Plus, Edit2, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SmartCollection } from '../../../services/smartCollectionService';
-import { Button } from '../../../../shared/components/ui';
+import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
 interface SmartCollectionsSectionProps {
 	collections: SmartCollection[];
@@ -25,14 +25,14 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 	const { t } = useTranslation(['library']);
 
 	return (
-		<div className="space-y-2 mt-6">
-			<div className="flex items-center justify-between px-1 mb-2">
-				<div className="flex items-center gap-2">
+		<Stack gap="sm" className="mt-6">
+			<Flex justify="between" align="center" className="px-1 mb-2">
+				<Flex align="center" gap="sm">
 					<Sparkles size={14} className="text-blue-400" />
 					<span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
 						{t('library:smartCollections')}
 					</span>
-				</div>
+				</Flex>
 				<Button
 					variant="glass-icon"
 					size="icon-sm"
@@ -41,21 +41,25 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 				>
 					<Plus size={14} />
 				</Button>
-			</div>
+			</Flex>
 
-			<div className="space-y-1">
+			<Stack gap="xs">
 				{collections.map((c) => (
 					<motion.div
 						key={c.id}
 						layout
-						className={`group flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all ${
+						onClick={() => onSelect(activeId === c.id ? null : c.id)}
+					>
+						<Flex
+							align="center"
+							justify="between"
+							className={`group p-2 rounded-lg cursor-pointer transition-all ${
 							activeId === c.id 
 								? 'bg-blue-500/20 border border-blue-500/30' 
 								: 'hover:bg-white/5 border border-transparent'
 						}`}
-						onClick={() => onSelect(activeId === c.id ? null : c.id)}
 					>
-						<div className="flex items-center gap-3 min-w-0">
+						<Flex align="center" gap="sm" className="min-w-0">
 							<div 
 								className="w-2 h-2 rounded-full shadow-lg" 
 								style={{ backgroundColor: c.color || '#3b82f6', boxShadow: `0 0 8px ${c.color || '#3b82f6'}44` }} 
@@ -63,9 +67,9 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 							<span className={`text-sm truncate ${activeId === c.id ? 'text-blue-200' : 'text-gray-400 group-hover:text-gray-200'}`}>
 								{c.name}
 							</span>
-						</div>
+							</Flex>
 
-						<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+						<Flex align="center" gap="xs" className="opacity-0 group-hover:opacity-100 transition-opacity">
 							<Button
 								variant="glass-icon"
 								size="icon-sm"
@@ -82,7 +86,8 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 							>
 								<Trash2 size={12} />
 							</Button>
-						</div>
+						</Flex>
+						</Flex>
 					</motion.div>
 				))}
 				
@@ -91,7 +96,7 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 						No smart collections yet
 					</div>
 				)}
-			</div>
-		</div>
+			</Stack>
+		</Stack>
 	);
 };

@@ -6,7 +6,7 @@ import { Folder as FolderType, COLOR_PALETTE } from "../../../../shared/types";
 import { getColorName } from "../../../../services/storage/folders";
 import { Icon } from "../../../../shared/components/Icon";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex, Stack } from "../../../../shared/components/ui";
 
 interface ColorFiltersSectionProps {
   folders: FolderType[];
@@ -38,11 +38,11 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
             : "hover:bg-primary/5 border-transparent"
         }`}
       >
-        <div className="flex items-center justify-between">
+        <Flex justify="between" align="center">
           <h3 className="text-secondary-bright/40 uppercase text-[10px] font-bold tracking-widest flex items-center gap-2">
             <Palette size={12} /> {t('colorFiltersTitle')}
           </h3>
-        </div>
+        </Flex>
         <ChevronRight
           size={14}
           className={`transition-transform duration-300 text-primary ${
@@ -59,7 +59,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="space-y-1 pl-2">
+            <Stack gap="xs" className="pl-2">
               {Object.entries(COLOR_PALETTE).map(([key, hex]) => {
                 const colorName = getColorName(hex);
                 // Count items with this color (unique items across all folders)
@@ -130,7 +130,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                   </Button>
                 );
               })}
-            </div>
+            </Stack>
           </motion.div>
         )}
       </AnimatePresence>

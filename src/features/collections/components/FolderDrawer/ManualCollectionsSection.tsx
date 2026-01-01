@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex, Stack } from "../../../../shared/components/ui";
 import { Folder as FolderType, Collection } from "../../../../shared/types";
 import { FolderItem } from "./FolderItem";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
@@ -42,9 +42,11 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
 
   return (
     <div>
-      <div
+      <Flex
+        align="center"
+        justify="between"
         onClick={toggleSection}
-        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer ${
+        className={`group relative w-full mb-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer ${
           isExpanded
             ? "bg-tertiary/10 border-tertiary/20 shadow-lg shadow-tertiary/20" 
             : "hover:bg-tertiary/5 border-transparent"
@@ -54,7 +56,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
           <Icon action={settings.tertiaryIcon} size={14} className="text-tertiary" />
           <span>{t('collections')}</span>
         </p>
-        <div className="flex items-center gap-2">
+        <Flex align="center" gap="sm">
           {selectedCount > 0 && !activeFolderId.has("all") && (
             <span className="text-tertiary text-[10px] bg-tertiary/10 px-2 py-0.5 rounded-full">
               {t('selectedCount', { count: selectedCount })}
@@ -81,10 +83,10 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
               isExpanded ? "rotate-90" : "opacity-50"
             }`}
           />
-        </div>
+        </Flex>
 
 
-      </div>
+      </Flex>
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -98,7 +100,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
                 {t('noCollectionsCreated')}
               </p>
             ) : (
-              <div className="space-y-1 pl-2">
+              <Stack gap="xs" className="pl-2">
                 {folders.map((folder) => (
                   <FolderItem
                     key={folder.id}
@@ -111,7 +113,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
                     iconBgClass="bg-tertiary/10"
                   />
                 ))}
-              </div>
+              </Stack>
             )}
           </motion.div>
         )}
