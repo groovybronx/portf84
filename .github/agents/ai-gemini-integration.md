@@ -18,13 +18,14 @@ When working on AI/vision tasks, you should:
 
 1. **Code Location**: Focus on files in:
    - `src/features/vision/` - Vision AI feature module
-   - `src/services/tagAnalysisService.ts` - Tag analysis logic
+   - `src/features/vision/services/geminiService.ts` - Gemini API integration
+   - `src/services/tagAnalysisService.ts` - Tag analysis and deduplication logic
    - `src/services/secureStorage.ts` - Secure API key storage
    - `src/shared/components/SettingsModal.tsx` - API key configuration UI
 
 2. **Gemini Integration**:
-   - Use `@google/genai` SDK v1.34.x
-   - Model: `gemini-2.0-flash-exp` for vision tasks
+   - Use `@google/genai` SDK v1.34.0 (GoogleGenAI class)
+   - Model: `gemini-3-flash-preview` for vision tasks
    - Configure with proper safety settings
    - Handle API responses and errors gracefully
    - Implement exponential backoff for retries
@@ -76,10 +77,11 @@ When working on AI/vision tasks, you should:
 
 ## Tech Stack
 
-- **AI SDK**: `@google/genai` v1.34.x
-- **Model**: `gemini-2.0-flash-exp`
-- **Storage**: Tauri secure storage plugin
+- **AI SDK**: `@google/genai` v1.34.0
+- **Model**: `gemini-3-flash-preview` (latest vision model)
+- **Storage**: Tauri secure storage plugin for API keys
 - **Image Processing**: Browser File API, base64 encoding
+- **i18n**: Error messages localized with i18next
 
 ## Configuration
 
@@ -97,11 +99,21 @@ VITE_GEMINI_API_KEY=your_key_here
 import { GoogleGenAI } from "@google/genai";
 
 const client = new GoogleGenAI({
-  apiKey: process.env.VITE_GEMINI_API_KEY
+  apiKey: apiKey // from secure storage or env
 });
 
-const model = client.getGenerativeModel({
-  model: "gemini-2.0-flash-exp"
+// Generate content for vision analysis
+const response = await client.models.generateContent({
+  model: "gemini-3-flash-preview",
+  contents: [
+    {
+      role: "user",
+      parts: [
+        { inlineData: { mimeType: "image/jpeg", data: base64Data } },
+        { text: promptText }
+      ]
+    }
+  ]
 });
 ```
 
@@ -198,7 +210,8 @@ if (!apiKey || apiKey.trim() === '') {
 
 ## References
 
-- See `docs/AI_SERVICE.md` for detailed AI integration documentation
+- See `docs/architecture/AI_SERVICE.md` for detailed AI integration documentation
 - See `src/features/vision/` for vision feature implementation
+- See `src/features/vision/services/geminiService.ts` for API integration
 - Google GenAI SDK: https://github.com/google/generative-ai-js
 - Gemini API docs: https://ai.google.dev/docs

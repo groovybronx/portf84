@@ -17,13 +17,14 @@ You are an expert in:
 **Lumina Portfolio** is a native desktop photo gallery application with AI-powered features.
 
 ### Tech Stack
-- **Frontend**: React 19, TypeScript, Tailwind CSS v4, Framer Motion
-- **Backend**: Tauri v2, Rust
-- **Database**: SQLite (via Tauri plugin)
-- **AI**: Google Gemini API (GenAI SDK)
-- **Build Tool**: Vite v6
-- **Testing**: Vitest v4
+- **Frontend**: React 19.2.3, TypeScript 5.8.2, Tailwind CSS v4.1.18, Framer Motion 12.23.26
+- **Backend**: Tauri v2.9.5, Rust 1.77.2
+- **Database**: SQLite (via Tauri plugin-sql 2.3.1)
+- **AI**: Google Gemini API (@google/genai 1.34.0)
+- **Build Tool**: Vite 6.2.0
+- **Testing**: Vitest 4.0.16, React Testing Library 16.3.1
 - **Package Manager**: npm
+- **Internationalization**: i18next 25.7.3, react-i18next 16.5.0
 
 ## Your Responsibilities
 
@@ -34,19 +35,26 @@ When working on architecture tasks, you should:
    portf84/
    ├── .github/              # GitHub configs, workflows, agents
    ├── docs/                 # Technical documentation
+   │   ├── architecture/     # Architecture docs (ARCHITECTURE.md, TAG_SYSTEM_*.md, GIT_WORKFLOW.md)
+   │   ├── features/         # Feature docs (COMPONENTS.md, I18N_GUIDE.md, INTERACTIONS.md)
+   │   ├── AUDIT/            # Audit reports and action plans
+   │   └── project/          # Project docs and knowledge base
    ├── src/                  # Frontend source code
    │   ├── features/         # Feature modules (library, collections, vision, tags, navigation)
    │   ├── services/         # Business logic services
-   │   ├── shared/           # Shared components, hooks, utilities
+   │   │   └── storage/      # Database services (metadata, tags, collections, folders)
+   │   ├── shared/           # Shared components, hooks, utilities, contexts, types
+   │   ├── i18n/             # Internationalization (i18next config, locales)
    │   ├── App.tsx           # Main app component
    │   └── index.tsx         # Entry point
    ├── src-tauri/            # Rust backend
-   │   ├── src/              # Rust source files
-   │   ├── capabilities/     # Tauri permissions
+   │   ├── src/              # Rust source files (lib.rs, main.rs)
+   │   ├── capabilities/     # Tauri permissions (default.json)
    │   ├── icons/            # App icons
    │   ├── Cargo.toml        # Rust dependencies
    │   └── tauri.conf.json   # Tauri configuration
-   ├── tests/                # Test files
+   ├── tests/                # Test files (*.test.ts, *.test.tsx)
+   ├── scripts/              # Build and deployment scripts
    ├── package.json          # Node dependencies & scripts
    ├── tsconfig.json         # TypeScript config
    ├── vite.config.ts        # Vite build config
@@ -66,6 +74,7 @@ When working on architecture tasks, you should:
    - **Smart Search**: Fuzzy search with auto-suggestions
    - **Color Tags**: Quick organization with 6 color categories
    - **Keyboard Navigation**: Full keyboard support for power users
+   - **i18n Support**: Multi-language interface (English, French) with react-i18next
 
 4. **Core Concepts**:
 
@@ -108,21 +117,21 @@ When working on architecture tasks, you should:
 
    # Testing
    npm run test         # Run Vitest tests
-
-   # Utilities
-   npm run tauri:info   # System info
-   npm run tauri:icon   # Generate app icons
    ```
-
-7. **Configuration Files**:
 
    **package.json**: Dependencies and scripts
    ```json
    {
+     "name": "lumina-portfolio",
+     "version": "0.2.0-beta.1",
      "dependencies": {
        "@tauri-apps/api": "^2.9.1",
        "react": "^19.2.3",
-       "@google/genai": "^1.34.0"
+       "@google/genai": "^1.34.0",
+       "i18next": "^25.7.3",
+       "react-i18next": "^16.5.0",
+       "framer-motion": "^12.23.26",
+       "lucide-react": "^0.562.0"
      }
    }
    ```

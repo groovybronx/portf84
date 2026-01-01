@@ -19,7 +19,10 @@ When working on frontend tasks, you should:
 1. **Code Location**: Focus on files in `src/` directory:
    - `src/features/` - Feature-based modules (library, collections, vision, tags, navigation)
    - `src/shared/components/` - Reusable UI components
+   - `src/shared/contexts/` - Global state (LibraryContext, TagContext)
+   - `src/shared/hooks/` - Custom React hooks
    - `src/services/` - Frontend services (storage, AI, loaders)
+   - `src/i18n/` - Internationalization (i18next config and locales)
    - `src/App.tsx` - Main application component
    - `src/index.tsx` - Application entry point
 
@@ -53,25 +56,36 @@ When working on frontend tasks, you should:
 6. **Animations**:
    - Use Framer Motion for smooth transitions
    - Follow existing animation patterns for consistency
-   - Optimize animations (will-change, transform, opacity)
-   - Use proper layout animations to prevent layout thrashing
+7. **Icons**:
+   - Use Lucide React for all icons
+   - Keep icon usage consistent with existing patterns
 
+8. **Internationalization (i18n)**:
+   - Use `useTranslation` hook from react-i18next
+   - Organize translations by namespace (common, tags, settings, library, errors)
+   - Access translations: `t('namespace:key')` or `t('key')` for current namespace
+   - Namespaces are in `src/i18n/locales/{en,fr}/`
+   - Supported languages: English (en), French (fr)
+   - Language detection is automatic via browser settings
+   - See `docs/features/I18N_GUIDE.md` for detailed guide
 7. **Icons**:
    - Use Lucide React for all icons
    - Keep icon usage consistent with existing patterns
 
 ## Tech Stack
 
-- **Framework**: React 19.2.x
-- **Language**: TypeScript 5.8.x
-- **Styling**: Tailwind CSS v4, custom CSS in `index.css`
-- **Animation**: Framer Motion 12.x
-- **Icons**: Lucide React
-- **Virtualization**: @tanstack/react-virtual
+- **Framework**: React 19.2.3
+- **Language**: TypeScript 5.8.2
+- **Styling**: Tailwind CSS v4.1.18, custom CSS in `index.css`
+- **Animation**: Framer Motion 12.23.26
+- **Icons**: Lucide React 0.562.0
+- **Virtualization**: @tanstack/react-virtual 3.13.13
+- **i18n**: i18next 25.7.3, react-i18next 16.5.0, i18next-browser-languagedetector 8.2.0
 - **Utilities**: 
-  - `clsx` for conditional classes
-  - `tailwind-merge` for merging Tailwind classes
-  - `fuse.js` for fuzzy search
+  - `clsx` 2.1.1 for conditional classes
+  - `tailwind-merge` 3.4.0 for merging Tailwind classes
+  - `fuse.js` 7.0.0 for fuzzy search
+  - `nanoid` 5.1.6 for unique ID generation
 
 ## Build Commands
 
@@ -112,13 +126,14 @@ feature-name/
 - Lazy loading images with loading states
 - Memoized expensive computations
 - Code splitting for vendor dependencies
+## References
 
-### State Structure
-```typescript
-interface LibraryState {
-  items: PortfolioItem[];
-  folders: Folder[];
-  selectedItems: Set<string>;
+- See `docs/features/COMPONENTS.md` for component documentation
+- See `docs/features/INTERACTIONS.md` for keyboard shortcuts and interactions
+- See `docs/features/I18N_GUIDE.md` for internationalization guide
+- See `docs/architecture/ARCHITECTURE.md` for overall architecture
+- TypeScript config in `tsconfig.json`
+- Vite config in `vite.config.ts`
   focusedIndex: number;
   // ... more state
 }

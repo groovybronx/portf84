@@ -8,9 +8,10 @@ Lumina Portfolio is a **Local-First** desktop photo gallery application built wi
 
 - **Frontend**: React 19, TypeScript, Tailwind CSS v4, Vite
 - **Backend**: Tauri v2 (Rust), SQLite
-- **AI**: Google Gemini API
+- **AI**: Google Gemini API (@google/genai)
 - **Testing**: Vitest, React Testing Library
 - **UI Libraries**: Framer Motion, Lucide React, TanStack Virtual
+- **i18n**: i18next, react-i18next (English, French)
 
 ---
 
@@ -178,7 +179,9 @@ src/
   │   ├── hooks/          # Custom hooks
   │   ├── types/          # TypeScript types
   │   └── utils/          # Utility functions
-  └── services/           # Business logic and external services
+  ├── services/           # Business logic and external services
+  │   └── storage/        # Database services (metadata, tags, collections)
+  └── i18n/               # Internationalization (locales, config)
 ```
 
 ### Context Split Pattern
@@ -187,11 +190,13 @@ For performance, split contexts into state and dispatch:
 const LibraryStateContext = createContext<State>();
 const LibraryDispatchContext = createContext<Dispatch>();
 ```
-This prevents unnecessary re-renders when only actions are needed.
-
 ### Service Layer
-- `geminiService.ts`: AI image analysis
-- `libraryLoader.ts`: File system scanning and image loading
+- `features/vision/services/geminiService.ts`: AI image analysis (Gemini API)
+- `services/libraryLoader.ts`: File system scanning and image loading
+- `services/storage/`: SQLite database operations (metadata, tags, collections, folders)
+- `services/tagAnalysisService.ts`: Tag deduplication and similarity analysis
+- `services/secureStorage.ts`: Secure API key storage
+- Keep services pure and testable - no React dependenciesing
 - `storageService.ts`: SQLite database operations (CRUD)
 - Keep services pure and testable - no React dependencies
 
@@ -235,11 +240,14 @@ This prevents unnecessary re-renders when only actions are needed.
 
 ### Code Comments
 - Comment **why**, not **what** (code should be self-explanatory)
-- Use JSDoc for public APIs and complex functions
-- Document edge cases and gotchas
-- Keep comments concise and up-to-date
-
 ### Documentation Files
+- Architecture docs: `/docs/architecture/` (ARCHITECTURE.md, TAG_SYSTEM_ARCHITECTURE.md, etc.)
+- Feature docs: `/docs/features/` (COMPONENTS.md, I18N_GUIDE.md, INTERACTIONS.md, etc.)
+- Project docs: `/docs/project/` (CHANGELOG.md, bonne-pratique.md, KnowledgeBase/)
+- Audit reports: `/docs/AUDIT/`
+- User-facing docs: README.md
+- Use Markdown for all documentation
+- Include code examples where helpful
 - Technical docs: `/docs` directory (ARCHITECTURE.md, COMPONENTS.md, etc.)
 - User-facing docs: README.md
 - Use Markdown for all documentation
@@ -283,10 +291,19 @@ This prevents unnecessary re-renders when only actions are needed.
 - Use Framer Motion for modal animations
 
 ### Selection Pattern
-- Multi-select with Shift+Click for range selection
-- Cmd/Ctrl+Click for individual item toggle
-- Visual feedback for selected items
+### AI Batch Processing
+- Use `useVision` hook for analyzing single images
+- Show progress with visual feedback components
+- Allow cancellation of long-running operations
+- Handle rate limits and API errors gracefully
 
+### Internationalization (i18n)
+- Use `useTranslation` hook from react-i18next
+- Organize translations by namespace: `common`, `tags`, `settings`, `library`, `errors`
+- Access translations: `t('namespace:key')` or `t('key', { ns: 'namespace' })`
+- Supported languages: English (en), French (fr)
+- Language auto-detection via browser settings
+- All user-facing strings must be translatable
 ### AI Batch Processing
 - Use `useBatchAI` hook for processing multiple images
 - Show progress with UnifiedProgress component
@@ -299,16 +316,30 @@ This prevents unnecessary re-renders when only actions are needed.
 
 ---
 
-## Version Control
-
-### Commit Messages
-- Use clear, descriptive messages
-- Optionally use conventional commits (feat:, fix:, docs:, etc.)
-- Reference issue numbers when applicable
-
+### Key Dependencies
+- React 19.2.3 / React DOM 19.2.3
+- TypeScript ~5.8.2
+- Tailwind CSS 4.1.18
+- Tauri 2.9.5 (@tauri-apps/api 2.9.1, @tauri-apps/cli 2.1.0)
+- Vite 6.2.0
+- Vitest 4.0.16
+- Framer Motion 12.23.26
+- Lucide React 0.562.0
+- @google/genai 1.34.0
+- i18next 25.7.3 / react-i18next 16.5.0
+- @tanstack/react-virtual 3.13.13
+- fuse.js 7.0.0
+- nanoid 5.1.6
 ### Branch Strategy
-- Keep branches focused on single features or fixes
-- Delete branches after merging
+### Useful Aliases
+- `@/*` → `./*` (root-level imports, including src/)
+
+### Important Conventions
+- Path alias resolves to project root, not just src/
+- Use tabs for indentation (not spaces)
+- Double quotes for strings
+- Semicolons at end of statements
+- Feature-based architecture with barrel exports (index.ts)fter merging
 - Regularly sync with main branch
 
 ---

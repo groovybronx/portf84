@@ -69,14 +69,19 @@ CREATE TABLE metadata (
   aiTagsDetailed TEXT,
   colorTag TEXT,
   manualTags TEXT,
+  isHidden INTEGER DEFAULT 0,
   lastModified INTEGER NOT NULL,
   FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE SET NULL
 );
 
--- Tags (normalized)
+-- Normalized tags (source of truth)
 CREATE TABLE tags (
   id TEXT PRIMARY KEY,
-  name TEXT UNIQUE NOT NULL
+  name TEXT NOT NULL,
+  normalizedName TEXT NOT NULL,
+  type TEXT NOT NULL CHECK(type IN ('ai', 'manual', 'ai_detailed')),
+  confidence REAL,
+  createdAt INTEGER NOT NULL
 );
 
 -- Item-Tag relationship
@@ -84,6 +89,26 @@ CREATE TABLE item_tags (
   itemId TEXT NOT NULL,
   tagId TEXT NOT NULL,
   PRIMARY KEY (itemId, tagId),
+  FOREIGN KEY (tagId) REFERENCES tags(id) ON DELETE CASCADE
+);
+
+-- Tag merges history
+CREATE TABLE tag_merges (
+  id TEXT PRIMARY KEY,
+  sourceTagId TEXT NOT NULL,
+  targetTagId TEXT NOT NULL,
+  mergedAt INTEGER NOT NULL,
+  mergedBy TEXT,
+  FOREIGN KEY (sourceTagId) REFERENCES tags(id) ON DELETE CASCADE,
+  FOREIGN KEY (targetTagId) REFERENCES tags(id) ON DELETE CASCADE
+);
+
+-- Tag aliases
+CREATE TABLE tag_aliases (
+  id TEXT PRIMARY KEY,
+  tagId TEXT NOT NULL,
+  alias TEXT NOT NULL,
+  createdAt INTEGER NOT NULL,
   FOREIGN KEY (tagId) REFERENCES tags(id) ON DELETE CASCADE
 );
 ```
@@ -94,6 +119,11 @@ CREATE INDEX idx_metadata_collectionId ON metadata(collectionId);
 CREATE INDEX idx_metadata_virtualFolderId ON metadata(virtualFolderId);
 CREATE INDEX idx_virtual_folders_sourceFolderId ON virtual_folders(sourceFolderId);
 CREATE INDEX idx_collection_folders_collectionId ON collection_folders(collectionId);
+CREATE UNIQUE INDEX idx_tags_normalized ON tags(normalizedName, type);
+CREATE INDEX idx_item_tags_itemId ON item_tags(itemId);
+CREATE INDEX idx_item_tags_tagId ON item_tags(tagId);
+CREATE INDEX idx_tag_aliases_tagId ON tag_aliases(tagId);
+CREATE UNIQUE INDEX idx_tag_aliases_unique ON tag_aliases(alias, tagId);
 ```
 
 4. **Best Practices**:
@@ -118,11 +148,11 @@ CREATE INDEX idx_collection_folders_collectionId ON collection_folders(collectio
    - Full-text search capabilities where needed
 
 7. **Migrations**:
-   - Schema changes must be backward compatible
-   - Add new columns with DEFAULT values
-   - Create indexes after schema changes
-   - Test migrations with existing data
+## Tech Stack
 
+- **Database**: SQLite (via `tauri-plugin-sql` 2.3.1)
+- **Language**: TypeScript for service layer
+- **Integration**: Tauri SQL plugin with SQLite feature enabled
 ## Tech Stack
 
 - **Database**: SQLite (via `@tauri-apps/plugin-sql`)
@@ -173,11 +203,13 @@ const query = `
 ```typescript
 const query = `
   INSERT OR REPLACE INTO metadata 
-  (id, collectionId, aiTags, lastModified) 
-  VALUES (?, ?, ?, ?)
-`;
-```
+## References
 
+- See `docs/architecture/ARCHITECTURE.md` for complete schema and data flows
+- See `docs/architecture/TAG_SYSTEM_ARCHITECTURE.md` for tag system details
+- See `src/services/storage/index.ts` for service API
+- See `src/services/storage/db.ts` for schema initialization
+- Tauri SQL plugin: https://tauri.app/plugin/sql
 ## References
 
 - See `docs/ARCHITECTURE.md` for complete schema and data flows
