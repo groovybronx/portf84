@@ -1,0 +1,132 @@
+{
+	"version": "1.0.0",
+	"description": "GitHub Copilot configuration for Lumina Portfolio",
+	"project": {
+		"name": "Lumina Portfolio",
+		"type": "desktop-app",
+		"tech_stack": {
+			"frontend": ["React 19", "TypeScript", "Tailwind CSS v4", "Vite"],
+			"backend": ["Tauri v2", "Rust"],
+			"database": ["SQLite"],
+			"testing": ["Vitest", "React Testing Library"],
+			"ai": ["Google Gemini API"]
+		},
+		"architecture": "feature-based"
+	},
+	"copilot": {
+		"instructions_file": ".github/copilot-instructions.md",
+		"rules_file": ".github/copilot-rules.json",
+		"rules_directory": ".github/copilot/",
+		"enabled": true
+	},
+	"conventions": {
+		"indentation": "tabs",
+		"quotes": "double",
+		"semicolons": true,
+		"line_length": 100,
+		"naming": {
+			"components": "PascalCase",
+			"functions": "camelCase",
+			"constants": "UPPER_SNAKE_CASE",
+			"files": "PascalCase for components, camelCase for others"
+		},
+		"imports": {
+			"order": ["react", "external", "internal"],
+			"alias": "@/ for src/",
+			"style": "named exports preferred"
+		}
+	},
+	"file_patterns": {
+		"typescript_react": ["**/*.ts", "**/*.tsx"],
+		"rust_tauri": ["src-tauri/**/*.rs"],
+		"tests": ["**/*.test.ts", "**/*.test.tsx", "tests/**"],
+		"styles": ["**/*.css"],
+		"config": ["*.config.ts", "*.config.js", "tsconfig.json"]
+	},
+	"key_concepts": [
+		"Local-first architecture",
+		"Feature-based code organization",
+		"Context API with split contexts",
+		"Type-safe development",
+		"Accessibility-first design",
+		"Security by default",
+		"Performance optimization"
+	],
+	"common_patterns": {
+		"react_component": {
+			"template": "React.FC with typed props interface",
+			"example": "export const Component: React.FC<Props> = ({ prop }) => { ... }"
+		},
+		"custom_hook": {
+			"template": "Use prefix 'use', return object with values and setters",
+			"example": "export const useCustomHook = () => { ... }"
+		},
+		"tauri_command": {
+			"template": "#[command] fn name(params) -> Result<T, String>",
+			"example": "#[command] fn get_data(id: String) -> Result<Data, String>"
+		},
+		"context_provider": {
+			"template": "Split state and dispatch contexts",
+			"example": "StateContext and DispatchContext with separate providers"
+		}
+	},
+	"security": {
+		"api_keys": "Use environment variables only",
+		"input_validation": "Always validate user inputs",
+		"sql_queries": "Use prepared statements",
+		"file_paths": "Validate and sanitize paths",
+		"error_messages": "Don't expose internal details"
+	},
+	"testing": {
+		"framework": "Vitest",
+		"component_testing": "React Testing Library",
+		"pattern": "AAA (Arrange, Act, Assert)",
+		"coverage": "Unit tests for business logic, integration tests for features",
+		"mocking": "Mock external dependencies (Tauri, APIs)"
+	},
+	"performance": {
+		"react": ["React.memo", "useMemo", "useCallback", "context splitting"],
+		"images": ["Lazy loading", "Intersection Observer", "Tauri asset protocol"],
+		"virtualization": "@tanstack/react-virtual for long lists",
+		"code_splitting": "Lazy load features and heavy components"
+	},
+	"accessibility": {
+		"semantic_html": true,
+		"aria_labels": "Required for icon buttons",
+		"keyboard_navigation": "Full support required",
+		"screen_readers": "Test with VoiceOver/NVDA",
+		"color_contrast": "WCAG AA minimum"
+	},
+	"documentation": {
+		"comments": "Explain why, not what",
+		"jsdoc": "Use for public APIs",
+		"readme": "Keep updated with examples",
+		"architecture_docs": "Maintain in /docs directory"
+	},
+	"git": {
+		"branches": "feature/, fix/, docs/",
+		"commits": "Clear, descriptive messages",
+		"pr_template": "Use template in .github/",
+		"code_owners": "Defined in .github/CODEOWNERS"
+	},
+	"build": {
+		"dev": "npm run tauri:dev",
+		"build": "npm run tauri:build",
+		"test": "npm run test",
+		"frontend_only": "npm run dev"
+	},
+	"environment": {
+		"variables": {
+			"VITE_GEMINI_API_KEY": "Gemini API key for AI features"
+		},
+		"files": {
+			".env.local": "Local environment variables (gitignored)",
+			".env.example": "Template with dummy values"
+		}
+	},
+	"dependencies": {
+		"update_strategy": "Regular updates with testing",
+		"security_audits": "Run npm audit regularly",
+		"version_pinning": "Exact versions for critical dependencies"
+	}
+}
