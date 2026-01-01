@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Merge, RefreshCw, Tag as TagIcon, ArrowRight, ArrowLeftRight, History } from 'lucide-react';
+import { X, Merge, RefreshCw, Tag as TagIcon, ArrowLeftRight, History } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { analyzeTagRedundancy, TagGroup } from '../../../services/tagAnalysisService';
 import { mergeTags } from '../../../services/storage/tags';
