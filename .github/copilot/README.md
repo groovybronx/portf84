@@ -122,11 +122,36 @@ Use `@workspace` in Copilot Chat to ensure it has full context:
 3. **Update this README**
    - Document the new ruleset
 
+4. **Validate your changes**
+   ```bash
+   ./scripts/maintain-github-config.sh
+   ```
+
 ### Modifying Existing Rules
 
 1. Edit the relevant `.md` file
 2. Update `copilot-rules.json` if patterns change
-3. Test suggestions after changes
+3. Run validation: `./scripts/maintain-github-config.sh`
+4. Test suggestions after changes
+
+### Maintenance Tools
+
+A maintenance script is available to validate and check configuration health:
+
+```bash
+# Check configuration
+./scripts/maintain-github-config.sh
+
+# Interactive fix mode
+./scripts/maintain-github-config.sh --fix
+
+# Show help
+./scripts/maintain-github-config.sh --help
+```
+
+**Full Documentation**: 
+- [Maintenance Guide](../MAINTENANCE_GUIDE.md) - Complete maintenance procedures
+- [Quick Reference](../QUICK_REFERENCE.md) - Quick commands and tips
 
 ## 📖 Examples
 
