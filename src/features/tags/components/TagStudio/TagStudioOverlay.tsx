@@ -20,12 +20,16 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 	const [tags, setTags] = useState<TagWithUsage[]>([]);
 	// ... existing state
 
+	// Constants for smart collection name truncation
+	const MAX_COLLECTION_NAME_LENGTH = 30;
+	const TRUNCATED_NAME_LENGTH = 27;
+
 	const handleCreateSmartCollection = async () => {
 		if (selectedTagIds.size === 0 || !activeCollection) return;
 		
 		const selectedTags = tags.filter(t => selectedTagIds.has(t.id));
 		const rawName = selectedTags.map(t => t.name).join(' + ');
-		const name = rawName.length > 30 ? `${rawName.substring(0, 27)}...` : rawName;
+		const name = rawName.length > MAX_COLLECTION_NAME_LENGTH ? `${rawName.substring(0, TRUNCATED_NAME_LENGTH)}...` : rawName;
 		
 		const rules = selectedTags.map(tag => ({
 			id: nanoid(),
