@@ -70,11 +70,20 @@ offer_fix() {
 		echo ""
 		read -p "  Would you like to fix this? (y/n): " -r
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
-			eval "$fix_command"
-			if [ $? -eq 0 ]; then
+			# Capture both stdout and stderr from the fix command for better diagnostics
+			local fix_output
+			fix_output=$(eval "$fix_command" 2>&1)
+			local fix_status=$?
+			if [ "$fix_status" -eq 0 ]; then
 				echo -e "  ${GREEN}✓${NC} Fixed: $description"
 			else
-				echo -e "  ${RED}✗${NC} Failed to fix: $description"
+				echo -e "  ${RED}✗${NC} Failed to fix: $description (exit code: $fix_status)"
+				if [ -n "$fix_output" ]; then
+					echo "    Command: $fix_command"
+					echo "    Output:"
+					# Indent the captured output for readability
+					printf '      %s\n' "$fix_output"
+				fi
 			fi
 		fi
 	fi
@@ -292,12 +301,12 @@ if [ -f ".github/copilot-instructions.md" ] && [ -f ".github/copilot-rules.json"
 	if [ -n "$RULE_NAMES" ]; then
 		check_passed "Successfully extracted rule names from copilot-rules.json"
 		
-		# Check if key terms from instructions exist in rules
-		if grep -q "TypeScript" .github/copilot-instructions.md && echo "$RULE_NAMES" | grep -q "typescript"; then
+		# Check if key terms from instructions exist in rules (case-insensitive)
+		if grep -qi "TypeScript" .github/copilot-instructions.md && echo "$RULE_NAMES" | grep -qi "typescript"; then
 			check_passed "TypeScript conventions are documented in both files"
 		fi
 		
-		if grep -q "Rust" .github/copilot-instructions.md && echo "$RULE_NAMES" | grep -q "rust"; then
+		if grep -qi "Rust" .github/copilot-instructions.md && echo "$RULE_NAMES" | grep -qi "rust"; then
 			check_passed "Rust conventions are documented in both files"
 		fi
 	fi
@@ -305,16 +314,14 @@ fi
 
 # Check if agent files are referenced in agents/README.md
 if [ -f ".github/agents/README.md" ]; then
-	AGENT_MD_FILES=$(find .github/agents -name "*.md" -not -name "README.md" -type f)
-	
-	for agent_file in $AGENT_MD_FILES; do
+	while IFS= read -r -d '' agent_file; do
 		BASENAME=$(basename "$agent_file")
 		if grep -q "$BASENAME" .github/agents/README.md; then
 			check_passed "Agent $BASENAME is documented in README"
 		else
 			check_warning "Agent $BASENAME is not referenced in README"
 		fi
-	done
+	done < <(find .github/agents -name "*.md" -not -name "README.md" -type f -print0)
 fi
 
 # Summary Report
