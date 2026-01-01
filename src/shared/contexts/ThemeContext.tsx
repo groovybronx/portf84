@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import type { IconAction } from "../components/Icon";
+import { STORAGE_KEYS } from "../constants/storage";
 
 interface ThemeSettings {
   glassBg: string;
@@ -46,19 +47,18 @@ const defaultSettings: ThemeSettings = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState<ThemeSettings>(defaultSettings);
-
-  // Load from local storage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("lumina_theme");
+  // Load from local storage on mount (lazy initialization)
+  const [settings, setSettings] = useState<ThemeSettings>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.THEME);
     if (saved) {
       try {
-        setSettings({ ...defaultSettings, ...JSON.parse(saved) });
+        return { ...defaultSettings, ...JSON.parse(saved) };
       } catch (e) {
         console.error("Failed to parse theme settings", e);
       }
     }
-  }, []);
+    return defaultSettings;
+  });
 
   // Apply to CSS variables whenever settings change
   useEffect(() => {
@@ -76,7 +76,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // E.g. Accent is usually lighter than Bg
     // For now we just stick to the main overrides.
     
-    localStorage.setItem("lumina_theme", JSON.stringify(settings));
+    localStorage.setItem(STORAGE_KEYS.THEME, JSON.stringify(settings));
   }, [settings]);
 
   const updateSetting = (key: keyof ThemeSettings, value: string) => {

@@ -37,9 +37,9 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
 
   return (
     <div>
-      <button
+      <div
         onClick={toggleSection}
-        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer ${
           isExpanded
             ? "bg-quaternary/10 border-quaternary/20 shadow-lg shadow-quaternary/20"
             : "hover:bg-quaternary/5 border-transparent"
@@ -80,7 +80,7 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
             }`}
           />
 
-      </button>
+      </div>
 
 
       <AnimatePresence>
