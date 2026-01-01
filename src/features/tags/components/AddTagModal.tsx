@@ -138,6 +138,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
             </form>
           </motion.div>
         </GlassCard>
+          </div>
       )}
     </AnimatePresence>
   );
