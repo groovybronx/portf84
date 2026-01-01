@@ -87,33 +87,9 @@ BRANCH_NAME="release/v$NEW_VERSION"
 echo "🌱 Creating branch: $BRANCH_NAME..."
 git checkout -b "$BRANCH_NAME"
 
-# Update version in package.json and package-lock.json (if exists)
-echo "📝 Updating version in package.json..."
-
-# Use portable sed in-place editing (GNU vs BSD/macOS)
-if sed --version 2>/dev/null | grep -qi "gnu"; then
-	sed -i "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package.json
-else
-	sed -i '' "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package.json
-fi
-
-# Stage the version change (include package-lock.json if it exists)
-if [ -f package-lock.json ]; then
-	# Update package-lock.json as well
-	if sed --version 2>/dev/null | grep -qi "gnu"; then
-		sed -i "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package-lock.json
-	else
-		sed -i '' "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package-lock.json
-	fi
-	git add package.json package-lock.json
-else
-	git add package.json
-fi
-
-# Commit version bump
-echo "💾 Committing version bump..."
-git commit -m "chore: Bump version to $NEW_VERSION"
-
+# Update version, create commit, but don't create a tag
+echo "📝 Bumping version and committing..."
+npm version "$NEW_VERSION" --no-git-tag-version --message "chore: Bump version to %s"
 # Push the new branch
 echo "📤 Pushing branch to remote..."
 git push -u origin "$BRANCH_NAME"
