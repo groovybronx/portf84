@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Plus, Edit2, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SmartCollection } from '../../../services/smartCollectionService';
+import { Button } from '../../../../shared/components/ui';
 
 interface SmartCollectionsSectionProps {
 	collections: SmartCollection[];
@@ -32,12 +33,14 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 						{t('library:smartCollections')}
 					</span>
 				</div>
-				<button 
+				<Button
+					variant="glass-icon"
+					size="icon-sm"
 					onClick={onCreate}
-					className="p-1 hover:bg-white/5 rounded text-gray-400 hover:text-blue-400 transition-colors"
+					aria-label="Create smart collection"
 				>
 					<Plus size={14} />
-				</button>
+				</Button>
 			</div>
 
 			<div className="space-y-1">
@@ -63,18 +66,22 @@ export const SmartCollectionsSection: React.FC<SmartCollectionsSectionProps> = (
 						</div>
 
 						<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-							<button
+							<Button
+								variant="glass-icon"
+								size="icon-sm"
 								onClick={(e) => { e.stopPropagation(); onEdit(c); }}
-								className="p-1.5 hover:bg-white/10 rounded text-gray-500 hover:text-white transition-colors"
+								className="hover:bg-white/10"
 							>
 								<Edit2 size={12} />
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="glass-icon"
+								size="icon-sm"
 								onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}
-								className="p-1.5 hover:bg-red-500/10 rounded text-gray-500 hover:text-red-400 transition-colors"
+								className="hover:bg-red-500/10 hover:text-red-400"
 							>
 								<Trash2 size={12} />
-							</button>
+							</Button>
 						</div>
 					</motion.div>
 				))}

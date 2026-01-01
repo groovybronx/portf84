@@ -6,12 +6,13 @@ import { Folder as FolderType, COLOR_PALETTE } from "../../../../shared/types";
 import { getColorName } from "../../../../services/storage/folders";
 import { Icon } from "../../../../shared/components/Icon";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
+import { Button } from "../../../../shared/components/ui";
 
 interface ColorFiltersSectionProps {
   folders: FolderType[];
   activeColorFilter?: string | null;
   onColorFilterChange?: (color: string | null) => void;
-  onSelectFolder: (id: string) => void; // To reset to 'all' when picking boolean
+  onSelectFolder: (id: string) => void; // To reset to 'all' when picking color
 }
 
 export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
@@ -28,9 +29,10 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
 
   return (
     <div>
-      <button
+      <Button
+        variant="ghost"
         onClick={toggleSection}
-        className={`w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        className={`w-full justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
           isExpanded
             ? "bg-primary/10 border-primary/20 shadow-[0_0_15px_-5px_var(--color-primary)]"
             : "hover:bg-primary/5 border-transparent"
@@ -47,7 +49,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
             isExpanded ? "rotate-90" : "opacity-50"
           }`}
         />
-      </button>
+      </Button>
 
       <AnimatePresence>
         {isExpanded && (
@@ -72,8 +74,9 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                 const isActive = activeColorFilter === hex;
 
                 return (
-                  <button
+                  <Button
                     key={hex}
+                    variant="ghost"
                     onClick={() => {
                       if (onColorFilterChange) {
                         if (isActive) {
@@ -84,7 +87,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                         }
                       }
                     }}
-                    className={`w-full group relative flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm ${
+                    className={`w-full group relative justify-start gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm h-auto ${
                       isActive
                         ? "bg-glass-bg-active text-white border border-glass-border"
                         : "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
@@ -124,7 +127,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                       </p>
                       <p className="text-xs opacity-60">{count} {t('items')}</p>
                     </div>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
