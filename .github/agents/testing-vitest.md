@@ -28,11 +28,16 @@ When working on testing tasks, you should:
    - Follow existing test patterns and naming
 
 3. **Test Files**:
+   - `tests/App.test.tsx` - Main app component tests
+   - `tests/ErrorBoundary.test.tsx` - Error boundary component tests
    - `tests/useKeyboardShortcuts.test.ts` - Keyboard navigation tests
    - `tests/useItemActions.test.ts` - Item action tests
    - `tests/geminiService.test.ts` - AI service tests
+   - `tests/geminiErrors.test.ts` - AI error handling tests
    - `tests/fileHelpers.test.ts` - File system helpers tests
-   - `tests/ErrorBoundary.test.tsx` - Error boundary component tests
+   - `tests/tagSystem.test.ts` - Tag system tests
+   - `tests/tagStorage.test.ts` - Tag storage tests
+   - `tests/tagAnalysis.test.ts` - Tag analysis tests
 
 4. **Testing Patterns**:
    ```typescript
@@ -74,9 +79,9 @@ When working on testing tasks, you should:
    ```typescript
    vi.mock('@google/genai', () => ({
      GoogleGenAI: vi.fn(() => ({
-       getGenerativeModel: vi.fn(() => ({
+       models: {
          generateContent: vi.fn()
-       }))
+       }
      }))
    }));
    ```
@@ -115,11 +120,12 @@ When working on testing tasks, you should:
 
 ## Tech Stack
 
-- **Testing Framework**: Vitest v4.x
-- **React Testing**: @testing-library/react v16.x
-- **DOM Testing**: @testing-library/dom v10.x
-- **Matchers**: @testing-library/jest-dom v6.x
-- **Environment**: jsdom for DOM simulation
+- **Testing Framework**: Vitest 4.0.16
+- **React Testing**: @testing-library/react 16.3.1
+- **DOM Testing**: @testing-library/dom 10.4.1
+- **Matchers**: @testing-library/jest-dom 6.9.1
+- **Environment**: jsdom 27.3.0 for DOM simulation
+- **Node Types**: @types/node 22.14.0
 
 ## Test Commands
 
@@ -127,11 +133,14 @@ When working on testing tasks, you should:
 # Run all tests
 npm run test
 
-# Run tests in watch mode
-npm run test:watch  # (if configured)
+# Run specific test file
+npx vitest run tests/geminiService.test.ts
 
-# Run with coverage
-npm run test:coverage  # (if configured)
+# Run tests in watch mode (if configured)
+npx vitest watch
+
+# Run with coverage (if configured)
+npx vitest --coverage
 ```
 
 ## Testing Best Practices

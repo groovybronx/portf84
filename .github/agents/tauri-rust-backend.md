@@ -50,14 +50,20 @@ When working on backend tasks, you should:
 
 ## Tech Stack
 
-- **Framework**: Tauri v2.x
-- **Language**: Rust (stable)
+- **Framework**: Tauri v2.9.5
+- **Language**: Rust 1.77.2 (stable)
 - **Plugins**: 
-  - `@tauri-apps/plugin-fs` for file system
-  - `@tauri-apps/plugin-sql` for SQLite
-  - `@tauri-apps/plugin-dialog` for native dialogs
-  - `@tauri-apps/plugin-os` for OS info
-  - `@tauri-apps/plugin-process` for process management
+  - `tauri-plugin-fs` 2.4.4 for file system operations
+  - `tauri-plugin-sql` 2.3.1 for SQLite database
+  - `tauri-plugin-dialog` 2.4.2 for native dialogs
+  - `tauri-plugin-os` 2.3.2 for OS information
+  - `tauri-plugin-process` 2.3.1 for process management
+  - `tauri-plugin-log` 2 for logging
+- **Additional Dependencies**:
+  - `serde` 1.0 for serialization
+  - `serde_json` 1.0 for JSON handling
+  - `log` 0.4 for logging
+  - `imagesize` 0.12 for image metadata
 
 ## Build Commands
 
@@ -81,6 +87,7 @@ npm run tauri:info
 
 ## References
 
-- See `docs/ARCHITECTURE.md` for database schema and data flows
+- See `docs/architecture/ARCHITECTURE.md` for database schema and data flows
 - Check `src-tauri/capabilities/default.json` for current permissions
-- Tauri documentation: https://tauri.app/v2/
+- Tauri v2 documentation: https://tauri.app/v2/
+- Rust edition: 2021
