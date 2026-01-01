@@ -125,6 +125,23 @@ Ce projet inclut une configuration complète pour GitHub Copilot avec des règle
 
 Consultez [`.github/copilot/README.md`](/.github/copilot/README.md) pour plus d'informations sur l'utilisation de ces règles.
 
+#### 🔧 Maintenance de la Configuration
+
+Un script de maintenance est disponible pour valider et maintenir la configuration GitHub :
+
+```bash
+# Valider la configuration
+./scripts/maintain-github-config.sh
+
+# Mode interactif avec corrections
+./scripts/maintain-github-config.sh --fix
+```
+
+**Documentation :**
+- [Guide de Maintenance](/.github/MAINTENANCE_GUIDE.md) - Procédures complètes
+- [Référence Rapide](/.github/QUICK_REFERENCE.md) - Commandes essentielles
+- [Agents Copilot](/.github/agents/README.md) - Agents experts par domaine
+
 ---
 
 ## 📄 License
