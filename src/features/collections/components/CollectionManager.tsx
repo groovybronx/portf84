@@ -10,6 +10,7 @@ import {
 	AlertCircle,
 } from "lucide-react";
 import { Collection } from "../../../shared/types";
+import { Button, GlassCard } from "../../../shared/components/ui";
 
 interface CollectionManagerProps {
 	isOpen: boolean;
@@ -66,29 +67,35 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={onClose}
-						className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
+						className="fixed inset-0 bg-black/60 z-[var(--z-drawer-overlay)] backdrop-blur-sm"
 					/>
 
 					{/* Modal */}
-					<motion.div
-						initial={{ opacity: 0, scale: 0.9, y: 20 }}
-						animate={{ opacity: 1, scale: 1, y: 0 }}
-						exit={{ opacity: 0, scale: 0.9, y: 20 }}
-						transition={{ type: "spring", damping: 25, stiffness: 300 }}
-						className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md glass-surface-lg border border-glass-border z-(--z-modal) p-6 rounded-2xl shadow-2xl"
+					<GlassCard
+						variant="overlay"
+						padding="lg"
+						border
+						className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-[var(--z-modal)] rounded-2xl shadow-2xl"
 					>
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9, y: 20 }}
+							animate={{ opacity: 1, scale: 1, y: 0 }}
+							exit={{ opacity: 0, scale: 0.9, y: 20 }}
+							transition={{ type: "spring", damping: 25, stiffness: 300 }}
+						>
 						{/* Header */}
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-xl font-bold text-white flex items-center gap-2">
 								<Folder className="text-primary" />
 								{t('library:myProjects')}
 							</h2>
-							<button
+							<Button
+								variant="close"
+								size="icon"
 								onClick={onClose}
-								className="p-2 hover:bg-glass-bg-accent rounded-full text-gray-400 hover:text-white transition-colors"
 							>
 								<X size={20} />
-							</button>
+							</Button>
 						</div>
 
 						{/* Collections List */}
@@ -142,15 +149,17 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 
 											{/* Delete Button */}
 											{!isActive && (
-												<button
+												<Button
+													variant="glass-icon"
+													size="icon-sm"
 													onClick={(e) => {
 														e.stopPropagation();
 														setDeleteConfirm(collection.id);
 													}}
-													className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-all shrink-0"
+													className="opacity-0 group-hover:opacity-100 hover:bg-red-500/20 hover:text-red-400"
 												>
 													<Trash2 size={16} />
-												</button>
+												</Button>
 											)}
 
 											{/* Delete Confirmation */}
@@ -164,24 +173,28 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 													<span className="text-xs text-red-400 font-medium">
 														{t('common:confirm')}
 													</span>
-													<button
+													<Button
+														variant="ghost"
+														size="sm"
 														onClick={(e) => {
 															e.stopPropagation();
 															handleDelete(collection.id);
 														}}
-														className="text-xs text-red-400 hover:text-red-300 underline"
+														className="text-xs text-red-400 hover:text-red-300 underline h-auto py-0"
 													>
 														{t('common:yes')}
-													</button>
-													<button
+													</Button>
+													<Button
+														variant="ghost"
+														size="sm"
 														onClick={(e) => {
 															e.stopPropagation();
 															setDeleteConfirm(null);
 														}}
-														className="text-xs text-gray-400 hover:text-white underline"
+														className="text-xs text-gray-400 hover:text-white underline h-auto py-0"
 													>
 														{t('common:no')}
-													</button>
+													</Button>
 												</motion.div>
 											)}
 										</motion.div>
@@ -208,35 +221,38 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 									autoFocus
 								/>
 								<div className="flex gap-2">
-									<button
+									<Button
 										onClick={handleCreate}
 										disabled={!newCollectionName.trim()}
-										className="flex-1 py-2 bg-primary hover:bg-primary/80 disabled:bg-gray-700 disabled:text-gray-500 text-white font-medium rounded-xl transition-all"
+										className="flex-1"
 									>
 										{t('common:create')}
-									</button>
-									<button
+									</Button>
+									<Button
+										variant="ghost"
 										onClick={() => {
 											setIsCreating(false);
 											setNewCollectionName("");
 										}}
-										className="flex-1 py-2 bg-glass-bg-accent hover:bg-glass-bg-active text-gray-300 hover:text-white font-medium rounded-xl transition-all"
+										className="flex-1"
 									>
 										{t('common:cancel')}
-									</button>
+									</Button>
 								</div>
 							</motion.div>
 						) : (
-							<button
+							<Button
+								variant="ghost"
 								onClick={() => setIsCreating(true)}
-								className="w-full py-3 border-2 border-dashed border-gray-700 hover:border-primary rounded-xl text-gray-400 hover:text-primary transition-all flex items-center justify-center gap-2 font-medium"
+								className="w-full py-3 border-2 border-dashed border-gray-700 hover:border-primary text-gray-400 hover:text-primary flex items-center justify-center gap-2 font-medium"
+								leftIcon={<Plus size={18} />}
 							>
-								<Plus size={18} />
 								{t('library:newProject')}
-							</button>
+							</Button>
 						)}
 					</motion.div>
-				</>
+				</GlassCard>
+			</>
 			)}
 		</AnimatePresence>
 	);

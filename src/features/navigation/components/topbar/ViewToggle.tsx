@@ -9,7 +9,7 @@ import {
 	LucideIcon,
 } from "lucide-react";
 import { ViewMode } from "../../../../shared/types";
-import { Button } from "../../../../shared/components/ui";
+import { Button, GlassCard } from "../../../../shared/components/ui";
 
 interface ViewToggleProps {
 	currentViewMode: ViewMode;
@@ -60,12 +60,15 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 
 			<AnimatePresence>
 				{isViewMenuOpen && (
-					<motion.div
-						initial={{ opacity: 0, y: 10, scale: 0.95 }}
-						animate={{ opacity: 1, y: 0, scale: 1 }}
-						exit={{ opacity: 0, y: 10, scale: 0.95 }}
-						className="absolute top-full mt-2 right-0 w-32 glass-surface border border-glass-border rounded-xl shadow-2xl overflow-hidden z-50 p-1"
+					<GlassCard
+						variant="overlay"
+						className="absolute top-full mt-2 right-0 w-32 border border-glass-border rounded-xl shadow-2xl overflow-hidden z-50 p-1"
 					>
+						<motion.div
+							initial={{ opacity: 0, y: 10, scale: 0.95 }}
+							animate={{ opacity: 1, y: 0, scale: 1 }}
+							exit={{ opacity: 0, y: 10, scale: 0.95 }}
+						>
 						{viewModes.map((mode) => (
 							<Button
 								key={mode.id}
@@ -90,6 +93,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 							</Button>
 						))}
 					</motion.div>
+					</GlassCard>
 				)}
 			</AnimatePresence>
 		</div>

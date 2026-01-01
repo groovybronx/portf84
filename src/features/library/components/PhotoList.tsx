@@ -1,5 +1,7 @@
 import React from "react";
+import { Button } from "../../../shared/components/ui";
 import { PortfolioItem } from "../../../shared/types";
+
 import { motion } from "framer-motion";
 import { useLibrary } from "../../../shared/contexts/LibraryContext";
 import { useSelection } from "../../../shared/contexts/SelectionContext";
@@ -124,7 +126,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 								{/* Tags */}
 								<div className="flex gap-2 flex-wrap mb-2">
 									{item.aiTags?.map((tag) => (
-										<button
+										<Button
 											key={tag}
 											onClick={(e) => {
 												e.stopPropagation();
@@ -140,10 +142,10 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                       `}
 										>
 											{tag}
-										</button>
+										</Button>
 									))}
 									{item.manualTags?.map((tag) => (
-										<button
+										<Button
 											key={tag}
 											onClick={(e) => {
 												e.stopPropagation();
@@ -159,7 +161,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                       `}
 										>
 											{tag}
-										</button>
+										</Button>
 									))}
 								</div>
 

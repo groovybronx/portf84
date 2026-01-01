@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { SmartCollection, SmartCollectionInput, createSmartCollection, updateSmartCollection } from '../../../services/smartCollectionService';
 import { COLOR_PALETTE } from '../../../shared/types';
 import { useCollections } from '../../../shared/contexts/CollectionsContext';
+import { Button } from '../../../shared/components/ui';
 
 interface SmartCollectionBuilderProps {
 	isOpen: boolean;
@@ -31,7 +32,7 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 	const [operator, setOperator] = useState<'AND' | 'OR'>('AND');
 	const [rules, setRules] = useState<Rule[]>([]);
 	const [icon, setIcon] = useState('filter');
-	const [color, setColor] = useState('#3b82f6'); // Default blue
+	const [color, setColor] = useState('#3b82f6');
 
 	useEffect(() => {
 		if (editingCollection) {
@@ -102,13 +103,13 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={onClose}
-						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
+						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[var(--z-modal-overlay)]"
 					/>
 					<motion.div
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ opacity: 1, scale: 1 }}
 						exit={{ opacity: 0, scale: 0.95 }}
-						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-background border border-white/10 rounded-xl shadow-2xl z-(--z-modal) flex flex-col max-h-[80vh]"
+						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-background border border-white/10 rounded-xl shadow-2xl z-[var(--z-modal)] flex flex-col max-h-[80vh]"
 					>
 						{/* Header */}
 						<div className="p-6 border-b border-white/10 flex justify-between items-center">
@@ -120,9 +121,9 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 									{editingCollection ? t('library:editSmartCollection') : t('library:newSmartCollection')}
 								</h2>
 							</div>
-							<button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-gray-400 hover:text-white transition-colors">
+							<Button variant="close" size="icon" onClick={onClose}>
 								<X size={20} />
-							</button>
+							</Button>
 						</div>
 
 						{/* Content */}
@@ -148,22 +149,26 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 										{t('library:matchingRules')}
 									</label>
 									<div className="flex bg-white/5 rounded-lg p-1">
-										<button 
+										<Button 
+											variant="ghost"
+											size="sm"
 											onClick={() => setOperator('AND')}
 											className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${
 												operator === 'AND' ? 'bg-blue-500 text-white' : 'text-gray-500 hover:text-gray-300'
 											}`}
 										>
 											AND
-										</button>
-										<button 
+										</Button>
+										<Button 
+											variant="ghost"
+											size="sm"
 											onClick={() => setOperator('OR')}
 											className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${
 												operator === 'OR' ? 'bg-blue-500 text-white' : 'text-gray-500 hover:text-gray-300'
 											}`}
 										>
 											OR
-										</button>
+										</Button>
 									</div>
 								</div>
 
@@ -184,10 +189,12 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 												{rule.type === 'color' ? (
 													<div className="flex flex-wrap gap-1">
 														{Object.entries(COLOR_PALETTE).map(([key, val]) => (
-															<button
+															<Button
 																key={key}
+																variant="ghost"
+																size="icon-sm"
 																onClick={() => updateRule(rule.id, { value: key })}
-																className={`w-6 h-6 rounded-full border-2 transition-all ${
+																className={`w-6 h-6 rounded-full border-2 p-0 transition-all ${
 																	rule.value === key ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'
 																}`}
 																style={{ backgroundColor: val }}
@@ -206,24 +213,27 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 											</div>
 
 											{rules.length > 1 && (
-												<button 
+												<Button 
+													variant="ghost"
+													size="icon-sm"
 													onClick={() => removeRule(rule.id)}
-													className="p-2 hover:bg-red-500/20 text-gray-500 hover:text-red-400 rounded-lg transition-colors"
+													className="hover:bg-red-500/20 text-gray-500 hover:text-red-400"
 												>
 													<Trash2 size={14} />
-												</button>
+												</Button>
 											)}
 										</div>
 									))}
 								</div>
 
-								<button 
+								<Button 
+									variant="ghost"
 									onClick={addRule}
-									className="w-full py-2 border border-dashed border-white/10 hover:border-blue-500/50 rounded-lg text-xs text-gray-500 hover:text-blue-400 transition-all flex items-center justify-center gap-2"
+									className="w-full py-2 border border-dashed border-white/10 hover:border-blue-500/50 rounded-lg text-xs text-gray-500 hover:text-blue-400 flex items-center justify-center gap-2"
 								>
 									<Plus size={14} />
 									{t('library:addRule')}
-								</button>
+								</Button>
 							</div>
 
 							{/* Appearance Section */}
@@ -232,32 +242,32 @@ export const SmartCollectionBuilder: React.FC<SmartCollectionBuilderProps> = ({
 									<label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Color</label>
 									<div className="flex gap-2">
 										{['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'].map(c => (
-											<button 
+											<Button 
 												key={c}
+												variant="ghost"
+												size="icon-sm"
 												onClick={() => setColor(c)}
-												className={`w-6 h-6 rounded-full border-2 ${color === c ? 'border-white' : 'border-transparent opacity-60'}`}
+												className={`w-6 h-6 rounded-full border-2 p-0 ${color === c ? 'border-white' : 'border-transparent opacity-60'}`}
 												style={{ backgroundColor: c }}
 											/>
 										))}
 									</div>
 								</div>
-								{/* Potential Icon Picker here */}
 							</div>
 						</div>
 
 						{/* Footer */}
 						<div className="p-6 border-t border-white/10 flex justify-end gap-3">
-							<button onClick={onClose} className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors">
+							<Button variant="ghost" onClick={onClose}>
 								{t('common:cancel')}
-							</button>
-							<button 
+							</Button>
+							<Button 
 								onClick={handleSave}
 								disabled={!name.trim() || rules.length === 0}
-								className="px-6 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
+								leftIcon={<Save size={16} />}
 							>
-								<Save size={16} />
 								{t('common:save')}
-							</button>
+							</Button>
 						</div>
 					</motion.div>
 				</>

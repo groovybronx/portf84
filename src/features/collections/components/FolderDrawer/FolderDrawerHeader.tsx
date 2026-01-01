@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../../../../shared/components/Icon";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex, Stack } from "../../../../shared/components/ui";
 
 interface FolderDrawerHeaderProps {
   isPinned: boolean;
@@ -18,27 +18,29 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
 }) => {
   const { t } = useTranslation(["library", "navigation"]);
   return (
-    <div className="flex items-center justify-between mb-6">
-      <div className="flex flex-col">
-        <div className="flex items-center gap-3">
+    <Flex justify="between" align="center" className="mb-6">
+      <Stack spacing="none">
+        <Flex align="center" gap="sm">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Icon action="library" className="text-primary" /> {t('library:library')}
             </h2>
             {onAdd && (
-                <button 
+                <Button
+                    variant="glass-icon"
+                    size="icon-sm"
                     onClick={onAdd}
-                    className="p-1 rounded-full hover:bg-glass-bg-accent text-text-secondary hover:text-text-primary transition-colors"
                     title={t('library:manageProjects')}
+                    aria-label="Add project"
                 >
                     <Icon action="add" size={16} />
-                </button>
+                </Button>
             )}
-        </div>
+        </Flex>
         <span className="text-xs text-gray-500 font-medium ml-8">
             {t('library:itemCount', { count: totalItems })}
         </span>
-      </div>
-      <div className="flex items-center gap-1">
+      </Stack>
+      <Flex align="center" gap="xs">
         {onTogglePin && (
           <Button
             variant="ghost"
@@ -60,7 +62,7 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
             />
           </Button>
         )}
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 };

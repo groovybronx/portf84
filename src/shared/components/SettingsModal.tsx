@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Icon, type IconAction } from "./Icon";
+import { Icon, type IconAction, ALL_ICONS } from "./Icon";
 import { open } from "@tauri-apps/plugin-dialog";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { useTranslation } from "react-i18next";
 import { useLocalShortcuts, ShortcutMap } from "../hooks/useLocalShortcuts";
 import { useTheme } from "../contexts/ThemeContext";
 import { secureStorage } from "../../services/secureStorage";
+import { 
+  SettingRow, 
+  ColorPicker, 
+  TabList, 
+  TabTrigger, 
+  IconPicker
+} from "./ui";
 
 interface SettingsModalProps {
 	isOpen: boolean;
@@ -31,8 +38,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	
 	const { shortcuts, updateShortcut, resetToDefaults } = useLocalShortcuts();
 	const { settings, updateSetting, resetTheme } = useTheme();
-
-
 
 	useEffect(() => {
 		if (isOpen) {
@@ -79,7 +84,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	const handleSave = async () => {
 		if (apiKey.trim()) {
 			await secureStorage.saveApiKey(apiKey.trim());
-			// Clear legacy localstorage if present to avoid confusion
 			localStorage.removeItem("gemini_api_key");
 		} else {
 			await secureStorage.clearApiKey();
@@ -103,6 +107,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 		setApiKey("");
 	};
 
+    const colors = [
+		{ name: t('settings:colorBlue'), value: "#3b82f6" },
+		{ name: t('settings:colorPurple'), value: "#a855f7" },
+		{ name: t('settings:colorEmerald'), value: "#10b981" },
+		{ name: t('settings:colorRose'), value: "#f43f5e" },
+		{ name: t('settings:colorAmber'), value: "#f59e0b" },
+		{ name: t('settings:colorCyan'), value: "#06b6d4" },
+		{ name: t('settings:colorViolet'), value: "#8b5cf6" },
+		{ name: t('settings:colorFuchsia'), value: "#d946ef" },
+		{ name: t('settings:colorLime'), value: "#84cc16" },
+		{ name: t('settings:colorOrange'), value: "#f97316" },
+	];
+
 	return (
 		<AnimatePresence>
 			{isOpen && (
@@ -113,7 +130,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={onClose}
-						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
+						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[var(--z-modal-overlay)]"
 					/>
 
 					{/* Modal Container */}
@@ -121,53 +138,63 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						initial={{ opacity: 0, scale: 0.95, y: 20 }}
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 20 }}
-						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[600px] bg-background border border-glass-border rounded-2xl shadow-2xl z-(--z-modal) overflow-hidden flex"
+						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[600px] bg-background border border-glass-border rounded-2xl shadow-2xl z-[var(--z-modal)] overflow-hidden flex"
 					>
 						{/* Sidebar Navigation */}
-						<div className="w-64 bg-glass-bg-accent border-r border-glass-border p-4 flex flex-col gap-2">
+						<TabList>
 							<h2 className="text-xl font-semibold text-white px-2 mb-4 flex items-center gap-2">
 								<Icon action="layout_grid" className="w-5 h-5 text-primary" />
 								{t('settings:settings')}
 							</h2>
 							
-							<NavButton 
+							<TabTrigger 
+								value="general" 
 								active={activeTab === "general"} 
 								onClick={() => setActiveTab("general")} 
 								icon={<Icon action="key" size={18} />} 
-								label={t('settings:general')} 
-							/>
-							<NavButton 
+							>
+                                {t('settings:general')}
+                            </TabTrigger>
+							<TabTrigger 
+								value="language"
 								active={activeTab === "language"} 
 								onClick={() => setActiveTab("language")} 
-								icon={<Icon action="globe" size={18} />} 
-								label={t('settings:language')} 
-							/>
-							<NavButton 
+								icon={<Icon action="globe" size={18} />}
+							>
+                                {t('settings:language')}
+                            </TabTrigger>
+							<TabTrigger 
+								value="appearance"
 								active={activeTab === "appearance"} 
 								onClick={() => setActiveTab("appearance")} 
-								icon={<Icon action="palette" size={18} />} // using palette or Grid? I added layout_grid. Palette is not in registry. I should use `brush` or reuse `layout_grid`? Or add `palette`.
-								label={t('settings:appearance')} 
-							/>
-							<NavButton 
+								icon={<Icon action="palette" size={18} />} 
+							>
+                                {t('settings:appearance')}
+                            </TabTrigger>
+							<TabTrigger 
+								value="storage"
 								active={activeTab === "storage"} 
 								onClick={() => setActiveTab("storage")} 
 								icon={<Icon action="database" size={18} />} 
-								label={t('settings:storage')} 
-							/>
-							<NavButton 
+							>
+                                {t('settings:storage')}
+                            </TabTrigger>
+							<TabTrigger 
+								value="shortcuts"
 								active={activeTab === "shortcuts"} 
 								onClick={() => setActiveTab("shortcuts")} 
 								icon={<Icon action="keyboard" size={18} />} 
-								label={t('settings:shortcuts')} 
-							/>
-						</div>
+							>
+                                {t('settings:shortcuts')}
+                            </TabTrigger>
+						</TabList>
 
 						{/* Main Content Area */}
 						<div className="flex-1 flex flex-col min-w-0">
 							{/* Header */}
 							<div className="h-16 border-b border-glass-border flex items-center justify-between px-8 shrink-0">
 								<h3 className="text-lg font-medium text-white capitalize">
-									{activeTab === "general" ? t('settings:tabGeneral') : activeTab === "appearance" ? t('settings:tabAppearance') : activeTab === "storage" ? t('settings:tabStorage') : t('settings:tabShortcuts')}
+									{activeTab === "general" ? t('settings:tabGeneral') : activeTab === "appearance" ? t('settings:tabAppearance') : activeTab === "storage" ? t('settings:tabStorage') : activeTab === "language" ? t('settings:language') : t('settings:tabShortcuts')}
 								</h3>
 								<button
 									onClick={onClose}
@@ -253,10 +280,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 												</label>
 											</div>
 										)}
-								
-
 									</div>
-									)}
+								)}
 
 				{/* TAB: LANGUAGE */}
 				{activeTab === "language" && (
@@ -322,206 +347,225 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 				)}
 
 
-								{/* TAB: APPEARANCE */}
-								{activeTab === "appearance" && (
-									<div className="space-y-8 max-w-lg">
-										<div className="space-y-6">
-											<div className="flex items-center justify-between">
-												<h4 className="text-sm font-medium text-white/70">{t('settings:themeColors')}</h4>
-												<button 
-													onClick={resetTheme}
-													className="text-xs text-white/40 hover:text-white transition-colors"
-												>
-													{t('settings:resetDefaults')}
-												</button>
-											</div>
+				{/* TAB: APPEARANCE */}
+				{activeTab === "appearance" && (
+					<div className="space-y-8 max-w-lg">
+						<div className="space-y-6">
+							<div className="flex items-center justify-between">
+								<h4 className="text-sm font-medium text-white/70">{t('settings:themeColors')}</h4>
+								<button 
+									onClick={resetTheme}
+									className="text-xs text-white/40 hover:text-white transition-colors"
+								>
+									{t('settings:resetDefaults')}
+								</button>
+							</div>
 
-											<div className="space-y-4">
-												<ColorRow 
-													label={t('settings:primaryInterface')} 
-													description={t('settings:primaryInterfaceDesc')}
-													value={settings.primaryColor}
-													onChange={(c) => updateSetting("primaryColor", c)}
-													icon={settings.primaryIcon}
-													onIconChange={(icon) => updateSetting("primaryIcon", icon)}
-													usedIcons={[settings.secondaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
-												/>
-												<ColorRow 
-													label={t('settings:aiIntelligence')} 
-													description={t('settings:aiIntelligenceDesc')}
-													value={settings.secondaryColor}
-													onChange={(c) => updateSetting("secondaryColor", c)}
-													icon={settings.secondaryIcon}
-													onIconChange={(icon) => updateSetting("secondaryIcon", icon)}
-													usedIcons={[settings.primaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
-												/>
-												<ColorRow 
-													label={t('settings:collections')} 
-													description={t('settings:collectionsDesc')}
-													value={settings.tertiaryColor}
-													onChange={(c) => updateSetting("tertiaryColor", c)}
-													icon={settings.tertiaryIcon}
-													onIconChange={(icon) => updateSetting("tertiaryIcon", icon)}
-													usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
-												/>
-												<ColorRow 
-													label={t('settings:workFolders')} 
-													description={t('settings:workFoldersDesc')}
-													value={settings.quaternaryColor}
-													onChange={(c) => updateSetting("quaternaryColor", c)}
-													icon={settings.quaternaryIcon}
-													onIconChange={(icon) => updateSetting("quaternaryIcon", icon)}
-													usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.tertiaryIcon, settings.quinaryIcon, settings.filtersIcon]}
-												/>
-												<ColorRow 
-													label={t('settings:projects')} 
-													description={t('settings:projectsDesc')}
-													value={settings.quinaryColor}
-													onChange={(c) => updateSetting("quinaryColor", c)}
-													icon={settings.quinaryIcon}
-													onIconChange={(icon) => updateSetting("quinaryIcon", icon)}
-													usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.filtersIcon]}
-												/>
-											</div>
-										</div>
+							<div className="space-y-4">
+                                <FormRow label={t('settings:primaryInterface')} description={t('settings:primaryInterfaceDesc')}>
+                                    <ColorPicker 
+                                        value={settings.primaryColor}
+                                        onChange={(c) => updateSetting("primaryColor", c)}
+                                        colors={colors}
+                                        withIconPicker
+                                        icon={settings.primaryIcon}
+                                        onIconChange={(icon) => updateSetting("primaryIcon", icon)}
+                                        availableIcons={ALL_ICONS}
+                                        usedIcons={[settings.secondaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
+                                    />
+                                </FormRow>
 
-										<div className="space-y-4 pt-6 border-t border-glass-border">
-											<div className="flex justify-between items-center">
-												<h4 className="text-sm font-medium text-white/70">{t('settings:glassOpacity')}</h4>
-												<span className="text-xs text-white/40">{settings.glassBg.includes("0.9") ? t('settings:high') : settings.glassBg.includes("0.5") ? t('settings:low') : t('settings:medium')}</span>
-											</div>
-											<div className="flex gap-2 bg-glass-bg-accent p-1 rounded-lg border border-glass-border-light">
-												{[
-													{ label: t('settings:highCoverage'), value: "rgba(10, 10, 10, 0.95)" },
-													{ label: t('settings:balanced'), value: "rgba(10, 10, 10, 0.8)" },
-													{ label: t('settings:frosted'), value: "rgba(10, 10, 10, 0.5)" },
-												].map((option) => (
-													<button
-														key={option.value}
-														onClick={() => updateSetting("glassBg", option.value)}
-														className={`flex-1 py-2 text-xs font-medium rounded-md transition-all ${
-															settings.glassBg === option.value
-																? "bg-white/10 text-white shadow-sm"
-																: "text-white/40 hover:text-white/70"
-														}`}
-													>
-														{option.label}
-													</button>
-												))}
-											</div>
-										</div>
-					
-										
-										<div className="pt-6 border-t border-glass-border">
-										    <button 
-										        onClick={resetTheme}
-										        className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-2"
-										    >
-										        <Icon action="reset" size={12} /> {t('settings:resetTheme')}
-										    </button>
-										</div>
+                                <FormRow label={t('settings:aiIntelligence')} description={t('settings:aiIntelligenceDesc')}>
+                                    <ColorPicker 
+                                        value={settings.secondaryColor}
+                                        onChange={(c) => updateSetting("secondaryColor", c)}
+                                        colors={colors}
+                                        withIconPicker
+                                        icon={settings.secondaryIcon}
+                                        onIconChange={(icon) => updateSetting("secondaryIcon", icon)}
+                                        availableIcons={ALL_ICONS}
+                                        usedIcons={[settings.primaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
+                                    />
+                                </FormRow>
+
+                                <FormRow label={t('settings:collections')} description={t('settings:collectionsDesc')}>
+                                    <ColorPicker 
+                                        value={settings.tertiaryColor}
+                                        onChange={(c) => updateSetting("tertiaryColor", c)}
+                                        colors={colors}
+                                        withIconPicker
+                                        icon={settings.tertiaryIcon}
+                                        onIconChange={(icon) => updateSetting("tertiaryIcon", icon)}
+                                        availableIcons={ALL_ICONS}
+                                        usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.quaternaryIcon, settings.quinaryIcon, settings.filtersIcon]}
+                                    />
+                                </FormRow>
+
+                                <FormRow label={t('settings:workFolders')} description={t('settings:workFoldersDesc')}>
+                                    <ColorPicker 
+                                        value={settings.quaternaryColor}
+                                        onChange={(c) => updateSetting("quaternaryColor", c)}
+                                        colors={colors}
+                                        withIconPicker
+                                        icon={settings.quaternaryIcon}
+                                        onIconChange={(icon) => updateSetting("quaternaryIcon", icon)}
+                                        availableIcons={ALL_ICONS}
+                                        usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.tertiaryIcon, settings.quinaryIcon, settings.filtersIcon]}
+                                    />
+                                </FormRow>
+
+                                <FormRow label={t('settings:projects')} description={t('settings:projectsDesc')}>
+                                    <ColorPicker 
+                                        value={settings.quinaryColor}
+                                        onChange={(c) => updateSetting("quinaryColor", c)}
+                                        colors={colors}
+                                        withIconPicker
+                                        icon={settings.quinaryIcon}
+                                        onIconChange={(icon) => updateSetting("quinaryIcon", icon)}
+                                        availableIcons={ALL_ICONS}
+                                        usedIcons={[settings.primaryIcon, settings.secondaryIcon, settings.tertiaryIcon, settings.quaternaryIcon, settings.filtersIcon]}
+                                    />
+                                </FormRow>
+							</div>
+						</div>
+
+						<div className="space-y-4 pt-6 border-t border-glass-border">
+							<div className="flex justify-between items-center">
+								<h4 className="text-sm font-medium text-white/70">{t('settings:glassOpacity')}</h4>
+								<span className="text-xs text-white/40">{settings.glassBg.includes("0.9") ? t('settings:high') : settings.glassBg.includes("0.5") ? t('settings:low') : t('settings:medium')}</span>
+							</div>
+							<div className="flex gap-2 bg-glass-bg-accent p-1 rounded-lg border border-glass-border-light">
+								{[
+									{ label: t('settings:highCoverage'), value: "rgba(10, 10, 10, 0.95)" },
+									{ label: t('settings:balanced'), value: "rgba(10, 10, 10, 0.8)" },
+									{ label: t('settings:frosted'), value: "rgba(10, 10, 10, 0.5)" },
+								].map((option) => (
+									<button
+										key={option.value}
+										onClick={() => updateSetting("glassBg", option.value)}
+										className={`flex-1 py-2 text-xs font-medium rounded-md transition-all ${
+											settings.glassBg === option.value
+												? "bg-white/10 text-white shadow-sm"
+												: "text-white/40 hover:text-white/70"
+										}`}
+									>
+										{option.label}
+									</button>
+								))}
+							</div>
+						</div>
+	
+						
+						<div className="pt-6 border-t border-glass-border">
+						    <button 
+						        onClick={resetTheme}
+						        className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-2"
+						    >
+						        <Icon action="reset" size={12} /> {t('settings:resetTheme')}
+						    </button>
+						</div>
+					</div>
+				)}
+
+				{/* TAB: STORAGE */}
+				{activeTab === "storage" && (
+					<div className="space-y-8 max-w-lg">
+						<div className="space-y-4">
+							<div className="space-y-2">
+								<label className="text-sm font-medium text-white/70">
+									{t('settings:databaseLocation')}
+								</label>
+								<div className="flex gap-2">
+									<input
+										type="text"
+										readOnly
+										value={dbPath || t('settings:defaultFolder')}
+										className="flex-1 bg-glass-bg-accent border border-glass-border rounded-lg px-4 py-3 text-white/50 text-xs font-mono truncate cursor-not-allowed"
+									/>
+									<button
+										onClick={handleSelectDbPath}
+										className="px-4 py-2 bg-glass-bg hover:bg-glass-bg-active border border-glass-border rounded-lg text-white text-sm transition-colors whitespace-nowrap"
+									>
+										{t('settings:change')}
+									</button>
+								</div>
+							</div>
+							
+							{dbPath && (
+								<div className="flex justify-between items-center bg-amber-500/10 p-4 rounded-lg border border-amber-500/20">
+									<p className="text-xs text-amber-200 flex items-center gap-2">
+										<Icon action="alert" size={14} /> {t('settings:restartRequired')}
+									</p>
+									<div className="flex gap-3 items-center">
+										<button 
+											onClick={() => setDbPath("")}
+											className="text-xs text-white/50 hover:text-white underline"
+										>
+											{t('settings:resetDefault')}
+										</button>
+										<button
+											onClick={async () => {
+												if (dbPath) localStorage.setItem("lumina_db_path", dbPath);
+												await relaunch();
+											}}
+											className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-lg transition-transform active:scale-95"
+										>
+											{t('settings:restartNow')}
+										</button>
 									</div>
-								)}
+								</div>
+							)}
+							
+							<div className="text-xs text-white/40 space-y-2 leading-relaxed p-4 bg-white/5 rounded-lg">
+								<p><strong>Note:</strong> {t('settings:dbNote')}</p>
+								<p>{t('settings:dbNoteUseful')}</p>
+							</div>
+						</div>
+					</div>
+				)}
 
-								{/* TAB: STORAGE */}
-								{activeTab === "storage" && (
-									<div className="space-y-8 max-w-lg">
-										<div className="space-y-4">
-											<div className="space-y-2">
-												<label className="text-sm font-medium text-white/70">
-													{t('settings:databaseLocation')}
-												</label>
-												<div className="flex gap-2">
-													<input
-														type="text"
-														readOnly
-														value={dbPath || t('settings:defaultFolder')}
-														className="flex-1 bg-glass-bg-accent border border-glass-border rounded-lg px-4 py-3 text-white/50 text-xs font-mono truncate cursor-not-allowed"
-													/>
-													<button
-														onClick={handleSelectDbPath}
-														className="px-4 py-2 bg-glass-bg hover:bg-glass-bg-active border border-glass-border rounded-lg text-white text-sm transition-colors whitespace-nowrap"
-													>
-														{t('settings:change')}
-													</button>
-												</div>
-											</div>
-											
-											{dbPath && (
-												<div className="flex justify-between items-center bg-amber-500/10 p-4 rounded-lg border border-amber-500/20">
-													<p className="text-xs text-amber-200 flex items-center gap-2">
-														<Icon action="alert" size={14} /> {t('settings:restartRequired')}
-													</p>
-													<div className="flex gap-3 items-center">
-														<button 
-															onClick={() => setDbPath("")}
-															className="text-xs text-white/50 hover:text-white underline"
-														>
-															{t('settings:resetDefault')}
-														</button>
-														<button
-															onClick={async () => {
-																if (dbPath) localStorage.setItem("lumina_db_path", dbPath);
-																await relaunch();
-															}}
-															className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-lg transition-transform active:scale-95"
-														>
-															{t('settings:restartNow')}
-														</button>
-													</div>
-												</div>
-											)}
-											
-											<div className="text-xs text-white/40 space-y-2 leading-relaxed p-4 bg-white/5 rounded-lg">
-												<p><strong>Note:</strong> {t('settings:dbNote')}</p>
-												<p>{t('settings:dbNoteUseful')}</p>
-											</div>
-										</div>
-									</div>
-								)}
+				{/* TAB: SHORTCUTS */}
+				{activeTab === "shortcuts" && (
+					<div className="space-y-6 max-w-2xl">
+						<div className="flex justify-between items-end border-b border-white/10 pb-4">
+							<p className="text-sm text-white/60">{t('settings:customizeWorkflow')}</p>
+							<button 
+								onClick={resetToDefaults}
+								className="text-xs flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
+							>
+								<Icon action="reset" size={12} /> {t('settings:resetDefaults')}
+							</button>
+						</div>
 
-								{/* TAB: SHORTCUTS */}
-								{activeTab === "shortcuts" && (
-									<div className="space-y-6 max-w-2xl">
-										<div className="flex justify-between items-end border-b border-white/10 pb-4">
-											<p className="text-sm text-white/60">{t('settings:customizeWorkflow')}</p>
-											<button 
-												onClick={resetToDefaults}
-												className="text-xs flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
-											>
-												<Icon action="reset" size={12} /> {t('settings:resetDefaults')}
-											</button>
-										</div>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+							{/* Group: Navigation */}
+							<div className="space-y-4">
+								<h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">{t('settings:navigation')}</h4>
+								<div className="space-y-3">
+									<ShortcutRow label={t('settings:moveUp')} action="NAV_UP" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:moveDown')} action="NAV_DOWN" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:moveLeft')} action="NAV_LEFT" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:moveRight')} action="NAV_RIGHT" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:openFullscreen')} action="OPEN_VIEW" shortcuts={shortcuts} update={updateShortcut} />
+								</div>
+							</div>
 
-										<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-											{/* Group: Navigation */}
-											<div className="space-y-4">
-												<h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">{t('settings:navigation')}</h4>
-												<div className="space-y-3">
-													<KeyRow label={t('settings:moveUp')} action="NAV_UP" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:moveDown')} action="NAV_DOWN" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:moveLeft')} action="NAV_LEFT" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:moveRight')} action="NAV_RIGHT" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:openFullscreen')} action="OPEN_VIEW" shortcuts={shortcuts} update={updateShortcut} />
-												</div>
-											</div>
-
-											{/* Group: Tagging */}
-											<div className="space-y-4">
-												<h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">{t('settings:colorTags')}</h4>
-												<div className="space-y-3">
-													<KeyRow label={t('settings:red')} action="TAG_RED" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:orange')} action="TAG_ORANGE" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:yellow')} action="TAG_YELLOW" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:green')} action="TAG_GREEN" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:blue')} action="TAG_BLUE" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:purple')} action="TAG_PURPLE" shortcuts={shortcuts} update={updateShortcut} />
-													<KeyRow label={t('settings:clearTag')} action="TAG_REMOVE" shortcuts={shortcuts} update={updateShortcut} />
-												</div>
-											</div>
-										</div>
-									</div>
-								)}
+							{/* Group: Tagging */}
+							<div className="space-y-4">
+								<h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">{t('settings:colorTags')}</h4>
+								<div className="space-y-3">
+									<ShortcutRow label={t('settings:red')} action="TAG_RED" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:orange')} action="TAG_ORANGE" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:yellow')} action="TAG_YELLOW" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:green')} action="TAG_GREEN" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:blue')} action="TAG_BLUE" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:purple')} action="TAG_PURPLE" shortcuts={shortcuts} update={updateShortcut} />
+									<ShortcutRow label={t('settings:clearTag')} action="TAG_REMOVE" shortcuts={shortcuts} update={updateShortcut} />
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
 							</div>
 
 							{/* Footer Actions (Global) */}
@@ -553,292 +597,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	);
 };
 
-// --- Subcomponents ---
-
-const ColorRow = ({ 
-	label, 
-	description, 
-	value, 
-	onChange,
-	icon,
-	onIconChange,
-	usedIcons = []
-}: { 
-	label: string, 
-	description: string, 
-	value: string, 
-	onChange: (c: string) => void,
-	icon?: IconAction,
-	onIconChange?: (icon: IconAction) => void,
-	usedIcons?: IconAction[]
-}) => {
-	const { t } = useTranslation(['settings']);
-	const [showIconPicker, setShowIconPicker] = useState(false);
-	const colors = [
-		{ name: t('settings:colorBlue'), value: "#3b82f6" },
-		{ name: t('settings:colorPurple'), value: "#a855f7" },
-		{ name: t('settings:colorEmerald'), value: "#10b981" },
-		{ name: t('settings:colorRose'), value: "#f43f5e" },
-		{ name: t('settings:colorAmber'), value: "#f59e0b" },
-		{ name: t('settings:colorCyan'), value: "#06b6d4" },
-		{ name: t('settings:colorViolet'), value: "#8b5cf6" },
-		{ name: t('settings:colorFuchsia'), value: "#d946ef" },
-		{ name: t('settings:colorLime'), value: "#84cc16" },
-		{ name: t('settings:colorOrange'), value: "#f97316" },
-	];
-
-	return (
-		<div className="bg-glass-bg-accent rounded-xl p-3 border border-glass-border-light">
-			<div className="flex items-center justify-between mb-3">
-				<div>
-					<div className="text-sm font-medium text-white">{label}</div>
-					<div className="text-[10px] text-white/40">{description}</div>
-				</div>
-				<button
-					onClick={() => icon && onIconChange && setShowIconPicker(!showIconPicker)}
-					className={`w-10 h-10 rounded-lg shadow-inner border border-white/10 flex items-center justify-center transition-all ${
-						icon && onIconChange ? 'cursor-pointer hover:scale-105 hover:ring-2 hover:ring-white/30' : 'cursor-default'
-					}`}
-					style={{ backgroundColor: value }}
-					title={icon && onIconChange ? t('settings:clickToChangeIcon') : undefined}
-				>
-					{icon && <Icon action={icon} size={20} className="text-white drop-shadow-md" />}
-				</button>
-			</div>
-			
-			<div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-				{colors.map((color) => (
-					<button
-						key={color.value}
-						onClick={() => onChange(color.value)}
-						className={`w-6 h-6 rounded-md shrink-0 transition-transform ${
-							value === color.value 
-								? "ring-2 ring-white scale-110 z-10" 
-								: "opacity-60 hover:opacity-100 hover:scale-105"
-						}`}
-						style={{ backgroundColor: color.value }}
-						title={color.name}
-					/>
-				))}
-			</div>
-
-			{/* Icon Picker */}
-			<AnimatePresence>
-				{showIconPicker && icon && onIconChange && (
-					<motion.div
-						initial={{ height: 0, opacity: 0 }}
-						animate={{ height: "auto", opacity: 1 }}
-						exit={{ height: 0, opacity: 0 }}
-						transition={{ duration: 0.2 }}
-						className="overflow-hidden"
-					>
-						<div className="mt-3 pt-3 border-t border-glass-border">
-							<div className="text-xs text-white/50 mb-2">{t('settings:selectIcon')}</div>
-							<div className="grid grid-cols-8 gap-1.5 max-h-48 overflow-y-auto">
-								{ALL_ICONS.map((iconAction) => {
-									const isUsed = usedIcons.includes(iconAction) && iconAction !== icon;
-									return (
-										<button
-											key={iconAction}
-											onClick={() => {
-												if (!isUsed) {
-													onIconChange(iconAction);
-													setShowIconPicker(false);
-												}
-											}}
-											disabled={isUsed}
-											className={`w-8 h-8 rounded-md flex items-center justify-center transition-all ${
-												icon === iconAction 
-													? "bg-primary/20 ring-2 ring-primary scale-110" 
-													: isUsed
-													? "bg-glass-bg opacity-30 cursor-not-allowed"
-													: "bg-glass-bg hover:bg-glass-bg-active opacity-60 hover:opacity-100"
-											}`}
-											title={isUsed ? `${iconAction} ${t('settings:alreadyUsed')}` : iconAction}
-										>
-											<Icon 
-												action={iconAction} 
-												size={16} 
-												className={
-													icon === iconAction ? "text-primary" : 
-													isUsed ? "text-white/30" : 
-													"text-white/70"
-												} 
-											/>
-										</button>
-									);
-								})}
-							</div>
-						</div>
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</div>
-	);
-};
-
-// Unified icon pool - all icons available for all sections
-const ALL_ICONS: IconAction[] = [
-	// Projects/Business
-	"box", "briefcase", "package", "archive", "inbox", "book_open",
-	"trophy", "star", "target", "rocket", "flag", "crown", "award",
-	// Folders/Storage
-	"hard_drive", "folder", "folder_open", "folder_closed", "file_box", "files", "database",
-	// Collections/Favorites
-	"folder_heart", "heart", "bookmark", "tag", "tags", "library",
-	// Visual/Media
-	"palette", "image", "camera", "film", "video",
-	// Effects
-	"sparkles", "zap", "flame",
-	// UI
-	"grid", "layout_grid"
-];
-
-// Accordion Section Component
-const AccordionSection = ({
-	title,
-	children,
-	defaultOpen = false
-}: {
-	title: string,
-	children: React.ReactNode,
-	defaultOpen?: boolean
-}) => {
-	const [isOpen, setIsOpen] = useState(defaultOpen);
-	
-	return (
-		<div className="border border-glass-border rounded-xl overflow-hidden">
-			<button
-				onClick={() => setIsOpen(!isOpen)}
-				className="w-full flex items-center justify-between px-4 py-3 bg-glass-bg-accent hover:bg-glass-bg-active transition-colors"
-			>
-				<h4 className="text-sm font-medium text-white">{title}</h4>
-				<Icon 
-					action="chevron_down" 
-					size={16} 
-					className={`text-white/50 transition-transform duration-200 ${
-						isOpen ? "rotate-180" : ""
-					}`}
-				/>
-			</button>
-			<AnimatePresence initial={false}>
-				{isOpen && (
-					<motion.div
-						initial={{ height: 0, opacity: 0 }}
-						animate={{ height: "auto", opacity: 1 }}
-						exit={{ height: 0, opacity: 0 }}
-						transition={{ duration: 0.2 }}
-						className="overflow-hidden"
-					>
-						<div className="p-4 space-y-4 bg-glass-bg/30">
-							{children}
-						</div>
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</div>
-	);
-};
-
-const IconRow = ({ 
-	label, 
-	description, 
-	value, 
-	options,
-	onChange 
-}: { 
-	label: string, 
-	description: string, 
-	value: IconAction,
-	options: IconAction[],
-	onChange: (icon: IconAction) => void 
-}) => {
-	return (
-		<div className="bg-glass-bg-accent rounded-xl p-3 border border-glass-border-light">
-			<div className="flex items-center justify-between mb-3">
-				<div>
-					<div className="text-sm font-medium text-white">{label}</div>
-					<div className="text-[10px] text-white/40">{description}</div>
-				</div>
-				{/* Current icon preview */}
-				<div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-					<Icon action={value} size={20} className="text-primary" />
-				</div>
-			</div>
-			
-			{/* Icon grid selector */}
-			<div className="grid grid-cols-8 gap-1.5">
-				{options.map((iconAction) => (
-					<button
-						key={iconAction}
-						onClick={() => onChange(iconAction)}
-						className={`w-8 h-8 rounded-md flex items-center justify-center transition-all ${
-							value === iconAction 
-								? "bg-primary/20 ring-2 ring-primary scale-110" 
-								: "bg-glass-bg hover:bg-glass-bg-active opacity-60 hover:opacity-100"
-						}`}
-						title={iconAction}
-					>
-						<Icon action={iconAction} size={16} className={value === iconAction ? "text-primary" : "text-white/70"} />
-					</button>
-				))}
-			</div>
-		</div>
-	);
-};
-
-const NavButton = ({ active, onClick, icon, label }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string }) => (
-	<button
-		onClick={onClick}
-		className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-			active 
-			? "bg-primary/20 text-primary border border-primary/30"  
-			: "text-white/60 hover:text-white hover:bg-white/5 active:bg-white/10"
-		}`}
-	>
-		{icon}
-		{label}
-	</button>
+// Wrapper for Settings Row to match previous layout
+const FormRow = ({ label, description, children }: { label: string, description: string, children: React.ReactNode }) => (
+    <div className="bg-glass-bg-accent rounded-xl p-3 border border-glass-border-light">
+        <div className="mb-3">
+            <div className="text-sm font-medium text-white">{label}</div>
+            <div className="text-[10px] text-white/40">{description}</div>
+        </div>
+        {children}
+    </div>
 );
 
-const KeyRow = ({ label, action, shortcuts, update }: { label: string, action: keyof ShortcutMap, shortcuts: ShortcutMap, update: (k: keyof ShortcutMap, v: string[]) => void }) => {
-	const { t } = useTranslation(["settings", "common"]);
-	const currentKey = shortcuts[action][0] || t('common:none');
-	const [isListening, setIsListening] = useState(false);
-
-	const handleKeyDown = (e: React.KeyboardEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		// Capture key
-		update(action, [e.key]);
-		setIsListening(false);
-	};
-
-	return (
-		<div className="flex items-center justify-between group">
-			<span className="text-sm text-white/80 group-hover:text-white transition-colors">{label}</span>
-			<button
-				onClick={() => setIsListening(true)}
-				onBlur={() => setIsListening(false)}
-				onKeyDown={isListening ? handleKeyDown : undefined}
-				className={`min-w-[80px] h-8 px-3 rounded text-xs font-mono border transition-all flex items-center justify-center ${
-					isListening 
-					? "bg-primary text-white border-primary ring-2 ring-primary/30" 
-					: "bg-white/5 text-white/70 border-white/10 hover:border-white/30 hover:bg-white/10"
-				}`}
-			>
-				{isListening ? t('settings:pressKey') : formatKeyLabel(currentKey, t)}
-			</button>
-		</div>
-	);
+// Helper for Shortcuts to clean up main component
+const ShortcutRow = ({ label, action, shortcuts, update }: { label: string, action: keyof ShortcutMap, shortcuts: ShortcutMap, update: (action: keyof ShortcutMap, keys: string[]) => void }) => {
+    return (
+        <div className="flex items-center justify-between group">
+            <span className="text-sm text-white/70 group-hover:text-white transition-colors">{label}</span>
+            <button
+                className="px-3 py-1.5 bg-glass-bg rounded border border-glass-border text-xs font-mono text-primary min-w-12 text-center hover:bg-glass-bg-active hover:border-primary/50 transition-all focus:ring-2 focus:ring-primary focus:outline-none"
+                onClick={() => {
+                   // Simple prompt for now, could be improved with a key recorder
+                   const key = prompt("Press a key (e.g., ArrowUp, a, b, Enter)");
+                   if (key) update(action, [key]);
+                }}
+            >
+                {shortcuts[action] ? shortcuts[action].join(" + ") : "..."}
+            </button>
+        </div>
+    );
 };
 
-const formatKeyLabel = (key: string, t: any) => {
-	if (key === " ") return "Space";
-	if (key === "ArrowUp") return "↑";
-	if (key === "ArrowDown") return "↓";
-	if (key === "ArrowLeft") return "←";
-	if (key === "ArrowRight") return "→";
-	if (key === "None") return t('common:none');
-	return key.toUpperCase();
-};

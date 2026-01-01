@@ -6,6 +6,7 @@ import { storageService } from "../../../services/storageService";
 import { getTagByAlias, getMostUsedTags } from "../../../services/storage/tags";
 import { ParsedTag } from "../../../shared/types/database";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "../../../shared/components/ui";
 
 // Constants
 const ALIAS_CHECK_DEBOUNCE_MS = 300;
@@ -77,10 +78,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 			updatedTags.push(tagToAdd);
 			const updatedItem = { ...item, manualTags: updatedTags };
 
-			// Persist
 			await storageService.saveMetadata(updatedItem, item.id);
-
-			// Update UI
 			onUpdateItem(updatedItem);
 		}
 		setNewTag("");
@@ -94,10 +92,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		);
 		const updatedItem = { ...item, manualTags: updatedTags };
 
-		// Persist
 		await storageService.saveMetadata(updatedItem, item.id);
-
-		// Update UI
 		onUpdateItem(updatedItem);
 	};
 
@@ -116,12 +111,14 @@ export const TagManager: React.FC<TagManagerProps> = ({
 						className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full border border-blue-500/30 flex items-center gap-1 group"
 					>
 						{tag}
-						<button
+						<Button
+							variant="close"
+							size="icon-sm"
 							onClick={() => handleRemoveTag(tag)}
-							className="opacity-0 group-hover:opacity-100 hover:text-white transition-opacity"
+							className="opacity-0 group-hover:opacity-100 p-0"
 						>
 							<X size={10} />
-						</button>
+						</Button>
 					</span>
 				))}
 
@@ -151,17 +148,19 @@ export const TagManager: React.FC<TagManagerProps> = ({
 						{quickTags.map((tag) => {
 							const isApplied = item.manualTags?.includes(tag.name);
 							return (
-								<button
+								<Button
 									key={tag.id}
+									variant="ghost"
+									size="sm"
 									onClick={() => isApplied ? handleRemoveTag(tag.name) : handleAddTag(tag.name)}
-									className={`px-2.5 py-1 text-[11px] rounded-md border transition-all shrink-0 ${
+									className={`px-2.5 py-1 text-[11px] rounded-md border shrink-0 h-auto ${
 										isApplied 
 											? 'bg-blue-500/30 border-blue-500/50 text-blue-200' 
 											: 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
 									}`}
 								>
 									{tag.name}
-								</button>
+								</Button>
 							);
 						})}
 					</div>
@@ -179,23 +178,23 @@ export const TagManager: React.FC<TagManagerProps> = ({
 							setShowSuggestions(true);
 						}}
 						onFocus={() => setShowSuggestions(true)}
-						onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} // Delay to allow click
+						onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
-								e.preventDefault(); // Prevent form submission if in form
+								e.preventDefault();
 								handleAddTag();
 							}
 						}}
 						placeholder={t('tags:addManualTag')}
 						className="flex-1 bg-black/50 border border-glass-border text-white text-xs px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50"
 					/>
-					<button
+					<Button
 						onClick={() => handleAddTag()}
 						disabled={!newTag.trim()}
-						className="p-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+						size="icon-sm"
 					>
 						<Plus size={14} />
-					</button>
+					</Button>
 				</div>
 
 				{/* Alias Suggestion Banner */}
@@ -204,12 +203,14 @@ export const TagManager: React.FC<TagManagerProps> = ({
 						<Sparkles size={14} className="text-purple-400 shrink-0" />
 						<div className="flex-1 text-xs">
 							<span className="text-gray-400">{t('tags:didYouMean')}</span>
-							<button
+							<Button
+								variant="ghost"
+								size="sm"
 								onClick={() => handleAddTag(aliasSuggestion)}
-								className="text-purple-300 hover:text-purple-200 font-medium underline"
+								className="text-purple-300 hover:text-purple-200 font-medium underline h-auto py-0 px-1"
 							>
 								{aliasSuggestion}
-							</button>
+							</Button>
 						</div>
 					</div>
 				)}
@@ -218,14 +219,15 @@ export const TagManager: React.FC<TagManagerProps> = ({
 				{showSuggestions && newTag && suggestions.length > 0 && !aliasSuggestion && (
 					<div className="absolute top-full left-0 right-10 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-10 overflow-hidden">
 						{suggestions.map((suggestion) => (
-							<button
+							<Button
 								key={suggestion}
-								className="w-full text-left px-3 py-2 text-xs text-gray-300 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
+								variant="ghost"
+								className="w-full justify-start gap-2 rounded-none text-xs"
 								onMouseDown={() => handleAddTag(suggestion)}
 							>
 								<Tag size={10} className="text-gray-500" />
 								{suggestion}
-							</button>
+							</Button>
 						))}
 					</div>
 				)}

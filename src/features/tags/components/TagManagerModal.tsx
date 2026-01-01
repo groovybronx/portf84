@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Merge, RefreshCw, Tag as TagIcon, ArrowRight, ArrowLeftRight, History } from 'lucide-react';
+import { Button } from "../../../shared/components/ui";
 import { useTranslation, Trans } from 'react-i18next';
 import { analyzeTagRedundancy, TagGroup } from '../../../services/tagAnalysisService';
 import { mergeTags, ignoreTagMatch, getTagTree, setTagParent } from '../../../services/storage/tags';
@@ -191,7 +192,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                 <div>
                                     <h2 className="text-xl font-bold text-white">{t('tags:tagManager')}</h2>
                                     <div className="flex gap-4 mt-2">
-                                        <button 
+                                        <Button 
                                             onClick={() => setActiveTab('fusion')}
                                             className={`text-sm font-medium pb-2 border-b-2 transition-all ${
                                                 activeTab === 'fusion' 
@@ -205,8 +206,8 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                                     {groups.length}
                                                 </span>
                                             )}
-                                        </button>
-                                        <button 
+                                        </Button>
+                                        <Button 
                                             onClick={() => setActiveTab('hierarchy')}
                                             className={`text-sm font-medium pb-2 border-b-2 transition-all ${
                                                 activeTab === 'hierarchy' 
@@ -215,22 +216,22 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                             }`}
                                         >
                                             {t('tags:tagHierarchy')}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button 
+                                <Button 
                                     onClick={() => setShowHistory(true)} 
                                     className="px-3 py-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300 text-sm font-medium transition-colors flex items-center gap-2"
                                     title="View merge history"
                                 >
                                     <History size={16} />
                                     {t('tags:history')}
-                                </button>
-                                <button onClick={onClose} className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors">
+                                </Button>
+                                <Button onClick={onClose} className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors">
                                     <X size={20} />
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
@@ -250,10 +251,10 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                     <p className="text-sm text-white/40 max-w-xs mx-auto">{t('tags:noSimilarTags')}</p>
                                     
                                     <div className="pt-4 flex flex-col gap-2 items-center">
-                                        <button onClick={loadAnalysis} className="text-xs text-blue-400 hover:text-blue-300 underline">
+                                        <Button onClick={loadAnalysis} className="text-xs text-blue-400 hover:text-blue-300 underline">
                                             {t('tags:checkAgain')}
-                                        </button>
-                                        <button 
+                                        </Button>
+                                        <Button 
                                             onClick={async () => {
                                                 if(confirm(t('tags:forceResyncConfirm'))) {
                                                     setLoading(true);
@@ -265,7 +266,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                             className="text-[10px] text-white/30 hover:text-white/60 border border-white/10 px-2 py-1 rounded"
                                         >
                                             {t('tags:forceResync')}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             ) : activeTab === 'fusion' ? (
@@ -275,7 +276,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                         <div className="text-sm text-white/60">
                                             <Trans ns="tags" i18nKey="foundGroups" count={groups.length} components={[<span className="font-bold text-white" />]} />
                                         </div>
-                                        <button
+                                        <Button
                                             onClick={handleMergeAll}
                                             disabled={mergingAll || mergingId !== null}
                                             className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
@@ -291,7 +292,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                                     {t('tags:mergeAll')}
                                                 </>
                                             )}
-                                        </button>
+                                        </Button>
                                     </div>
 
                                     {groups.map((group) => {
@@ -306,7 +307,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                             <div key={group.target.id} className="bg-glass-bg-accent border border-glass-border rounded-lg p-4 flex items-center justify-between group-hover:border-glass-border transition-colors">
                                                 <div className="flex items-center flex-1 gap-4">
                                                     <div className="flex flex-col gap-1">
-                                                        <button
+                                                        <Button
                                                             onClick={() => toggleMergeDirection(group)}
                                                             className="px-3 py-1.5 rounded-full bg-green-500/20 text-green-100 text-sm font-semibold border-2 border-green-500/50 hover:border-green-500/70 transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-lg shadow-green-500/20"
                                                             title={t('tags:tagToKeep', { tagName: effectiveTarget.name })}
@@ -315,24 +316,24 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                                                 <span className="text-green-400 text-lg">✓</span>
                                                                 <span>{effectiveTarget.name}</span>
                                                             </div>
-                                                        </button>
+                                                        </Button>
                                                         <span className="text-[10px] text-green-400/80 font-bold uppercase tracking-wider text-center">
                                                             {t('tags:kept')}
                                                         </span>
                                                     </div>
 
-                                                    <button
+                                                    <Button
                                                         onClick={() => toggleMergeDirection(group)}
                                                         className="text-white/30 hover:text-white/70 transition-all cursor-pointer hover:scale-110 active:scale-90"
                                                         title={t('tags:clickToInvert')}
                                                     >
                                                         <ArrowLeftRight className="w-4 h-4" />
-                                                    </button>
+                                                    </Button>
 
                                                     <div className="flex flex-col gap-1">
                                                         <div className="flex flex-wrap gap-2">
                                                             {effectiveCandidates.map(cand => (
-                                                                <button
+                                                                <Button
                                                                     key={cand.id}
                                                                     onClick={() => setCustomTarget(group.target.id, cand.id)}
                                                                     className="px-2 py-1 rounded bg-red-500/10 text-red-300/80 text-xs border border-red-500/30 hover:border-red-500/50 hover:bg-red-500/20 transition-all line-through decoration-red-400 cursor-pointer"
@@ -342,7 +343,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                                                         <span className="text-red-400 font-bold">×</span>
                                                                         <span>{cand.name}</span>
                                                                     </div>
-                                                                </button>
+                                                                </Button>
                                                             ))}
                                                         </div>
                                                         <span className="text-[10px] text-red-400/60 font-bold uppercase tracking-wider">
@@ -352,7 +353,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                                 </div>
 
                                                 <div className="flex flex-col gap-2">
-                                                    <button
+                                                    <Button
                                                         onClick={() => handleMerge(group)}
                                                         disabled={mergingId === effectiveTarget.id || mergingAll}
                                                         className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
@@ -363,13 +364,13 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                                             <Merge className="w-3 h-3" />
                                                         )}
                                                         {t('tags:merge')}
-                                                    </button>
-                                                    <button
+                                                    </Button>
+                                                    <Button
                                                         onClick={() => handleIgnore(group)}
                                                         className="px-4 py-1.5 text-[10px] text-white/40 hover:text-white/70 hover:bg-white/5 border border-white/10 rounded-lg transition-all"
                                                     >
                                                         {t('tags:ignoreMatch')}
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         );
@@ -380,8 +381,10 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                     {tagTree.map(node => (
                                         <TagTreeItem 
                                             key={node.id} 
-                                            node={node} 
-                                            onSetParent={handleSetParent} 
+                                            tag={node.name}
+                                            count={0} // Count not yet available in TagNode
+                                            isExpanded={true}
+                                            hasChildren={node.children.length > 0}
                                         />
                                     ))}
                                     {tagTree.length === 0 && (

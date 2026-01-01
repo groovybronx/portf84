@@ -3,6 +3,7 @@
  * Back face of the card showing metadata, tags, and file info
  */
 import React, { useMemo } from "react";
+import { Button } from "../../../../shared/components/ui";
 import { useTranslation } from "react-i18next";
 import {
 	Maximize2,
@@ -66,13 +67,13 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 						{item.name}
 					</h4>
 				</div>
-				<button
+				<Button
 					onClick={onFlip}
 					className="p-1.5 -mr-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
 					title={t('closeInfo')}
 				>
 					<Maximize2 size={16} />
-				</button>
+				</Button>
 			</div>
 
 			{/* Location (Folder/Collection) */}
@@ -130,7 +131,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 					{item.manualTags?.map((tag) => {
 						const isSelected = selectedTag === tag;
 						return (
-							<button
+							<Button
 								key={tag}
 								onClick={() => onTagClick?.(tag)}
 								className={`px-3 py-1 border rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 ${
@@ -140,13 +141,13 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 								}`}
 							>
 								<Tag size={12} /> {tag}
-							</button>
+							</Button>
 						);
 					})}
 					{item.aiTags?.slice(0, 5).map((tag) => {
 						const isSelected = selectedTag === tag;
 						return (
-							<button
+							<Button
 								key={tag}
 								onClick={() => onTagClick?.(tag)}
 								className={`px-3 py-1 border rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 ${
@@ -156,7 +157,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 								}`}
 							>
 								<Sparkles size={12} /> {tag}
-							</button>
+							</Button>
 						);
 					})}
 				</div>
