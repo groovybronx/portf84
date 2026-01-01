@@ -1,86 +1,75 @@
-import React, { useState } from 'react';
-import { ChevronRight, ChevronDown, Tag, Link2, Link2Off } from 'lucide-react';
-import { TagNode } from '../../../shared/types/database';
-import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
+import { Trash2, Star, ChevronRight } from "lucide-react";
+import { Button } from "../../../shared/components/ui";
 
-interface TagTreeItemProps {
-  node: TagNode;
-  onSetParent: (tagId: string, parentId: string | null) => void;
+export interface TagTreeItemProps {
+  tag: string;
+  count: number;
   level?: number;
+  onDelete?: (tag: string) => void;
+  isManual?: boolean;
+  onToggle?: () => void;
+  isExpanded?: boolean;
+  hasChildren?: boolean;
 }
 
-export const TagTreeItem: React.FC<TagTreeItemProps> = ({ 
-  node, 
-  onSetParent, 
-  level = 0 
+export const TagTreeItem: React.FC<TagTreeItemProps> = ({
+  tag,
+  count,
+  level = 0,
+  onDelete,
+  isManual = false,
+  onToggle,
+  isExpanded = false,
+  hasChildren = false,
 }) => {
-  const { t } = useTranslation('tags');
-  const [isExpanded, setIsExpanded] = useState(true);
-  const hasChildren = node.children && node.children.length > 0;
-
   return (
-    <div className="select-none">
-      <div 
-        className={`flex items-center gap-2 py-1.5 px-2 hover:bg-white/5 rounded-md group transition-colors ${
-          level > 0 ? 'ml-4 border-l border-white/10 pl-4' : ''
-        }`}
-      >
-        <div 
-          className="w-4 h-4 flex items-center justify-center cursor-pointer text-gray-400 hover:text-white"
-          onClick={() => setIsExpanded(!isExpanded)}
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 10 }}
+      className="group flex items-center gap-2 p-2 rounded-lg hover:bg-glass-bg-accent transition-colors"
+      style={{ paddingLeft: `${(level * 12) + 8}px` }}
+    >
+      {hasChildren && (
+        <Button
+          variant="glass-icon"
+          size="icon-sm"
+          onClick={onToggle}
+          className="shrink-0"
         >
-          {hasChildren ? (
-            isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-          ) : (
-            <div className="w-1 h-1 bg-gray-600 rounded-full" />
-          )}
-        </div>
+          <ChevronRight
+            size={12}
+            className={`transition-transform ${
+              isExpanded ? "rotate-90" : ""
+            }`}
+          />
+        </Button>
+      )}
 
-        <Tag size={14} className={node.type === 'ai' ? 'text-purple-400' : 'text-blue-400'} />
-        
-        <span className="text-sm text-gray-200 flex-1 truncate">
-          {node.name}
-        </span>
-
-        {/* Actions visible on hover */}
-        <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-          {node.parentId ? (
-            <button
-              onClick={() => onSetParent(node.id, null)}
-              className="p-1 hover:bg-red-500/20 text-gray-400 hover:text-red-400 rounded transition-colors"
-              title={t('removeParent')}
-            >
-              <Link2Off size={14} />
-            </button>
-          ) : (
-             <span className="text-[10px] text-gray-500 italic mr-2">
-               {t('root')}
-             </span>
-          )}
-        </div>
+      <div className="flex-1 flex items-center gap-2 min-w-0">
+        {isManual && (
+          <Star
+            size={12}
+            className="text-blue-400 fill-blue-400 shrink-0"
+          />
+        )}
+        <span className="text-sm text-gray-300 truncate">{tag}</span>
+        <span className="text-xs text-gray-500 shrink-0">({count})</span>
       </div>
 
-      <AnimatePresence>
-        {isExpanded && hasChildren && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            {node.children.map(child => (
-              <TagTreeItem 
-                key={child.id} 
-                node={child} 
-                onSetParent={onSetParent} 
-                level={level + 1} 
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {onDelete && (
+        <Button
+          variant="glass-icon"
+          size="icon-sm"
+          onClick={() => onDelete(tag)}
+          className="opacity-0 group-hover:opacity-100 shrink-0 hover:bg-red-500/20 hover:text-red-400"
+        >
+          <Trash2 size={12} />
+        </Button>
+      )}
+    </motion.div>
   );
 };
