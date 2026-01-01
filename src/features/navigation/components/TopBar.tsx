@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ViewMode } from "../../../shared/types";
 import { useLibrary } from "../../../shared/contexts/LibraryContext";
 import { useSelection } from "../../../shared/contexts/SelectionContext";
-import { Button } from "../../../shared/components/ui";
+import { Button, GlassCard } from "../../../shared/components/ui";
 
 // Sub-components
 import { SearchField } from "./topbar/SearchField";
@@ -106,7 +106,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 				transition={{ type: "spring", stiffness: 300, damping: 30 }}
 				className="w-full flex justify-center p-4 pointer-events-none"
 			>
-				<div className="glass-surface rounded-2xl shadow-xl p-2 sm:p-3 flex items-center max-w-[95vw] pointer-events-auto">
+				<GlassCard className="rounded-2xl shadow-xl p-2 sm:p-3 flex items-center max-w-[95vw] pointer-events-auto">
 					{/* --- LEFT SECTION --- */}
 					<div className="flex items-center gap-2 shrink-0">
 						<Button
@@ -251,7 +251,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							useCinematicCarousel={useCinematicCarousel}
 						/>
 					</div>
-				</div>
+				</GlassCard>
 			</motion.div>
 		</div>
 	);

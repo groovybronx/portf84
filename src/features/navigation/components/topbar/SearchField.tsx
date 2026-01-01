@@ -104,7 +104,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
       {/* Autocomplete Dropdown */}
       {isFocused && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
+        <GlassCard variant="overlay" className="absolute top-full left-0 right-0 mt-2 border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
           <div className="px-3 py-2 text-xs text-gray-500 font-medium uppercase tracking-wider border-b border-white/5">
             {t('suggestions')}
           </div>
@@ -119,7 +119,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
               {tag}
             </Button>
           ))}
-        </div>
+        </GlassCard>
       )}
     </div>
   );
