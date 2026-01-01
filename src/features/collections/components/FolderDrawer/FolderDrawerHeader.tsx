@@ -25,13 +25,15 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
             <Icon action="library" className="text-primary" /> {t('library:library')}
             </h2>
             {onAdd && (
-                <button 
+                <Button
+                    variant="glass-icon"
+                    size="icon-sm"
                     onClick={onAdd}
-                    className="p-1 rounded-full hover:bg-glass-bg-accent text-text-secondary hover:text-text-primary transition-colors"
                     title={t('library:manageProjects')}
+                    aria-label="Add project"
                 >
                     <Icon action="add" size={16} />
-                </button>
+                </Button>
             )}
         </div>
         <span className="text-xs text-gray-500 font-medium ml-8">
