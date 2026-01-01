@@ -217,9 +217,9 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({ isOpen, onClos
                                 <div className="space-y-4">
                                     {/* Batch Actions Header */}
                                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                                        <div className="text-sm text-white/60" dangerouslySetInnerHTML={{ 
-                                            __html: t('tags:foundGroups', { count: groups.length }) 
-                                        }} />
+                                        <div className="text-sm text-white/60">
+                                            <Trans i18nKey="tags:foundGroups" count={groups.length} components={[<span className="font-bold text-white" />]} />
+                                        </div>
                                         <button
                                             onClick={handleMergeAll}
                                             disabled={mergingAll || mergingId !== null}
