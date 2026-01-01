@@ -21,7 +21,7 @@ interface ThemeSettings {
 
 interface ThemeContextType {
   settings: ThemeSettings;
-  updateSetting: <K extends keyof ThemeSettings>(key: K, value: ThemeSettings[K]) => void;
+  updateSetting: (key: keyof ThemeSettings, value: string) => void;
   resetTheme: () => void;
 }
 
@@ -79,7 +79,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem("lumina_theme", JSON.stringify(settings));
   }, [settings]);
 
-  const updateSetting = <K extends keyof ThemeSettings>(key: K, value: ThemeSettings[K]) => {
+  const updateSetting = (key: keyof ThemeSettings, value: string) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
