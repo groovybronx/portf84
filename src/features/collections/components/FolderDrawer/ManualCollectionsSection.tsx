@@ -42,9 +42,9 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
 
   return (
     <div>
-      <button
+      <div
         onClick={toggleSection}
-        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer ${
           isExpanded
             ? "bg-tertiary/10 border-tertiary/20 shadow-lg shadow-tertiary/20" 
             : "hover:bg-tertiary/5 border-transparent"
@@ -84,7 +84,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
         </div>
 
 
-      </button>
+      </div>
       <AnimatePresence>
         {isExpanded && (
           <motion.div

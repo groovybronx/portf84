@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 31/12/2024 à 01:25
+Dernière mise à jour : 01/01/2026 à 05:45
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -22,7 +22,46 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - [ ] Tests de non-régression sur le build de production
 - [ ] Déploiement v0.9.5
 
-**Dernière modification** : 31/12/2024 à 02:00
+**Dernière modification** : 01/01/2026 à 05:45
+
+---
+
+## [01/01/2026 - 05:45] - Fix Hydration Error Sidebar
+
+### Type : Correction Bug
+
+**Composants** : 
+- `src/features/collections/components/FolderDrawer/ShadowFoldersSection.tsx`
+- `src/features/collections/components/FolderDrawer/ManualCollectionsSection.tsx`
+
+**Problème** :
+- Erreur "Hydration failed" causée par une structure HTML invalide (`<button>` imbriqué dans `<button>`).
+- Les headers des sections "Dossiers de Travail" et "Collections" étaient des boutons contenant d'autres boutons d'action.
+
+**Correction** :
+- Remplacement des `<button>` conteneurs par des `<div>` avec `cursor-pointer`.
+- Maintien du comportement toggle onClick.
+- Structure HTML valide garantissant une hydratation React sans erreur.
+
+**Impact** :
+- Suppression des erreurs console au chargement.
+- Plus de stabilité React.
+
+### Type : Correction Bug
+
+**Composant** : `src/shared/contexts/ThemeContext.tsx`
+
+**Problème** :
+- Les réglages de thème n'étaient pas persistants au rechargement de la page.
+- Une "Race Condition" réinitialisait le state par défaut avant que le localStorage ne soit lu.
+
+**Correction** :
+- Implémentation d'une "Lazy Initialization" dans `useState`.
+- Lecture synchrone du localStorage lors du premier rendu.
+- Utilisation de la constante `STORAGE_KEYS.THEME` pour la cohérence.
+
+**Impact** :
+- Les préférences de thème (couleurs, mode sombre) sont maintenant correctement sauvegardées et restaurées.
 
 ---
 
