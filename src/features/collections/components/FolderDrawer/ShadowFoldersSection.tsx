@@ -37,18 +37,21 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
 
   return (
     <div>
-      <button
-        onClick={toggleSection}
+      <div
         className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
           isExpanded
             ? "bg-quaternary/10 border-quaternary/20 shadow-lg shadow-quaternary/20"
             : "hover:bg-quaternary/5 border-transparent"
         }`}
       >
-        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-quaternary">
-          <Icon action={settings.quaternaryIcon} size={14} className="text-quaternary" />
-          <span>{t('workFolders')}</span>
-        </p>
+        <button
+          onClick={toggleSection}
+          className="flex-1 flex items-center gap-2 text-left"
+        >
+          <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-quaternary">
+            <Icon action={settings.quaternaryIcon} size={14} className="text-quaternary" />
+            <span>{t('workFolders')}</span>
+          </p>
           <span
             className={`text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
               isExpanded
@@ -58,29 +61,35 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
           >
             {folders.length}
           </span>
+        </button>
           
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              onImportFolder();
-            }}
-            disabled={!activeCollection}
-            className="h-6 w-6 text-quaternary hover:text-white hover:bg-quaternary/20 rounded-md transition-colors"
-            title={t('addFolder')}
-          >
-            <Icon action="add" size={14} />
-          </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            onImportFolder();
+          }}
+          disabled={!activeCollection}
+          className="h-6 w-6 text-quaternary hover:text-white hover:bg-quaternary/20 rounded-md transition-colors"
+          title={t('addFolder')}
+        >
+          <Icon action="add" size={14} />
+        </Button>
 
+        <button
+          onClick={toggleSection}
+          className="p-1"
+          aria-label={isExpanded ? t('collapse') : t('expand')}
+        >
           <Icon action="next"
             size={14}
             className={`transition-transform duration-300 text-quaternary ${
               isExpanded ? "rotate-90" : "opacity-50"
             }`}
           />
-
-      </button>
+        </button>
+      </div>
 
 
       <AnimatePresence>
