@@ -72,6 +72,14 @@ for branch in "${PROTECTED_BRANCHES[@]}"; do
 	fi
 done
 
+# Function to get unique commit info for a branch
+get_unique_commits() {
+	local branch=$1
+	unique_from_main=$(git log origin/main..origin/"$branch" --oneline 2>/dev/null | wc -l)
+	unique_from_develop=$(git log origin/develop..origin/"$branch" --oneline 2>/dev/null | wc -l)
+	unique_from_refactor=$(git log origin/refactor..origin/"$branch" --oneline 2>/dev/null | wc -l)
+}
+
 echo ""
 echo -e "${YELLOW}📋 Branches with Unmerged Work (should be reviewed, NOT deleted):${NC}"
 UNMERGED_BRANCHES=(
@@ -84,9 +92,7 @@ UNMERGED_BRANCHES=(
 for branch in "${UNMERGED_BRANCHES[@]}"; do
 	if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
 		# Get the minimum number of unique commits across main, develop, and refactor
-		unique_from_main=$(git log origin/main..origin/"$branch" --oneline 2>/dev/null | wc -l)
-		unique_from_develop=$(git log origin/develop..origin/"$branch" --oneline 2>/dev/null | wc -l)
-		unique_from_refactor=$(git log origin/refactor..origin/"$branch" --oneline 2>/dev/null | wc -l)
+		get_unique_commits "$branch"
 		
 		# Show the minimum to give the best case scenario
 		min_unique=$unique_from_main
@@ -113,9 +119,7 @@ for branch in "${ALL_CLEANUP_BRANCHES[@]}"; do
 	if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
 		EXISTING_BRANCHES+=("$branch")
 		# Check why it's obsolete - compare against main, develop, and refactor
-		unique_from_main=$(git log origin/main..origin/"$branch" --oneline 2>/dev/null | wc -l)
-		unique_from_develop=$(git log origin/develop..origin/"$branch" --oneline 2>/dev/null | wc -l)
-		unique_from_refactor=$(git log origin/refactor..origin/"$branch" --oneline 2>/dev/null | wc -l)
+		get_unique_commits "$branch"
 		
 		if [ "$unique_from_main" -eq 0 ]; then
 			echo -e "  ${GREEN}✓${NC} $branch (all commits in main)"

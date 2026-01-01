@@ -27,7 +27,7 @@ These branches contain commits that are not yet in `develop` or `refactor`. They
 
 ### `copilot/execute-ui-audit-simplification`
 - **Status**: Has unmerged work
-- **Unique commits**: 199 (vs develop)
+- **Unique commits**: 4 (vs refactor) *as of analysis date*
 - **Purpose**: UI/UX audit documentation work
 - **Commits include**:
   - Add comprehensive navigation guide for UI/UX audit documentation
@@ -37,7 +37,7 @@ These branches contain commits that are not yet in `develop` or `refactor`. They
 
 ### `copilot/sub-pr-43`
 - **Status**: Has unmerged work
-- **Unique commits**: 199 (vs develop)
+- **Unique commits**: 4 (vs refactor) *as of analysis date*
 - **Purpose**: Sub-PR for smart collections feature (#43)
 - **Commits include**:
   - refactor: extract magic numbers as named constants
@@ -47,7 +47,7 @@ These branches contain commits that are not yet in `develop` or `refactor`. They
 
 ### `copilot/sub-pr-43-again`
 - **Status**: Has unmerged work
-- **Unique commits**: 198 (vs develop)
+- **Unique commits**: 3 (vs refactor) *as of analysis date*
 - **Purpose**: Another sub-PR for smart collections feature (#43)
 - **Commits include**:
   - refactor: address code review optimizations
@@ -56,8 +56,9 @@ These branches contain commits that are not yet in `develop` or `refactor`. They
 
 ### `copilot/reorganize-documentation-structure`
 - **Status**: Active documentation work
+- **Unique commits**: 0 (vs main) *as of analysis date - fully merged*
 - **Purpose**: Reorganizing repository documentation
-- **Action**: Keep until work is completed and merged
+- **Action**: Can be deleted if PR is merged and closed
 
 ---
 
