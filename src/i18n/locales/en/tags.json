@@ -51,5 +51,15 @@
   "pageCount": "Page {{current}} of {{total}}",
   "unknown": "Unknown",
   "auto": "auto",
-  "tags": "Tags"
+  "tags": "Tags",
+  "actions": "Actions",
+  "undo": "Undo",
+  "undoConfirm": "Restore the tag \"{{tagName}}\"?",
+  "ignoreMatch": "Ignore Group",
+  "quickTags": "Quick Tags",
+  "parentTag": "Parent Tag",
+  "setAsParent": "Set as parent",
+  "removeParent": "Remove parent",
+  "tagHierarchy": "Tag Hierarchy",
+  "root": "Root"
 }

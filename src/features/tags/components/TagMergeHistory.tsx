@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, History, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { getAllTags } from '../../../services/storage/tags';
+import { getAllTags, undoMerge } from '../../../services/storage/tags';
 import { getDB } from '../../../services/storage/db';
 import { useTranslation } from 'react-i18next';
 import { DBTagMerge, ParsedTag } from '../../../shared/types/database';
@@ -166,11 +166,12 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                             ) : (
                                 <div className="space-y-3" role="table" aria-label="Tag merge history">
                                     {/* Table Header */}
-                                    <div className="grid grid-cols-11 gap-4 px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10" role="row">
-                                        <div className="col-span-3" role="columnheader">{t('tags:date')}</div>
-                                        <div className="col-span-4" role="columnheader">{t('tags:targetTag')}</div>
+                                    <div className="grid grid-cols-12 gap-4 px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10" role="row">
+                                        <div className="col-span-2" role="columnheader">{t('tags:date')}</div>
+                                        <div className="col-span-3" role="columnheader">{t('tags:targetTag')}</div>
                                         <div className="col-span-3" role="columnheader">{t('tags:sourceTag')}</div>
-                                        <div className="col-span-1" role="columnheader">{t('tags:type')}</div>
+                                        <div className="col-span-2" role="columnheader">{t('tags:type')}</div>
+                                        <div className="col-span-2 text-right" role="columnheader">{t('tags:actions')}</div>
                                     </div>
 
                                     {/* Table Rows */}
@@ -179,30 +180,47 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                             key={entry.id}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="grid grid-cols-11 gap-4 px-4 py-3 bg-glass-bg-accent border border-glass-border rounded-lg hover:border-white/20 transition-colors items-center"
+                                            className="grid grid-cols-12 gap-4 px-4 py-3 bg-glass-bg-accent border border-glass-border rounded-lg hover:border-white/20 transition-colors items-center"
                                             role="row"
                                         >
-                                            <div className="col-span-3 text-sm text-white/70" role="cell">
+                                            <div className="col-span-2 text-xs text-white/50" role="cell">
                                                 {formatDate(entry.mergedAt)}
                                             </div>
-                                            <div className="col-span-4" role="cell">
-                                                <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-500/30 inline-block">
+                                            <div className="col-span-3" role="cell">
+                                                <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-500/30 inline-block overflow-hidden text-ellipsis max-w-full">
                                                     {entry.targetTagName}
                                                 </span>
                                             </div>
                                             <div className="col-span-3" role="cell">
-                                                <span className="px-3 py-1.5 rounded-full bg-red-500/10 text-red-300/70 text-sm border border-red-500/20 inline-block line-through decoration-red-400/50">
+                                                <span className="px-3 py-1.5 rounded-full bg-red-500/10 text-red-300/70 text-sm border border-red-500/20 inline-block line-through decoration-red-400/50 overflow-hidden text-ellipsis max-w-full">
                                                     {entry.sourceTagName}
                                                 </span>
                                             </div>
-                                            <div className="col-span-1" role="cell">
-                                                <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                            <div className="col-span-2" role="cell">
+                                                <span className={`px-2 py-1 rounded text-[10px] font-medium ${
                                                     entry.mergedBy === 'auto' 
                                                         ? 'bg-purple-500/20 text-purple-200 border border-purple-500/30'
                                                         : 'bg-green-500/20 text-green-200 border border-green-500/30'
                                                 }`}>
                                                     {formatMergeType(entry.mergedBy)}
                                                 </span>
+                                            </div>
+                                            <div className="col-span-2 text-right" role="cell">
+                                                <button
+                                                    onClick={async () => {
+                                                        if (confirm(t('tags:undoConfirm', { tagName: entry.sourceTagName }))) {
+                                                            try {
+                                                                await undoMerge(entry.id);
+                                                                loadHistory();
+                                                            } catch (e) {
+                                                                console.error("Undo failed", e);
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="px-2 py-1 text-[10px] bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded border border-white/10 transition-colors"
+                                                >
+                                                    {t('tags:undo')}
+                                                </button>
                                             </div>
                                         </motion.div>
                                     ))}

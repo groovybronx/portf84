@@ -140,6 +140,7 @@ export interface DBTag {
   normalizedName: string;
   type: TagType;
   confidence: number | null;
+  parentId: string | null;
   createdAt: number;
 }
 
@@ -149,6 +150,12 @@ export interface ParsedTag {
   name: string;
   type: TagType;
   confidence?: number;
+  parentId?: string;
+}
+
+/** Hierarchical tag node for tree display */
+export interface TagNode extends ParsedTag {
+  children: TagNode[];
 }
 
 /** Raw item-tag relation from database */

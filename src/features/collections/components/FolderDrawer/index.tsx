@@ -14,6 +14,8 @@ import { FolderDrawerHeader } from "./FolderDrawerHeader";
 import { ShadowFoldersSection } from "./ShadowFoldersSection";
 import { ManualCollectionsSection } from "./ManualCollectionsSection";
 import { ColorFiltersSection } from "./ColorFiltersSection";
+import { SmartCollectionsSection } from "./SmartCollectionsSection";
+import { SmartCollection } from "../../../../services/smartCollectionService";
 
 interface FolderDrawerProps {
   isOpen: boolean;
@@ -36,6 +38,14 @@ interface FolderDrawerProps {
   // Color filter
   activeColorFilter?: string | null;
   onColorFilterChange?: (color: string | null) => void;
+  // Smart Collections
+  smartCollections: SmartCollection[];
+  activeSmartCollectionId: string | null;
+  onSelectSmartCollection: (id: string | null) => void;
+  onEditSmartCollection: (collection: SmartCollection) => void;
+  onDeleteSmartCollection: (id: string) => void;
+  onCreateSmartCollection: () => void;
+  onManageTags: () => void;
 }
 
 export const FolderDrawer: React.FC<FolderDrawerProps> = ({
@@ -55,6 +65,13 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   onTogglePin,
   activeColorFilter,
   onColorFilterChange,
+  smartCollections,
+  activeSmartCollectionId,
+  onSelectSmartCollection,
+  onEditSmartCollection,
+  onDeleteSmartCollection,
+  onCreateSmartCollection,
+  onManageTags,
 }) => {
   const { t } = useTranslation(["library", "navigation"]);
   const { settings } = useTheme();
@@ -177,6 +194,16 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                     activeCollection={activeCollection}
                                     onColorFilterChange={onColorFilterChange}
                                 />
+                                
+                                {/* SMART COLLECTIONS SECTION */}
+                                <SmartCollectionsSection
+                                    collections={smartCollections}
+                                    activeId={activeSmartCollectionId}
+                                    onSelect={onSelectSmartCollection}
+                                    onEdit={onEditSmartCollection}
+                                    onDelete={onDeleteSmartCollection}
+                                    onCreate={onCreateSmartCollection}
+                                />
 
                                 {/* COLOR TAGS SECTION */}
                                 <ColorFiltersSection
@@ -185,6 +212,17 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                     onColorFilterChange={onColorFilterChange}
                                     onSelectFolder={onSelectFolder}
                                 />
+
+                                {/* MANAGE TAGS BUTTON */}
+                                <button
+                                    onClick={onManageTags}
+                                    className="w-full flex items-center gap-3 p-2 rounded-lg text-quinary/60 hover:text-white hover:bg-quinary/10 transition-all group"
+                                >
+                                    <div className="p-1.5 bg-quinary/10 rounded-md text-quinary group-hover:bg-quinary group-hover:text-white transition-all">
+                                        <Icon action="tag" size={14} />
+                                    </div>
+                                    <span className="text-sm font-medium">{t('library:manageTags')}</span>
+                                </button>
                             </motion.div>
                         </motion.div>
                     ) : (

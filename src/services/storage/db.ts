@@ -2,6 +2,7 @@
  * Database Connection Module
  * Handles SQLite initialization and provides the DB instance
  */
+/// <reference types="vite/client" />
 import Database from "@tauri-apps/plugin-sql";
 import { STORAGE_KEYS } from "../../shared/constants";
 
@@ -143,8 +144,14 @@ export const getDB = async (): Promise<Database> => {
           normalizedName TEXT NOT NULL,
           type TEXT NOT NULL CHECK(type IN ('ai', 'manual', 'ai_detailed')),
           confidence REAL,
-          createdAt INTEGER NOT NULL
+          parentId TEXT,
+          createdAt INTEGER NOT NULL,
+          FOREIGN KEY (parentId) REFERENCES tags(id) ON DELETE SET NULL
         )
+      `);
+      await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_tags_parent 
+        ON tags(parentId)
       `);
 			await db.execute(`
         CREATE UNIQUE INDEX IF NOT EXISTS idx_tags_normalized 
@@ -182,6 +189,7 @@ export const getDB = async (): Promise<Database> => {
           id TEXT PRIMARY KEY,
           targetTagId TEXT NOT NULL,
           sourceTagId TEXT NOT NULL,
+          sourceTagName TEXT,
           mergedAt INTEGER NOT NULL,
           mergedBy TEXT,
           FOREIGN KEY (targetTagId) REFERENCES tags(id) ON DELETE CASCADE
@@ -216,6 +224,51 @@ export const getDB = async (): Promise<Database> => {
         ON tag_aliases(targetTagId)
       `);
 			console.log("[Storage] Tag aliases table created/verified");
+
+			// ==================== TAG IGNORE MATCHES ====================
+			await db.execute(`
+        CREATE TABLE IF NOT EXISTS tag_ignore_matches (
+          id TEXT PRIMARY KEY,
+          tagId1 TEXT NOT NULL,
+          tagId2 TEXT NOT NULL,
+          createdAt INTEGER NOT NULL,
+          FOREIGN KEY (tagId1) REFERENCES tags(id) ON DELETE CASCADE,
+          FOREIGN KEY (tagId2) REFERENCES tags(id) ON DELETE CASCADE
+        )
+      `);
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_tag_ignore_tags 
+        ON tag_ignore_matches(tagId1, tagId2)
+      `);
+			console.log("[Storage] Tag ignore matches table created/verified");
+
+			// ==================== SMART COLLECTIONS ====================
+			await db.execute(`
+        CREATE TABLE IF NOT EXISTS smart_collections (
+          id TEXT PRIMARY KEY,
+          collectionId TEXT,
+          name TEXT NOT NULL,
+          query TEXT NOT NULL, -- JSON-stringified query object
+          icon TEXT,
+          color TEXT,
+          createdAt INTEGER NOT NULL,
+          FOREIGN KEY (collectionId) REFERENCES collections(id) ON DELETE CASCADE
+        )
+      `);
+			
+			// Migration: Add collectionId if it doesn't exist
+			try {
+				await db.execute("ALTER TABLE smart_collections ADD COLUMN collectionId TEXT");
+				console.log("[Storage] Migration: Added collectionId to smart_collections");
+			} catch (e) {
+				// Column likely already exists
+			}
+
+			await db.execute(`
+        CREATE INDEX IF NOT EXISTS idx_smart_collections_collectionId 
+        ON smart_collections(collectionId)
+      `);
+			console.log("[Storage] Smart collections table created/verified");
 
 			console.log("[Storage] Schema initialized successfully");
 			dbInstance = db;

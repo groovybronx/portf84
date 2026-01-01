@@ -3,7 +3,9 @@ import { Tag, Plus, X, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PortfolioItem } from "../../../shared/types";
 import { storageService } from "../../../services/storageService";
-import { getTagByAlias } from "../../../services/storage/tags";
+import { getTagByAlias, getMostUsedTags } from "../../../services/storage/tags";
+import { ParsedTag } from "../../../shared/types/database";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Constants
 const ALIAS_CHECK_DEBOUNCE_MS = 300;
@@ -23,6 +25,16 @@ export const TagManager: React.FC<TagManagerProps> = ({
 	const [newTag, setNewTag] = useState("");
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const [aliasSuggestion, setAliasSuggestion] = useState<string | null>(null);
+	const [quickTags, setQuickTags] = useState<ParsedTag[]>([]);
+
+	// Load quick tags (most used)
+	useEffect(() => {
+		const loadQuickTags = async () => {
+			const used = await getMostUsedTags(10);
+			setQuickTags(used);
+		};
+		loadQuickTags();
+	}, [item.manualTags]);
 
 	// Check for alias suggestions when user types
 	useEffect(() => {
@@ -128,6 +140,33 @@ export const TagManager: React.FC<TagManagerProps> = ({
 					<span className="text-xs text-gray-500 italic">{t('tags:noTagsYet')}</span>
 				)}
 			</div>
+
+			{/* Quick Tags (Most Used) */}
+			{quickTags.length > 0 && (
+				<div className="space-y-1">
+					<span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold px-1">
+						{t('tags:quickTags')}
+					</span>
+					<div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide no-scrollbar">
+						{quickTags.map((tag) => {
+							const isApplied = item.manualTags?.includes(tag.name);
+							return (
+								<button
+									key={tag.id}
+									onClick={() => isApplied ? handleRemoveTag(tag.name) : handleAddTag(tag.name)}
+									className={`px-2.5 py-1 text-[11px] rounded-md border transition-all shrink-0 ${
+										isApplied 
+											? 'bg-blue-500/30 border-blue-500/50 text-blue-200' 
+											: 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
+									}`}
+								>
+									{tag.name}
+								</button>
+							);
+						})}
+					</div>
+				</div>
+			)}
 
 			{/* Add Tag Input */}
 			<div className="relative mt-3">

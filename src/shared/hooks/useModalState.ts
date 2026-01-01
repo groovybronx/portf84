@@ -8,6 +8,8 @@ export interface ModalState {
   isAddTagModalOpen: boolean;
   isSettingsOpen: boolean;
   isCollectionManagerOpen: boolean;
+  isSmartCollectionBuilderOpen: boolean;
+  isTagStudioOpen: boolean;
 
   // Actions
   setIsFolderDrawerOpen: (open: boolean) => void;
@@ -16,6 +18,8 @@ export interface ModalState {
   setIsAddTagModalOpen: (open: boolean) => void;
   setIsSettingsOpen: (open: boolean) => void;
   setIsCollectionManagerOpen: (open: boolean) => void;
+  setIsSmartCollectionBuilderOpen: (open: boolean) => void;
+  setIsTagStudioOpen: (open: boolean) => void;
 }
 
 /**
@@ -29,6 +33,8 @@ export const useModalState = (): ModalState => {
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
+  const [isSmartCollectionBuilderOpen, setIsSmartCollectionBuilderOpen] = useState(false);
+  const [isTagStudioOpen, setIsTagStudioOpen] = useState(false);
 
   return {
     // States
@@ -38,6 +44,8 @@ export const useModalState = (): ModalState => {
     isAddTagModalOpen,
     isSettingsOpen,
     isCollectionManagerOpen,
+    isSmartCollectionBuilderOpen,
+    isTagStudioOpen,
 
     // Actions
     setIsFolderDrawerOpen,
@@ -46,5 +54,7 @@ export const useModalState = (): ModalState => {
     setIsAddTagModalOpen,
     setIsSettingsOpen,
     setIsCollectionManagerOpen,
+    setIsSmartCollectionBuilderOpen,
+    setIsTagStudioOpen,
   };
 };

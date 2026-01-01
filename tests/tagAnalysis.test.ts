@@ -9,7 +9,8 @@ import type { ParsedTag } from '../src/shared/types/database';
 
 // Mock the getAllTags function
 vi.mock('../src/services/storage/tags', () => ({
-    getAllTags: vi.fn()
+    getAllTags: vi.fn(),
+    getIgnoredMatches: vi.fn().mockResolvedValue([])
 }));
 
 import { getAllTags } from '../src/services/storage/tags';
@@ -161,5 +162,27 @@ describe('Tag Analysis - Redundancy Detection', () => {
         // With maxTags=10, should only process first 10 tags
         // No groups should be found as all tags are unique
         expect(groups.length).toBeLessThanOrEqual(1);
+    });
+
+    it('should filter out ignored tag matches', async () => {
+        const mockTags: ParsedTag[] = [
+            { id: 'tag-1', name: 'landscape', type: 'manual' },
+            { id: 'tag-2', name: 'landscapes', type: 'manual' },
+            { id: 'tag-3', name: 'forest', type: 'manual' },
+            { id: 'tag-4', name: 'forests', type: 'manual' }
+        ];
+
+        const { getIgnoredMatches } = await import('../src/services/storage/tags');
+
+        vi.mocked(getAllTags).mockResolvedValue(mockTags);
+        // Ignore landscape but not forest
+        vi.mocked(getIgnoredMatches).mockResolvedValue([['tag-1', 'tag-2']]);
+
+        const groups = await analyzeTagRedundancy();
+
+        // Should find only the forest group
+        expect(groups.length).toBe(1);
+        expect(groups[0]?.target.name).toBe('forest');
+        expect(groups[0]?.candidates[0]?.name).toBe('forests');
     });
 });

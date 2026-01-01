@@ -1,5 +1,5 @@
 
-import { getAllTags } from "./storage/tags";
+import { getAllTags, getIgnoredMatches } from "./storage/tags";
 import { ParsedTag } from "../shared/types/database";
 
 // Simple Levenshtein distance implementation
@@ -71,6 +71,9 @@ const areTokensSimilar = (a: Set<string>, b: Set<string>): boolean => {
 
 export const analyzeTagRedundancy = async (maxTags?: number): Promise<TagGroup[]> => {
     const tags = await getAllTags();
+    const ignoredMatches = await getIgnoredMatches();
+    const ignoredSet = new Set(ignoredMatches.map(pair => pair.sort().join('|')));
+
     console.log(`[TagAnalysis] Analyzing ${tags.length} tags for redundancy...`);
     
     // Performance optimization: For very large datasets, warn the user
@@ -81,7 +84,7 @@ export const analyzeTagRedundancy = async (maxTags?: number): Promise<TagGroup[]
     const groups: TagGroup[] = [];
     const processedIds = new Set<string>();
 
-    // Normalize tags simply for comparison
+    // Normalize tags and pre-calculate tokens
     const simpleTags = tags.map(t => ({
         ...t,
         simpleName: t.name.toLowerCase().trim().replace(/s$/, ""), // Remove plural 's' roughly
@@ -106,11 +109,16 @@ export const analyzeTagRedundancy = async (maxTags?: number): Promise<TagGroup[]
             if (!candidate) continue;
             if (processedIds.has(candidate.id)) continue;
 
+            // 1. Check if this pair is ignored
+            const pairKey = [root.id, candidate.id].sort().join('|');
+            if (ignoredSet.has(pairKey)) continue;
+
+            // 2. Performance: Early exit if length difference is too large for Levenshtein match
+            // and no tokens overlap significantly
+            const lengthDiff = Math.abs(root.simpleName.length - candidate.simpleName.length);
+            if (lengthDiff > 2 && root.tokens.size === 0 && candidate.tokens.size === 0) continue;
+
             const dist = levenshteinDistance(root.simpleName, candidate.simpleName);
-            
-            // Criteria for similarity:
-            // 1. Direct inclusion (e.g., "landscape" vs "landscapes") - Levenshtein low
-            // 2. Token overlap (e.g., "noir et blanc" vs "noir blanc") - Jaccard high
             
             const isLevenshteinMatch = 
                 dist <= 1 || 
