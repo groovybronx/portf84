@@ -116,12 +116,6 @@ const response = await client.models.generateContent({
   ]
 });
 ```
-});
-
-const model = client.getGenerativeModel({
-  model: "gemini-2.0-flash-exp"
-});
-```
 
 ## Key Features
 
