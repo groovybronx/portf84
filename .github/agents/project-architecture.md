@@ -132,14 +132,6 @@ When working on architecture tasks, you should:
        "lucide-react": "^0.562.0"
      }
    }
-   ```json
-   {
-     "dependencies": {
-       "@tauri-apps/api": "^2.9.1",
-       "react": "^19.2.3",
-       "@google/genai": "^1.34.0"
-     }
-   }
    ```
 
    **tsconfig.json**: TypeScript compiler options
