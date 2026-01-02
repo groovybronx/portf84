@@ -2,6 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProgress, ProgressTask } from "../contexts/ProgressContext";
 import { CheckCircle2, AlertCircle, Loader2, X } from "lucide-react";
+import { Button } from "./ui/Button";
 
 export const UnifiedProgress: React.FC = () => {
   const { tasks, removeTask } = useProgress();
@@ -52,12 +53,15 @@ const TaskItem: React.FC<{ task: ProgressTask; onRemove: () => void }> = ({
             <h4 className="text-sm font-semibold text-white truncate pr-6">
               {task.label}
             </h4>
-            <button
+            <Button
               onClick={onRemove}
-              className="absolute top-3 right-3 p-1 rounded-full text-white/20 hover:text-white/60 hover:bg-glass-bg-accent transition-colors"
+              variant="close"
+              size="icon-sm"
+              aria-label="Close"
+              className="absolute top-3 right-3"
             >
-              <X className="w-4 h-4" />
-            </button>
+              <X size={14} />
+            </Button>
           </div>
 
           {task.message && (

@@ -28,6 +28,7 @@
   "viewDetail": "Détails",
   "clearFilter": "Effacer le filtre",
   "toggleColorTags": "Afficher les tags couleur",
+  "selectColor": "Sélectionner la couleur {{color}}",
   "pinLibrary": "Fixer la bibliothèque",
   "unpinLibrary": "Détacher la bibliothèque"
 }

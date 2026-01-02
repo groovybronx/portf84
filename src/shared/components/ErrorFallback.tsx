@@ -1,6 +1,8 @@
 import React from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "./ui/Button";
+import { GlassCard } from "./ui/GlassCard";
 
 interface ErrorFallbackProps {
 	error: Error | null;
@@ -21,7 +23,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
 			animate={{ opacity: 1, y: 0 }}
 			className="flex items-center justify-center min-h-[400px] p-8"
 		>
-			<div className="max-w-md w-full bg-glass-bg border border-glass-border rounded-xl p-8 text-center">
+			<GlassCard variant="card" padding="lg" className="max-w-md w-full text-center">
 				<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/20 mb-4">
 					<AlertTriangle size={32} className="text-red-400" />
 				</div>
@@ -49,26 +51,30 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
 
 				<div className="flex gap-3 justify-center">
 					{onReset && (
-						<button
+						<Button
 							onClick={onReset}
-							className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+							variant="primary"
+							size="md"
+							leftIcon={<RefreshCw size={16} />}
+							className="flex-1"
 						>
-							<RefreshCw size={16} />
 							Try Again
-						</button>
+						</Button>
 					)}
 
 					{onGoHome && (
-						<button
+						<Button
 							onClick={onGoHome}
-							className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-glass-bg-accent hover:bg-glass-bg-active text-white rounded-lg transition-colors border border-glass-border-light"
+							variant="glass"
+							size="md"
+							leftIcon={<Home size={16} />}
+							className="flex-1"
 						>
-							<Home size={16} />
 							Go Home
-						</button>
+						</Button>
 					)}
 				</div>
-			</div>
+			</GlassCard>
 		</motion.div>
 	);
 };

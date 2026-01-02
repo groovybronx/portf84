@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { XCircle, Eye, EyeOff, Palette } from "lucide-react";
 import { COLOR_PALETTE } from "../../../../shared/types";
+import { Button } from "../../../../shared/components/ui/Button";
 
 interface ColorPickerProps {
   activeColorFilter: string | null;
@@ -35,29 +36,29 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               : "border-transparent hover:scale-110 opacity-80 hover:opacity-100 hover:border-white/30"
           }`}
           style={{ backgroundColor: hex }}
+          aria-label={t('selectColor', { color: key })}
         />
       ))}
-      <button
+      <Button
         onClick={() => onColorAction(null)}
-        className={`w-4 h-4 flex items-center justify-center rounded-full text-gray-400 hover:text-white transition-colors ${
-          !activeColorFilter && !selectionMode
-            ? "opacity-30 cursor-default"
-            : ""
-        }`}
-        title={t('clearFilter')}
+        variant="glass-icon"
+        size="icon-sm"
+        disabled={!activeColorFilter && !selectionMode}
+        aria-label={t('clearFilter')}
+        className={!activeColorFilter && !selectionMode ? "opacity-30" : ""}
       >
         <XCircle size={14} />
-      </button>
+      </Button>
       <div className="w-px h-4 bg-glass-border/10 mx-1" />
-      <button
+      <Button
         onClick={onToggleColorTags}
-        className={`w-4 h-4 flex items-center justify-center rounded-full transition-colors ${
-          showColorTags ? "text-white" : "text-gray-500 hover:text-white"
-        }`}
-        title={t('toggleColorTags')}
+        variant="glass-icon"
+        size="icon-sm"
+        aria-label={t('toggleColorTags')}
+        className={showColorTags ? "text-white" : "text-gray-500"}
       >
         {showColorTags ? <Eye size={14} /> : <EyeOff size={14} />}
-      </button>
+      </Button>
     </div>
   );
 };
