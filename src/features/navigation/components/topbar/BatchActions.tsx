@@ -33,32 +33,31 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				{t('itemsSelected', { count: selectedCount })}
 			</span>
 			<Button
-				variant="ghost"
+				variant="glass"
 				size="icon"
 				onClick={onMoveSelected}
 				disabled={selectedCount === 0}
-				className="bg-glass-bg-accent border-glass-border-light hover:bg-glass-bg-active text-white"
-				title={t('move')}
+				aria-label={t('move')}
 			>
 				<FolderInput size={18} />
 			</Button>
 			<Button
-				variant="ghost"
+				variant="glass"
 				size="icon"
 				onClick={onShareSelected}
 				disabled={selectedCount === 0}
-				className="bg-glass-bg-accent border-glass-border-light hover:bg-primary/10 hover:border-primary/30 text-primary"
-				title={t('share')}
+				aria-label={t('share')}
+				className="text-primary hover:border-primary/30"
 			>
 				<Share2 size={18} />
 			</Button>
 			<Button
-				variant="ghost"
+				variant="glass"
 				size="icon"
 				onClick={onRunBatchAI}
 				disabled={selectedCount === 0 || isBatchAIProcessing}
-				className="bg-glass-bg-accent border-glass-border-light hover:bg-secondary/10 hover:border-secondary/30 text-secondary relative overflow-hidden"
-				title={t('analyzeSelected')}
+				aria-label={t('analyzeSelected')}
+				className="text-secondary hover:border-secondary/30 relative overflow-hidden"
 			>
 				{isBatchAIProcessing ? (
 					<div
