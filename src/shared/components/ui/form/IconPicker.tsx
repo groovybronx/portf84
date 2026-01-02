@@ -26,7 +26,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
         {icons.map((iconAction) => {
           const isUsed = usedIcons.includes(iconAction) && iconAction !== value;
           return (
-            <button
+            <Button
               key={iconAction}
               onClick={() => {
                 if (!isUsed) {
@@ -34,7 +34,9 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                 }
               }}
               disabled={isUsed}
-              className={`w-8 h-8 rounded-md flex items-center justify-center transition-all ${
+              variant="ghost"
+              size="icon-sm"
+              className={`w-8 h-8 rounded-md transition-all p-0 ${
                 value === iconAction
                   ? "bg-primary/20 ring-2 ring-primary scale-110"
                   : isUsed
@@ -55,7 +57,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                     : "text-white/70"
                 }
               />
-            </button>
+            </Button>
           );
         })}
       </div>

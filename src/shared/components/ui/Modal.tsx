@@ -75,12 +75,14 @@ export const Modal: React.FC<ModalProps> = ({
 								<h2 className="text-lg font-semibold text-white truncate pr-4">
 									{title}
 								</h2>
-								<button
+								<Button
 									onClick={onClose}
-									className="rounded-full p-2 text-gray-400 hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+									variant="close"
+									size="icon"
+									aria-label="Close modal"
 								>
 									<X size={20} />
-								</button>
+								</Button>
 							</div>
 
 							{/* Body */}

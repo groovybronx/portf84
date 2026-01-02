@@ -12,7 +12,8 @@ import {
   ColorPicker, 
   TabList, 
   TabTrigger, 
-  IconPicker
+  IconPicker,
+  Button
 } from "./ui";
 
 interface SettingsModalProps {
@@ -196,12 +197,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 								<h3 className="text-lg font-medium text-white capitalize">
 									{activeTab === "general" ? t('settings:tabGeneral') : activeTab === "appearance" ? t('settings:tabAppearance') : activeTab === "storage" ? t('settings:tabStorage') : activeTab === "language" ? t('settings:language') : t('settings:tabShortcuts')}
 								</h3>
-								<button
+								<Button
 									onClick={onClose}
-									className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/50 hover:text-white"
+									variant="close"
+									size="icon"
+									aria-label="Close settings"
 								>
 									<Icon action="close" size={20} />
-								</button>
+								</Button>
 							</div>
 
 							{/* Scrollable Content */}
@@ -246,9 +249,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 											</div>
 											
 											{apiKey && (
-												<button onClick={handleClear} className="text-sm text-red-400 hover:text-red-300 underline">
+												<Button 
+													onClick={handleClear} 
+													variant="ghost"
+													size="sm"
+													className="text-sm text-red-400 hover:text-red-300 underline"
+												>
 													{t('settings:removeKey')}
-												</button>
+												</Button>
 											)}
 										</div>
 
@@ -302,9 +310,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 									{ code: 'en', name: t('settings:langEnglish'), flag: '🇬🇧', nativeName: 'English' },
 									{ code: 'fr', name: t('settings:langFrench'), flag: '🇫🇷', nativeName: 'Français' },
 								].map((lang) => (
-									<button
+									<Button
 										key={lang.code}
 										onClick={() => i18n.changeLanguage(lang.code)}
+										variant="glass"
 										className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all group ${
 											i18n.language === lang.code || i18n.language.startsWith(lang.code)
 												? 'bg-primary/10 border-primary/50 ring-2 ring-primary/20'
@@ -328,7 +337,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 												<Icon action="check" size={18} className="text-primary" />
 											</div>
 										)}
-									</button>
+									</Button>
 								))}
 							</div>
 
@@ -353,12 +362,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						<div className="space-y-6">
 							<div className="flex items-center justify-between">
 								<h4 className="text-sm font-medium text-white/70">{t('settings:themeColors')}</h4>
-								<button 
+								<Button 
 									onClick={resetTheme}
+									variant="ghost"
+									size="sm"
 									className="text-xs text-white/40 hover:text-white transition-colors"
 								>
 									{t('settings:resetDefaults')}
-								</button>
+								</Button>
 							</div>
 
 							<div className="space-y-4">
@@ -440,9 +451,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 									{ label: t('settings:balanced'), value: "rgba(10, 10, 10, 0.8)" },
 									{ label: t('settings:frosted'), value: "rgba(10, 10, 10, 0.5)" },
 								].map((option) => (
-									<button
+									<Button
 										key={option.value}
 										onClick={() => updateSetting("glassBg", option.value)}
+										variant="ghost"
+										size="sm"
 										className={`flex-1 py-2 text-xs font-medium rounded-md transition-all ${
 											settings.glassBg === option.value
 												? "bg-white/10 text-white shadow-sm"
@@ -450,19 +463,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										}`}
 									>
 										{option.label}
-									</button>
+									</Button>
 								))}
 							</div>
 						</div>
 	
 						
 						<div className="pt-6 border-t border-glass-border">
-						    <button 
+						    <Button 
 						        onClick={resetTheme}
+						        variant="ghost"
+						        size="sm"
 						        className="text-xs text-red-400 hover:text-red-300 underline flex items-center gap-2"
 						    >
 						        <Icon action="reset" size={12} /> {t('settings:resetTheme')}
-						    </button>
+						    </Button>
 						</div>
 					</div>
 				)}
@@ -482,12 +497,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										value={dbPath || t('settings:defaultFolder')}
 										className="flex-1 bg-glass-bg-accent border border-glass-border rounded-lg px-4 py-3 text-white/50 text-xs font-mono truncate cursor-not-allowed"
 									/>
-									<button
+									<Button
 										onClick={handleSelectDbPath}
-										className="px-4 py-2 bg-glass-bg hover:bg-glass-bg-active border border-glass-border rounded-lg text-white text-sm transition-colors whitespace-nowrap"
+										variant="glass"
+										size="md"
+										className="whitespace-nowrap"
 									>
 										{t('settings:change')}
-									</button>
+									</Button>
 								</div>
 							</div>
 							
@@ -497,21 +514,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										<Icon action="alert" size={14} /> {t('settings:restartRequired')}
 									</p>
 									<div className="flex gap-3 items-center">
-										<button 
+										<Button 
 											onClick={() => setDbPath("")}
+											variant="ghost"
+											size="sm"
 											className="text-xs text-white/50 hover:text-white underline"
 										>
 											{t('settings:resetDefault')}
-										</button>
-										<button
+										</Button>
+										<Button
 											onClick={async () => {
 												if (dbPath) localStorage.setItem("lumina_db_path", dbPath);
 												await relaunch();
 											}}
-											className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-lg transition-transform active:scale-95"
+											variant="primary"
+											size="sm"
+											className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-lg"
 										>
 											{t('settings:restartNow')}
-										</button>
+										</Button>
 									</div>
 								</div>
 							)}
@@ -529,12 +550,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 					<div className="space-y-6 max-w-2xl">
 						<div className="flex justify-between items-end border-b border-white/10 pb-4">
 							<p className="text-sm text-white/60">{t('settings:customizeWorkflow')}</p>
-							<button 
+							<Button 
 								onClick={resetToDefaults}
+								variant="ghost"
+								size="sm"
 								className="text-xs flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
 							>
 								<Icon action="reset" size={12} /> {t('settings:resetDefaults')}
-							</button>
+							</Button>
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
@@ -570,24 +593,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
 							{/* Footer Actions (Global) */}
 							<div className="p-6 border-t border-glass-border flex justify-end gap-3 bg-background/50 backdrop-blur-md">
-								<button
+								<Button
 									onClick={handleSave}
-									className={`relative px-6 py-2.5 rounded-lg font-medium text-sm text-white transition-all duration-300 overflow-hidden shadow-lg ${
+									variant="primary"
+									size="md"
+									className={`relative px-6 py-2.5 transition-all duration-300 overflow-hidden shadow-lg ${
 										isSaved
 											? "bg-green-500 hover:bg-green-600"
-											: "bg-primary hover:bg-primary/80"
+											: ""
 									}`}
+									leftIcon={!isSaved ? <Icon action="save" size={16} /> : undefined}
 								>
-									<div className="relative z-10 flex items-center gap-2">
-										{isSaved ? (
-											<>{t('settings:saved')}</>
-										) : (
-											<>
-												<Icon action="save" size={16} /> {t('settings:saveChanges')}
-											</>
-										)}
-									</div>
-								</button>
+									{isSaved ? t('settings:saved') : t('settings:saveChanges')}
+								</Button>
 							</div>
 						</div>
 					</motion.div>
@@ -613,8 +631,10 @@ const ShortcutRow = ({ label, action, shortcuts, update }: { label: string, acti
     return (
         <div className="flex items-center justify-between group">
             <span className="text-sm text-white/70 group-hover:text-white transition-colors">{label}</span>
-            <button
-                className="px-3 py-1.5 bg-glass-bg rounded border border-glass-border text-xs font-mono text-primary min-w-12 text-center hover:bg-glass-bg-active hover:border-primary/50 transition-all focus:ring-2 focus:ring-primary focus:outline-none"
+            <Button
+                variant="glass"
+                size="sm"
+                className="px-3 py-1.5 text-xs font-mono text-primary min-w-12 text-center focus:ring-2 focus:ring-primary"
                 onClick={() => {
                    // Simple prompt for now, could be improved with a key recorder
                    const key = prompt("Press a key (e.g., ArrowUp, a, b, Enter)");
@@ -622,7 +642,7 @@ const ShortcutRow = ({ label, action, shortcuts, update }: { label: string, acti
                 }}
             >
                 {shortcuts[action] ? shortcuts[action].join(" + ") : "..."}
-            </button>
+            </Button>
         </div>
     );
 };

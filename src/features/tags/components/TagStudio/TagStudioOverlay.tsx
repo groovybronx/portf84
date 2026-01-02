@@ -7,6 +7,7 @@ import { useLibrary } from '../../../../shared/contexts/LibraryContext';
 import { useCollections } from '../../../../shared/contexts/CollectionsContext';
 import { createSmartCollection } from '../../../../services/smartCollectionService';
 import { nanoid } from 'nanoid';
+import { Button } from '@/shared/components/ui';
 
 interface TagStudioOverlayProps {
 	isOpen: boolean;
@@ -148,12 +149,14 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								/>
 							</div>
 
-							<button 
+							<Button 
 								onClick={onClose}
-								className="p-2 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors"
+								variant="close"
+								size="icon"
+								aria-label="Close Tag Studio"
 							>
 								<X size={24} />
-							</button>
+							</Button>
 						</div>
 					</header>
 
@@ -161,18 +164,22 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 					<div className="p-4 border-b border-white/5 flex items-center justify-between">
 						<div className="flex items-center gap-2">
 							<div className="flex bg-white/5 rounded-lg p-1">
-								<button 
+								<Button 
 									onClick={() => setViewMode('grid')}
+									variant="ghost"
+									size="icon-sm"
 									className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'}`}
 								>
 									<LayoutGrid size={16} />
-								</button>
-								<button 
+								</Button>
+								<Button 
 									onClick={() => setViewMode('list')}
+									variant="ghost"
+									size="icon-sm"
 									className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'}`}
 								>
 									<List size={16} />
-								</button>
+								</Button>
 							</div>
 
 							<select 
@@ -185,12 +192,14 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 								<option value="date">Sort by Date</option>
 							</select>
 
-							<button 
+							<Button 
 								onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-								className="p-2 hover:bg-white/5 rounded-lg text-gray-400"
+								variant="ghost"
+								size="icon"
+								className="text-gray-400"
 							>
 								<ArrowUpDown size={16} />
-							</button>
+							</Button>
 						</div>
 
 						<div className="flex items-center gap-2">
@@ -200,18 +209,23 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 									animate={{ opacity: 1, x: 0 }}
 									className="flex items-center gap-2"
 								>
-									<button 
+									<Button 
 										onClick={handleCreateSmartCollection}
-										className="px-3 py-1.5 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-lg hover:bg-blue-500/30 transition-all flex items-center gap-2"
+										variant="secondary"
+										size="sm"
+										className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+										leftIcon={<Plus size={14} />}
 									>
-										<Plus size={14} /> {t('library:createSmartCollectionFromSelection')}
-									</button>
-									<button 
+										{t('library:createSmartCollectionFromSelection')}
+									</Button>
+									<Button 
 										onClick={handleDeleteSelected}
-										className="px-3 py-1.5 bg-red-500/20 text-red-400 text-xs font-bold rounded-lg hover:bg-red-500/30 transition-all flex items-center gap-2"
+										variant="danger"
+										size="sm"
+										leftIcon={<Trash2 size={14} />}
 									>
-										<Trash2 size={14} /> Delete Selected
-									</button>
+										Delete Selected
+									</Button>
 								</motion.div>
 							)}
 						</div>
@@ -261,16 +275,18 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 
 									{/* Quick Actions Overlay */}
 									<div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity z-10">
-										<button 
+										<Button 
 											onClick={(e) => {
 												e.stopPropagation();
 												setEditingTagId(tag.id);
 												setEditValue(tag.name);
 											}}
-											className="p-1 bg-black/80 border border-white/20 rounded-full text-white hover:bg-blue-500/80 transition-colors"
+											variant="glass-icon"
+											size="icon-sm"
+											className="p-1 bg-black/80 border border-white/20 rounded-full text-white hover:bg-blue-500/80 transition-colors w-5 h-5"
 										>
 											<Edit3 size={10} />
-										</button>
+										</Button>
 									</div>
 								</motion.div>
 							))}
