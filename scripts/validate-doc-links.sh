@@ -32,7 +32,7 @@ resolve_path() {
 		target=$(realpath -m "$target" 2>/dev/null || echo "$target")
 	else
 		# Fallback for systems without realpath
-		target=$(cd "$(dirname "$target")" 2>/dev/null && pwd)/$(basename "$target") || echo "$target"
+		target=$(cd "$(/usr/bin/dirname "$target")" 2>/dev/null && pwd)/$(/usr/bin/basename "$target") || echo "$target"
 	fi
 	
 	echo "$target"
@@ -70,7 +70,7 @@ while IFS= read -r -d '' file; do
 		fi
 		
 		# Resolve relative path
-		dir=$(dirname "$file")
+		dir=$(/usr/bin/dirname "$file")
 		target=$(resolve_path "$dir" "$link_path")
 		
 		# Check if target exists
@@ -80,9 +80,9 @@ while IFS= read -r -d '' file; do
 			echo "     Target: $target"
 			errors=$((errors + 1))
 		fi
-	done < <(grep -oP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null || true)
+	done < <(/usr/bin/perl -ne 'while (/\[.*?\]\(([^)]+)\)/g) { print "$1\n" }' "$file")
 	
-done < <(find . -name "*.md" -type f -print0 2>/dev/null)
+done < <(/usr/bin/find . -type d \( -name "node_modules" -o -name ".gemini" -o -name ".git" \) -prune -o -name "*.md" -type f -print0 2>/dev/null)
 
 echo ""
 echo "================================================"

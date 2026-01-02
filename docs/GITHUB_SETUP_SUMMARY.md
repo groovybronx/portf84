@@ -95,8 +95,8 @@ feature/knowledge-doc-8019855004813516228
 ### README.md
 **Ajout** : Références vers la nouvelle documentation
 ```markdown
-- [Stratégie de Branches](./docs/BRANCH_STRATEGY.md)
-- [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md)
+- [Stratégie de Branches](/docs/BRANCH_STRATEGY.md)
+- [Configuration GitHub](/docs/CONFIGURATION_GITHUB_FR.md)
 ```
 
 ---
@@ -279,8 +279,8 @@ Après avoir effectué toutes les actions :
 ### En cas de problème :
 
 1. **Consulter la documentation** :
-   - [BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)
-   - [CONFIGURATION_GITHUB_FR.md](./CONFIGURATION_GITHUB_FR.md)
+   - **[BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)**
+   - **[CONFIGURATION_GITHUB_FR.md](./CONFIGURATION_GITHUB_FR.md)**
 
 2. **Vérifier les scripts** :
    - Les scripts sont dans `scripts/`

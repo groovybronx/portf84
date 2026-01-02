@@ -290,12 +290,10 @@ git push
 
 Pour plus de détails, consultez :
 
-| Document | Description |
-|----------|-------------|
-| [MAINTENANCE_GUIDE.md](./.github/MAINTENANCE_GUIDE.md) | Guide complet de maintenance |
-| [QUICK_REFERENCE.md](./.github/QUICK_REFERENCE.md) | Référence rapide |
-| [VERSION_HISTORY.md](./.github/VERSION_HISTORY.md) | Historique des versions |
-| [scripts/README.md](./scripts/README.md) | Documentation du script |
+- [Maintenance Guide](MAINTENANCE_GUIDE.md)
+- [Quick Reference](QUICK_REFERENCE.md)
+- [Version History](VERSION_HISTORY.md)
+- [Scripts Reference](../scripts/README.md)
 
 ## 🎓 Exemples d'Utilisation
 

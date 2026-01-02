@@ -279,7 +279,7 @@ less AUDIT_SUMMARY.txt
 Pour questions sur l'audit :
 - **Technique :** Voir [COMPREHENSIVE_AUDIT_REPORT.md](COMPREHENSIVE_AUDIT_REPORT.md)
 - **Implémentation :** Voir [AUDIT_ACTION_PLAN.md](AUDIT_ACTION_PLAN.md)
-- **Business :** Voir [docs/COMMERCIAL_AUDIT.md](docs/COMMERCIAL_AUDIT.md)
+- **Business :** Voir [COMMERCIAL_AUDIT.md](../guides/project/COMMERCIAL_AUDIT.md)
 
 ---
 

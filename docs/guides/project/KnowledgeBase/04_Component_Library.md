@@ -16,7 +16,7 @@ The central component of the application.
     -   Calculates column heights dynamically to place images in the shortest available column (Masonry).
     -   Virtualizer tracks the scroll position of the `main` container.
 
-### `PhotoCard` (`src/shared/components/PhotoCard.tsx`)
+### `PhotoCard` (`src/features/library/components/PhotoCard/`)
 Represents a single image unit.
 -   **Optimization**: Wrapped in `React.memo` to prevent unnecessary re-renders during selection state changes of *other* items.
 -   **Features**:
@@ -24,7 +24,7 @@ Represents a single image unit.
     -   Displays AI badges and color tags.
     -   Handles drag-and-drop initiation.
 
-### `Sidebar` (`src/features/navigation/Sidebar.tsx`)
+### `FolderDrawer` (`src/features/collections/components/FolderDrawer/`)
 The main navigation controller.
 -   **Modes**:
     -   **Pinned**: Static width (`w-80`), pushes content.

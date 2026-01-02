@@ -24,36 +24,35 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 
 ## Sommaire
 
-1. [Architecture & Données](architecture/ARCHITECTURE.md)
+1. [Architecture & Données](guides/architecture/ARCHITECTURE.md)
    - Structure Feature-Based (src/features)
    - Contexts Split (State/Dispatch)
    - Base de données SQLite (Projets & Shadow Folders)
    - Asset Protocol & permissions
    - Déploiement & CI/CD
-2. [Composants UI & UX](features/COMPONENTS.md)
+2. [Composants UI & UX](guides/features/COMPONENTS.md)
    - Système de vues (Grid Virtuelle, Carousel, List)
    - Navigation Sidebar (Accordéons & Smart Folders)
    - PhotoCard (React.memo + Lazy Loading)
    - Dialog natif Tauri
    - Moteur d'animation
-3. [Service AI (Gemini)](architecture/AI_SERVICE.md)
+3. [Service AI (Gemini)](guides/architecture/AI_SERVICE.md)
    - Intégration de l'API
    - Streaming & Thinking Process
    - Ingénierie du Prompt
    - Batch processing
-4. [Interactions & Shortcuts](features/INTERACTIONS.md)
+4. [Interactions & Shortcuts](guides/features/INTERACTIONS.md)
    - Keyboard management (Auto-Scroll)
    - Color tagging system
    - Drag & Drop
    - Multi-selection
-5. [Multilanguage Support (i18n)](features/I18N_GUIDE.md)
+5. [Multilanguage Support (i18n)](guides/features/I18N_GUIDE.md)
    - Configuration & Namespaces
    - Adding a new language
    - Best practices
-6. [Knowledge Base](project/KnowledgeBase/01_Project_Overview.md)
-   - Aperçu complet du projet
-   - Détails techniques approfondis
-   - Guide développeur & FAQ
+6. [Plans de Projet](guides/project/CHANGELOG.md)
+    - Suivi des versions
+    - Analyse de branches
 
 ---
 
@@ -111,4 +110,4 @@ Deux méthodes :
 
 ### Tauri Capabilities
 
-Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir [ARCHITECTURE.md](architecture/ARCHITECTURE.md) pour les détails.
+Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir **[Architecture](./guides/architecture/ARCHITECTURE.md)** pour les détails.

@@ -89,10 +89,10 @@ Le README principal référence des chemins **sans le préfixe `guides/`** :
 
 ```markdown
 # ❌ CASSÉ - Ces chemins n'incluent pas guides/
-- [Architecture](./docs/architecture/ARCHITECTURE.md)
-- [Composants](./docs/features/COMPONENTS.md)
-- [AI Service](./docs/architecture/AI_SERVICE.md)
-- [Interactions](./docs/features/INTERACTIONS.md)
+- **[ARCHITECTURE.md](./guides/architecture/ARCHITECTURE.md)**
+- **[COMPONENTS.md](./guides/features/COMPONENTS.md)**
+- **[AI_SERVICE.md](./guides/architecture/AI_SERVICE.md)**
+- **[INTERACTIONS.md](./guides/features/INTERACTIONS.md)**
 ```
 
 Ces liens pointent vers les **anciens doublons** au lieu de la structure réorganisée dans `guides/`.

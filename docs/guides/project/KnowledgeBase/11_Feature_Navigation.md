@@ -18,22 +18,23 @@ The main control header.
 **Logic**:
 The `TopBar` is largely a "dumb" component that dispatches actions to `LibraryDispatchContext`. It does not hold local state for the library data.
 
-### `Sidebar` (`Sidebar.tsx`)
-*Note: Located in `src/features/navigation/Sidebar.tsx` (imported in App.tsx).*
+### `FolderDrawer` (`components/FolderDrawer/`)
+*Note: Located in `src/features/collections/components/FolderDrawer/` (imported in App.tsx).*
 
 **Modes**:
 -   **Pinned**: Static width, shifts the main content.
 -   **Floating**: Overlay drawer for smaller screens.
 
 **Sections**:
-1.  **Library**: "All Photos", "Favorites" (filtered by heart tag), "Trash".
-2.  **Collections**: List of user-created virtual albums.
-    -   Supports Drag & Drop: Dropping an image here calls `moveItemsToFolder`.
-3.  **Working Folders**: List of Source/Shadow folders.
+1.  **Shadow Folders**: List of virtual mirrors of source folders.
     -   Indicates which physical folders are linked.
+2.  **Manual Collections**: User-created virtual albums.
+    -   Supports Drag & Drop: Dropping an image here calls `moveItemsToFolder`.
+3.  **Smart Collections**: Dynamic collections based on criteria.
+4.  **Color Filters**: Quick filter bar (Red, Orange, Yellow, Green, Blue, Purple).
 
 **Drag & Drop Targets**:
-The Sidebar folder items are wrapped in `DropZone` logic. When a user drags a photo from the Grid, the Sidebar folders highlight to indicate they are valid targets.
+The FolderDrawer folder items are wrapped in `DropZone` logic. When a user drags a photo from the Grid, the FolderDrawer folders highlight to indicate they are valid targets.
 
 ## Integration
 The navigation feature is the primary writer to the Global State (Contexts).

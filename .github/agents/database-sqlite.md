@@ -205,13 +205,8 @@ const query = `
   INSERT OR REPLACE INTO metadata 
 ## References
 
-- See `docs/architecture/ARCHITECTURE.md` for complete schema and data flows
-- See `docs/architecture/TAG_SYSTEM_ARCHITECTURE.md` for tag system details
+- See `docs/guides/architecture/ARCHITECTURE.md` for complete schema and data flows
+- See `docs/guides/architecture/TAG_SYSTEM_ARCHITECTURE.md` for tag system details
 - See `src/services/storage/index.ts` for service API
 - See `src/services/storage/db.ts` for schema initialization
-- Tauri SQL plugin: https://tauri.app/plugin/sql
-## References
-
-- See `docs/ARCHITECTURE.md` for complete schema and data flows
-- See `src/services/storage/index.ts` for service API
 - Tauri SQL plugin: https://tauri.app/plugin/sql

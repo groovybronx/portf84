@@ -444,7 +444,7 @@ If you encounter issues:
 ## 🔗 Related Documentation
 
 - [Scripts README](../scripts/README.md) - All maintenance scripts
-- [Architecture Documentation](../docs/ARCHITECTURE.md) - System architecture
+- [Architecture Guide](../docs/guides/architecture/ARCHITECTURE.md) - System architecture
 - [Contributing Guide](../README.md) - How to contribute
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot) - Official Copilot documentation
 

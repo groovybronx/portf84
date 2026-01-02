@@ -305,7 +305,7 @@ Total Bundle Size: ~1038 KB
 **Documents Référence**:
 - 📄 [UI_SIMPLIFICATION_VERIFICATION_REPORT.md](./UI_SIMPLIFICATION_VERIFICATION_REPORT.md) - Rapport détaillé
 - 📄 [UI_UX_CONSOLIDATION_AUDIT.md](./UI_UX_CONSOLIDATION_AUDIT.md) - Audit original
-- 📖 [docs/features/DESIGN_SYSTEM.md](../features/DESIGN_SYSTEM.md) - Documentation design system
+- 🎨 **[Design System](../guides/features/DESIGN_SYSTEM.md)** - Spécifications visuelles complètes
 
 ---
 

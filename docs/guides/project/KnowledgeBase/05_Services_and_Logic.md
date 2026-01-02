@@ -27,7 +27,7 @@ if (dbInitPromise) return dbInitPromise; // Return running promise if init is in
 ```
 This prevents race conditions if multiple components request the DB immediately on startup.
 
-## 2. Gemini Service (`src/services/geminiService.ts`)
+## 2. Gemini Service (`src/features/vision/services/geminiService.ts`)
 
 **Role**: Handles communication with the Google Gemini API for image analysis.
 
@@ -37,7 +37,7 @@ This prevents race conditions if multiple components request the DB immediately 
 3.  **API Call**:
     -   Uses `@google/genai` SDK.
     -   Model: `gemini-3-flash-preview` (or configured fallback).
-    -   **Prompt**: See `06_AI_Integration.md` for the specific prompt.
+    -   **Prompt**: See [AI_SERVICE.md](../../architecture/AI_SERVICE.md) for the specific prompt.
 4.  **Parsing**:
     -   Expects a JSON response.
     -   Parses the JSON string.
@@ -45,7 +45,8 @@ This prevents race conditions if multiple components request the DB immediately 
 5.  **Output**: Returns `{ description, tags, tagsDetailed }`.
 
 ### Error Handling
--   Checks for missing API keys (throws "Missing Gemini API Key").
+-   Uses custom error classes (`ApiKeyError`, `NetworkError`, `GeminiError`).
+-   Checks for missing API keys via secure storage or environment variables.
 -   Catches JSON parse errors if the AI returns malformed text.
 
 ## 3. Library Loader (`src/services/libraryLoader.ts`)

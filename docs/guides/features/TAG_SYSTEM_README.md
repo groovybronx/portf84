@@ -179,10 +179,11 @@ This reads all JSON tag arrays and ensures they exist in the tags table.
 
 ## Documentation
 
-For detailed technical documentation, see:
-- [TAG_SYSTEM_GUIDE.md](./TAG_SYSTEM_GUIDE.md) - Complete technical reference
-- [14_Feature_Tags.md](./KnowledgeBase/14_Feature_Tags.md) - Feature overview
-- [TAG_CONSOLIDATION_SPEC.md](./ARCHIVES/TAG_CONSOLIDATION_SPEC.md) - Original specification
+For detailed technical documentation:
+
+- **Full Guide**: [TAG_SYSTEM_GUIDE.md](../architecture/TAG_SYSTEM_GUIDE.md)
+- **Knowledge Base**: [14_Feature_Tags.md](../project/KnowledgeBase/14_Feature_Tags.md)
+- **Original Requirements**: [TAG_CONSOLIDATION_SPEC.md](../../ARCHIVES/historical/TAG_CONSOLIDATION_SPEC.md) - Original specification
 
 ---
 

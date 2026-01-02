@@ -556,7 +556,7 @@ Jour 2-3: Migration 5 composants pilotes
 ## 📞 Support et Questions
 
 ### Pour Questions Techniques
-- 📄 Voir [DESIGN_SYSTEM.md](../features/DESIGN_SYSTEM.md)
+- 📄 Voir [DESIGN_SYSTEM.md](../guides/features/DESIGN_SYSTEM.md) - Specs UI/UX
 - 📄 Voir [UI_SIMPLIFICATION_VERIFICATION_REPORT.md](./UI_SIMPLIFICATION_VERIFICATION_REPORT.md)
 
 ### Pour Suivi de Progression
