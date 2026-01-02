@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowUpDown } from "lucide-react";
 import { SortOption, SortDirection } from "../../../../shared/types";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex } from "../../../../shared/components/ui";
 
 interface SortControlsProps {
 	sortOption: SortOption;
@@ -19,7 +19,7 @@ export const SortControls: React.FC<SortControlsProps> = ({
 }) => {
 	const { t } = useTranslation("navigation");
 	return (
-		<div className="hidden lg:flex items-center gap-1">
+		<Flex align="center" gap="xs" className="hidden lg:flex">
 			<select
 				value={sortOption}
 				onChange={(e) => onSortChange(e.target.value as SortOption)}
@@ -46,6 +46,6 @@ export const SortControls: React.FC<SortControlsProps> = ({
 					className={sortDirection === "desc" ? "transform rotate-180" : ""}
 				/>
 			</Button>
-		</div>
+		</Flex>
 	);
 };

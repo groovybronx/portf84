@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Tag, X } from "lucide-react";
-import { Button, GlassCard } from "../../../../shared/components/ui";
+import { Button, GlassCard, Flex } from "../../../../shared/components/ui";
 
 interface SearchFieldProps {
   value: string;
@@ -71,12 +71,12 @@ export const SearchField: React.FC<SearchFieldProps> = ({
           : "w-32 sm:w-48 border-glass-border-light"
       }`}
     >
-      <div className="flex items-center w-full px-3 py-2">
+      <Flex align="center" className="w-full px-3 py-2">
         <Search size={16} className="text-gray-400 mr-2 shrink-0" />
 
         {/* Active Tag Chip */}
         {selectedTag && (
-          <div className="flex items-center gap-1 bg-blue-500/20 text-blue-300 text-xs px-2 py-0.5 rounded-full mr-2 whitespace-nowrap">
+          <Flex align="center" gap="xs" className="bg-blue-500/20 text-blue-300 text-xs px-2 py-0.5 rounded-full mr-2 whitespace-nowrap">
             <span className="max-w-[80px] truncate">{selectedTag}</span>
             <Button
               variant="close"
@@ -89,7 +89,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
             >
               <X size={10} />
             </Button>
-          </div>
+          </Flex>
         )}
 
         <input
@@ -100,7 +100,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
           onFocus={() => setIsFocused(true)}
           className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-gray-500 min-w-0"
         />
-      </div>
+      </Flex>
 
       {/* Autocomplete Dropdown */}
       {isFocused && suggestions.length > 0 && (

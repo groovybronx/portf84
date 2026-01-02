@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Share2, FolderInput, X, Sparkles } from "lucide-react";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex } from "../../../../shared/components/ui";
 
 interface BatchActionsProps {
 	selectionMode: boolean;
@@ -28,7 +28,7 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 	if (!selectionMode) return null;
 
 	return (
-		<div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 shrink-0">
+		<Flex align="center" gap="sm" className="animate-in fade-in slide-in-from-right-5 duration-300 shrink-0">
 			<span className="text-xs font-mono text-white/50 bg-glass-bg-accent px-2 py-1 rounded hidden md:block">
 				{t('itemsSelected', { count: selectedCount })}
 			</span>
@@ -68,6 +68,6 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 					<Sparkles size={18} />
 				)}
 			</Button>
-		</div>
+		</Flex>
 	);
 };
