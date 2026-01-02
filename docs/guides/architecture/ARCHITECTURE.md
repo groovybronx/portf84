@@ -1,6 +1,6 @@
 # Architecture Technique - Lumina Portfolio V2
 
-Dernière mise à jour : 26/12/2024 à 16:00
+Dernière mise à jour : 02/01/2026 à 01:10
 
 ## Vue d'Ensemble
 
@@ -72,17 +72,19 @@ src/
 │   ├── utils/          # Fonctions utilitaires
 │   └── theme/          # Design Tokens
 ├── services/           # Logique métier externe
-│   ├── geminiService.ts
 │   ├── libraryLoader.ts
-│   ├── storageService.ts   # Re-export (voir storage/)
-│   └── storage/            # Modules SQLite décomposés
-│       ├── db.ts           # Connexion + init
-│       ├── collections.ts  # CRUD Collections
-│       ├── folders.ts      # Virtual/Shadow folders
-│       ├── metadata.ts     # Métadonnées items
-│       ├── handles.ts      # Directory handles
-│       ├── tags.ts         # Tags normalisés (12 fonctions)
-│       └── index.ts        # Export unifié
+│   ├── secureStorage.ts       # Stockage sécurisé (API keys)
+│   ├── smartCollectionService.ts  # Collections intelligentes
+│   ├── tagAnalysisService.ts  # Analyse et déduplication de tags
+│   ├── storageService.ts      # Re-export (voir storage/)
+│   └── storage/               # Modules SQLite décomposés
+│       ├── db.ts              # Connexion + init
+│       ├── collections.ts     # CRUD Collections
+│       ├── folders.ts         # Virtual/Shadow folders
+│       ├── metadata.ts        # Métadonnées items
+│       ├── handles.ts         # Directory handles
+│       ├── tags.ts            # Tags normalisés (12 fonctions)
+│       └── index.ts           # Export unifié
 └── App.tsx             # Point d'entrée, composition
 ```
 

@@ -1,6 +1,6 @@
 # Intégration AI (Gemini)
 
-Dernière mise à jour : 24/12/2024 à 17:52
+Dernière mise à jour : 02/01/2026 à 01:10
 
 L'application utilise le SDK `@google/genai` pour analyser les images et enrichir les métadonnées.
 
