@@ -80,10 +80,10 @@ Le script va :
 
 Si tu as besoin de plus de détails :
 
-- **Vue d'overview** : [GITHUB_SETUP_SUMMARY.md](../GITHUB_SETUP_SUMMARY.md)
-- **Configuration GitHub** : [Voir le résumé](../GITHUB_SETUP_SUMMARY.md) | [Guide complet](../CONFIGURATION_GITHUB_FR.md)
-- **Stratégie de Branches** : [Voir le guide](../BRANCH_STRATEGY.md)
-- **Configuration Initiale** : [Voir le résumé](../GITHUB_SETUP_SUMMARY.md)
+- **Vue d'overview** : [GITHUB_SETUP_SUMMARY.md](../workflows/GITHUB_SETUP_SUMMARY.md)
+- **Configuration GitHub** : [Voir le résumé](../workflows/GITHUB_SETUP_SUMMARY.md) | [Guide complet](../workflows/CONFIGURATION_GITHUB_FR.md)
+- **Stratégie de Branches** : [Voir le guide](../workflows/BRANCH_STRATEGY.md)
+- **Configuration Initiale** : [Voir le résumé](../workflows/GITHUB_SETUP_SUMMARY.md)
 
 ---
 
@@ -102,7 +102,7 @@ git config user.email
 ```
 
 ### Besoin d'aide
-Consulte [GITHUB_SETUP_SUMMARY.md](../GITHUB_SETUP_SUMMARY.md) section "Support"
+Consulte [GITHUB_SETUP_SUMMARY.md](../workflows/GITHUB_SETUP_SUMMARY.md) section "Support"
 
 ---
 

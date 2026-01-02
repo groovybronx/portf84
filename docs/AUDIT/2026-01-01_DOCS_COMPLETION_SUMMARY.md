@@ -16,7 +16,7 @@ L'audit complet de l'état de la documentation du projet Lumina Portfolio a ét�
 
 ### 🎯 Documents Principaux (5)
 
-1. **[DOCUMENTATION_AUDIT_INDEX.md](./DOCUMENTATION_AUDIT_INDEX.md)** - 6 KB
+1. **[2026-01-01_DOCS_INDEX.md](./2026-01-01_DOCS_INDEX.md)** - 6 KB
    - Point d'entrée principal
    - Navigation rapide vers tous les documents
    - Tableau de références par audience
@@ -26,19 +26,19 @@ L'audit complet de l'état de la documentation du projet Lumina Portfolio a ét�
    - Statistiques et métriques clés
    - ROI et recommandations
 
-3. **[DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md)** - 16 KB
+3. **[2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md)** - 16 KB
    - Audit technique complet
    - Analyse détaillée des 129 fichiers
    - Liste exhaustive des problèmes
    - Plan technique détaillé
 
-4. **[DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md)** - 11 KB
+4. **[2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md)** - 11 KB
    - Checklist d'exécution complète (120+ items)
    - Plan phase par phase
    - Scripts de validation inclus
    - Ordre d'exécution recommandé
 
-5. **[DOCUMENTATION_MIGRATION_GUIDE.md](./DOCUMENTATION_MIGRATION_GUIDE.md)** - 10 KB
+5. **[2026-01-01_DOCS_MIGRATION_GUIDE.md](./2026-01-01_DOCS_MIGRATION_GUIDE.md)** - 10 KB
    - Guide pour les contributeurs
    - Table de correspondance complète
    - FAQ et bonnes pratiques
@@ -190,13 +190,13 @@ L'audit complet de l'état de la documentation du projet Lumina Portfolio a ét�
 3. Allouer 1-2 jours pour l'exécution
 
 ### Pour l'Équipe Technique
-1. Commencer par [DOCUMENTATION_AUDIT_INDEX.md](./DOCUMENTATION_AUDIT_INDEX.md) (2 min)
-2. Lire [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md) (15 min)
-3. Suivre [DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md) (exécution)
+1. Commencer par [2026-01-01_DOCS_INDEX.md](./2026-01-01_DOCS_INDEX.md) (2 min)
+2. Lire [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md) (15 min)
+3. Suivre [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md) (exécution)
 4. Utiliser les scripts de validation
 
 ### Pour les Contributeurs
-1. Consulter [DOCUMENTATION_MIGRATION_GUIDE.md](./DOCUMENTATION_MIGRATION_GUIDE.md) (10 min)
+1. Consulter [2026-01-01_DOCS_MIGRATION_GUIDE.md](./2026-01-01_DOCS_MIGRATION_GUIDE.md) (10 min)
 2. Utiliser la table de correspondance
 3. Mettre à jour les signets
 4. Attendre la fin du nettoyage avant nouvelles PRs doc
@@ -247,11 +247,11 @@ L'audit complet de l'état de la documentation du projet Lumina Portfolio a ét�
 ## 📚 Références Complètes
 
 ### Documents d'Audit
-- [DOCUMENTATION_AUDIT_INDEX.md](./DOCUMENTATION_AUDIT_INDEX.md) - Index principal
+- [2026-01-01_DOCS_INDEX.md](./2026-01-01_DOCS_INDEX.md) - Index principal
 - [DOCUMENTATION_EXECUTIVE_SUMMARY.md](./DOCUMENTATION_EXECUTIVE_SUMMARY.md) - Résumé direction
-- [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md) - Audit technique
-- [DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md) - Plan d'exécution
-- [DOCUMENTATION_MIGRATION_GUIDE.md](./DOCUMENTATION_MIGRATION_GUIDE.md) - Guide contributeurs
+- [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md) - Audit technique
+- [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md) - Plan d'exécution
+- [2026-01-01_DOCS_MIGRATION_GUIDE.md](./2026-01-01_DOCS_MIGRATION_GUIDE.md) - Guide contributeurs
 
 ### Scripts
 - `scripts/validate-doc-links.sh` - Validation des liens
