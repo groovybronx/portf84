@@ -1,4 +1,4 @@
-# 📑 Index de l'Audit de Documentation 2026
+!u# 📑 Index de l'Audit de Documentation 2026
 
 **Date**: 1er janvier 2026  
 **Statut**: ✅ Audit Terminé - Prêt pour Nettoyage
