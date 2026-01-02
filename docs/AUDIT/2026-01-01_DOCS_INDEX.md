@@ -31,14 +31,14 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 - Liste exhaustive des doublons
 - Comparaison fichiers divergents
 
-**[🧹 DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md)**
+**[🧹 2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md)**
 - Checklist d'exécution complète (11 KB)
 - Plan étape par étape
 - Scripts de validation inclus
 - Statistiques avant/après
 
 ### 3. Pour les Contributeurs
-**[🗺️ DOCUMENTATION_MIGRATION_GUIDE.md](./DOCUMENTATION_MIGRATION_GUIDE.md)**
+**[🗺️ 2026-01-01_DOCS_MIGRATION_GUIDE.md](./2026-01-01_DOCS_MIGRATION_GUIDE.md)**
 - Table de correspondance des chemins (10 KB)
 - Guide de mise à jour des liens
 - FAQ
@@ -134,13 +134,13 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 2. Consulter [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md) pour les détails (15 min)
 
 ### Pour Exécuter le Nettoyage
-1. Lire [DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md) (10 min)
+1. Lire [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md) (10 min)
 2. Exécuter les scripts de validation
 3. Suivre la checklist phase par phase
 4. Valider avec les scripts après chaque phase
 
 ### Pour Mettre à Jour Vos Liens
-1. Consulter [DOCUMENTATION_MIGRATION_GUIDE.md](./DOCUMENTATION_MIGRATION_GUIDE.md)
+1. Consulter [2026-01-01_DOCS_MIGRATION_GUIDE.md](./2026-01-01_DOCS_MIGRATION_GUIDE.md)
 2. Utiliser la table de correspondance
 3. Tester avec `validate-doc-links.sh`
 
@@ -160,16 +160,16 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 ## 📞 Support
 
 ### Questions sur l'Audit
-- Consulter les FAQ dans [DOCUMENTATION_MIGRATION_GUIDE.md](./DOCUMENTATION_MIGRATION_GUIDE.md)
+- Consulter les FAQ dans [2026-01-01_DOCS_MIGRATION_GUIDE.md](./2026-01-01_DOCS_MIGRATION_GUIDE.md)
 - Créer une issue avec le label `documentation`
 
 ### Problèmes Techniques
 - Vérifier les scripts dans `/scripts/`
-- Consulter [DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md)
+- Consulter [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md)
 
 ### Approuver le Nettoyage
 - Review [DOCUMENTATION_EXECUTIVE_SUMMARY.md](./DOCUMENTATION_EXECUTIVE_SUMMARY.md)
-- Valider le plan dans [DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md)
+- Valider le plan dans [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md)
 
 ---
 
@@ -179,8 +179,8 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 |----------|----------|---------------|----------|
 | [Executive Summary](./DOCUMENTATION_EXECUTIVE_SUMMARY.md) | Direction | 5 min | ⚡ Haute |
 | [Audit Complet](./DOCUMENTATION_AUDIT_2026.md) | Technique | 15 min | ⚡ Haute |
-| [Plan de Nettoyage](./DOCUMENTATION_CLEANUP_PLAN.md) | Technique | 10 min | ⚡ Haute |
-| [Guide Migration](./DOCUMENTATION_MIGRATION_GUIDE.md) | Contributeurs | 10 min | 📊 Moyenne |
+| [Plan de Nettoyage](./2026-01-01_DOCS_CLEANUP_PLAN.md) | Technique | 10 min | ⚡ Haute |
+| [Guide Migration](./2026-01-01_DOCS_MIGRATION_GUIDE.md) | Contributeurs | 10 min | 📊 Moyenne |
 
 ---
 

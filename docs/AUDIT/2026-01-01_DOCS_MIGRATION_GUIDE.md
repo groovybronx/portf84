@@ -284,8 +284,8 @@ grep -r "docs/project" . --include="*.md" | grep -v "docs/guides/project"
 ## 📞 Besoin d'Aide ?
 
 ### Documentation de Référence
-- [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md) - Audit complet
-- [DOCUMENTATION_CLEANUP_PLAN.md](./DOCUMENTATION_CLEANUP_PLAN.md) - Plan de nettoyage
+- [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md) - Audit complet
+- [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md) - Plan de nettoyage
 - [DOCUMENTATION_MAP.md](./DOCUMENTATION_MAP.md) - Carte de navigation
 
 ### Support

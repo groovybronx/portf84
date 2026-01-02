@@ -2,7 +2,7 @@
 
 Last update : 01/01/2026
 
-> 📢 **Audit de Documentation Disponible** : Un audit complet de la documentation a été effectué le 1er janvier 2026. Consultez [DOCUMENTATION_AUDIT_INDEX.md](./DOCUMENTATION_AUDIT_INDEX.md) pour plus d'informations.
+> 📢 **Audit de Documentation Disponible** : Un audit complet de la documentation a été effectué le 1er janvier 2026. Consultez [AUDIT/2026-01-01_DOCS_INDEX.md](./AUDIT/2026-01-01_DOCS_INDEX.md) pour plus d'informations.
 
 Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
 
