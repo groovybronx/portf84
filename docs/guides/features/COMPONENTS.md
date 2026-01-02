@@ -1,4 +1,4 @@
-Dernière mise à jour : 26/12/2024 à 16:00
+Dernière mise à jour : 02/01/2026 à 01:10
 
 # Composants UI & UX
 
@@ -28,25 +28,59 @@ src/features/
 │   ├── FolderDrawer/       # Panneau latéral navigation (Projets)
 │   │   ├── index.tsx         # Assemblage principal
 │   │   ├── FolderDrawerHeader.tsx
-│   │   ├── ActiveCollectionBanner.tsx
 │   │   ├── ShadowFoldersSection.tsx
 │   │   ├── ManualCollectionsSection.tsx
+│   │   ├── SmartCollectionsSection.tsx
 │   │   ├── ColorFiltersSection.tsx
 │   │   └── FolderItem.tsx
 │   ├── CollectionManager.tsx
-│   ├── CreateFolderModal.tsx
-│   └── MoveToFolderModal.tsx
+│   ├── SmartCollectionBuilder.tsx
+│   └── ActionModals.tsx
 ├── vision/components/
 │   └── ImageViewer.tsx     # Plein écran + métadonnées
 ├── tags/components/
-│   └── AddTagModal.tsx     # Modal ajout tags
+│   ├── AddTagModal.tsx       # Modal ajout tags
+│   ├── TagManager.tsx        # Gestionnaire de tags
+│   ├── TagManagerModal.tsx   # Modal de gestion des tags
+│   ├── TagMergeHistory.tsx   # Historique de fusion des tags
+│   ├── TagTreeItem.tsx       # Item d'arbre de tags
+│   └── TagStudio/            # Studio avancé de tags
+│       └── TagStudioOverlay.tsx
 
 └── shared/
     ├── components/
     │   ├── ContextMenu.tsx     # Menu clic-droit
     │   ├── SettingsModal.tsx   # Config (Tabs: General, Storage, Shortcuts)
     │   ├── ErrorBoundary.tsx   # Isolation erreurs
-    │   └── ui/                 # UI Kit (Button, Modal, GlassCard)
+    │   ├── ErrorFallback.tsx   # Composant d'affichage d'erreur
+    │   ├── EmptyState.tsx      # État vide avec message
+    │   ├── Icon.tsx            # Registre centralisé d'icônes (69 icônes)
+    │   ├── LoadingOverlay.tsx  # Overlay de chargement
+    │   ├── UnifiedProgress.tsx # Barre de progression unifiée
+    │   └── ui/                 # UI Kit Design System
+    │       ├── Button.tsx          # Bouton (9 variants)
+    │       ├── Input.tsx           # Champ de texte
+    │       ├── Modal.tsx           # Modal dialogue
+    │       ├── GlassCard.tsx       # Carte glass morphism
+    │       ├── LoadingSpinner.tsx  # Spinner de chargement
+    │       ├── primitives/
+    │       │   ├── Avatar.tsx      # Avatar utilisateur
+    │       │   ├── Badge.tsx       # Badge informatif
+    │       │   └── Divider.tsx     # Séparateur visuel
+    │       ├── surfaces/
+    │       │   ├── Panel.tsx       # Panneau de surface
+    │       │   └── Card.tsx        # Carte de contenu
+    │       ├── navigation/
+    │       │   └── Tabs.tsx        # Navigation par onglets
+    │       ├── layout/
+    │       │   ├── Flex.tsx        # Layout flexbox
+    │       │   ├── Stack.tsx       # Empilage vertical/horizontal
+    │       │   ├── Grid.tsx        # Grid responsive
+    │       │   └── Container.tsx   # Conteneur responsive
+    │       └── form/
+    │           ├── ColorPicker.tsx # Sélecteur de couleur
+    │           ├── IconPicker.tsx  # Sélecteur d'icône
+    │           └── SettingRow.tsx  # Ligne de paramètre
     └── hooks/
         ├── useKeyboardShortcuts.ts  # Gestionnaire événements clavier
         ├── useLocalShortcuts.ts     # Store configuration (localStorage)

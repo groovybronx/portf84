@@ -1,6 +1,6 @@
 # Intégration AI (Gemini)
 
-Dernière mise à jour : 24/12/2024 à 17:52
+Dernière mise à jour : 02/01/2026 à 01:10
 
 L'application utilise le SDK `@google/genai` pour analyser les images et enrichir les métadonnées.
 
@@ -20,27 +20,34 @@ Le service est isolé dans `src/features/vision/services/geminiService.ts`.
 
 ## Gestion de la Clé API
 
-L'ordre de priorité pour récupérer la clé :
+L'ordre de priorité pour récupérer la clé (avec stockage sécurisé) :
 
 ```typescript
-const getApiKey = (): string => {
-	// 1. localStorage (utilisateur via Settings)
+const getApiKey = async (): Promise<string> => {
+	// 1. Stockage sécurisé (App Data DB/File) - Recommandé
+	const secureKey = await secureStorage.getApiKey();
+	if (secureKey) return secureKey;
+
+	// 2. localStorage (Legacy/Dev uniquement)
 	const storedKey = localStorage.getItem("gemini_api_key");
 	if (storedKey) return storedKey;
 
-	// 2. Variable d'environnement Vite
+	// 3. Variable d'environnement Vite
 	if (import.meta.env?.VITE_GEMINI_API_KEY) {
 		return import.meta.env.VITE_GEMINI_API_KEY;
 	}
 
-	// 3. Fallback process.env (legacy/shim)
+	// 4. Fallback process.env (legacy/shim)
 	if (process.env.GEMINI_API_KEY) {
 		return process.env.GEMINI_API_KEY;
 	}
 
-	throw new Error("Missing Gemini API Key. Please configure it in Settings.");
+	throw new ApiKeyError();
 };
 ```
+
+> [!NOTE]
+> L'application utilise maintenant `secureStorage` (via `src/services/secureStorage.ts`) pour stocker les clés API de manière sécurisée, au lieu de localStorage. Ceci améliore la sécurité en isolant les données sensibles.
 
 > [!TIP]
 > En tant qu'application native Tauri, il n'y a **aucune restriction CORS** pour les appels API vers Google. Les requêtes s'exécutent directement sans proxy.

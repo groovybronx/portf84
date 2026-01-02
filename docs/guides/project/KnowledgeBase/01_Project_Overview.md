@@ -56,12 +56,15 @@ The core philosophy is **"Hybrid Management"**: users can manage their physical 
 -   **Optimized Rendering**: Uses `React.memo` and context splitting to minimize re-renders.
 
 ## Roadmap & Status
-Current Version: **v0.1.0** (Alpha/Beta)
+Current Version: **v0.2.0-beta.1**
 
 -   [x] Basic Library Management (Scan/View)
 -   [x] SQLite Persistence
 -   [x] Gemini AI Integration
 -   [x] Virtual Collections
+-   [x] Tag System with AI-powered tagging
+-   [x] Tag Studio (advanced tag management)
+-   [x] Smart Collections
 -   [ ] Advanced Batch Operations
 -   [ ] Export/Share Functionality
 -   [ ] Dark/Light Mode Toggle (Currently Dark Mode Default)
