@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { PortfolioItem, COLOR_PALETTE } from "../types";
 import { getColorName } from "../../services/storage/folders";
+import { Button } from "./ui/Button";
 
 interface ContextMenuProps {
 	x: number;
@@ -111,13 +112,14 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 				>
 					{item.name}
 				</p>
-				<button
+				<Button
 					onClick={onClose}
-					className="p-1 -mr-2 rounded-full hover:bg-glass-bg-accent text-gray-400 hover:text-white transition-colors"
-					title={t('closeMenu')}
+					variant="close"
+					size="icon-sm"
+					aria-label={t('closeMenu')}
 				>
 					<X size={14} />
-				</button>
+				</Button>
 			</div>
 
 			<div className="relative">

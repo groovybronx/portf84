@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../../shared/components/ui";
 import { motion } from "framer-motion";
 
@@ -19,7 +20,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	onFocusedItem,
 }) => {
 	// --- État et Initialisation ---
-	
+	const { t } = useTranslation("common");
 	const { processedItems: items } = useLibrary();
 	const showColorTags = true;
 
@@ -144,16 +145,20 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 			{/* Boutons de navigation flottants */}
 			<Button
 				onClick={handlePrev}
-				className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
-				aria-label="Précédent"
+				variant="nav-arrow"
+				size="icon-lg"
+				className="absolute left-4 top-1/2 -translate-y-1/2 z-20"
+				aria-label={t("previous")}
 			>
 				<ChevronLeft size={24} />
 			</Button>
 
 			<Button
 				onClick={handleNext}
-				className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-glass-bg hover:bg-glass-bg-accent border border-glass-border-light transition-colors"
-				aria-label="Suivant"
+				variant="nav-arrow"
+				size="icon-lg"
+				className="absolute right-4 top-1/2 -translate-y-1/2 z-20"
+				aria-label={t("next")}
 			>
 				<ChevronRight size={24} />
 			</Button>

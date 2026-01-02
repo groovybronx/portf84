@@ -28,6 +28,7 @@
   "viewDetail": "Detail",
   "clearFilter": "Clear Filter",
   "toggleColorTags": "Toggle Color Tags",
+  "selectColor": "Select {{color}} color",
   "pinLibrary": "Pin Library",
   "unpinLibrary": "Unpin Library"
 }
