@@ -270,15 +270,34 @@ className="p-4"
 
 ---
 
-## Phase 2 Preview (Layouts)
+## Layout Components (Phase 2 - Complete)
 
-Les composants suivants seront ajoutés en Phase 2:
-- `Stack` - Empilage vertical/horizontal
-- `Flex` - Wrapper flexbox déclaratif
-- `Grid` - Grid responsive
-- `Container` - Conteneur responsive
+Les composants de layout suivants sont maintenant disponibles :
+- **`Stack`** (`ui/layout/Stack.tsx`) - Empilage vertical/horizontal
+- **`Flex`** (`ui/layout/Flex.tsx`) - Wrapper flexbox déclaratif
+- **`Grid`** (`ui/layout/Grid.tsx`) - Grid responsive
+- **`Container`** (`ui/layout/Container.tsx`) - Conteneur responsive
+
+```tsx
+import { Flex, Stack, Grid, Container } from "@/shared/components/ui/layout";
+
+// Flex déclaratif
+<Flex justify="between" align="center" gap="md">
+  {content}
+</Flex>
+
+// Stack vertical
+<Stack spacing="lg">
+  {items}
+</Stack>
+
+// Grid responsive
+<Grid cols={3} gap="md">
+  {cards}
+</Grid>
+```
 
 ---
 
-**Dernière mise à jour**: 2026-01-01  
+**Dernière mise à jour**: 02/01/2026  
 **Maintenu par**: Équipe technique
