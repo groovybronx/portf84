@@ -36,7 +36,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
               disabled={isUsed}
               variant="ghost"
               size="icon-sm"
-              className={`w-8 h-8 rounded-md transition-all p-0 ${
+              className={`rounded-md transition-all ${
                 value === iconAction
                   ? "bg-primary/20 ring-2 ring-primary scale-110"
                   : isUsed

@@ -220,7 +220,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                 <Button
                                     onClick={onManageTags}
                                     variant="ghost"
-                                    className="w-full flex items-center gap-3 p-2 rounded-lg text-quinary/60 hover:text-white hover:bg-quinary/10 transition-all group justify-start"
+                                    className="w-full gap-3 p-2 rounded-lg text-quinary/60 hover:text-white hover:bg-quinary/10 transition-all group justify-start"
                                 >
                                     <div className="p-1.5 bg-quinary/10 rounded-md text-quinary group-hover:bg-quinary group-hover:text-white transition-all">
                                         <Icon action="tag" size={14} />

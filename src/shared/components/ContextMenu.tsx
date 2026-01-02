@@ -133,7 +133,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 							onClose();
 						}}
 						variant="ghost"
-						className="w-full text-left px-4 py-2 text-sm text-gray-200 flex items-center gap-3 transition-colors relative group justify-start h-auto rounded-none"
+						className="w-full text-left px-4 py-2 text-sm text-gray-200 gap-3 transition-colors relative group justify-start h-auto rounded-none"
 					>
 						{hoveredAction === menuItem.id && (
 							<motion.div
@@ -172,7 +172,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 							}}
 							variant="ghost"
 							size="icon-sm"
-							className={`w-5 h-5 rounded-full border border-transparent hover:scale-125 hover:border-white transition-all ${
+							className={`rounded-full border border-transparent hover:scale-125 hover:border-white transition-all ${
 								item.colorTag === hex ? "ring-2 ring-white/50" : ""
 							}`}
 							style={{ backgroundColor: hex }}
@@ -185,7 +185,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 						}}
 						variant="ghost"
 						size="icon-sm"
-						className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-gray-500 hover:text-white hover:border-white transition-all hover:scale-125"
+						className="rounded-full border border-white/20 text-gray-500 hover:text-white hover:border-white transition-all hover:scale-125"
 						title={t('removeTag')}
 					>
 						<X size={12} />
@@ -205,7 +205,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 					onClose();
 				}}
 				variant="ghost"
-				className="w-full text-left px-4 py-2 text-sm text-red-500/80 flex items-center gap-3 transition-colors relative group justify-start h-auto rounded-none"
+				className="w-full text-left px-4 py-2 text-sm text-red-500/80 gap-3 transition-colors relative group justify-start h-auto rounded-none"
 			>
 				{hoveredAction === "delete" && (
 					<motion.div

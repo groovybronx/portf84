@@ -32,7 +32,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           }
           variant="ghost"
           size="icon-sm"
-          className={`w-4 h-4 rounded-full transition-all border shadow-sm p-0 ${
+          className={`rounded-full transition-all border shadow-sm ${
             activeColorFilter === hex && !selectionMode
               ? "scale-125 border-white ring-2 ring-white/20"
               : "border-transparent hover:scale-110 opacity-80 hover:opacity-100 hover:border-white/30"

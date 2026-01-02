@@ -283,7 +283,7 @@ export const TagStudioOverlay: React.FC<TagStudioOverlayProps> = ({ isOpen, onCl
 											}}
 											variant="glass-icon"
 											size="icon-sm"
-											className="p-1 bg-black/80 border border-white/20 rounded-full text-white hover:bg-blue-500/80 transition-colors w-5 h-5"
+											className="p-1 bg-black/80 border border-white/20 rounded-full text-white hover:bg-blue-500/80 transition-colors"
 										>
 											<Edit3 size={10} />
 										</Button>

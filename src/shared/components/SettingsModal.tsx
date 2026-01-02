@@ -314,7 +314,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 										key={lang.code}
 										onClick={() => i18n.changeLanguage(lang.code)}
 										variant="glass"
-										className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all group ${
+										className={`w-full justify-between p-4 rounded-lg border transition-all group ${
 											i18n.language === lang.code || i18n.language.startsWith(lang.code)
 												? 'bg-primary/10 border-primary/50 ring-2 ring-primary/20'
 												: 'bg-glass-bg-accent border-glass-border hover:border-glass-border-light hover:bg-glass-bg-active'

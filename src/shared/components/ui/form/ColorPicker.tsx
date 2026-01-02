@@ -38,7 +38,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               onClick={() => onChange(color.value)}
               variant="ghost"
               size="icon-sm"
-              className={`w-6 h-6 rounded-md shrink-0 transition-transform p-0 ${
+              className={`rounded-md shrink-0 transition-transform ${
                 value === color.value
                   ? "ring-2 ring-white scale-110 z-10"
                   : "opacity-60 hover:opacity-100 hover:scale-105"
@@ -56,7 +56,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             onClick={() => setShowIconPicker(!showIconPicker)}
             variant="ghost"
             size="icon"
-            className={`w-10 h-10 rounded-lg shadow-inner border border-white/10 flex items-center justify-center transition-all shrink-0 ml-2 p-0 ${
+            className={`rounded-lg shadow-inner border border-white/10 transition-all shrink-0 ml-2 ${
               showIconPicker
                 ? "ring-2 ring-white/30 scale-105"
                 : "hover:scale-105"
