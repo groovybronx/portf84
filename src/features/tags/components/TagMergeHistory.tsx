@@ -5,6 +5,7 @@ import { getAllTags, undoMerge } from '../../../services/storage/tags';
 import { getDB } from '../../../services/storage/db';
 import { useTranslation } from 'react-i18next';
 import { DBTagMerge, ParsedTag } from '../../../shared/types/database';
+import { Button } from '../../../shared/components/ui/Button';
 
 interface TagMergeHistoryProps {
     isOpen: boolean;
@@ -116,19 +117,22 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button 
+                                <Button 
                                     onClick={loadHistory}
-                                    className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors"
-                                    title={t('tags:refresh')}
+                                    variant="glass-icon"
+                                    size="icon"
+                                    aria-label={t('tags:refresh')}
                                 >
                                     <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-                                </button>
-                                <button 
-                                    onClick={onClose} 
-                                    className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors"
+                                </Button>
+                                <Button 
+                                    onClick={onClose}
+                                    variant="close"
+                                    size="icon"
+                                    aria-label="Close"
                                 >
                                     <X size={20} />
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
@@ -146,12 +150,13 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                     </div>
                                     <h3 className="text-lg font-medium text-white">{t('tags:errorLoadingHistory')}</h3>
                                     <p className="text-sm text-white/40 max-w-xs mx-auto text-center">{error}</p>
-                                    <button 
+                                    <Button 
                                         onClick={loadHistory}
-                                        className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 rounded-lg text-blue-300 text-sm font-medium transition-colors"
+                                        variant="glass"
+                                        size="md"
                                     >
                                         {t('tags:tryAgain')}
-                                    </button>
+                                    </Button>
                                 </div>
                             ) : history.length === 0 ? (
                                 <div className="text-center py-12 space-y-3">
@@ -206,7 +211,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                                 </span>
                                             </div>
                                             <div className="col-span-2 text-right" role="cell">
-                                                <button
+                                                <Button
                                                     onClick={async () => {
                                                         if (confirm(t('tags:undoConfirm', { tagName: entry.sourceTagName }))) {
                                                             try {
@@ -217,10 +222,12 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                                             }
                                                         }
                                                     }}
-                                                    className="px-2 py-1 text-[10px] bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded border border-white/10 transition-colors"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-xs"
                                                 >
                                                     {t('tags:undo')}
-                                                </button>
+                                                </Button>
                                             </div>
                                         </motion.div>
                                     ))}
@@ -239,25 +246,27 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                     })}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <button
+                                    <Button
                                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                         disabled={currentPage === 1}
-                                        className="p-2 rounded-lg bg-glass-bg-accent border border-glass-border hover:border-white/30 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                        variant="glass"
+                                        size="icon"
                                         aria-label="Previous page"
                                     >
                                         <ChevronLeft size={16} />
-                                    </button>
+                                    </Button>
                                     <span className="text-sm text-white/70 min-w-[80px] text-center">
                                         {t('tags:pageCount', { current: currentPage, total: totalPages })}
                                     </span>
-                                    <button
+                                    <Button
                                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                                         disabled={currentPage === totalPages}
-                                        className="p-2 rounded-lg bg-glass-bg-accent border border-glass-border hover:border-white/30 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                        variant="glass"
+                                        size="icon"
                                         aria-label="Next page"
                                     >
                                         <ChevronRight size={16} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         )}
