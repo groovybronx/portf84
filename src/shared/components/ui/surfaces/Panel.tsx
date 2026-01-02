@@ -1,8 +1,9 @@
 import React from "react";
 import { cn } from "../Button";
 import { GlassCard } from "../GlassCard";
+import { HTMLMotionProps } from "framer-motion";
 
-interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
+interface PanelProps extends Omit<HTMLMotionProps<"div">, "ref"> {
 	side?: "left" | "right";
 	width?: "sm" | "md" | "lg";
 }

@@ -19,7 +19,7 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
   const { t } = useTranslation(["library", "navigation"]);
   return (
     <Flex justify="between" align="center" className="mb-6">
-      <Stack spacing="none">
+      <Stack spacing="xs">
         <Flex align="center" gap="sm">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Icon action="library" className="text-primary" /> {t('library:library')}

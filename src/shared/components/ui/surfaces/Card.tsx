@@ -1,8 +1,9 @@
 import React from "react";
 import { cn } from "../Button";
 import { GlassCard } from "../GlassCard";
+import { HTMLMotionProps } from "framer-motion";
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface CardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
 	variant?: "default" | "interactive";
 	padding?: "none" | "sm" | "md" | "lg";
 }

@@ -72,7 +72,10 @@ type LibraryAction =
   | { type: "SET_SORT_DIRECTION"; payload: SortDirection }
   | { type: "BATCH_UPDATE_ITEMS"; payload: PortfolioItem[] }
   | { type: "SET_SMART_COLLECTIONS"; payload: SmartCollection[] }
-  | { type: "SET_ACTIVE_SMART_COLLECTION"; payload: { id: string | null; itemIds: Set<string> | null } };
+  | { type: "SET_ACTIVE_SMART_COLLECTION"; payload: { id: string | null; itemIds: Set<string> | null } }
+  | { type: "CLEAR_LIBRARY" }
+  | { type: "SET_AUTO_ANALYZE"; payload: boolean }
+  | { type: "SET_CINEMATIC_CAROUSEL"; payload: boolean };
 
 interface LibraryContextType extends LibraryState {
   // Computed values
@@ -336,7 +339,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (!activeCollection) {
       console.log("[LibraryContext] No active collection, clearing state");
-      dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
+      dispatch({ type: "CLEAR_LIBRARY" });
     }
   }, [activeCollection]);
 
@@ -592,7 +595,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const clearLibrary = useCallback(() => {
     console.log("[LibraryContext] Clearing library state");
-    dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
+    dispatch({ type: "CLEAR_LIBRARY" });
   }, []);
 
   // Actions - View
