@@ -108,7 +108,7 @@ Step-by-step action plan with tasks, timelines, and resource allocation.
 
 ---
 
-### 5. 💼 **[docs/COMMERCIAL_AUDIT.md](./docs/COMMERCIAL_AUDIT.md)**
+### 5. 💼 **[Commercial Analysis](../guides/project/COMMERCIAL_AUDIT.md)** : Analyse de marché et concurrentielle.
 **For: Business stakeholders, investors, marketing**
 
 Business-focused analysis of market fit, commercial potential, and monetization.
@@ -138,7 +138,7 @@ Business-focused analysis of market fit, commercial potential, and monetization.
 3. Use [AUDIT_ACTION_PLAN.md](./AUDIT_ACTION_PLAN.md) to implement fixes
 
 ### 💰 **If you're a Stakeholder/Investor:**
-1. Start with [docs/COMMERCIAL_AUDIT.md](./docs/COMMERCIAL_AUDIT.md)
+1. Start with [Commercial Analysis](../guides/project/COMMERCIAL_AUDIT.md)
 2. Review [AUDIT_DASHBOARD.md](./AUDIT_DASHBOARD.md) for technical health
 3. Check timeline in [AUDIT_ACTION_PLAN.md](./AUDIT_ACTION_PLAN.md)
 
@@ -227,7 +227,7 @@ Business-focused analysis of market fit, commercial potential, and monetization.
 Review the appropriate document based on your question:
 - **Technical questions:** → [COMPREHENSIVE_AUDIT_REPORT.md](./COMPREHENSIVE_AUDIT_REPORT.md)
 - **Implementation questions:** → [AUDIT_ACTION_PLAN.md](./AUDIT_ACTION_PLAN.md)
-- **Business questions:** → [docs/COMMERCIAL_AUDIT.md](./docs/COMMERCIAL_AUDIT.md)
+- **Business questions:** → [Commercial Analysis](../guides/project/COMMERCIAL_AUDIT.md)
 
 ### Recommended Next Steps
 

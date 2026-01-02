@@ -76,11 +76,11 @@ import { Flex } from "@/shared/components/ui/layout/Flex";
 ### Phase 3.1: Button Migration (~60 files)
 
 #### Navigation Features (20 buttons)
-- [ ] [SearchField.tsx](file:///Users/davidmichels/gravity%20app/portf84/src/features/navigation/components/topbar/SearchField.tsx) - 2 buttons
-- [ ] [TopBar.tsx](file:///Users/davidmichels/gravity%20app/portf84/src/features/navigation/components/TopBar.tsx) - 8 buttons
-- [ ] [ViewToggle.tsx](file:///Users/davidmichels/gravity%20app/portf84/src/features/navigation/components/topbar/ViewToggle.tsx) - 3 buttons
-- [ ] [SortControls.tsx](file:///Users/davidmichels/gravity%20app/portf84/src/features/navigation/components/topbar/SortControls.tsx) - 4 buttons
-- [ ] [BatchActions.tsx](file:///Users/davidmichels/gravity%20app/portf84/src/features/navigation/components/topbar/BatchActions.tsx) - 3 buttons
+- [ ] [SearchField.tsx](../../../src/features/navigation/components/topbar/SearchField.tsx) - 2 buttons
+- [ ] [TopBar.tsx](../../../src/features/navigation/components/TopBar.tsx) - 8 buttons
+- [ ] [ViewToggle.tsx](../../../src/features/navigation/components/topbar/ViewToggle.tsx) - 3 buttons
+- [ ] [SortControls.tsx](../../../src/features/navigation/components/topbar/SortControls.tsx) - 4 buttons
+- [ ] [BatchActions.tsx](../../../src/features/navigation/components/topbar/BatchActions.tsx) - 3 buttons
 
 #### Collections Features (15 buttons)
 - [ ] FolderDrawer sub-components (7 files) - ~10 buttons

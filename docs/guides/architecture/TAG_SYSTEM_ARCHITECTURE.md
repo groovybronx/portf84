@@ -769,8 +769,8 @@ When upgrading from older versions:
 ### Related Documentation
 
 - [User Guide](./TAG_SYSTEM_GUIDE.md) - End-user documentation
-- [Functional Spec](./ARCHIVES/TAG_CONSOLIDATION_SPEC.md) - Original requirements
-- [Migration Guide](./ARCHIVES/DB_MIGRATION_v2.01.md) - Schema updates
+- [Tag Consolidation Spec](../../ARCHIVES/historical/TAG_CONSOLIDATION_SPEC.md)
+- [Database Migration v2.01](../../ARCHIVES/historical/DB_MIGRATION_v2.01.md) - Schema updates
 
 ### External Resources
 

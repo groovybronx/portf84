@@ -67,7 +67,7 @@ When working on frontend tasks, you should:
    - Namespaces are in `src/i18n/locales/{en,fr}/`
    - Supported languages: English (en), French (fr)
    - Language detection is automatic via browser settings
-   - See `docs/features/I18N_GUIDE.md` for detailed guide
+   - See `docs/guides/features/I18N_GUIDE.md` for detailed guide
 7. **Icons**:
    - Use Lucide React for all icons
    - Keep icon usage consistent with existing patterns
@@ -128,21 +128,9 @@ feature-name/
 - Code splitting for vendor dependencies
 ## References
 
-- See `docs/features/COMPONENTS.md` for component documentation
-- See `docs/features/INTERACTIONS.md` for keyboard shortcuts and interactions
-- See `docs/features/I18N_GUIDE.md` for internationalization guide
-- See `docs/architecture/ARCHITECTURE.md` for overall architecture
-- TypeScript config in `tsconfig.json`
-- Vite config in `vite.config.ts`
-  focusedIndex: number;
-  // ... more state
-}
-```
-
-## References
-
-- See `docs/COMPONENTS.md` for component documentation
-- See `docs/INTERACTIONS.md` for keyboard shortcuts and interactions
-- See `docs/ARCHITECTURE.md` for overall architecture
+- See `docs/guides/features/COMPONENTS.md` for component documentation
+- See `docs/guides/features/INTERACTIONS.md` for keyboard shortcuts and interactions
+- See `docs/guides/features/I18N_GUIDE.md` for internationalization guide
+- See `docs/guides/architecture/ARCHITECTURE.md` for overall architecture
 - TypeScript config in `tsconfig.json`
 - Vite config in `vite.config.ts`

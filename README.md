@@ -75,14 +75,17 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 ```
 lumina-portfolio/
-├── components/          # Composants React
-├── hooks/               # Hooks custom (useLibrary, useBatchAI, etc.)
-├── services/            # Services (Gemini, Storage, Loader)
-├── tests/               # Tests Vitest
+├── src/
+│   ├── components/      # Composants React
+│   ├── hooks/           # Hooks custom (useLibrary, useBatchAI, etc.)
+│   ├── services/        # Services (Gemini, Storage, Loader)
+│   ├── features/        # Feature modules
+│   └── shared/          # Code partagé
 ├── docs/                # Documentation technique
-└── src-tauri/           # Backend Rust Tauri
-    ├── capabilities/    # Permissions ACL
-    └── tauri.conf.json  # Configuration Tauri
+├── src-tauri/           # Backend Rust Tauri
+│   ├── capabilities/    # Permissions ACL
+│   └── tauri.conf.json  # Configuration Tauri
+└── tests/               # Tests Vitest
 ```
 
 ---
@@ -100,15 +103,15 @@ npm run test
 
 Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
 
-- [Architecture](./docs/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
-- [Composants](./docs/features/COMPONENTS.md) - UI/UX détaillé
-- [AI Service](./docs/architecture/AI_SERVICE.md) - Intégration Gemini
-- [Interactions](./docs/features/INTERACTIONS.md) - Raccourcis clavier
+- [Architecture](./docs/guides/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
+- [Composants](./docs/guides/features/COMPONENTS.md) - UI/UX détaillé
+- [AI Service](./docs/guides/architecture/AI_SERVICE.md) - Intégration Gemini
+- [Interactions](./docs/guides/features/INTERACTIONS.md) - Raccourcis clavier
 
 ### Gestion Git & GitHub
 - [🚀 Quick Start](./docs/QUICK_START.md) - Guide rapide en 10 minutes
 - [Résumé Configuration GitHub](./docs/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
-- [Stratégie de Branches](./docs/BRANCH_STRATEGY.md) - Workflow Git et gestion des branches
+- [Stratégie de Branches](./docs/guides/architecture/GIT_WORKFLOW.md) - Workflow Git et gestion des branches
 - [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
 - [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
 ### 🤖 GitHub Copilot Configuration

@@ -143,9 +143,9 @@ A branch is considered obsolete when:
 
 ## 🔗 Related Documentation
 
-- [Branch Protection Guide](../../.github/BRANCH_PROTECTION_GUIDE.md)
-- [Scripts README](../../scripts/README.md)
-- [Maintenance Guide](../../.github/MAINTENANCE_GUIDE.md)
+- [Stratégie de Protection](../../../.github/BRANCH_PROTECTION_GUIDE.md)
+- [Guide de Maintenance](../../../.github/MAINTENANCE_GUIDE.md)
+- [Scripts de Maintenance](../../../scripts/README.md)
 
 ---
 

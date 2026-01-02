@@ -5,8 +5,9 @@
 This feature handles the taxonomy system: Tags and Colors.
 
 > **📚 For comprehensive technical documentation**, see:
-> - [TAG_SYSTEM_GUIDE.md](../TAG_SYSTEM_GUIDE.md) - Complete technical reference with database schema, algorithms, and data flow
-> - [TAG_SYSTEM_README.md](../TAG_SYSTEM_README.md) - Quick reference and common operations
+> - [Tag System Guide](../../architecture/TAG_SYSTEM_GUIDE.md) - User guide
+- [Tag System Architecture](../../architecture/TAG_SYSTEM_ARCHITECTURE.md) - Technical design
+- [Tag System README](../../features/TAG_SYSTEM_README.md) - Feature overviewnce and common operations
 
 ## Components
 

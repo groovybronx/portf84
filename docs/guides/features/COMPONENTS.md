@@ -541,7 +541,7 @@ Modale de configuration globale avec structure à onglets.
 
 **Système d'icônes unifié avec noms sémantiques** (Extension 26/12/2024) :
 
-- **Registre** : `iconMap` dans [`Icon.tsx`](/Users/davidmichels/gravity app/portf84/src/shared/components/Icon.tsx) (40+ icônes Lucide React)
+- **Registre** : `iconMap` dans [`Icon.tsx`](../../../src/shared/components/Icon.tsx) (40+ icônes Lucide React)
 - **Type** : `IconAction` (union type avec ~40 noms sémantiques)
 - **Usage** : `<Icon action="box" size={20} className="text-primary" />`
 
@@ -703,7 +703,7 @@ Les hooks personnalisés sont couverts par des tests unitaires complets utilisan
 
 ### Tests pour useKeyboardShortcuts
 
-**Fichier** : [tests/useKeyboardShortcuts.test.ts](file:///Users/davidmichels/gravity%20app/portf84/tests/useKeyboardShortcuts.test.ts)
+**Fichier** : [tests/useKeyboardShortcuts.test.ts](../../../tests/useKeyboardShortcuts.test.ts)
 
 **Couverture** : 17 tests
 
@@ -715,7 +715,7 @@ Les hooks personnalisés sont couverts par des tests unitaires complets utilisan
 
 ### Tests pour useItemActions
 
-**Fichier** : [tests/useItemActions.test.ts](file:///Users/davidmichels/gravity%20app/portf84/tests/useItemActions.test.ts)
+**Fichier** : [tests/useItemActions.test.ts](../../../tests/useItemActions.test.ts)
 
 **Couverture** : 15 tests
 

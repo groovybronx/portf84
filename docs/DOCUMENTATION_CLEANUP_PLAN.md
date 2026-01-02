@@ -217,8 +217,8 @@ find docs README.md -name "*.md" -print0 | while IFS= read -r -d '' file; do
     
     echo "Checking $file..."
     
-    # Extract markdown links [text](path)
-    grep -oP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null | while read -r link; do
+    # Extract markdown links `[text](path)`
+    while IFS= read -r link; doP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null | while read -r link; do
         # Skip external links
         if [[ $link == http* ]] || [[ $link == mailto:* ]] || [[ $link == \#* ]]; then
             continue

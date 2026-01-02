@@ -143,8 +143,8 @@ src/shared/components/ui/
 ## 📖 Documentation Associée
 
 ### Design System
-- 📄 [docs/features/DESIGN_SYSTEM.md](../features/DESIGN_SYSTEM.md) - Documentation du design system
-- 📄 [docs/features/MIGRATION_GUIDE_PHASE3.md](../features/MIGRATION_GUIDE_PHASE3.md) - Guide de migration
+- [✅ DESIGN_SYSTEM.md](../guides/features/DESIGN_SYSTEM.md)
+  - [✅ MIGRATION_GUIDE_PHASE3.md](../guides/features/MIGRATION_GUIDE_PHASE3.md) - Guide de migration
 
 ### Autres Audits
 - 📄 [COMPREHENSIVE_AUDIT_REPORT.md](./COMPREHENSIVE_AUDIT_REPORT.md) - Audit technique complet
@@ -175,11 +175,11 @@ src/shared/components/ui/
 
 ### Pour Questions Techniques
 - Voir [UI_UX_CONSOLIDATION_AUDIT.md](./UI_UX_CONSOLIDATION_AUDIT.md) section "Recommandations"
-- Consulter [DESIGN_SYSTEM.md](../features/DESIGN_SYSTEM.md) pour usage des composants
+- Consulter [DESIGN_SYSTEM.md](../guides/features/DESIGN_SYSTEM.md) pour usage des composants
 
 ### Pour Suivi d'Implémentation
 - Voir [UI_SIMPLIFICATION_VERIFICATION_REPORT.md](./UI_SIMPLIFICATION_VERIFICATION_REPORT.md) section "Plan d'Action"
-- Consulter [MIGRATION_GUIDE_PHASE3.md](../features/MIGRATION_GUIDE_PHASE3.md) pour patterns
+- Consulter [MIGRATION_GUIDE_PHASE3.md](../guides/features/MIGRATION_GUIDE_PHASE3.md) pour patterns
 
 ---
 

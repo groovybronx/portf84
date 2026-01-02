@@ -204,15 +204,14 @@ Week 4: Final Testing & Launch
 
 1. **[COMPREHENSIVE_AUDIT_REPORT.md](./COMPREHENSIVE_AUDIT_REPORT.md)**
    - Full technical analysis (12,000+ words)
-   - Detailed findings per category
-   - Code examples and recommendations
+1.  **[COMPREHENSIVE_AUDIT_REPORT.md](./COMPREHENSIVE_AUDIT_REPORT.md)**
+    -   Full technical analysis (12,000+ words)
+    -   Detailed findings per category
+    -   Code examples and recommendations
 
-2. **[AUDIT_ACTION_PLAN.md](./AUDIT_ACTION_PLAN.md)**
-   - Step-by-step implementation guide
-   - Resource allocation
-   - Timeline and milestones
-
-3. **[docs/COMMERCIAL_AUDIT.md](./docs/COMMERCIAL_AUDIT.md)**
+2.  **[AUDIT_ACTION_PLAN.md](./AUDIT_ACTION_PLAN.md)**
+    -   Step-by-step implementation guide
+3. **[docs/COMMERCIAL_AUDIT.md](../guides/project/COMMERCIAL_AUDIT.md)**
    - Business perspective
    - Market analysis
    - Commercial readiness
@@ -404,4 +403,4 @@ dist/
 For questions about this audit, contact the project lead or review the detailed reports:
 - [Full Audit Report](./COMPREHENSIVE_AUDIT_REPORT.md)
 - [Action Plan](./AUDIT_ACTION_PLAN.md)
-- [Commercial Analysis](./docs/COMMERCIAL_AUDIT.md)
+- [Commercial Analysis](../guides/project/COMMERCIAL_AUDIT.md)
