@@ -224,7 +224,6 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                                     }}
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-xs"
                                                 >
                                                     {t('tags:undo')}
                                                 </Button>

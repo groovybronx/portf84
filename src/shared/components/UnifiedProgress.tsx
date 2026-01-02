@@ -60,7 +60,7 @@ const TaskItem: React.FC<{ task: ProgressTask; onRemove: () => void }> = ({
               aria-label="Close"
               className="absolute top-3 right-3"
             >
-              <X className="w-4 h-4" />
+              <X size={14} />
             </Button>
           </div>
 

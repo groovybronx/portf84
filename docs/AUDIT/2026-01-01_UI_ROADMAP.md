@@ -17,7 +17,7 @@ Ce roadmap détaille le plan complet de migration et consolidation UI/UX pour Lu
 - 📋 **Phase 4**: Planifiée (Optimisation finale)
 
 **Métriques Actuelles Vérifiées**:
-- **HTML Buttons**: 45 instances restantes (cible: <30)
+- **HTML Buttons**: 33 instances restantes (cible: <30)
 - **Glass Styles**: ~20 fichiers avec styles inline (cible: <15)
 - **Composants UI**: 18 composants créés (cible: 20+)
 - **Design Tokens**: 63 tokens CSS (dépassé ✅)
@@ -782,7 +782,7 @@ Cette roadmap établit un plan clair et actionnable pour compléter la consolida
 ║    ✓ SettingsModal sous-composants extraits                  ║
 ║                                                               ║
 ║  Phase 3: Migration              ████████▓▓▓▓   70%  🔄      ║
-║    🔄 Buttons migration (80%)                                ║
+║    🔄 Buttons migration (87%)                                ║
 ║    🔄 Glass migration (78%)                                  ║
 ║    ⏳ Layouts migration (0%)                                 ║
 ║                                                               ║
@@ -797,7 +797,7 @@ Cette roadmap établit un plan clair et actionnable pour compléter la consolida
 ║  Métriques Clés:                                             ║
 ║    • Composants UI      : 18/20+     ✅ (90%)               ║
 ║    • Design Tokens      : 63/35+     ✅ (180%)              ║
-║    • HTML Buttons       : 45/30      🔄 (67%)               ║
+║    • HTML Buttons       : 33/30      🔄 (90%)               ║
 ║    • Glass Files        : 20/15      🔄 (75%)               ║
 ║    • Layouts Migrated   : 0/10       ⏳ (0%)                ║
 ║                                                               ║

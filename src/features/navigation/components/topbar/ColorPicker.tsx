@@ -36,6 +36,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               : "border-transparent hover:scale-110 opacity-80 hover:opacity-100 hover:border-white/30"
           }`}
           style={{ backgroundColor: hex }}
+          aria-label={t('selectColor', { color: key })}
         />
       ))}
       <Button

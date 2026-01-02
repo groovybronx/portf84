@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../../shared/components/ui";
 import { motion } from "framer-motion";
 
@@ -19,7 +20,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 	onFocusedItem,
 }) => {
 	// --- État et Initialisation ---
-	
+	const { t } = useTranslation("common");
 	const { processedItems: items } = useLibrary();
 	const showColorTags = true;
 
@@ -147,7 +148,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 				variant="nav-arrow"
 				size="icon-lg"
 				className="absolute left-4 top-1/2 -translate-y-1/2 z-20"
-				aria-label="Précédent"
+				aria-label={t("previous")}
 			>
 				<ChevronLeft size={24} />
 			</Button>
@@ -157,7 +158,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 				variant="nav-arrow"
 				size="icon-lg"
 				className="absolute right-4 top-1/2 -translate-y-1/2 z-20"
-				aria-label="Suivant"
+				aria-label={t("next")}
 			>
 				<ChevronRight size={24} />
 			</Button>
