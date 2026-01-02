@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { VibeKanbanWebCompanion } from "vibe-kanban-web-companion";
 import { TopBar } from "./features/navigation";
 import { ViewRenderer } from "./features/library/components/ViewRenderer";
 import { ImageViewer, analyzeImage } from "./features/vision";
@@ -327,13 +328,15 @@ const App: React.FC = () => {
     : "Collection";
 
   return (
-    <div
-      className="main-app bg-surface h-screen overflow-hidden flex flex-col"
-      onMouseDown={(e) => handleMouseDown(e, viewMode, processedItems)}
-      onMouseMove={(e) => handleMouseMove(e, processedItems)}
-      onMouseUp={handleMouseUp}
-    >
-      <LoadingOverlay isVisible={collectionsLoading} />
+    <>
+      <VibeKanbanWebCompanion />
+      <div
+        className="main-app bg-surface h-screen overflow-hidden flex flex-col"
+        onMouseDown={(e) => handleMouseDown(e, viewMode, processedItems)}
+        onMouseMove={(e) => handleMouseMove(e, processedItems)}
+        onMouseUp={handleMouseUp}
+      >
+        <LoadingOverlay isVisible={collectionsLoading} />
       
       {/* Drag Selection Box */}
       {isDragSelecting && dragBox && (
@@ -572,7 +575,8 @@ const App: React.FC = () => {
       />
 
       <UnifiedProgress />
-    </div>
+      </div>
+    </>
   );
 };
 

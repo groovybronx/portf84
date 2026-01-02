@@ -34,7 +34,8 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-i18next": "^16.5.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "vibe-kanban-web-companion": "^0.0.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
