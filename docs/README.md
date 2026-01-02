@@ -110,4 +110,4 @@ Deux méthodes :
 
 ### Tauri Capabilities
 
-Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir- **[Architecture](./guides/architecture/ARCHITECTURE.md)** pour les détails.
+Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir **[Architecture](./guides/architecture/ARCHITECTURE.md)** pour les détails.

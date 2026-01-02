@@ -280,7 +280,7 @@ Après avoir effectué toutes les actions :
 
 1. **Consulter la documentation** :
    - **[BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)**
-- **[CONFIGURATION_GITHUB_FR.md](./CONFIGURATION_GITHUB_FR.md)**
+   - **[CONFIGURATION_GITHUB_FR.md](./CONFIGURATION_GITHUB_FR.md)**
 
 2. **Vérifier les scripts** :
    - Les scripts sont dans `scripts/`
