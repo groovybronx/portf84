@@ -599,10 +599,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 									size="md"
 									className={`relative px-6 py-2.5 transition-all duration-300 overflow-hidden shadow-lg ${
 										isSaved
-											? "bg-green-500 hover:bg-green-600"
+											? "ring-2 ring-green-500"
 											: ""
 									}`}
-									leftIcon={!isSaved ? <Icon action="save" size={16} /> : undefined}
+									leftIcon={
+										<>
+											{!isSaved && <Icon action="save" size={16} />}
+										</>
+									}
 								>
 									{isSaved ? t('settings:saved') : t('settings:saveChanges')}
 								</Button>
