@@ -9,6 +9,7 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 
 vi.mock("@tauri-apps/api/core", () => ({
 	convertFileSrc: vi.fn((path) => `asset://${path}`),
+	invoke: vi.fn(),
 }));
 
 vi.mock("@tauri-apps/api/path", () => ({
@@ -16,6 +17,7 @@ vi.mock("@tauri-apps/api/path", () => ({
 }));
 
 import { readDir, stat } from "@tauri-apps/plugin-fs";
+import { invoke } from "@tauri-apps/api/core";
 
 describe("fileHelpers", () => {
 	beforeEach(() => {
@@ -25,6 +27,13 @@ describe("fileHelpers", () => {
 		(stat as any).mockResolvedValue({
 			size: 1024,
 			mtime: new Date(),
+		});
+
+		// Mock invoke for get_image_dimensions
+		(invoke as any).mockResolvedValue({
+			width: 1920,
+			height: 1080,
+			size: 1024,
 		});
 	});
 
