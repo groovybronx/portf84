@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { scanDirectory } from "../src/shared/utils/fileHelpers";
 
 // Mock Tauri APIs
@@ -24,13 +24,13 @@ describe("fileHelpers", () => {
 		vi.resetAllMocks();
 
 		// Default mocks
-		(stat as any).mockResolvedValue({
+		(stat as Mock).mockResolvedValue({
 			size: 1024,
 			mtime: new Date(),
 		});
 
 		// Mock invoke for get_image_dimensions
-		(invoke as any).mockResolvedValue({
+		(invoke as Mock).mockResolvedValue({
 			width: 1920,
 			height: 1080,
 			size: 1024,
@@ -41,7 +41,7 @@ describe("fileHelpers", () => {
 		it("should load images from a flat directory", async () => {
 			// Setup mock file system structure
 			// scanDirectory calls readDir(basePath)
-			(readDir as any).mockImplementation(async (path: string) => {
+			(readDir as Mock).mockImplementation(async (path: string) => {
 				if (path === "root") {
 					return [
 						{ name: "image1.jpg", isFile: true, isDirectory: false },
@@ -66,7 +66,7 @@ describe("fileHelpers", () => {
 			// Setup nested structure
 			// root -> root.jpg, subfolder/
 			// subfolder -> nested.jpg
-			(readDir as any).mockImplementation(async (path: string) => {
+			(readDir as Mock).mockImplementation(async (path: string) => {
 				console.log("Mock readDir called for:", path);
 				if (path === "root") {
 					return [
