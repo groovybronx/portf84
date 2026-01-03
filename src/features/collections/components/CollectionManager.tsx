@@ -10,7 +10,7 @@ import {
 	AlertCircle,
 } from "lucide-react";
 import { Collection } from "../../../shared/types";
-import { Button, GlassCard } from "../../../shared/components/ui";
+import { Button, GlassCard, Flex, Stack } from "../../../shared/components/ui";
 
 interface CollectionManagerProps {
 	isOpen: boolean;
@@ -209,36 +209,37 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
 								initial={{ opacity: 0, height: 0 }}
 								animate={{ opacity: 1, height: "auto" }}
 								exit={{ opacity: 0, height: 0 }}
-								className="space-y-3"
 							>
-								<input
-									type="text"
-									value={newCollectionName}
-									onChange={(e) => setNewCollectionName(e.target.value)}
-									onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-									placeholder={t('library:projectNamePlaceholder')}
-									className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
-									autoFocus
-								/>
-								<div className="flex gap-2">
-									<Button
-										onClick={handleCreate}
-										disabled={!newCollectionName.trim()}
-										className="flex-1"
-									>
-										{t('common:create')}
-									</Button>
-									<Button
-										variant="ghost"
-										onClick={() => {
-											setIsCreating(false);
-											setNewCollectionName("");
-										}}
-										className="flex-1"
-									>
-										{t('common:cancel')}
-									</Button>
-								</div>
+								<Stack spacing="sm">
+									<input
+										type="text"
+										value={newCollectionName}
+										onChange={(e) => setNewCollectionName(e.target.value)}
+										onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+										placeholder={t('library:projectNamePlaceholder')}
+										className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
+										autoFocus
+									/>
+									<Flex gap="sm">
+										<Button
+											onClick={handleCreate}
+											disabled={!newCollectionName.trim()}
+											className="flex-1"
+										>
+											{t('common:create')}
+										</Button>
+										<Button
+											variant="ghost"
+											onClick={() => {
+												setIsCreating(false);
+												setNewCollectionName("");
+											}}
+											className="flex-1"
+										>
+											{t('common:cancel')}
+										</Button>
+									</Flex>
+								</Stack>
 							</motion.div>
 						) : (
 							<Button

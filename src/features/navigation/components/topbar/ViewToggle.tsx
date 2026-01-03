@@ -9,7 +9,7 @@ import {
 	LucideIcon,
 } from "lucide-react";
 import { ViewMode } from "../../../../shared/types";
-import { Button, GlassCard } from "../../../../shared/components/ui";
+import { Button, GlassCard, Flex } from "../../../../shared/components/ui";
 
 interface ViewToggleProps {
 	currentViewMode: ViewMode;
@@ -46,10 +46,10 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 				onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
 				className="bg-glass-bg-accent border-glass-border-light hover:bg-glass-bg-active transition-colors min-w-[120px] justify-between"
 			>
-				<div className="flex items-center gap-2">
+				<Flex align="center" gap="sm">
 					<currentModeData.icon size={16} className="text-blue-400" />
 					<span className="text-sm font-medium">{currentModeData.label}</span>
-				</div>
+				</Flex>
 				<ChevronDown
 					size={14}
 					className={`text-gray-400 transition-transform ${

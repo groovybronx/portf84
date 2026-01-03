@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon, type IconAction } from "../../Icon";
 import { IconPicker } from "./IconPicker";
+import { Button } from "../Button";
 
 interface ColorPickerProps {
   value: string;
@@ -32,10 +33,12 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         {/* Color Swatches */}
         <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar max-w-[240px]">
           {colors.map((color) => (
-            <button
+            <Button
               key={color.value}
               onClick={() => onChange(color.value)}
-              className={`w-6 h-6 rounded-md shrink-0 transition-transform ${
+              variant="ghost"
+              size="icon-sm"
+              className={`rounded-md shrink-0 transition-transform ${
                 value === color.value
                   ? "ring-2 ring-white scale-110 z-10"
                   : "opacity-60 hover:opacity-100 hover:scale-105"
@@ -49,9 +52,11 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
         {/* Optional Icon Trigger */}
         {withIconPicker && icon && onIconChange && (
-          <button
+          <Button
             onClick={() => setShowIconPicker(!showIconPicker)}
-            className={`w-10 h-10 rounded-lg shadow-inner border border-white/10 flex items-center justify-center transition-all shrink-0 ml-2 ${
+            variant="ghost"
+            size="icon"
+            className={`rounded-lg shadow-inner border border-white/10 transition-all shrink-0 ml-2 ${
               showIconPicker
                 ? "ring-2 ring-white/30 scale-105"
                 : "hover:scale-105"
@@ -61,7 +66,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             type="button"
           >
             <Icon action={icon} size={20} className="text-white drop-shadow-md" />
-          </button>
+          </Button>
         )}
       </div>
 

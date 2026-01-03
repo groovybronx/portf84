@@ -52,10 +52,11 @@ export const TabTrigger: React.FC<TabTriggerProps> = ({
   className,
 }) => {
   return (
-    <button
+    <Button
       onClick={onClick}
+      variant="ghost"
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all",
+        "w-full gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all justify-start h-auto",
         active
           ? "bg-primary/20 text-primary border border-primary/30"
           : "text-white/60 hover:text-white hover:bg-white/5 active:bg-white/10",
@@ -64,7 +65,7 @@ export const TabTrigger: React.FC<TabTriggerProps> = ({
     >
       {icon}
       {children}
-    </button>
+    </Button>
   );
 };
 

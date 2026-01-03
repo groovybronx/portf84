@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
+import { Button } from "../../../../shared/components/ui";
 
 import {
   Folder as FolderType,
@@ -158,12 +159,14 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                         {t('library:activeProjectLabel')}
                                     </p>
                                 </div>
-                                <button 
+                                <Button 
                                     onClick={onManageCollections}
-                                    className="p-2 hover:bg-quinary/20 rounded-lg text-quinary transition-colors"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-quinary hover:bg-quinary/20"
                                 >
                                     <Icon action="settings" size={14} />
-                                </button>
+                                </Button>
                             </motion.div>
 
                             {/* Content Body with Slide Animation */}
@@ -214,15 +217,16 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                 />
 
                                 {/* MANAGE TAGS BUTTON */}
-                                <button
+                                <Button
                                     onClick={onManageTags}
-                                    className="w-full flex items-center gap-3 p-2 rounded-lg text-quinary/60 hover:text-white hover:bg-quinary/10 transition-all group"
+                                    variant="ghost"
+                                    className="w-full gap-3 p-2 rounded-lg text-quinary/60 hover:text-white hover:bg-quinary/10 transition-all group justify-start"
                                 >
                                     <div className="p-1.5 bg-quinary/10 rounded-md text-quinary group-hover:bg-quinary group-hover:text-white transition-all">
                                         <Icon action="tag" size={14} />
                                     </div>
                                     <span className="text-sm font-medium">{t('library:manageTags')}</span>
-                                </button>
+                                </Button>
                             </motion.div>
                         </motion.div>
                     ) : (
