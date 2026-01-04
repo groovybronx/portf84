@@ -2,7 +2,13 @@
 
 Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumina Portfolio. Chaque agent est un expert dans un domaine spécifique du projet.
 
+**Total**: 20 agents spécialisés pour une productivité maximale.
+
 ## 📋 Agents Disponibles
+
+## Agents de Domaine (6 agents)
+
+Ces agents fournissent une expertise dans des domaines techniques spécifiques du projet.
 
 ### 1. 🏗️ Project Architecture Agent
 **Fichier**: `project-architecture.agent.md`
@@ -89,6 +95,236 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 
 ---
 
+## Agents de Qualité & Nettoyage (4 agents)
+
+Ces agents assurent la qualité du code et automatisent le nettoyage.
+
+### 7. 🔍 Code Quality Auditor Agent
+**Fichier**: `code-quality-auditor.agent.md`
+
+**Expertise**:
+- Détection de code smells et anti-patterns
+- Analyse de complexité cyclomatique
+- Détection de code dupliqué
+- Validation des conventions de nommage
+- Évaluation de la dette technique
+- Métriques de maintenabilité du code
+
+**Quand l'utiliser**: Pour auditer la qualité du code, identifier les problèmes de maintenabilité, ou évaluer la dette technique.
+
+---
+
+### 8. 🧹 Code Cleaner Agent
+**Fichier**: `code-cleaner.agent.md`
+
+**Expertise**:
+- Élimination du code mort
+- Optimisation des imports
+- Nettoyage des console.log
+- Formatage et cohérence du style
+- Suppression des variables inutilisées
+- Refactoring automatique
+
+**Quand l'utiliser**: Pour nettoyer le code automatiquement, optimiser les imports, ou standardiser le formatage.
+
+---
+
+### 9. 🔒 Security Auditor Agent
+**Fichier**: `security-auditor.agent.md`
+
+**Expertise**:
+- Détection de vulnérabilités OWASP Top 10
+- Gestion des secrets et API keys
+- Prévention d'injection SQL et XSS
+- Sécurité du système de fichiers Tauri
+- Audit des permissions
+- Validation des entrées utilisateur
+
+**Quand l'utiliser**: Pour auditer la sécurité, détecter des secrets hardcodés, ou vérifier les vulnérabilités.
+
+---
+
+### 10. ⚡ Performance Optimizer Agent
+**Fichier**: `performance-optimizer.agent.md`
+
+**Expertise**:
+- Optimisation du rendu React
+- Virtual scrolling et windowing
+- Optimisation de la taille des bundles
+- Lazy loading d'images
+- Optimisation des requêtes base de données
+- Détection de fuites mémoire
+
+**Quand l'utiliser**: Pour optimiser les performances, réduire la taille des bundles, ou résoudre des problèmes de performance.
+
+---
+
+## Agents de Tests & Bugs (2 agents)
+
+Ces agents améliorent la couverture de tests et détectent les bugs.
+
+### 11. 📊 Test Coverage Improver Agent
+**Fichier**: `test-coverage-improver.agent.md`
+
+**Expertise**:
+- Analyse de couverture de code
+- Génération automatique de tests
+- Tests unitaires et d'intégration
+- Stratégies de mocking
+- Test-Driven Development (TDD)
+- Identification de code non testé
+
+**Quand l'utiliser**: Pour améliorer la couverture de tests, générer des tests manquants, ou analyser les zones non testées.
+
+---
+
+### 12. 🐛 Bug Hunter Agent
+**Fichier**: `bug-hunter.agent.md`
+
+**Expertise**:
+- Analyse statique de code
+- Détection de patterns de bugs
+- Détection de race conditions
+- Identification de fuites mémoire
+- Analyse de cas limites
+- Détection d'erreurs logiques
+
+**Quand l'utiliser**: Pour trouver des bugs potentiels, analyser les erreurs, ou détecter les problèmes avant qu'ils n'atteignent la production.
+
+---
+
+## Agents de Documentation & Migration (2 agents)
+
+Ces agents gèrent la documentation et les migrations de versions.
+
+### 13. 📚 Documentation Generator Agent
+**Fichier**: `documentation-generator.agent.md`
+
+**Expertise**:
+- Génération de JSDoc/TSDoc
+- Documentation des composants React
+- Documentation d'API et services
+- Génération de guides utilisateur
+- Mise à jour de README et CHANGELOG
+- Documentation d'architecture
+
+**Quand l'utiliser**: Pour générer de la documentation, documenter de nouvelles fonctionnalités, ou mettre à jour la documentation existante.
+
+---
+
+### 14. 🔄 Migration Assistant Agent
+**Fichier**: `migration-assistant.agent.md`
+
+**Expertise**:
+- Migrations de versions de dépendances
+- Gestion des breaking changes
+- Gestion des dépréciations
+- Migrations de schéma de base de données
+- Création de codemods
+- Maintien de la rétrocompatibilité
+
+**Quand l'utiliser**: Pour migrer vers de nouvelles versions de React, Tauri, ou autres dépendances majeures.
+
+---
+
+## Agents d'Analyse & Gestion (3 agents)
+
+Ces agents fournissent des insights et gèrent des aspects spécifiques du projet.
+
+### 15. 📈 Metrics Analyzer Agent
+**Fichier**: `metrics-analyzer.agent.md`
+
+**Expertise**:
+- Analyse de métriques de code
+- Indicateurs de santé du projet
+- Tracking de performances
+- Analyse de vélocité de développement
+- Mesure de la dette technique
+- Analyse de tendances qualité
+
+**Quand l'utiliser**: Pour générer des rapports de santé du projet, analyser les métriques, ou suivre les tendances.
+
+---
+
+### 16. 🌐 i18n Manager Agent
+**Fichier**: `i18n-manager.agent.md`
+
+**Expertise**:
+- Gestion de i18next et react-i18next
+- Gestion des clés de traduction
+- Synchronisation des fichiers de langue
+- Détection de traductions manquantes
+- Pluralisation et formatage
+- Support RTL (Right-to-Left)
+
+**Quand l'utiliser**: Pour gérer les traductions, synchroniser les langues, ou ajouter de nouvelles clés de traduction.
+
+---
+
+### 17. 📦 Dependency Manager Agent
+**Fichier**: `dependency-manager.agent.md`
+
+**Expertise**:
+- Gestion des packages npm et Cargo
+- Versioning sémantique (semver)
+- Analyse de vulnérabilités
+- Stratégie de mise à jour
+- Conformité des licences
+- Optimisation de l'arbre de dépendances
+
+**Quand l'utiliser**: Pour gérer les dépendances, mettre à jour les packages, ou vérifier les vulnérabilités.
+
+---
+
+## Agents de Coordination & Résolution (3 agents)
+
+Ces agents coordonnent le workflow et résolvent les problèmes complexes.
+
+### 18. 🔀 PR Resolver Agent
+**Fichier**: `pr-resolver.agent.md`
+
+**Expertise**:
+- Analyse automatique de PR
+- Code review automatisé
+- Résolution de conflits de merge
+- Gestion de workflow Git
+- Validation pré-merge
+- Gestion de branches
+
+**Quand l'utiliser**: Pour analyser des PRs, résoudre des conflits de merge, ou effectuer des code reviews automatisées.
+
+---
+
+### 19. 📋 Refactoring Tracker Agent
+**Fichier**: `refactoring-tracker.agent.md`
+
+**Expertise**:
+- Suivi de plans de refactoring multi-phases
+- Gestion de l'implémentation par phases
+- Monitoring de progrès
+- Gestion des dépendances de tâches
+- Évaluation des risques
+- Planification de rollback
+
+**Quand l'utiliser**: Pour planifier et suivre des refactorings importants, gérer des implémentations multi-phases.
+
+---
+
+### 20. 🎭 Meta Orchestrator Agent
+**Fichier**: `meta-orchestrator.agent.md`
+
+**Expertise**:
+- Coordination de tous les agents
+- Décomposition de tâches complexes
+- Gestion de workflow multi-agents
+- Prise de décision et priorisation
+- Validation de qualité
+- Optimisation de ressources
+
+**Quand l'utiliser**: Pour coordonner des tâches complexes nécessitant plusieurs agents, ou pour orchestrer des workflows complets.
+
+---
+
 ## 🚀 Comment Utiliser les Agents
 
 ### Via GitHub Copilot Chat
@@ -151,6 +387,65 @@ Comment mocker le plugin Tauri FS pour tester le chargement de fichiers?
 ```
 Quelle est la meilleure façon d'ajouter une nouvelle feature qui touche frontend et backend?
 Comment organiser le code pour une nouvelle fonctionnalité de collaboration?
+```
+
+**Pour le Code Quality Auditor Agent**:
+```
+Effectue un audit de qualité complet du code
+Trouve les fonctions avec une complexité cyclomatique élevée
+```
+
+**Pour le Security Auditor Agent**:
+```
+Scanne pour des secrets hardcodés dans le code
+Vérifie les vulnérabilités dans les requêtes SQL
+```
+
+**Pour le Performance Optimizer Agent**:
+```
+Optimise le rendu du PhotoGrid
+Analyse la taille des bundles et suggère des optimisations
+```
+
+**Pour le Meta Orchestrator Agent**:
+```
+Améliore la qualité globale du code (coordonne audit, nettoyage, tests)
+Prépare le code pour la release (audit complet, tests, documentation)
+```
+
+---
+
+## 🔗 Intégrations Entre Agents
+
+Les agents sont conçus pour travailler ensemble de manière coordonnée:
+
+### Workflow Qualité Complète
+```
+Meta Orchestrator
+  ├─> Code Quality Auditor (audit)
+  ├─> Security Auditor (sécurité)
+  ├─> Bug Hunter (détection bugs)
+  ├─> Code Cleaner (nettoyage)
+  └─> Test Coverage Improver (tests)
+```
+
+### Workflow Développement de Feature
+```
+Meta Orchestrator
+  ├─> Project Architecture (design)
+  ├─> React Frontend / Tauri Backend (implémentation)
+  ├─> Testing Agent (tests)
+  ├─> Documentation Generator (docs)
+  └─> PR Resolver (review)
+```
+
+### Workflow Refactoring
+```
+Refactoring Tracker (plan)
+  ├─> Test Coverage Improver (tests de sécurité)
+  ├─> React/Tauri Agents (refactoring)
+  ├─> Performance Optimizer (validation)
+  └─> Documentation Generator (mise à jour docs)
 ```
 
 ---
