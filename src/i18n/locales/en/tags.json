@@ -116,7 +116,7 @@
   "keyboardShortcutTip": "💡 Tip: Use Ctrl+A to select all tags, Delete to remove selected",
   "levenshteinHelp": "Character difference allowed (1-3)",
   "jaccardHelp": "Word similarity required (60-95%)",
-  "minUsageHelp": "Ignore tags with fewer uses (0-10)"
+  "minUsageHelp": "Ignore tags with fewer uses (0-10)",
   "batchTagging": "Batch Tagging",
   "itemsSelected": "{{count}} item selected",
   "itemsSelected_plural": "{{count}} items selected",
