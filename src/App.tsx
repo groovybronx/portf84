@@ -543,6 +543,7 @@ const App: React.FC = () => {
               onPrev={handlePrev}
               showColorTags={true}
               availableTags={availableTags}
+              allItems={currentItems}
             />
           </ErrorBoundary>
         )}
