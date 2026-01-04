@@ -11,7 +11,7 @@ export interface ModalState {
   isSettingsOpen: boolean;
   isCollectionManagerOpen: boolean;
   isSmartCollectionBuilderOpen: boolean;
-  isTagStudioOpen: boolean;
+
   isTagHubOpen: boolean;
 
   // Tag Hub active tab
@@ -25,7 +25,7 @@ export interface ModalState {
   setIsSettingsOpen: (open: boolean) => void;
   setIsCollectionManagerOpen: (open: boolean) => void;
   setIsSmartCollectionBuilderOpen: (open: boolean) => void;
-  setIsTagStudioOpen: (open: boolean) => void;
+
   setIsTagHubOpen: (open: boolean) => void;
   setTagHubActiveTab: (tab: TagHubTab) => void;
 }
@@ -42,7 +42,7 @@ export const useModalState = (): ModalState => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
   const [isSmartCollectionBuilderOpen, setIsSmartCollectionBuilderOpen] = useState(false);
-  const [isTagStudioOpen, setIsTagStudioOpen] = useState(false);
+
   const [isTagHubOpen, setIsTagHubOpen] = useState(false);
   const [tagHubActiveTab, setTagHubActiveTab] = useState<TagHubTab>("browse");
 
@@ -55,7 +55,7 @@ export const useModalState = (): ModalState => {
     isSettingsOpen,
     isCollectionManagerOpen,
     isSmartCollectionBuilderOpen,
-    isTagStudioOpen,
+
     isTagHubOpen,
     tagHubActiveTab,
 
@@ -67,7 +67,7 @@ export const useModalState = (): ModalState => {
     setIsSettingsOpen,
     setIsCollectionManagerOpen,
     setIsSmartCollectionBuilderOpen,
-    setIsTagStudioOpen,
+
     setIsTagHubOpen,
     setTagHubActiveTab,
   };

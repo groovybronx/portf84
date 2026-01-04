@@ -19,7 +19,7 @@ import {
 	Palette,
 } from "lucide-react";
 import { useVision } from "../hooks/useVision";
-import { TagManager } from "../../tags/components/TagManager";
+
 
 interface ImageViewerProps {
 	item: PortfolioItem;
@@ -441,13 +441,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 								{error && <p className="text-red-400 text-xs mt-2">{error}</p>}
 							</div>
 
-							{/* Tag Manager */}
-							<TagManager
-								item={item}
-								onUpdateItem={onUpdateItem}
-								availableTags={availableTags}
-								allItems={allItems}
-							/>
+
 						</motion.div>
 					)}
 				</AnimatePresence>
