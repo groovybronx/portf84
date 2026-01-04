@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "../../../shared/components/ui";
+import { Button, GlassCard, Stack } from "../../../shared/components/ui";
 import { PortfolioItem } from "../../../shared/types";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -123,11 +123,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 	};
 
 	return (
-		<motion.div
+		<GlassCard
+			variant="overlay"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
-			className="fixed inset-0 z-(--z-image-viewer) flex glass-surface-lg"
+			className="fixed inset-0 z-(--z-image-viewer) flex"
 		>
 			{/* Main Image Area */}
 			<div
@@ -189,12 +190,13 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 			</div>
 
 			{/* Sidebar / Info Panel */}
-			<motion.div
+			<GlassCard
+				variant="base"
 				initial={{ x: "100%" }}
 				animate={{ x: 0 }}
 				exit={{ x: "100%" }}
 				transition={{ type: "spring", damping: 25, stiffness: 200 }}
-				className="w-[350px] sm:w-[400px] h-full glass-surface border-l border-glass-border p-8 flex flex-col gap-6 shadow-2xl overflow-y-auto z-(--z-drawer)"
+				className="w-[350px] sm:w-[400px] h-full border-l border-glass-border p-8 flex flex-col gap-6 shadow-2xl overflow-y-auto z-(--z-drawer)"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className="flex items-start justify-between">
@@ -463,7 +465,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 						<Download size={18} /> Save
 					</a>
 				</div>
-			</motion.div>
-		</motion.div>
+			</GlassCard>
+		</GlassCard>
 	);
 };

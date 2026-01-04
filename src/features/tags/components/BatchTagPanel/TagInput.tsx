@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Plus, Tag as TagIcon } from "lucide-react";
-import { Button } from "@/shared/components/ui";
+import { Button, Stack, Flex } from "@/shared/components/ui";
 import { useTranslation } from "react-i18next";
 
 // Constants
@@ -34,7 +34,9 @@ export const TagInput: React.FC<TagInputProps> = ({
 
 		// Get the last comma-separated value being typed
 		const parts = input.split(",");
-		const currentPart = parts[parts.length - 1].trim().toLowerCase();
+		const lastPart = parts[parts.length - 1];
+		if (!lastPart) return [];
+		const currentPart = lastPart.trim().toLowerCase();
 
 		if (currentPart.length < 1) return [];
 
@@ -89,14 +91,14 @@ export const TagInput: React.FC<TagInputProps> = ({
 	};
 
 	return (
-		<div className="space-y-2">
-			<div className="flex items-center gap-2">
+		<Stack spacing="sm">
+			<Flex align="center" gap="sm">
 				<span className="text-sm font-medium text-white">
 					➕ {t("addTags")}
 				</span>
-			</div>
+			</Flex>
 			<div className="relative">
-				<div className="flex gap-2">
+				<Flex gap="sm">
 					<input
 						ref={inputRef}
 						type="text"
@@ -122,22 +124,23 @@ export const TagInput: React.FC<TagInputProps> = ({
 					>
 						<Plus size={18} />
 					</Button>
-				</div>
+				</Flex>
 
 				{/* Suggestions dropdown */}
 				{showSuggestions && suggestions.length > 0 && (
 					<div className="absolute top-full left-0 right-12 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-20 overflow-hidden max-h-48 overflow-y-auto">
 						{suggestions.map((suggestion) => (
-							<button
+							<Button
 								key={suggestion}
 								onMouseDown={() =>
 									handleSuggestionClick(suggestion)
 								}
-								className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2 transition-colors"
+								variant="ghost"
+								className="w-full justify-start gap-2 rounded-none hover:bg-white/10"
 							>
 								<TagIcon size={12} className="text-gray-500" />
 								{suggestion}
-							</button>
+							</Button>
 						))}
 					</div>
 				)}
@@ -147,6 +150,6 @@ export const TagInput: React.FC<TagInputProps> = ({
 					{t("tagInputHint")}
 				</p>
 			</div>
-		</div>
+		</Stack>
 	);
 };

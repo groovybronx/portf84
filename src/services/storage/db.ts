@@ -205,6 +205,24 @@ export const getDB = async (): Promise<Database> => {
       `);
 			console.log("[Storage] Tag merges history table created/verified");
 
+      // Migration V2: Add snapshots for undo
+      try {
+        const result = await db.select<Array<{name: string}>>("PRAGMA table_info(tag_merges)");
+        const hasSourceTagName = result.some(col => col.name === 'sourceTagName');
+        const hasItemIdsJson = result.some(col => col.name === 'itemIdsJson');
+
+        if (!hasSourceTagName) {
+             await db.execute("ALTER TABLE tag_merges ADD COLUMN sourceTagName TEXT");
+             console.log("[Storage] Migration: Added sourceTagName to tag_merges");
+        }
+         if (!hasItemIdsJson) {
+             await db.execute("ALTER TABLE tag_merges ADD COLUMN itemIdsJson TEXT");
+             console.log("[Storage] Migration: Added itemIdsJson to tag_merges");
+        }
+      } catch (e) {
+        console.error("[Storage] Migration V2 for tag_merges failed:", e);
+      }
+
 			// ==================== TAG ALIASES ====================
 			await db.execute(`
         CREATE TABLE IF NOT EXISTS tag_aliases (

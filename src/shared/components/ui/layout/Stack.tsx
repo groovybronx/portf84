@@ -3,7 +3,7 @@ import { cn } from "../Button";
 
 interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
 	direction?: "vertical" | "horizontal";
-	spacing?: "xs" | "sm" | "md" | "lg" | "xl";
+	spacing?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
 	align?: "start" | "center" | "end" | "stretch";
 }
 
@@ -30,6 +30,7 @@ export const Stack = React.forwardRef<HTMLDivElement, StackProps>(
 						"flex-row": direction === "horizontal",
 
 						// Spacing (using gap)
+						"gap-0": spacing === "none",
 						"gap-1": spacing === "xs",
 						"gap-2": spacing === "sm",
 						"gap-4": spacing === "md",

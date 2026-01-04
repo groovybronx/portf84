@@ -29,10 +29,19 @@ Tag Hub consists of 4 tabs, each with a specific purpose:
   - Unused Tags
   - Most Used Tags
 - **Tag Display**: Shows tag name and type (Manual/AI)
+- **Multi-Tag Filtering**: Click multiple tags to filter photos that have ALL selected tags (AND logic)
+  - Selected tags appear as chips in the search bar
+  - Click X on a chip to remove that tag from filter
+  - Click "Clear All Tags" to remove all filters
+  - Tag Hub stays open for easy multi-selection
+  - Filtered item count displays in TopBar
 
 **Keyboard Shortcuts**:
 - `/` - Focus search input
 - `Esc` - Blur search input
+
+**Multi-Tag Filtering Example**:
+If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags will be displayed. This helps you find very specific content in your library.
 
 ### 2. Manage Tab (Keyboard: `2`)
 
@@ -117,6 +126,23 @@ Tag Hub consists of 4 tabs, each with a specific purpose:
 5. Select tags to delete
 6. Press `Delete` or click "Delete Selected"
 
+### Batch Tagging
+1. **Select images** (Ctrl+Click or Shift+Click)
+2. **Open BatchTagPanel**:
+   - Button in TopBar (Tags icon)
+   - Shortcut: `Ctrl+Shift+T`
+3. **View existing tags**:
+   - **Common Tags**: Present on all selected items
+   - **Partial Tags**: Present on some items (with progress bar)
+4. **Add tags**:
+   - Type in the input field
+   - Separate multiple tags with commas
+   - Use Quick Tags (keys 1-9)
+5. **Manage partial tags**:
+   - "Add to All": Adds the tag to all selected items
+   - "Remove from All": Removes the tag from all selected items
+6. **Preview and Apply**: Verify changes before confirming
+
 ### Customize Similarity Detection
 1. Open Tag Hub (`Ctrl+T`)
 2. Switch to Settings tab (`4`)
@@ -145,6 +171,7 @@ Tag Hub consists of 4 tabs, each with a specific purpose:
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl+T` | Open/Close Tag Hub |
+| `Ctrl+Shift+T` | Open Batch Tag Panel (when items selected) |
 | `1-4` | Switch to tab 1-4 |
 | `/` | Focus search (Browse tab) |
 | `Ctrl+A` | Select/Deselect all (Manage tab) |

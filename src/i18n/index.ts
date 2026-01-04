@@ -15,6 +15,8 @@ import errorsEN from './locales/en/errors.json';
 import errorsFR from './locales/fr/errors.json';
 import navigationEN from './locales/en/navigation.json';
 import navigationFR from './locales/fr/navigation.json';
+import shortcutsEN from './locales/en/shortcuts.json';
+import shortcutsFR from './locales/fr/shortcuts.json';
 
 // Configure i18next
 i18n
@@ -29,6 +31,7 @@ i18n
         library: libraryEN,
         errors: errorsEN,
         navigation: navigationEN,
+        shortcuts: shortcutsEN,
       },
       fr: {
         common: commonFR,
@@ -37,11 +40,12 @@ i18n
         library: libraryFR,
         errors: errorsFR,
         navigation: navigationFR,
+        shortcuts: shortcutsFR,
       },
     },
     fallbackLng: 'en', // Default language if detection fails
     defaultNS: 'common', // Default namespace
-    ns: ['common', 'tags', 'settings', 'library', 'errors', 'navigation'],
+    ns: ['common', 'tags', 'settings', 'library', 'errors', 'navigation', 'shortcuts'],
     
     interpolation: {
       escapeValue: false, // React already escapes values

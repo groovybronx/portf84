@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, Merge, CheckSquare, Square, BarChart3, Plus } from "lucide-react";
-import { Button } from "@/shared/components/ui";
+import { Button, ConfirmDialog } from "@/shared/components/ui";
 import { getAllTags, deleteTag, mergeTags } from "@/services/storage/tags";
 import { ParsedTag } from "@/shared/types/database";
 
 export const ManageTab: React.FC = () => {
+    // ... existing hooks
 	const { t } = useTranslation(["tags", "common"]);
 	const [tags, setTags] = useState<ParsedTag[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
 	const [showStats, setShowStats] = useState(true);
+    
+    // Dialog states
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [showMergeConfirm, setShowMergeConfirm] = useState(false);
 
 	useEffect(() => {
 		loadTags();
@@ -46,13 +51,13 @@ export const ManageTab: React.FC = () => {
 		setSelectedTagIds(newSelection);
 	};
 
-	const handleDeleteSelected = useCallback(async () => {
+    // Delete Logic
+	const handleDeleteClick = () => {
 		if (selectedTagIds.size === 0) return;
+        setShowDeleteConfirm(true);
+	};
 
-		if (!confirm(t("tags:deleteConfirm", { count: selectedTagIds.size }))) {
-			return;
-		}
-
+	const executeDelete = async () => {
 		try {
 			for (const tagId of selectedTagIds) {
 				await deleteTag(tagId);
@@ -62,23 +67,23 @@ export const ManageTab: React.FC = () => {
 		} catch (error) {
 			console.error("Failed to delete tags:", error);
 		}
-	}, [selectedTagIds, t]);
+	};
 
-	const handleMergeSelected = async () => {
+    // Merge Logic
+	const handleMergeClick = () => {
 		if (selectedTagIds.size < 2) {
 			alert(t("tags:selectAtLeastTwo"));
 			return;
 		}
+        setShowMergeConfirm(true);
+    };
 
+	const executeMerge = async () => {
 		const selectedTags = tags.filter((t) => selectedTagIds.has(t.id));
 		const targetTag = selectedTags[0];
 		if (!targetTag) return;
 
 		const sourceTagIds = Array.from(selectedTagIds).filter((id) => id !== targetTag.id);
-
-		if (!confirm(t("tags:mergeIntoTag", { tagName: targetTag.name }))) {
-			return;
-		}
 
 		try {
 			await mergeTags(targetTag.id, sourceTagIds);
@@ -105,13 +110,17 @@ export const ManageTab: React.FC = () => {
 			// Delete: Delete selected
 			if (e.key === "Delete" && selectedTagIds.size > 0) {
 				e.preventDefault();
-				handleDeleteSelected();
+				handleDeleteClick();
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [handleSelectAll, handleDeleteSelected, selectedTagIds.size]);
+	}, [handleSelectAll, selectedTagIds.size]); // Remove handleDeleteClick from dependency if stable, or include it if definition changes. It's defined in the component so it changes every render unless wrapped in useCallback. I didn't wrap handleDeleteClick in useCallback in previous steps. I should probably leave it out or wrap it. 
+    // To match original code style which had handleDeleteSelected in deps.
+    // I'll assume handleDeleteClick is not wrapped, so adding it to deps might cause frequent re-binds, but that's acceptable for now or I can wrap it.
+    // The previous code had it.
+    // Let's just update the call inside and deps.
 
 	const manualTags = tags.filter((t) => t.type === "manual");
 	const aiTags = tags.filter((t) => t.type === "ai");
@@ -129,7 +138,7 @@ export const ManageTab: React.FC = () => {
 						<div className="flex gap-2">
 							{selectedTagIds.size >= 2 && (
 								<Button
-									onClick={handleMergeSelected}
+									onClick={handleMergeClick}
 									className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs rounded-lg flex items-center gap-2"
 								>
 									<Merge size={14} />
@@ -137,7 +146,7 @@ export const ManageTab: React.FC = () => {
 								</Button>
 							)}
 							<Button
-								onClick={handleDeleteSelected}
+								onClick={handleDeleteClick}
 								className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs rounded-lg flex items-center gap-2"
 							>
 								<Trash2 size={14} />
@@ -263,6 +272,26 @@ export const ManageTab: React.FC = () => {
 					</div>
 				</div>
 			)}
+            
+            <ConfirmDialog
+                isOpen={showDeleteConfirm}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={executeDelete}
+                title={t("tags:deleteSelected")}
+                message={t("tags:deleteConfirm", { count: selectedTagIds.size })}
+                variant="danger"
+                confirmText={t("tags:delete" as any)}
+            />
+
+            <ConfirmDialog
+                isOpen={showMergeConfirm}
+                onClose={() => setShowMergeConfirm(false)}
+                onConfirm={executeMerge}
+                title={t("tags:mergeSelected")}
+                message={t("tags:mergeItemsConfirm" as any, { count: selectedTagIds.size })} 
+                variant="warning"
+                confirmText={t("tags:merge")}
+            />
 		</div>
 	);
 };

@@ -27,7 +27,7 @@ interface LibraryState {
   viewMode: ViewMode;
   gridColumns: number;
   searchTerm: string;
-  selectedTag: string | null;
+  activeTags: Set<string>;
   activeColorFilter: string | null;
   sortOption: SortOption;
   sortDirection: SortDirection;
@@ -55,7 +55,9 @@ type LibraryAction =
   | { type: "SET_VIEW_MODE"; payload: ViewMode }
   | { type: "SET_GRID_COLUMNS"; payload: number }
   | { type: "SET_SEARCH_TERM"; payload: string }
-  | { type: "SET_SELECTED_TAG"; payload: string | null }
+  | { type: "SET_ACTIVE_TAGS"; payload: Set<string> }
+  | { type: "TOGGLE_TAG"; payload: string }
+  | { type: "CLEAR_TAGS"; payload: undefined }
   | { type: "SET_ACTIVE_COLOR_FILTER"; payload: string | null }
   | { type: "SET_SORT_OPTION"; payload: SortOption }
   | { type: "SET_SORT_OPTION"; payload: SortOption }
@@ -90,7 +92,9 @@ interface LibraryContextType extends LibraryState {
   setViewMode: (mode: ViewMode) => void;
   setGridColumns: (columns: number) => void;
   setSearchTerm: (term: string) => void;
-  setSelectedTag: (tag: string | null) => void;
+  setActiveTags: (tags: Set<string>) => void;
+  toggleTag: (tag: string) => void;
+  clearTags: () => void;
   setActiveColorFilter: (color: string | null) => void;
   setSortOption: (option: SortOption) => void;
   setSortDirection: (direction: SortDirection) => void;
@@ -113,11 +117,20 @@ function libraryReducer(
         ...state,
         folders: state.folders.filter((f) => f.id !== action.payload),
       };
-    case "REMOVE_FOLDER_BY_PATH":
+    case "REMOVE_FOLDER_BY_PATH": {
+      // For shadow folders, we need to find by sourceFolderId
+      // The payload is actually the path of the source folder
       return {
         ...state,
-        folders: state.folders.filter((f) => f.path !== action.payload),
+        folders: state.folders.filter((f) => {
+          // Keep folders that don't match the path
+          // For physical folders: check f.path
+          // For shadow folders: we can't directly match by path since they don't have it
+          // Instead, we'll filter them out in the UI refresh via CollectionsContext
+          return f.path !== action.payload;
+        }),
       };
+    }
     case "MERGE_FOLDERS": {
       const { foldersToAdd, virtualFoldersMap } = action.payload;
 
@@ -203,8 +216,19 @@ function libraryReducer(
       return { ...state, gridColumns: action.payload };
     case "SET_SEARCH_TERM":
       return { ...state, searchTerm: action.payload };
-    case "SET_SELECTED_TAG":
-      return { ...state, selectedTag: action.payload };
+    case "SET_ACTIVE_TAGS":
+      return { ...state, activeTags: action.payload };
+    case "TOGGLE_TAG": {
+        const newTags = new Set(state.activeTags);
+        if (newTags.has(action.payload)) {
+            newTags.delete(action.payload);
+        } else {
+            newTags.add(action.payload);
+        }
+        return { ...state, activeTags: newTags };
+    }
+    case "CLEAR_TAGS":
+        return { ...state, activeTags: new Set() };
     case "SET_ACTIVE_COLOR_FILTER":
       return { ...state, activeColorFilter: action.payload };
     case "SET_SORT_OPTION":
@@ -280,7 +304,9 @@ interface LibraryContextActions {
   setViewMode: (mode: ViewMode) => void;
   setGridColumns: (columns: number) => void;
   setSearchTerm: (term: string) => void;
-  setSelectedTag: (tag: string | null) => void;
+  setActiveTags: (tags: Set<string>) => void;
+  toggleTag: (tag: string) => void;
+  clearTags: () => void;
   setActiveColorFilter: (color: string | null) => void;
   setSortOption: (option: SortOption) => void;
   setSortDirection: (direction: SortDirection) => void;
@@ -301,7 +327,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     viewMode: ViewMode.GRID,
     gridColumns: 4,
     searchTerm: "",
-    selectedTag: null,
+    activeTags: new Set<string>(),
     activeColorFilter: null,
     sortOption: "date",
     sortDirection: "desc",
@@ -397,13 +423,16 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       );
     }
 
-    // Tag filter
-    if (state.selectedTag) {
-      filtered = filtered.filter(
-        (item) =>
-          item.aiTags?.includes(state.selectedTag!) ||
-          item.manualTags?.includes(state.selectedTag!)
-      );
+    // Tag filter (AND logic - item must have ALL active tags)
+    if (state.activeTags.size > 0) {
+      filtered = filtered.filter((item) => {
+        const itemTags = new Set([
+            ...(item.aiTags || []),
+            ...(item.manualTags || [])
+        ]);
+        // Check if every active tag is present in itemTags
+        return Array.from(state.activeTags).every(tag => itemTags.has(tag));
+      });
     }
 
     // Color filter
@@ -430,7 +459,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [
     filteredByFolder,
     state.searchTerm,
-    state.selectedTag,
+    state.activeTags,
     state.activeColorFilter,
     state.sortOption,
     state.sortDirection,
@@ -584,8 +613,16 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch({ type: "SET_SEARCH_TERM", payload: term });
   }, []);
 
-  const setSelectedTag = useCallback((tag: string | null) => {
-    dispatch({ type: "SET_SELECTED_TAG", payload: tag });
+  const setActiveTags = useCallback((tags: Set<string>) => {
+    dispatch({ type: "SET_ACTIVE_TAGS", payload: tags });
+  }, []);
+
+  const toggleTag = useCallback((tag: string) => {
+    dispatch({ type: "TOGGLE_TAG", payload: tag });
+  }, []);
+
+  const clearTags = useCallback(() => {
+    dispatch({ type: "CLEAR_TAGS", payload: undefined });
   }, []);
 
   const setActiveColorFilter = useCallback((color: string | null) => {
@@ -672,7 +709,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       setViewMode,
       setGridColumns,
       setSearchTerm,
-      setSelectedTag,
+      setActiveTags,
+      toggleTag,
+      clearTags,
       setActiveColorFilter,
       setSortOption,
       setSortDirection,
@@ -694,7 +733,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       setViewMode,
       setGridColumns,
       setSearchTerm,
-      setSelectedTag,
+      setActiveTags,
+      toggleTag,
+      clearTags,
       setActiveColorFilter,
       setSortOption,
       setSortDirection,

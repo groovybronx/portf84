@@ -16,6 +16,7 @@ import {
   SettingsModal,
   UnifiedProgress,
   ErrorBoundary,
+  KeyboardShortcutsHelp,
 } from "./shared/components";
 import { TagHub } from "./features/tags/components/TagHub";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -143,11 +144,16 @@ const App: React.FC = () => {
     setIsSettingsOpen,
     isCollectionManagerOpen,
     setIsCollectionManagerOpen,
-
+    isSmartCollectionBuilderOpen,
+    setIsSmartCollectionBuilderOpen,
     isTagHubOpen,
     setIsTagHubOpen,
     tagHubActiveTab,
     setTagHubActiveTab,
+    isBatchTagPanelOpen,
+    setIsBatchTagPanelOpen,
+    isShortcutsHelpOpen,
+    setIsShortcutsHelpOpen,
   } = useModalState();
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [showColorTags, setShowColorTags] = useState(true);
@@ -210,7 +216,7 @@ const App: React.FC = () => {
     onOpenBatchTagPanel: () => {
       // Only open if items are selected
       if (selectedIds.size > 0) {
-        setIsAddTagModalOpen(true);
+        setIsBatchTagPanelOpen(true);
       }
     },
   });
@@ -423,6 +429,7 @@ const App: React.FC = () => {
             batchAIProgress={batchProgress}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenTagHub={() => setIsTagHubOpen(true)}
+            onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
             showColorTags={showColorTags}
             onToggleColorTags={toggleColorTags}
           />
@@ -452,7 +459,15 @@ const App: React.FC = () => {
             onManageCollections={() => setIsCollectionManagerOpen(true)}
             onRemoveSourceFolder={async (path) => {
               await removeSourceFolder(path);
-              removeFolderByPath(path);
+              clearLibrary();
+              
+              // Reload remaining folders
+              if (activeCollection && sourceFolders.length > 0) {
+                const remainingFolders = sourceFolders.filter(sf => sf.path !== path);
+                for (const folder of remainingFolders) {
+                  await loadFromPath(folder.path);
+                }
+              }
             }}
             isPinned={isSidebarPinned}
             onTogglePin={() => {
@@ -586,9 +601,21 @@ const App: React.FC = () => {
         onCreateAndMove={createFolderAndMove}
         selectedCount={selectedIds.size}
       />
-      <BatchTagPanel
-        isOpen={isAddTagModalOpen}
+      {/* AddTagModal - Simple Quick Add */}
+      <AddTagModal
+        isOpen={isAddTagModalOpen && !isBatchTagPanelOpen}
         onClose={() => setIsAddTagModalOpen(false)}
+        selectedCount={selectedIds.size}
+        availableTags={availableTags}
+        onAddTag={(tag) => {
+          addTagsToSelection(tag);
+        }}
+      />
+
+      {/* BatchTagPanel - Advanced Multi-Tag Interface */}
+      <BatchTagPanel
+        isOpen={isBatchTagPanelOpen}
+        onClose={() => setIsBatchTagPanelOpen(false)}
         selectedItems={batchSelectedItems}
         availableTags={availableTags}
         onApplyChanges={(changes: TagChanges) => {
@@ -610,6 +637,7 @@ const App: React.FC = () => {
 
           libraryUpdateItems(updatedItems);
           clearSelection();
+          setIsBatchTagPanelOpen(false);
         }}
       />
       <SettingsModal
@@ -628,7 +656,15 @@ const App: React.FC = () => {
         onTabChange={setTagHubActiveTab}
         onTagsUpdated={async () => {
           console.log("[App] Tags updated from Tag Hub, refreshing library...");
+          console.log("[App] Tags updated from Tag Hub, refreshing library...");
           await refreshMetadata();
+        }}
+        onSelectTag={(tag) => {
+            toggleTag(tag);
+            // Don't close hub on multi-select, or maybe user wants to?
+            // Requirement says "select multiple tags", so probably keep open or let user decide.
+            // For now, let's keep it open to allow multi-selection.
+            // setIsTagHubOpen(false); 
         }}
       />
 

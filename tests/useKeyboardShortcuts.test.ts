@@ -410,5 +410,86 @@ describe("useKeyboardShortcuts", () => {
 			// Should focus first item when current focus is invalid
 			expect(mockSetFocusedId).toHaveBeenCalledWith("1");
 		});
+	describe("Global Shortcuts", () => {
+		const mockCallbacks = {
+			onOpenBatchTagPanel: vi.fn(),
+			onOpenHelp: vi.fn(),
+			onSelectAll: vi.fn(),
+			onDelete: vi.fn(),
+			onClearSelection: vi.fn(),
+		};
+
+		beforeEach(() => {
+			vi.clearAllMocks();
+		});
+
+		it("should trigger Help with ?", () => {
+			renderHook(() =>
+				useKeyboardShortcuts({
+					processedItems: mockItems,
+					focusedId: null,
+					setFocusedId: mockSetFocusedId,
+					setSelectedItem: mockSetSelectedItem,
+					applyColorTagToSelection: mockApplyColorTagToSelection,
+					gridColumns: 2,
+					...mockCallbacks,
+				})
+			);
+
+			window.dispatchEvent(new KeyboardEvent("keydown", { key: "?" }));
+			expect(mockCallbacks.onOpenHelp).toHaveBeenCalled();
+		});
+
+		it("should trigger Select All with Ctrl+A", () => {
+			renderHook(() =>
+				useKeyboardShortcuts({
+					processedItems: mockItems,
+					focusedId: null,
+					setFocusedId: mockSetFocusedId,
+					setSelectedItem: mockSetSelectedItem,
+					applyColorTagToSelection: mockApplyColorTagToSelection,
+					gridColumns: 2,
+					...mockCallbacks,
+				})
+			);
+
+			window.dispatchEvent(new KeyboardEvent("keydown", { key: "a", ctrlKey: true }));
+			expect(mockCallbacks.onSelectAll).toHaveBeenCalled();
+		});
+
+		it("should trigger Delete with Delete key", () => {
+			renderHook(() =>
+				useKeyboardShortcuts({
+					processedItems: mockItems,
+					focusedId: null,
+					setFocusedId: mockSetFocusedId,
+					setSelectedItem: mockSetSelectedItem,
+					applyColorTagToSelection: mockApplyColorTagToSelection,
+					gridColumns: 2,
+					...mockCallbacks,
+				})
+			);
+
+			window.dispatchEvent(new KeyboardEvent("keydown", { key: "Delete" }));
+			expect(mockCallbacks.onDelete).toHaveBeenCalled();
+		});
+
+		it("should trigger Clear Selection with Esc", () => {
+			renderHook(() =>
+				useKeyboardShortcuts({
+					processedItems: mockItems,
+					focusedId: null,
+					setFocusedId: mockSetFocusedId,
+					setSelectedItem: mockSetSelectedItem,
+					applyColorTagToSelection: mockApplyColorTagToSelection,
+					gridColumns: 2,
+					...mockCallbacks,
+				})
+			);
+
+			window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+			expect(mockCallbacks.onClearSelection).toHaveBeenCalled();
+		});
 	});
+});
 });

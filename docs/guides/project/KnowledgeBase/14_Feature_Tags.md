@@ -67,6 +67,24 @@ A fixed set of 6 colors: Red, Orange, Yellow, Green, Blue, Purple.
 -   UI renders these as small dots on the `PhotoCard`.
 -   Filtering: Clicking a color dot in the TopBar sets `activeColorFilter`.
 
+## Multi-Tag Filtering (Phase 4.3)
+
+**AND Logic Filtering**: The library now supports selecting multiple tags simultaneously to find items that have ALL selected tags.
+
+**Implementation**:
+- State changed from `selectedTag: string | null` to `activeTags: Set<string>`
+- New actions: `toggleTag()`, `setActiveTags()`, `clearTags()`
+- UI displays active tags as chips in the search field
+- Filtered count shown in TopBar when filters active
+
+**User Experience**:
+- Click tags in Tag Hub to toggle them on/off
+- Tag Hub stays open for multi-selection
+- Individual chips can be removed via X button
+- "Clear All Tags" button to reset filters
+
+**Example**: Selecting "Portrait" + "Outdoor" shows only photos with both tags.
+
 ## Smart Tag Fusion
 
 **Similarity Detection Algorithms**:
