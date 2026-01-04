@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../../../shared/components/ui";
+import { Button, GlassCard } from "../../../shared/components/ui";
 import { PortfolioItem } from "../../../shared/types";
 
 import { motion } from "framer-motion";
@@ -24,7 +24,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 	onFocusChange,
 }) => {
 	// Context consumption
-	const { processedItems: items, selectedTag } = useLibrary();
+	const { processedItems: items, activeTags } = useLibrary();
 	const { selectionMode, selectedIds, toggleSelection, registerItemRef } =
 		useSelection();
     
@@ -51,7 +51,9 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 						item.type.split("/")[1]?.toUpperCase() || "FILE";
 
 					return (
-						<motion.div
+						<GlassCard
+							variant="base"
+							padding="md"
 							key={item.id}
 							ref={(el) => registerItemRef?.(item.id, el)}
 							data-item-id={item.id}
@@ -59,7 +61,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: index * 0.05 }}
 							className={`
-                glass-surface rounded-xl p-4 flex gap-4 cursor-pointer
+                flex gap-4 cursor-pointer
                 hover:border-glass-border-light transition-all
                 ${isFocused ? "ring-2 ring-primary" : ""}
                 ${isSelected ? "bg-primary/10 border-primary/50" : ""}
@@ -135,7 +137,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 											className={`
                         px-2 py-1 text-xs rounded-full transition-colors
                         ${
-													selectedTag === tag
+													activeTags.has(tag)
 														? "bg-primary text-white"
 														: "bg-primary/20 text-primary hover:bg-primary/30"
 												}
@@ -154,7 +156,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 											className={`
                         px-2 py-1 text-xs rounded-full transition-colors
                         ${
-													selectedTag === tag
+													activeTags.has(tag)
 														? "bg-secondary text-white"
 														: "bg-secondary/20 text-secondary hover:bg-secondary/30"
 												}
@@ -174,7 +176,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 									</span>
 								</div>
 							</div>
-						</motion.div>
+						</GlassCard>
 					);
 				})}
 			</div>

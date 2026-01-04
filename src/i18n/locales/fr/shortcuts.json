@@ -1,0 +1,33 @@
+{
+  "title": "Raccourcis Clavier",
+  "description": "Optimisez votre flux de travail",
+  "category": {
+    "navigation": "Navigation",
+    "selection": "Sélection",
+    "actions": "Actions",
+    "view": "Affichage",
+    "tagging": "Gestion des Tags",
+    "general": "Général"
+  },
+  "footerHint": "Note: Les raccourcis peuvent varier selon le contexte",
+  "navUp": "Haut",
+  "navDown": "Bas",
+  "navLeft": "Gauche",
+  "navRight": "Droite",
+  "selectItem": "Sélectionner l'élément",
+  "openItem": "Ouvrir / Voir",
+  "selectAll": "Tout sélectionner",
+  "clearSelection": "Désélectionner tout",
+  "deleteItems": "Supprimer la sélection",
+  "renameItem": "Renommer",
+  "openTagHub": "Ouvrir Tag Hub",
+  "batchTagging": "Tagger par lot",
+  "tagRed": "Tag Rouge",
+  "tagOrange": "Tag Orange",
+  "tagYellow": "Tag Jaune",
+  "tagGreen": "Tag Vert",
+  "tagBlue": "Tag Bleu",
+  "tagPurple": "Tag Violet",
+  "removeColorTag": "Retirer Tag Couleur",
+  "help": "Afficher les Raccourcis"
+}

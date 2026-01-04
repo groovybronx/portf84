@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon, type IconAction, ALL_ICONS } from "../../Icon";
+import { Button } from "../Button";
 
 interface IconPickerProps {
   value: IconAction;

@@ -25,6 +25,7 @@ interface TopBarProps {
 	onOpenSettings: () => void;
 
 	onOpenTagHub: () => void;
+	onOpenBatchTagPanel: () => void;
 	showColorTags: boolean;
 	onToggleColorTags: () => void;
 	isSidebarPinned?: boolean;
@@ -41,6 +42,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	onOpenSettings,
 
 	onOpenTagHub,
+	onOpenBatchTagPanel,
 	showColorTags,
 	onToggleColorTags,
 	isSidebarPinned = false,
@@ -54,8 +56,9 @@ export const TopBar: React.FC<TopBarProps> = ({
 		setSortOption,
 		sortDirection,
 		setSortDirection,
-		selectedTag,
-		setSelectedTag,
+		activeTags,
+		toggleTag,
+		clearTags,
 		activeColorFilter,
 		setActiveColorFilter,
 		availableTags,
@@ -65,7 +68,11 @@ export const TopBar: React.FC<TopBarProps> = ({
 		setGridColumns,
 		autoAnalyzeEnabled,
 		useCinematicCarousel,
+        processedItems,
 	} = useLibrary();
+
+    const isFiltered = activeTags.size > 0 || !!searchTerm || !!activeColorFilter;
+    const filteredCount = processedItems.length;
 
 	const { selectionMode, setSelectionMode, selectedIds, clearSelection } =
 		useSelection();
@@ -147,6 +154,26 @@ export const TopBar: React.FC<TopBarProps> = ({
 						>
 							<Icon action="tag" size={18} />
 						</Button>
+
+						<Button
+							variant="ghost"
+							size={selectedCount > 0 ? "sm" : "icon"}
+							onClick={onOpenBatchTagPanel}
+							disabled={selectedCount === 0}
+							className={`transition-colors ${
+								selectedCount > 0
+									? "text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 px-3"
+									: "text-gray-500 hover:text-blue-400 hover:bg-blue-500/10"
+							}`}
+							title={t('tags:batchTagSelectedItems' as any) || "Batch Tag"}
+						>
+							<Icon action="tags" size={18} />
+							{selectedCount > 0 && (
+								<span className="ml-2 text-xs font-medium">
+									{selectedCount}
+								</span>
+							)}
+						</Button>
 						<Button
 							variant="ghost"
 							size="icon"
@@ -176,9 +203,18 @@ export const TopBar: React.FC<TopBarProps> = ({
 							value={searchTerm}
 							onChange={setSearchTerm}
 							availableTags={availableTags}
-							selectedTag={selectedTag}
-							onTagSelect={setSelectedTag}
+                            activeTags={activeTags}
+                            onTagToggle={toggleTag}
+                            onClearTags={clearTags}
 						/>
+                        
+                        {/* Filtered Count Indicator */}
+                        {isFiltered && (
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-xs font-medium text-blue-300 animate-in fade-in zoom-in duration-300">
+                                <span className="text-blue-400">{filteredCount}</span>
+                                <span className="text-blue-500/70">items</span>
+                            </div>
+                        )}
 
 						<ColorPicker
 							activeColorFilter={activeColorFilter}

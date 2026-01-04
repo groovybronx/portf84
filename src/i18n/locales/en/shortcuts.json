@@ -1,0 +1,33 @@
+{
+  "title": "Keyboard Shortcuts",
+  "description": "Boost your productivity with these shortcuts",
+  "category": {
+    "navigation": "Navigation",
+    "selection": "Selection",
+    "actions": "Actions",
+    "view": "View",
+    "tagging": "Tagging",
+    "general": "General"
+  },
+  "footerHint": "Note: Shortcuts may vary depending on focused element",
+  "navUp": "Move Up",
+  "navDown": "Move Down",
+  "navLeft": "Move Left",
+  "navRight": "Move Right",
+  "selectItem": "Select Item",
+  "openItem": "Open / View Item",
+  "selectAll": "Select All",
+  "clearSelection": "Clear Selection",
+  "deleteItems": "Delete Selected Items",
+  "renameItem": "Rename Item",
+  "openTagHub": "Open Tag Hub",
+  "batchTagging": "Batch Tagging Panel",
+  "tagRed": "Apply Red Tag",
+  "tagOrange": "Apply Orange Tag",
+  "tagYellow": "Apply Yellow Tag",
+  "tagGreen": "Apply Green Tag",
+  "tagBlue": "Apply Blue Tag",
+  "tagPurple": "Apply Purple Tag",
+  "removeColorTag": "Remove Color Tag",
+  "help": "Show Keyboard Shortcuts"
+}

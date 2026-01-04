@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Merge, RefreshCw, Tag as TagIcon, ArrowLeftRight, History } from "lucide-react";
-import { Button } from "@/shared/components/ui";
+import { Button, ConfirmDialog } from "@/shared/components/ui";
 import { analyzeTagRedundancy, TagGroup } from "@/services/tagAnalysisService";
 import { mergeTags, ignoreTagMatch } from "@/services/storage/tags";
 import { TagMergeHistory } from "../TagMergeHistory";
@@ -18,6 +18,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
 	const [mergingAll, setMergingAll] = useState(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [customTargets, setCustomTargets] = useState<Map<string, string>>(new Map());
+    const [showMergeAllConfirm, setShowMergeAllConfirm] = useState(false);
 
 	useEffect(() => {
 		loadAnalysis();
@@ -94,11 +95,11 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
 		}
 	};
 
-	const handleMergeAll = async () => {
-		if (!confirm(t("tags:mergeConfirm", { count: groups.length }))) {
-			return;
-		}
+	const handleMergeAll = () => {
+        setShowMergeAllConfirm(true);
+    };
 
+	const executeMergeAll = async () => {
 		setMergingAll(true);
 		let successCount = 0;
 		let failCount = 0;
@@ -288,6 +289,16 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
 
 			{/* Tag Merge History Modal */}
 			<TagMergeHistory isOpen={showHistory} onClose={() => setShowHistory(false)} />
+
+            <ConfirmDialog
+                isOpen={showMergeAllConfirm}
+                onClose={() => setShowMergeAllConfirm(false)}
+                onConfirm={executeMergeAll}
+                title={t("tags:mergeAll")}
+                message={t("tags:mergeConfirm", { count: groups.length })}
+                variant="warning"
+                confirmText={t("tags:mergeAll")}
+            />
 		</>
 	);
 };

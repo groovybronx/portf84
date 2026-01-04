@@ -3,24 +3,28 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
 import { Button } from "../../../../shared/components/ui";
-import { Folder as FolderType, Collection } from "../../../../shared/types";
+import { Folder as FolderType, Collection, SourceFolder } from "../../../../shared/types";
 import { FolderItem } from "./FolderItem";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
 
 interface ShadowFoldersSectionProps {
   folders: FolderType[];
+  sourceFolders: SourceFolder[];
   activeFolderId: Set<string>;
   onSelectFolder: (id: string) => void;
   onImportFolder: () => void;
+  onRemoveFolder?: (path: string) => void;
   activeCollection: Collection | null;
   onColorFilterChange?: (color: string | null) => void;
 }
 
 export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
   folders,
+  sourceFolders,
   activeFolderId,
   onSelectFolder,
   onImportFolder,
+  onRemoveFolder,
   activeCollection,
   onColorFilterChange,
 }) => {
@@ -103,6 +107,12 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
                     folder={folder}
                     isActive={activeFolderId.has(folder.id)}
                     onSelect={handleSelect}
+                    onDelete={onRemoveFolder ? () => {
+                      const sourceFolder = sourceFolders.find(sf => sf.id === folder.sourceFolderId);
+                      if (sourceFolder?.path) {
+                        onRemoveFolder(sourceFolder.path);
+                      }
+                    } : undefined}
                     iconAction="hard_drive"
                     iconColorClass="text-quaternary"
                     iconBgClass="bg-quaternary/10"

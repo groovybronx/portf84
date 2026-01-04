@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../../../../shared/components/Icon";
 import { useTheme } from "../../../../shared/contexts/ThemeContext";
-import { Button } from "../../../../shared/components/ui";
+import { Button, GlassCard } from "../../../../shared/components/ui";
 
 import {
   Folder as FolderType,
@@ -53,9 +53,11 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   onCreateFolder,
   onDeleteFolder,
   activeCollection,
+  sourceFolders,
   collections = [],
   onSwitchCollection,
   onManageCollections,
+  onRemoveSourceFolder,
   isPinned = false,
   onTogglePin,
   activeColorFilter,
@@ -169,9 +171,11 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                                 {/* SHADOW FOLDERS SECTION */}
                                 <ShadowFoldersSection
                                     folders={shadowFolders}
+                                    sourceFolders={sourceFolders}
                                     activeFolderId={activeFolderId}
                                     onSelectFolder={onSelectFolder}
                                     onImportFolder={onImportFolder}
+                                    onRemoveFolder={onRemoveSourceFolder}
                                     activeCollection={activeCollection}
                                     onColorFilterChange={onColorFilterChange}
                                 />
@@ -244,19 +248,20 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
           )}
 
           {/* Sidebar / Drawer Component */}
-          <motion.div
+          <GlassCard
+            variant="panel"
             initial={isPinned ? false : { x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className={`drawer-area glass-surface-lg border-r border-glass-border flex flex-col shadow-2xl overflow-hidden ${
+            className={`drawer-area flex flex-col shadow-2xl overflow-hidden ${
               isPinned
                 ? "relative h-full w-80 shrink-0 z-0"
                 : "fixed top-0 left-0 bottom-0 w-80 z-(--z-drawer)"
             }`}
           >
             {drawerBody}
-          </motion.div>
+          </GlassCard>
         </>
       )}
     </AnimatePresence>

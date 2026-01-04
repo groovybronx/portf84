@@ -15,6 +15,7 @@ interface TagHubProps {
 	activeTab: TagHubTab;
 	onTabChange: (tab: TagHubTab) => void;
 	onTagsUpdated?: () => void;
+    onSelectTag?: (tagName: string) => void;
 }
 
 export const TagHub: React.FC<TagHubProps> = ({
@@ -23,6 +24,7 @@ export const TagHub: React.FC<TagHubProps> = ({
 	activeTab,
 	onTabChange,
 	onTagsUpdated,
+    onSelectTag,
 }) => {
 	const { t } = useTranslation(["tags", "common"]);
 
@@ -127,7 +129,7 @@ export const TagHub: React.FC<TagHubProps> = ({
 
 						{/* Tab Content */}
 						<div className="flex-1 overflow-y-auto">
-							{activeTab === "browse" && <BrowseTab />}
+							{activeTab === "browse" && <BrowseTab onSelectTag={onSelectTag} />}
 							{activeTab === "manage" && <ManageTab />}
 							{activeTab === "fusion" && <FusionTab onTagsUpdated={onTagsUpdated} />}
 							{activeTab === "settings" && <SettingsTab />}

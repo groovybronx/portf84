@@ -40,3 +40,22 @@ The list component used in the Sidebar.
 ## Interactions
 -   **Add Source**: Uses `tauri-plugin-dialog` to open OS native picker.
 -   **Remove Source**: Unlinks the folder. *Does not delete files.*
+-   **Delete Button (Phase 4.4)**: Working folders in the sidebar now have a trash icon that appears on hover. Clicking it removes the folder from the collection and automatically refreshes the UI.
+
+## Folder Management (Phase 4.4)
+
+**Quick Delete from Sidebar**: Users can now remove working folders directly from the sidebar without opening collection management.
+
+**Implementation**:
+- Delete button (trash icon) appears on hover for each working folder
+- Clicking removes the folder from the active collection
+- Library automatically clears and reloads remaining folders
+- UI refreshes instantly without page reload
+
+**User Experience**:
+1. Expand "Working Folders" section in sidebar
+2. Hover over a folder
+3. Click trash icon to remove from collection
+4. Folder disappears immediately from list
+
+**Note**: This only removes the folder from the collection metadata - files on disk are not affected.

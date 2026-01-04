@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { cn } from "./Button";
+import { Button, cn } from "./Button";
 import { createPortal } from "react-dom";
 
 interface ModalProps {

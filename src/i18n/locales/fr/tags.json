@@ -55,6 +55,7 @@
   "actions": "Actions",
   "undo": "Annuler la fusion",
   "undoConfirm": "Restaurer le tag \"{{tagName}}\" ?",
+  "undoFailed": "Échec de l'annulation de la fusion. Voir la console pour les détails.",
   "ignoreMatch": "Ignorer ce groupe",
   "quickTags": "Tags Rapides",
   "parentTag": "Tag Parent",
@@ -141,5 +142,6 @@
   "extractFromAI": "Extraire de la description IA",
   "extractAll": "Tout extraire",
   "basedOnSimilar": "Basé sur {{count}} image similaire",
-  "basedOnSimilar_plural": "Basé sur {{count}} images similaires"
+  "basedOnSimilar_plural": "Basé sur {{count}} images similaires",
+  "batchTagSelectedItems": "Taguer la sélection par lot"
 }

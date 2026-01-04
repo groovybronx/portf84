@@ -174,6 +174,7 @@ export interface DBTagMerge {
   sourceTagName: string | null;
   mergedAt: number;
   mergedBy: string | null;
+  itemIdsJson?: string | null;
 }
 
 /** Raw tag alias from database */

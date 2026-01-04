@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Button } from "../../../shared/components/ui";
+import { Button, GlassCard } from "../../../shared/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
@@ -81,7 +81,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
   const currentItem = items[currentIndex];
 
   return (
-    <div className="fixed inset-0 z-(--z-modal) bg-black/95 backdrop-blur-xl">
+    <GlassCard variant="overlay" className="fixed inset-0 z-(--z-modal)">
       {/* Close button - HIGHEST z-index */}
       <Button
         onClick={onClose}
@@ -209,7 +209,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
             exit={{ opacity: 0, y: 20 }}
             className="absolute bottom-6 left-1/2 -translate-x-1/2 max-w-2xl w-full px-6"
           >
-            <div className="glass-surface rounded-2xl p-6 space-y-3">
+            <GlassCard variant="base" padding="lg" className="rounded-2xl space-y-3">
               <h3 className="text-xl font-semibold text-white">
                 {currentItem.name}
               </h3>
@@ -233,7 +233,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
               <div className="text-xs text-gray-400">
                 {currentIndex + 1} / {items.length}
               </div>
-            </div>
+            </GlassCard>
           </motion.div>
         )}
       </AnimatePresence>
@@ -249,6 +249,6 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
           />
         ))}
       </div>
-    </div>
+    </GlassCard>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Tag as TagIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button, GlassCard } from "@/shared/components/ui";
+import { Button, GlassCard, Stack, Flex } from "@/shared/components/ui";
 import { PortfolioItem } from "@/shared/types";
 import { CommonTags } from "./CommonTags";
 import { PartialTags } from "./PartialTags";
@@ -265,11 +265,12 @@ export const BatchTagPanel: React.FC<BatchTagPanelProps> = ({
 						initial={{ opacity: 0, scale: 0.95, y: 20 }}
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 20 }}
-						className="space-y-4"
+						className="h-full"
 					>
+						<Stack spacing="md">
 						{/* Header */}
-						<div className="flex items-center justify-between pb-3 border-b border-white/10">
-							<div className="flex items-center gap-3">
+						<Flex justify="between" align="center" className="pb-3 border-b border-white/10">
+							<Flex align="center" gap="md">
 								<div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
 									<TagIcon size={20} />
 								</div>
@@ -283,11 +284,11 @@ export const BatchTagPanel: React.FC<BatchTagPanelProps> = ({
 										})}
 									</p>
 								</div>
-							</div>
-							<Button variant="close" size="icon" onClick={handleCancel}>
+							</Flex>
+							<Button variant="close" size="icon" onClick={handleCancel} aria-label="Close">
 								<X size={20} />
 							</Button>
-						</div>
+						</Flex>
 
 						{/* Common Tags */}
 						<CommonTags
@@ -325,7 +326,7 @@ export const BatchTagPanel: React.FC<BatchTagPanelProps> = ({
 						/>
 
 						{/* Actions */}
-						<div className="flex justify-end gap-3 pt-3 border-t border-white/10">
+						<Flex justify="end" gap="sm" className="pt-3 border-t border-white/10">
 							<Button variant="ghost" onClick={handleCancel}>
 								{t("common:cancel")}
 							</Button>
@@ -339,7 +340,8 @@ export const BatchTagPanel: React.FC<BatchTagPanelProps> = ({
 							>
 								{t("tags:applyChanges")}
 							</Button>
-						</div>
+						</Flex>
+						</Stack>
 
 						{/* Keyboard shortcuts hint */}
 						<div className="text-xs text-gray-500 text-center">
