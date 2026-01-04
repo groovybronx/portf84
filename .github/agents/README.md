@@ -5,7 +5,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 ## 📋 Agents Disponibles
 
 ### 1. 🏗️ Project Architecture Agent
-**Fichier**: `project-architecture.md`
+**Fichier**: `project-architecture.agent.md`
 
 **Expertise**:
 - Architecture globale de l'application
@@ -19,7 +19,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 ---
 
 ### 2. ⚛️ React Frontend Agent
-**Fichier**: `react-frontend.md`
+**Fichier**: `react-frontend.agent.md`
 
 **Expertise**:
 - Composants React et hooks
@@ -34,7 +34,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 ---
 
 ### 3. 🦀 Tauri Rust Backend Agent
-**Fichier**: `tauri-rust-backend.md`
+**Fichier**: `tauri-rust-backend.agent.md`
 
 **Expertise**:
 - Rust et Tauri v2
@@ -48,7 +48,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 ---
 
 ### 4. 🗄️ SQLite Database Agent
-**Fichier**: `database-sqlite.md`
+**Fichier**: `database-sqlite.agent.md`
 
 **Expertise**:
 - Design de schéma SQLite
@@ -62,7 +62,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 ---
 
 ### 5. 🤖 AI/Gemini Integration Agent
-**Fichier**: `ai-gemini-integration.md`
+**Fichier**: `ai-gemini-integration.agent.md`
 
 **Expertise**:
 - Google Gemini AI API
@@ -76,7 +76,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 ---
 
 ### 6. 🧪 Testing Agent (Vitest)
-**Fichier**: `testing-vitest.md`
+**Fichier**: `testing-vitest.agent.md`
 
 **Expertise**:
 - Framework Vitest
@@ -105,7 +105,7 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 
 3. **Référencer directement le fichier**:
    ```
-   @workspace Selon .github/agents/ai-gemini-integration.md, comment gérer les rate limits?
+   @workspace Selon .github/agents/ai-gemini-integration.agent.md, comment gérer les rate limits?
    ```
 
 ### Conseils d'Utilisation
