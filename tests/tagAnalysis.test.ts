@@ -247,8 +247,8 @@ describe('Tag Analysis - Redundancy Detection', () => {
             expect(secondCall.length).toBe(1);
             expect(secondCall).toEqual(firstCall);
 
-            // getAllTags should only be called once for first call, then cache is used
-            expect(getAllTags).toHaveBeenCalledTimes(2); // Called for both but cache used for second
+            // getAllTags is called for both calls; second call validates cache (IDs/count), analysis is cached
+            expect(getAllTags).toHaveBeenCalledTimes(2);
         });
 
         it('should invalidate cache when forceRefresh is true', async () => {

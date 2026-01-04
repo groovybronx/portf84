@@ -1,6 +1,9 @@
 
 import { getAllTags, getIgnoredMatches } from "./storage/tags";
 import { ParsedTag } from "../shared/types/database";
+import { getCache, setCache, invalidateAnalysisCache } from "./tagAnalysisCache";
+
+export { invalidateAnalysisCache };
 
 /**
  * Space-optimized Levenshtein distance calculation
@@ -70,36 +73,6 @@ export interface TagGroup {
 	candidates: ParsedTag[];
 }
 
-// Caching interface for analysis results
-interface AnalysisCache {
-	timestamp: number;
-	tagHash: string; // Hash of all tag IDs
-	tagCount: number;
-	results: TagGroup[];
-}
-
-// Global cache instance
-let analysisCache: AnalysisCache | null = null;
-
-// Cache TTL: 5 minutes
-const CACHE_TTL = 5 * 60 * 1000;
-
-/**
- * Generate a simple hash of tag IDs for cache validation
- */
-const hashTagIds = (tagIds: string[]): string => {
-	return tagIds.sort().join("|");
-};
-
-/**
- * Invalidate the analysis cache
- * Should be called after tag operations: merge, delete, rename, create
- */
-export const invalidateAnalysisCache = (): void => {
-	analysisCache = null;
-	console.log("[TagAnalysis] Cache invalidated");
-};
-
 // Stop words to ignore during advanced comparison
 const STOP_WORDS = new Set(["et", "and", "&", "le", "la", "les", "the", "a", "an", "de", "of", "in", "en"]);
 
@@ -144,19 +117,16 @@ export const analyzeTagRedundancy = async (
 	forceRefresh = false
 ): Promise<TagGroup[]> => {
 	const tags = await getAllTags();
-	const currentHash = hashTagIds(tags.map((t) => t.id));
+	const tagIds = tags.map((t) => t.id);
+	
+	// Import hashTagIds from cache module
+	const { hashTagIds } = await import("./tagAnalysisCache");
+	const currentHash = hashTagIds(tagIds);
 
-	// Check cache validity
-	const cacheValid =
-		!forceRefresh &&
-		analysisCache &&
-		analysisCache.tagCount === tags.length &&
-		analysisCache.tagHash === currentHash &&
-		Date.now() - analysisCache.timestamp < CACHE_TTL;
-
-	if (cacheValid && analysisCache) {
-		console.log("[TagAnalysis] Cache HIT - Using cached analysis");
-		return analysisCache.results;
+	// Check cache validity (includes maxTags parameter)
+	const cachedResult = getCache(currentHash, tags.length, maxTags, forceRefresh);
+	if (cachedResult) {
+		return cachedResult;
 	}
 
 	console.log("[TagAnalysis] Cache MISS - Running analysis");
@@ -195,8 +165,9 @@ export const analyzeTagRedundancy = async (
 			candidates: [],
 		};
 
-		for (let j = i + 1; j < simpleTags.length; j++) {
-			const candidate = simpleTags[j];
+		// Fix: Inner loop should also use tagsToProcess for consistency with maxTags
+		for (let j = i + 1; j < tagsToProcess.length; j++) {
+			const candidate = tagsToProcess[j];
 			if (!candidate) continue;
 			if (processedIds.has(candidate.id)) continue;
 
@@ -230,13 +201,8 @@ export const analyzeTagRedundancy = async (
 
 	console.log(`[TagAnalysis] Found ${groups.length} groups with duplicates`);
 
-	// Store results in cache
-	analysisCache = {
-		timestamp: Date.now(),
-		tagHash: currentHash,
-		tagCount: tags.length,
-		results: groups,
-	};
+	// Store results in cache (includes maxTags parameter)
+	setCache(currentHash, tags.length, maxTags, groups);
 
 	return groups;
 };

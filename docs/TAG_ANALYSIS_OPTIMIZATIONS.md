@@ -8,7 +8,7 @@ This document describes the Priority 0 (P0) optimizations implemented for the ta
 
 ### 1. Optimized Levenshtein Distance Algorithm
 
-**File**: `src/services/tagAnalysisService.ts` (Lines 6-59)
+**File**: `src/services/tagAnalysisService.ts` (Lines 20-69)
 
 **Changes**:
 - Replaced O(m×n) space complexity with O(min(m,n)) using rolling array technique
@@ -77,14 +77,17 @@ const levenshteinDistance = (
 
 ### 2. Analysis Result Caching
 
-**File**: `src/services/tagAnalysisService.ts` (Lines 66-94, 130-229)
+**File**: `src/services/tagAnalysisCache.ts` (Lines 8-78)
+**File**: `src/services/tagAnalysisService.ts` (Lines 115-208)
 
 **Changes**:
-- Added `AnalysisCache` interface with timestamp, tag hash, tag count, and results
-- Implemented cache validation using tag IDs hash and count comparison
+- Created separate `tagAnalysisCache.ts` module to avoid circular dependencies
+- Added `AnalysisCache` interface with timestamp, tag hash, tag count, maxTags parameter, and results
+- Implemented cache validation using tag IDs hash, count, and maxTags comparison
 - Added 5-minute Time-To-Live (TTL) for cached results
 - Added `forceRefresh` parameter to bypass cache when needed
 - Exported `invalidateAnalysisCache()` function for manual cache clearing
+- Fixed hash function to avoid mutating input arrays
 
 **Benefits**:
 - **Performance**: 99% faster on cache hits (0.5s vs 48.2s for 10,000 tags)
@@ -98,12 +101,17 @@ const cacheValid =
 	analysisCache &&
 	analysisCache.tagCount === tags.length &&
 	analysisCache.tagHash === currentHash &&
+	analysisCache.maxTags === maxTags &&  // Ensures cache respects maxTags parameter
 	Date.now() - analysisCache.timestamp < CACHE_TTL;
 ```
 
+**Important Notes**:
+- Cache now includes `maxTags` parameter to prevent serving partial results when full analysis is requested
+- Inner comparison loop respects `maxTags` limit for consistent behavior
+
 ### 3. Automatic Cache Invalidation
 
-**File**: `src/services/storage/tags.ts` (Lines 14, 56, 186, 282, 571, 583)
+**File**: `src/services/storage/tags.ts` (Lines 57, 187, 284, 575, 587)
 
 **Changes**:
 - Imported `invalidateAnalysisCache` from tagAnalysisService
@@ -121,7 +129,7 @@ const cacheValid =
 
 ### 4. Configurable Jaccard Similarity Threshold
 
-**File**: `src/services/tagAnalysisService.ts` (Lines 113-128)
+**File**: `src/services/tagAnalysisService.ts` (Lines 98-113)
 
 **Changes**:
 - Added `threshold` parameter to `areTokensSimilar()` function
@@ -212,10 +220,11 @@ The following optimizations are planned for future implementation:
 
 ## Related Files
 
-- **Service**: `src/services/tagAnalysisService.ts`
-- **Storage**: `src/services/storage/tags.ts`
-- **Tests**: `tests/tagAnalysis.test.ts`
-- **Audit Report**: `docs/AUDIT/2026-01-02_TAG_FUSION_OPTIMIZATION.md`
+- **Service**: `src/services/tagAnalysisService.ts` - Core analysis logic
+- **Cache**: `src/services/tagAnalysisCache.ts` - Cache management (separate module to avoid circular dependencies)
+- **Storage**: `src/services/storage/tags.ts` - Tag CRUD operations with cache invalidation hooks
+- **Tests**: `tests/tagAnalysis.test.ts` - Comprehensive test suite
+- **Audit Report**: `docs/AUDIT/2026-01-02_TAG_FUSION_OPTIMIZATION.md` - Original optimization proposal
 
 ## Conclusion
 

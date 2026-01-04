@@ -11,7 +11,7 @@ import type {
 	TagType,
 	TagNode,
 } from "../../shared/types/database";
-import { invalidateAnalysisCache } from "../tagAnalysisService";
+import { invalidateAnalysisCache } from "../tagAnalysisCache";
 
 // ==================== UTILITIES ====================
 
