@@ -297,9 +297,9 @@ export const TagManager: React.FC<TagManagerProps> = ({
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() => {
+								onClick={async () => {
 									// Add all extracted tags
-									extractedTags.forEach((tag) => addTagByName(tag));
+									await Promise.all(extractedTags.map((tag) => addTagByName(tag)));
 								}}
 								className="px-2 py-1 text-[11px] rounded border border-green-400/30 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:border-green-400/50 h-auto"
 							>
