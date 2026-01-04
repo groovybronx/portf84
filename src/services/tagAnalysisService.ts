@@ -6,6 +6,13 @@ import { ParsedTag } from "../shared/types/database";
  * Space-optimized Levenshtein distance calculation
  * Uses rolling array technique: O(min(m,n)) space instead of O(m*n)
  * Includes early termination when distance exceeds threshold
+ * 
+ * @param a - First string to compare
+ * @param b - Second string to compare
+ * @param threshold - Maximum distance to compute; returns threshold + 1 if exceeded.
+ *                    This enables early termination for better performance when you only
+ *                    care about distances below a certain value. Default: Infinity (no limit).
+ * @returns The Levenshtein distance between the strings, or threshold + 1 if exceeded
  */
 const levenshteinDistance = (
 	a: string,
@@ -95,6 +102,11 @@ export const invalidateAnalysisCache = (): void => {
 
 // Stop words to ignore during advanced comparison
 const STOP_WORDS = new Set(["et", "and", "&", "le", "la", "les", "the", "a", "an", "de", "of", "in", "en"]);
+
+// Levenshtein distance threshold for similarity matching
+// Tags with distance <= 1 are considered similar
+// Tags with distance <= 2 are considered similar if length > 5
+const LEVENSHTEIN_THRESHOLD = 2;
 
 // Performance threshold for large datasets
 const LARGE_DATASET_THRESHOLD = 5000;
@@ -197,8 +209,8 @@ export const analyzeTagRedundancy = async (
 			const lengthDiff = Math.abs(root.simpleName.length - candidate.simpleName.length);
 			if (lengthDiff > 2 && root.tokens.size === 0 && candidate.tokens.size === 0) continue;
 
-			// Use threshold of 2 for Levenshtein optimization
-			const dist = levenshteinDistance(root.simpleName, candidate.simpleName, 2);
+			// Use threshold for Levenshtein optimization
+			const dist = levenshteinDistance(root.simpleName, candidate.simpleName, LEVENSHTEIN_THRESHOLD);
 
 			const isLevenshteinMatch = dist <= 1 || (dist <= 2 && root.simpleName.length > 5);
 
