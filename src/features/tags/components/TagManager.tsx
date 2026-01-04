@@ -72,6 +72,38 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		}
 	}, [item.aiDescription, item.manualTags]);
 
+	// Keyboard shortcuts for quick tags (1-9)
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Ignore if typing in input
+			if (
+				e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement
+			) {
+				return;
+			}
+
+			// Check for number keys 1-9
+			const key = parseInt(e.key);
+			if (!isNaN(key) && key >= 1 && key <= 9) {
+				const tagIndex = key - 1;
+				if (quickTags[tagIndex]) {
+					const tag = quickTags[tagIndex];
+					const isApplied = item.manualTags?.includes(tag.name);
+					if (isApplied) {
+						handleRemoveTag(tag.name);
+					} else {
+						handleAddTag(tag.name);
+					}
+					e.preventDefault();
+				}
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [quickTags, item.manualTags]);
+
 	// Check for alias suggestions when user types
 	useEffect(() => {
 		const checkAlias = async () => {

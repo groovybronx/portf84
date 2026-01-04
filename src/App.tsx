@@ -203,6 +203,12 @@ const App: React.FC = () => {
     setSelectedItem,
     applyColorTagToSelection,
     gridColumns,
+    onOpenBatchTagPanel: () => {
+      // Only open if items are selected
+      if (selectedIds.size > 0) {
+        setIsAddTagModalOpen(true);
+      }
+    },
   });
 
   // Helper functions
