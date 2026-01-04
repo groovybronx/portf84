@@ -9,7 +9,7 @@ import {
   CreateFolderModal,
   MoveToFolderModal,
 } from "./features/collections";
-import { AddTagModal } from "./features/tags";
+import { AddTagModal, BatchTagPanel, TagChanges } from "./features/tags";
 import {
   ContextMenu,
   EmptyState,
@@ -168,6 +168,7 @@ const App: React.FC = () => {
   const contextMenuRef = useRef<HTMLDivElement>(null);
 
   // --- Custom Hooks for Actions ---
+  const contextMenuItem = contextMenu?.item || null;
   const {
     addTagsToSelection,
     applyColorTagToSelection,
@@ -578,12 +579,44 @@ const App: React.FC = () => {
         onCreateAndMove={createFolderAndMove}
         selectedCount={selectedIds.size}
       />
-      <AddTagModal
+      <BatchTagPanel
         isOpen={isAddTagModalOpen}
         onClose={() => setIsAddTagModalOpen(false)}
-        onAddTag={addTagsToSelection}
-        selectedCount={selectedIds.size > 0 ? selectedIds.size : 1}
+        selectedItems={
+          selectedIds.size > 0
+            ? currentItems.filter((item) => selectedIds.has(item.id))
+            : contextMenuItem
+            ? [contextMenuItem]
+            : []
+        }
         availableTags={availableTags}
+        onApplyChanges={(changes: TagChanges) => {
+          // Apply batch changes
+          const itemsToUpdate =
+            selectedIds.size > 0
+              ? currentItems.filter((item) => selectedIds.has(item.id))
+              : contextMenuItem
+              ? [contextMenuItem]
+              : [];
+
+          const updatedItems = itemsToUpdate.map((item) => {
+            const currentTags = new Set(item.manualTags || []);
+
+            // Remove tags
+            changes.remove.forEach((tag) => currentTags.delete(tag));
+
+            // Add tags
+            changes.add.forEach((tag) => currentTags.add(tag));
+
+            return {
+              ...item,
+              manualTags: Array.from(currentTags),
+            };
+          });
+
+          libraryUpdateItems(updatedItems);
+          clearSelection();
+        }}
       />
       <SettingsModal
         isOpen={isSettingsOpen}
