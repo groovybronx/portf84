@@ -20,5 +20,8 @@
   "success": "Success",
   "warning": "Warning",
   "info": "Info",
-  "none": "None"
+  "none": "None",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "closeModal": "Close modal"
 }

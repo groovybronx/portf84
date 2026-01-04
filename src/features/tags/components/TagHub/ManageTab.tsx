@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, Merge, CheckSquare, Square, BarChart3, Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui";
@@ -28,13 +28,13 @@ export const ManageTab: React.FC = () => {
 		}
 	};
 
-	const handleSelectAll = () => {
+	const handleSelectAll = useCallback(() => {
 		if (selectedTagIds.size === tags.length) {
 			setSelectedTagIds(new Set());
 		} else {
 			setSelectedTagIds(new Set(tags.map((t) => t.id)));
 		}
-	};
+	}, [selectedTagIds.size, tags]);
 
 	const toggleSelection = (tagId: string) => {
 		const newSelection = new Set(selectedTagIds);
@@ -46,10 +46,10 @@ export const ManageTab: React.FC = () => {
 		setSelectedTagIds(newSelection);
 	};
 
-	const handleDeleteSelected = async () => {
+	const handleDeleteSelected = useCallback(async () => {
 		if (selectedTagIds.size === 0) return;
 
-		if (!confirm(t("tags:mergeConfirm", { count: selectedTagIds.size }))) {
+		if (!confirm(t("tags:deleteConfirm", { count: selectedTagIds.size }))) {
 			return;
 		}
 
@@ -62,11 +62,11 @@ export const ManageTab: React.FC = () => {
 		} catch (error) {
 			console.error("Failed to delete tags:", error);
 		}
-	};
+	}, [selectedTagIds, t]);
 
 	const handleMergeSelected = async () => {
 		if (selectedTagIds.size < 2) {
-			alert("Please select at least 2 tags to merge");
+			alert(t("tags:selectAtLeastTwo"));
 			return;
 		}
 
@@ -76,7 +76,7 @@ export const ManageTab: React.FC = () => {
 
 		const sourceTagIds = Array.from(selectedTagIds).filter((id) => id !== targetTag.id);
 
-		if (!confirm(`Merge all selected tags into "${targetTag.name}"?`)) {
+		if (!confirm(t("tags:mergeIntoTag", { tagName: targetTag.name }))) {
 			return;
 		}
 
@@ -111,7 +111,7 @@ export const ManageTab: React.FC = () => {
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [selectedTagIds, tags]);
+	}, [handleSelectAll, handleDeleteSelected, selectedTagIds.size]);
 
 	const manualTags = tags.filter((t) => t.type === "manual");
 	const aiTags = tags.filter((t) => t.type === "ai");
@@ -158,7 +158,9 @@ export const ManageTab: React.FC = () => {
 						) : (
 							<Square size={14} />
 						)}
-						{selectedTagIds.size === tags.length ? "Deselect All" : "Select All (Ctrl+A)"}
+						{selectedTagIds.size === tags.length
+							? t("tags:deselectAll")
+							: t("tags:selectAllWithShortcut")}
 					</Button>
 					<span className="text-xs text-gray-500">
 						{t("tags:allTags")} ({tags.length})
@@ -257,7 +259,7 @@ export const ManageTab: React.FC = () => {
 					</div>
 
 					<div className="text-[10px] text-gray-600 text-center px-2">
-						💡 Tip: Use Ctrl+A to select all tags, Delete to remove selected
+						{t("tags:keyboardShortcutTip")}
 					</div>
 				</div>
 			)}

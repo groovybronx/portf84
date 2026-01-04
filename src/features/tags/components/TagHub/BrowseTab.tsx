@@ -89,6 +89,7 @@ export const BrowseTab: React.FC = () => {
 				<div className="flex gap-1 bg-glass-bg-accent rounded-lg p-1">
 					<Button
 						onClick={() => setViewMode("grid")}
+						aria-label={t("tags:gridView")}
 						className={`p-2 rounded ${
 							viewMode === "grid"
 								? "bg-blue-500/20 text-blue-300"
@@ -99,6 +100,7 @@ export const BrowseTab: React.FC = () => {
 					</Button>
 					<Button
 						onClick={() => setViewMode("list")}
+						aria-label={t("tags:listView")}
 						className={`p-2 rounded ${
 							viewMode === "list"
 								? "bg-blue-500/20 text-blue-300"

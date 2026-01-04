@@ -70,6 +70,7 @@ export const TagHub: React.FC<TagHubProps> = ({
 						exit={{ opacity: 0 }}
 						onClick={onClose}
 						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
+						aria-label={t("common:closeModal")}
 					/>
 
 					{/* Modal */}
@@ -93,6 +94,7 @@ export const TagHub: React.FC<TagHubProps> = ({
 								</div>
 								<Button
 									onClick={onClose}
+									aria-label={t("common:close")}
 									className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors"
 								>
 									<X size={20} />

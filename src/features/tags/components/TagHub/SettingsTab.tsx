@@ -43,11 +43,11 @@ export const SettingsTab: React.FC = () => {
 	const handleSave = () => {
 		// TODO: Persist settings to localStorage or database
 		console.log("Saving settings:", settings);
-		alert("Settings saved successfully!");
+		alert(t("tags:settingsSavedSuccess"));
 	};
 
 	const handleReset = () => {
-		if (confirm("Reset all settings to defaults?")) {
+		if (confirm(t("tags:resetSettingsConfirm"))) {
 			setSettings(DEFAULT_SETTINGS);
 		}
 	};
@@ -107,7 +107,7 @@ export const SettingsTab: React.FC = () => {
 							className="w-full"
 						/>
 						<p className="text-xs text-gray-500 mt-1">
-							Character difference allowed (1-3)
+							{t("tags:levenshteinHelp")}
 						</p>
 					</div>
 
@@ -130,7 +130,7 @@ export const SettingsTab: React.FC = () => {
 							className="w-full"
 						/>
 						<p className="text-xs text-gray-500 mt-1">
-							Word similarity required (60-95%)
+							{t("tags:jaccardHelp")}
 						</p>
 					</div>
 
@@ -151,7 +151,7 @@ export const SettingsTab: React.FC = () => {
 							className="w-full"
 						/>
 						<p className="text-xs text-gray-500 mt-1">
-							Ignore tags with fewer uses (0-10)
+							{t("tags:minUsageHelp")}
 						</p>
 					</div>
 
@@ -173,7 +173,9 @@ export const SettingsTab: React.FC = () => {
 									: "bg-glass-bg text-gray-500 border border-white/10"
 							}`}
 						>
-							{settings.enableSemanticSimilarity ? "Enabled" : "Disabled"}
+							{settings.enableSemanticSimilarity
+								? t("common:enabled")
+								: t("common:disabled")}
 						</Button>
 					</div>
 				</div>

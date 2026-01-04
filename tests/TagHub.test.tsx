@@ -80,12 +80,10 @@ describe('TagHub', () => {
 			/>
 		);
 
-		// Find and click close button (X icon)
-		const closeButton = screen.getAllByRole('button')[0]; // First button should be close
-		if (closeButton && closeButton.querySelector('svg')) {
-			fireEvent.click(closeButton);
-			expect(mockOnClose).toHaveBeenCalled();
-		}
+		// Find and click close button by its accessible label
+		const closeButton = screen.getByLabelText('common:close');
+		fireEvent.click(closeButton);
+		expect(mockOnClose).toHaveBeenCalled();
 	});
 
 	it('should not render when closed', () => {

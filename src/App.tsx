@@ -212,7 +212,7 @@ const App: React.FC = () => {
   // Tag Hub keyboard shortcut (Ctrl+T)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 't') {
+      if (e.ctrlKey && e.key.toLowerCase() === "t") {
         e.preventDefault();
         setIsTagHubOpen(true);
       }

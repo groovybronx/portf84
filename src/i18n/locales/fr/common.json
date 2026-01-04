@@ -20,5 +20,8 @@
   "success": "Succès",
   "warning": "Attention",
   "info": "Info",
-  "none": "Aucun"
+  "none": "Aucun",
+  "enabled": "Activé",
+  "disabled": "Désactivé",
+  "closeModal": "Fermer la fenêtre"
 }
