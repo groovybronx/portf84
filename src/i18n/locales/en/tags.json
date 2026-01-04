@@ -82,7 +82,6 @@
   "tagsRemovedFromItems_plural": "{{count}} tags will be removed",
   "applyChanges": "Apply Changes",
   "toApply": "to apply",
-  "toCancel": "to cancel",
   "suggestedFromSimilar": "Suggested from similar images",
   "extractFromAI": "Extract from AI description",
   "extractAll": "Extract All",

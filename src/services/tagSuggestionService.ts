@@ -3,8 +3,12 @@
  * Provides smart tag suggestions from similar images and AI descriptions
  */
 
-import { getMetadataBatch } from "./storage/metadata";
 import { PortfolioItem } from "../shared/types";
+
+// Constants
+const MIN_KEYWORD_LENGTH = 3; // Minimum length for extracted keywords
+const BATCH_SUGGESTION_THRESHOLD_PERCENTAGE = 0.3; // 30% of items must have tag
+const MIN_BATCH_SUGGESTION_THRESHOLD = 2; // Minimum absolute threshold
 
 /**
  * Find similar images based on AI description similarity
@@ -45,7 +49,7 @@ const extractKeywords = (text: string): string[] => {
 		.toLowerCase()
 		.replace(/[^\w\s]/g, " ")
 		.split(/\s+/)
-		.filter((w) => w.length > 3); // Only words longer than 3 chars
+		.filter((w) => w.length > MIN_KEYWORD_LENGTH);
 
 	// Remove common stop words
 	const stopWords = new Set([
@@ -266,7 +270,10 @@ export const getBatchTagSuggestions = (
 	});
 
 	// Return keywords that appear in multiple items
-	const threshold = Math.max(2, Math.floor(items.length * 0.3)); // At least 30% of items
+	const threshold = Math.max(
+		MIN_BATCH_SUGGESTION_THRESHOLD,
+		Math.floor(items.length * BATCH_SUGGESTION_THRESHOLD_PERCENTAGE)
+	);
 	return Array.from(frequency.entries())
 		.filter(([, count]) => count >= threshold)
 		.sort((a, b) => b[1] - a[1])

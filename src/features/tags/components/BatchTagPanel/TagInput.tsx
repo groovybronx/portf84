@@ -3,6 +3,9 @@ import { Plus, Tag as TagIcon } from "lucide-react";
 import { Button } from "@/shared/components/ui";
 import { useTranslation } from "react-i18next";
 
+// Constants
+const SUGGESTION_BLUR_DELAY = 200; // Allow click events on suggestions before blur hides dropdown
+
 interface TagInputProps {
 	availableTags: string[];
 	existingTags: Set<string>;
@@ -103,7 +106,7 @@ export const TagInput: React.FC<TagInputProps> = ({
 							setShowSuggestions(true);
 						}}
 						onFocus={() => setShowSuggestions(true)}
-						onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+						onBlur={() => setTimeout(() => setShowSuggestions(false), SUGGESTION_BLUR_DELAY)}
 						onKeyDown={handleKeyDown}
 						placeholder={
 							placeholder || t("tagInputPlaceholder")

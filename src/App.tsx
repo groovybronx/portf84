@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TopBar } from "./features/navigation";
 import { ViewRenderer } from "./features/library/components/ViewRenderer";
@@ -166,6 +166,17 @@ const App: React.FC = () => {
     item: PortfolioItem;
   } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
+
+  // Memoize the selected items for batch operations to avoid duplication
+  const batchSelectedItems = useMemo(() => {
+    if (selectedIds.size > 0) {
+      return currentItems.filter((item) => selectedIds.has(item.id));
+    }
+    if (contextMenu?.item) {
+      return [contextMenu.item];
+    }
+    return [];
+  }, [selectedIds, currentItems, contextMenu]);
 
   // --- Custom Hooks for Actions ---
   const contextMenuItem = contextMenu?.item || null;
@@ -589,24 +600,11 @@ const App: React.FC = () => {
       <BatchTagPanel
         isOpen={isAddTagModalOpen}
         onClose={() => setIsAddTagModalOpen(false)}
-        selectedItems={
-          selectedIds.size > 0
-            ? currentItems.filter((item) => selectedIds.has(item.id))
-            : contextMenuItem
-            ? [contextMenuItem]
-            : []
-        }
+        selectedItems={batchSelectedItems}
         availableTags={availableTags}
         onApplyChanges={(changes: TagChanges) => {
           // Apply batch changes
-          const itemsToUpdate =
-            selectedIds.size > 0
-              ? currentItems.filter((item) => selectedIds.has(item.id))
-              : contextMenuItem
-              ? [contextMenuItem]
-              : [];
-
-          const updatedItems = itemsToUpdate.map((item) => {
+          const updatedItems = batchSelectedItems.map((item) => {
             const currentTags = new Set(item.manualTags || []);
 
             // Remove tags

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Tag as TagIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -146,61 +146,85 @@ export const BatchTagPanel: React.FC<BatchTagPanelProps> = ({
 	}, [pendingChanges, selectedItems]);
 
 	// Handlers
-	const handleRemoveCommonTag = (tag: string) => {
+	const handleRemoveCommonTag = useCallback((tag: string) => {
 		setPendingChanges((prev) => {
-			const newChanges = { ...prev };
-			newChanges.remove.add(tag);
-			newChanges.add.delete(tag); // Cancel any pending add
-			return newChanges;
+			const nextAdd = new Set(prev.add);
+			const nextRemove = new Set(prev.remove);
+			
+			nextRemove.add(tag);
+			nextAdd.delete(tag); // Cancel any pending add
+			
+			return {
+				add: nextAdd,
+				remove: nextRemove,
+			};
 		});
-	};
+	}, []);
 
-	const handleAddToAll = (tag: string) => {
+	const handleAddToAll = useCallback((tag: string) => {
 		setPendingChanges((prev) => {
-			const newChanges = { ...prev };
-			newChanges.add.add(tag);
-			newChanges.remove.delete(tag); // Cancel any pending remove
-			return newChanges;
+			const nextAdd = new Set(prev.add);
+			const nextRemove = new Set(prev.remove);
+			
+			nextAdd.add(tag);
+			nextRemove.delete(tag); // Cancel any pending remove
+			
+			return {
+				add: nextAdd,
+				remove: nextRemove,
+			};
 		});
-	};
+	}, []);
 
-	const handleRemoveFromAll = (tag: string) => {
+	const handleRemoveFromAll = useCallback((tag: string) => {
 		setPendingChanges((prev) => {
-			const newChanges = { ...prev };
-			newChanges.remove.add(tag);
-			newChanges.add.delete(tag); // Cancel any pending add
-			return newChanges;
+			const nextAdd = new Set(prev.add);
+			const nextRemove = new Set(prev.remove);
+			
+			nextRemove.add(tag);
+			nextAdd.delete(tag); // Cancel any pending add
+			
+			return {
+				add: nextAdd,
+				remove: nextRemove,
+			};
 		});
-	};
+	}, []);
 
-	const handleAddTags = (tags: string[]) => {
+	const handleAddTags = useCallback((tags: string[]) => {
 		setPendingChanges((prev) => {
-			const newChanges = { ...prev };
+			const nextAdd = new Set(prev.add);
+			const nextRemove = new Set(prev.remove);
+			
 			tags.forEach((tag) => {
-				newChanges.add.add(tag);
-				newChanges.remove.delete(tag); // Cancel any pending remove
+				nextAdd.add(tag);
+				nextRemove.delete(tag); // Cancel any pending remove
 			});
-			return newChanges;
+			
+			return {
+				add: nextAdd,
+				remove: nextRemove,
+			};
 		});
-	};
+	}, []);
 
-	const handleQuickTagToggle = (tag: string) => {
+	const handleQuickTagToggle = useCallback((tag: string) => {
 		if (effectiveTags.has(tag)) {
 			handleRemoveFromAll(tag);
 		} else {
 			handleAddToAll(tag);
 		}
-	};
+	}, [effectiveTags, handleRemoveFromAll, handleAddToAll]);
 
-	const handleApply = () => {
+	const handleApply = useCallback(() => {
 		onApplyChanges(pendingChanges);
 		onClose();
-	};
+	}, [onApplyChanges, pendingChanges, onClose]);
 
-	const handleCancel = () => {
+	const handleCancel = useCallback(() => {
 		setPendingChanges({ add: new Set(), remove: new Set() });
 		onClose();
-	};
+	}, [onClose]);
 
 	// Keyboard shortcuts
 	useEffect(() => {
@@ -216,7 +240,7 @@ export const BatchTagPanel: React.FC<BatchTagPanelProps> = ({
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [isOpen, pendingChanges]);
+	}, [isOpen, handleCancel, handleApply]);
 
 	if (!isOpen) return null;
 

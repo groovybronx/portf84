@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Tag, Plus, X, Sparkles, Lightbulb } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PortfolioItem } from "../../../shared/types";
@@ -86,6 +86,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 			// Check for number keys 1-9
 			const key = parseInt(e.key);
 			if (!isNaN(key) && key >= 1 && key <= 9) {
+				e.preventDefault();
 				const tagIndex = key - 1;
 				if (quickTags[tagIndex]) {
 					const tag = quickTags[tagIndex];
@@ -95,14 +96,13 @@ export const TagManager: React.FC<TagManagerProps> = ({
 					} else {
 						handleAddTag(tag.name);
 					}
-					e.preventDefault();
 				}
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [quickTags, item.manualTags]);
+	}, [quickTags, item.manualTags, handleAddTag, handleRemoveTag]);
 
 	// Check for alias suggestions when user types
 	useEffect(() => {
@@ -136,7 +136,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		)
 		.slice(0, 5); // Limit to 5 suggestions
 
-	const handleAddTag = async (tagValue?: string) => {
+	const handleAddTag = useCallback(async (tagValue?: string) => {
 		const tagToAdd = (tagValue || newTag).trim();
 		if (!tagToAdd) return;
 
@@ -151,9 +151,9 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		setNewTag("");
 		setShowSuggestions(false);
 		setAliasSuggestion(null);
-	};
+	}, [newTag, item, onUpdateItem]);
 
-	const handleRemoveTag = async (tagToRemove: string) => {
+	const handleRemoveTag = useCallback(async (tagToRemove: string) => {
 		const updatedTags = (item.manualTags || []).filter(
 			(t) => t !== tagToRemove
 		);
@@ -161,7 +161,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 
 		await storageService.saveMetadata(updatedItem, item.id);
 		onUpdateItem(updatedItem);
-	};
+	}, [item, onUpdateItem]);
 
 	return (
 		<div className="bg-glass-bg-accent rounded-lg p-4 space-y-3 border border-glass-border-light relative">
