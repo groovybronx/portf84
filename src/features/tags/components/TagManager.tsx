@@ -72,7 +72,6 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		}
 	}, [item.aiDescription, item.manualTags]);
 
-
 	// Check for alias suggestions when user types
 	useEffect(() => {
 		const checkAlias = async () => {
@@ -163,7 +162,6 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [quickTags, item.manualTags, handleAddTag, handleRemoveTag]);
-
 
 	return (
 		<div className="bg-glass-bg-accent rounded-lg p-4 space-y-3 border border-glass-border-light relative">
