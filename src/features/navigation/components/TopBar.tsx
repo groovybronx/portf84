@@ -23,7 +23,7 @@ interface TopBarProps {
 	isBatchAIProcessing: boolean;
 	batchAIProgress: number;
 	onOpenSettings: () => void;
-	onOpenTagManager: () => void;
+
 	onOpenTagHub: () => void;
 	showColorTags: boolean;
 	onToggleColorTags: () => void;
@@ -39,7 +39,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	isBatchAIProcessing,
 	batchAIProgress,
 	onOpenSettings,
-	onOpenTagManager,
+
 	onOpenTagHub,
 	showColorTags,
 	onToggleColorTags,
@@ -137,15 +137,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 								{folderName || t('navigation:library')}
 							</span>
 						</Button>
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={onOpenTagManager}
-							className="text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
-							title={t('navigation:smartTagManager')}
-						>
-							<Icon action="smart_tags" size={18} />
-						</Button>
+
 						<Button
 							variant="ghost"
 							size="icon"
