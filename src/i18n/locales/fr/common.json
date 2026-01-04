@@ -20,5 +20,6 @@
   "success": "Succès",
   "warning": "Attention",
   "info": "Info",
-  "none": "Aucun"
+  "none": "Aucun",
+  "toCancel": "pour annuler"
 }

@@ -29,6 +29,7 @@ interface ImageViewerProps {
 	onPrev: () => void;
 	showColorTags?: boolean;
 	availableTags: string[];
+	allItems?: PortfolioItem[]; // For smart tag suggestions
 }
 
 export const ImageViewer: React.FC<ImageViewerProps> = ({
@@ -39,6 +40,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 	onPrev,
 	showColorTags = false,
 	availableTags,
+	allItems = [],
 }) => {
 	const { analyzing, thinkingText, error, analyze, reset } =
 		useVision(onUpdateItem);
@@ -444,6 +446,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 								item={item}
 								onUpdateItem={onUpdateItem}
 								availableTags={availableTags}
+								allItems={allItems}
 							/>
 						</motion.div>
 					)}

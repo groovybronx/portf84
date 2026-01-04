@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TopBar } from "./features/navigation";
 import { ViewRenderer } from "./features/library/components/ViewRenderer";
@@ -9,7 +9,7 @@ import {
   CreateFolderModal,
   MoveToFolderModal,
 } from "./features/collections";
-import { AddTagModal } from "./features/tags";
+import { AddTagModal, BatchTagPanel, TagChanges } from "./features/tags";
 import {
   ContextMenu,
   EmptyState,
@@ -167,7 +167,19 @@ const App: React.FC = () => {
   } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
 
+  // Memoize the selected items for batch operations to avoid duplication
+  const batchSelectedItems = useMemo(() => {
+    if (selectedIds.size > 0) {
+      return currentItems.filter((item) => selectedIds.has(item.id));
+    }
+    if (contextMenu?.item) {
+      return [contextMenu.item];
+    }
+    return [];
+  }, [selectedIds, currentItems, contextMenu]);
+
   // --- Custom Hooks for Actions ---
+  const contextMenuItem = contextMenu?.item || null;
   const {
     addTagsToSelection,
     applyColorTagToSelection,
@@ -202,6 +214,12 @@ const App: React.FC = () => {
     setSelectedItem,
     applyColorTagToSelection,
     gridColumns,
+    onOpenBatchTagPanel: () => {
+      // Only open if items are selected
+      if (selectedIds.size > 0) {
+        setIsAddTagModalOpen(true);
+      }
+    },
   });
 
   // Helper functions
@@ -542,6 +560,7 @@ const App: React.FC = () => {
               onPrev={handlePrev}
               showColorTags={true}
               availableTags={availableTags}
+              allItems={currentItems}
             />
           </ErrorBoundary>
         )}
@@ -578,12 +597,31 @@ const App: React.FC = () => {
         onCreateAndMove={createFolderAndMove}
         selectedCount={selectedIds.size}
       />
-      <AddTagModal
+      <BatchTagPanel
         isOpen={isAddTagModalOpen}
         onClose={() => setIsAddTagModalOpen(false)}
-        onAddTag={addTagsToSelection}
-        selectedCount={selectedIds.size > 0 ? selectedIds.size : 1}
+        selectedItems={batchSelectedItems}
         availableTags={availableTags}
+        onApplyChanges={(changes: TagChanges) => {
+          // Apply batch changes
+          const updatedItems = batchSelectedItems.map((item) => {
+            const currentTags = new Set(item.manualTags || []);
+
+            // Remove tags
+            changes.remove.forEach((tag) => currentTags.delete(tag));
+
+            // Add tags
+            changes.add.forEach((tag) => currentTags.add(tag));
+
+            return {
+              ...item,
+              manualTags: Array.from(currentTags),
+            };
+          });
+
+          libraryUpdateItems(updatedItems);
+          clearSelection();
+        }}
       />
       <SettingsModal
         isOpen={isSettingsOpen}

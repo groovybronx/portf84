@@ -9,6 +9,7 @@ export interface UseKeyboardShortcutsProps {
   setSelectedItem: (item: PortfolioItem) => void;
   applyColorTagToSelection: (color: string | undefined) => void;
   gridColumns: number;
+  onOpenBatchTagPanel?: () => void; // New: callback to open batch tag panel
 }
 
 /**
@@ -17,6 +18,7 @@ export interface UseKeyboardShortcutsProps {
  * - Navigation (Arrow keys)
  * - Selection (Space/Enter)
  * - Color tagging (0-6)
+ * - Batch tagging (Ctrl+T)
  */
 export const useKeyboardShortcuts = ({
   processedItems,
@@ -25,6 +27,7 @@ export const useKeyboardShortcuts = ({
   setSelectedItem,
   applyColorTagToSelection,
   gridColumns,
+  onOpenBatchTagPanel,
 }: UseKeyboardShortcutsProps) => {
   const { shortcuts } = useLocalShortcuts();
 
@@ -89,7 +92,16 @@ export const useKeyboardShortcuts = ({
         return;
       }
 
-      // 2. Color Tagging Shortcuts
+      // 2. Batch Tagging Shortcut (Ctrl+T)
+      if (e.ctrlKey && e.key === "t") {
+        e.preventDefault();
+        if (onOpenBatchTagPanel) {
+          onOpenBatchTagPanel();
+        }
+        return;
+      }
+
+      // 3. Color Tagging Shortcuts
       if (shortcuts.TAG_RED.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["1"]);
       else if (shortcuts.TAG_ORANGE.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["2"]);
       else if (shortcuts.TAG_YELLOW.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["3"]);
@@ -109,6 +121,7 @@ export const useKeyboardShortcuts = ({
     setFocusedId,
     setSelectedItem,
     applyColorTagToSelection,
+    onOpenBatchTagPanel,
     shortcuts, // Dependency on shortcuts configuration
   ]);
 };

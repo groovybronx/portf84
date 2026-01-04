@@ -20,5 +20,6 @@
   "success": "Success",
   "warning": "Warning",
   "info": "Info",
-  "none": "None"
+  "none": "None",
+  "toCancel": "to cancel"
 }
