@@ -55,6 +55,7 @@
   "actions": "Actions",
   "undo": "Undo",
   "undoConfirm": "Restore the tag \"{{tagName}}\"?",
+  "undoFailed": "Failed to undo merge. See console for details.",
   "ignoreMatch": "Ignore Group",
   "quickTags": "Quick Tags",
   "parentTag": "Parent Tag",
@@ -141,5 +142,6 @@
   "extractFromAI": "Extract from AI description",
   "extractAll": "Extract All",
   "basedOnSimilar": "Based on {{count}} similar image",
-  "basedOnSimilar_plural": "Based on {{count}} similar images"
+  "basedOnSimilar_plural": "Based on {{count}} similar images",
+  "batchTagSelectedItems": "Batch Tag Selected Items"
 }

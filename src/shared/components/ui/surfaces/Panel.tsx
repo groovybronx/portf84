@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "../Button";
 import { GlassCard } from "../GlassCard";
 
-interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
+interface PanelProps extends Omit<React.ComponentProps<typeof GlassCard>, "variant" | "padding"> {
 	side?: "left" | "right";
 	width?: "sm" | "md" | "lg";
 }

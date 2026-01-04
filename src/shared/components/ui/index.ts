@@ -26,3 +26,5 @@ export * from "./form/IconPicker";
 
 // Navigation
 export * from "./navigation/Tabs";
+
+export * from "./ConfirmDialog";

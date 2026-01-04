@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Grid, List, Tag as TagIcon, Sparkles } from "lucide-react";
 import { Button } from "@/shared/components/ui";
-import { getAllTags } from "@/services/storage/tags";
+import { getTagsWithUsageStats, TagWithUsage } from "@/services/storage/tags";
 import { ParsedTag } from "@/shared/types/database";
 
 type ViewMode = "grid" | "list";
 type FilterMode = "all" | "manual" | "ai" | "unused" | "mostUsed";
 
-export const BrowseTab: React.FC = () => {
+interface BrowseTabProps {
+	onSelectTag?: (tagName: string) => void;
+}
+
+export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
 	const { t } = useTranslation(["tags", "common"]);
-	const [tags, setTags] = useState<ParsedTag[]>([]);
+	const [tags, setTags] = useState<TagWithUsage[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -23,7 +27,7 @@ export const BrowseTab: React.FC = () => {
 	const loadTags = async () => {
 		setLoading(true);
 		try {
-			const allTags = await getAllTags();
+			const allTags = await getTagsWithUsageStats();
 			setTags(allTags);
 		} catch (error) {
 			console.error("Failed to load tags:", error);
@@ -155,11 +159,15 @@ export const BrowseTab: React.FC = () => {
 						<div
 							key={tag.id}
 							className="bg-glass-bg-accent border border-glass-border rounded-lg p-4 hover:border-blue-500/50 transition-all cursor-pointer group"
+							onClick={() => onSelectTag?.(tag.name)}
 						>
 							<div className="flex items-start justify-between mb-2">
 								<span className="text-sm font-medium text-white truncate flex-1">
 									{tag.name}
 								</span>
+                                <span className="text-xs text-gray-500 bg-glass-bg-accent px-1.5 py-0.5 rounded">
+                                    {tag.usageCount}
+                                </span>
 								{tag.type === "ai" && (
 									<Sparkles className="w-3 h-3 text-purple-400 shrink-0 ml-1" />
 								)}
@@ -176,10 +184,12 @@ export const BrowseTab: React.FC = () => {
 						<div
 							key={tag.id}
 							className="bg-glass-bg-accent border border-glass-border rounded-lg p-3 hover:border-blue-500/50 transition-all cursor-pointer flex items-center justify-between group"
+                            onClick={() => onSelectTag?.(tag.name)}
 						>
 							<div className="flex items-center gap-3">
 								<TagIcon className="w-4 h-4 text-gray-500" />
 								<span className="text-sm font-medium text-white">{tag.name}</span>
+                                <span className="text-xs text-gray-500">({tag.usageCount})</span>
 								{tag.type === "ai" && (
 									<Sparkles className="w-3 h-3 text-purple-400" />
 								)}

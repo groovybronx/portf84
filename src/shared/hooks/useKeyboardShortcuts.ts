@@ -9,16 +9,22 @@ export interface UseKeyboardShortcutsProps {
   setSelectedItem: (item: PortfolioItem) => void;
   applyColorTagToSelection: (color: string | undefined) => void;
   gridColumns: number;
-  onOpenBatchTagPanel?: () => void; // New: callback to open batch tag panel
+  onOpenBatchTagPanel?: () => void;
+  onOpenHelp?: () => void;
+  onSelectAll?: () => void;
+  onDelete?: () => void;
+  onClearSelection?: () => void;
 }
 
 /**
  * Custom hook for managing global keyboard shortcuts
  * Handles:
  * - Navigation (Arrow keys)
- * - Selection (Space/Enter)
+ * - Selection (Space/Enter, Ctrl+A, Esc)
+ * - Actions (Delete)
  * - Color tagging (0-6)
- * - Batch tagging (Ctrl+T)
+ * - Batch tagging (Ctrl+Shift+T)
+ * - Help (?)
  */
 export const useKeyboardShortcuts = ({
   processedItems,
@@ -28,6 +34,10 @@ export const useKeyboardShortcuts = ({
   applyColorTagToSelection,
   gridColumns,
   onOpenBatchTagPanel,
+  onOpenHelp,
+  onSelectAll,
+  onDelete,
+  onClearSelection,
 }: UseKeyboardShortcutsProps) => {
   const { shortcuts } = useLocalShortcuts();
 
@@ -92,8 +102,8 @@ export const useKeyboardShortcuts = ({
         return;
       }
 
-      // 2. Batch Tagging Shortcut (Ctrl+T)
-      if (e.ctrlKey && e.key === "t") {
+      // 2. Batch Tagging Shortcut (Ctrl+Shift+T)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "t") {
         e.preventDefault();
         if (onOpenBatchTagPanel) {
           onOpenBatchTagPanel();
@@ -110,6 +120,35 @@ export const useKeyboardShortcuts = ({
       else if (shortcuts.TAG_PURPLE.includes(e.key)) applyColorTagToSelection(COLOR_PALETTE["6"]);
       else if (shortcuts.TAG_REMOVE.includes(e.key)) applyColorTagToSelection(undefined);
 
+      // 4. Help Shortcut (?)
+      if (e.key === "?" && onOpenHelp) {
+        e.preventDefault();
+        onOpenHelp();
+        return;
+      }
+
+      // 5. Select All (Ctrl+A)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a" && onSelectAll) {
+        e.preventDefault();
+        onSelectAll();
+        return;
+      }
+
+      // 6. Delete (Delete/Backspace)
+      if ((e.key === "Delete" || e.key === "Backspace") && onDelete) {
+        // Only trigger if not editing text (already handled by early return, but safe to verify)
+        e.preventDefault();
+        onDelete();
+        return;
+      }
+
+      // 7. Clear Selection (Esc)
+      if (e.key === "Escape" && onClearSelection) {
+        e.preventDefault();
+        onClearSelection();
+        return;
+      }
+
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -122,6 +161,10 @@ export const useKeyboardShortcuts = ({
     setSelectedItem,
     applyColorTagToSelection,
     onOpenBatchTagPanel,
-    shortcuts, // Dependency on shortcuts configuration
+    onOpenHelp,
+    onSelectAll,
+    onDelete,
+    onClearSelection,
+    shortcuts,
   ]);
 };

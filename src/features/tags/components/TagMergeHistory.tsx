@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, History, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { getAllTags, undoMerge } from '../../../services/storage/tags';
+import { X, History, ChevronLeft, ChevronRight, RefreshCw, RotateCcw } from 'lucide-react';
+import { getAllTags, undoMerge, getUndoableMerges } from '../../../services/storage/tags';
 import { getDB } from '../../../services/storage/db';
 import { useTranslation } from 'react-i18next';
 import { DBTagMerge, ParsedTag } from '../../../shared/types/database';
@@ -30,12 +30,8 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
         setLoading(true);
         setError(null);
         try {
-            const db = await getDB();
-            
-            // Get all merge records
-            const merges = await db.select<DBTagMerge[]>(
-                "SELECT * FROM tag_merges ORDER BY mergedAt DESC"
-            );
+            // Get undoable/recent merges
+            const merges = await getUndoableMerges();
 
             // Get all tags to map IDs to names
             const tags = await getAllTags();
@@ -48,7 +44,8 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
             const enrichedHistory: MergeHistoryEntry[] = merges.map(merge => ({
                 ...merge,
                 targetTagName: tagMap.get(merge.targetTagId) || t('tags:unknown'),
-                sourceTagName: tagMap.get(merge.sourceTagId) || t('tags:deleted'),
+                // Use stored sourceTagName if available, otherwise fallback (legacy)
+                sourceTagName: merge.sourceTagName || t('tags:deleted'),
             }));
 
             setHistory(enrichedHistory);
@@ -86,6 +83,18 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
     const formatMergeType = (mergedBy: string | null) => {
         if (!mergedBy || mergedBy === 'auto') return t('tags:auto');
         return mergedBy;
+    };
+
+    const handleUndoClick = async (entry: MergeHistoryEntry) => {
+        if (confirm(t('tags:undoConfirm', { tagName: entry.sourceTagName }))) {
+            try {
+                await undoMerge(entry.id);
+                await loadHistory();
+            } catch (e) {
+                console.error("Undo failed", e);
+                alert(t('tags:undoFailed'));
+            }
+        }
     };
 
     return (
@@ -210,23 +219,18 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                                                     {formatMergeType(entry.mergedBy)}
                                                 </span>
                                             </div>
-                                            <div className="col-span-2 text-right" role="cell">
-                                                <Button
-                                                    onClick={async () => {
-                                                        if (confirm(t('tags:undoConfirm', { tagName: entry.sourceTagName }))) {
-                                                            try {
-                                                                await undoMerge(entry.id);
-                                                                loadHistory();
-                                                            } catch (e) {
-                                                                console.error("Undo failed", e);
-                                                            }
-                                                        }
-                                                    }}
-                                                    variant="ghost"
-                                                    size="sm"
-                                                >
-                                                    {t('tags:undo')}
-                                                </Button>
+                                            <div className="col-span-2 text-right flex justify-end" role="cell">
+                                                {entry.itemIdsJson && (
+                                                    <Button
+                                                        onClick={() => handleUndoClick(entry)}
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0"
+                                                        title={t('tags:undo')}
+                                                    >
+                                                        <RotateCcw className="w-4 h-4 text-white/70 hover:text-white" />
+                                                    </Button>
+                                                )}
                                             </div>
                                         </motion.div>
                                     ))}

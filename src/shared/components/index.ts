@@ -8,3 +8,4 @@ export {
 	clearStoredErrors,
 } from "./ErrorBoundary";
 export { ErrorFallback } from "./ErrorFallback";
+export { KeyboardShortcutsHelp } from "./KeyboardShortcutsHelp";

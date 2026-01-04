@@ -7,16 +7,18 @@ interface SearchFieldProps {
   value: string;
   onChange: (term: string) => void;
   availableTags?: string[];
-  onTagSelect?: (tag: string | null) => void;
-  selectedTag?: string | null;
+  activeTags?: Set<string>;
+  onTagToggle?: (tag: string) => void;
+  onClearTags?: () => void;
 }
 
 export const SearchField: React.FC<SearchFieldProps> = ({
   value,
   onChange,
   availableTags = [],
-  onTagSelect,
-  selectedTag,
+  activeTags = new Set(),
+  onTagToggle,
+  onClearTags,
 }) => {
   const { t } = useTranslation("navigation");
   const [isFocused, setIsFocused] = useState(false);
@@ -42,24 +44,20 @@ export const SearchField: React.FC<SearchFieldProps> = ({
     if (value.trim() && isFocused) {
       const match = value.toLowerCase();
       const filtered = availableTags
-        .filter((tag) => tag.toLowerCase().includes(match))
+        .filter((tag) => tag.toLowerCase().includes(match) && !activeTags?.has(tag))
         .slice(0, 5); // Limit to top 5
       setSuggestions(filtered);
     } else {
       setSuggestions([]);
     }
-  }, [value, availableTags, isFocused]);
+  }, [value, availableTags, isFocused, activeTags]);
 
   const handleSuggestionClick = (tag: string) => {
-    if (onTagSelect) {
-      onTagSelect(tag);
+    if (onTagToggle) {
+      onTagToggle(tag);
       onChange(""); // Clear search after selecting tag
       setIsFocused(false);
     }
-  };
-
-  const clearTag = () => {
-    if (onTagSelect) onTagSelect(null);
   };
 
   return (
@@ -67,25 +65,40 @@ export const SearchField: React.FC<SearchFieldProps> = ({
       ref={containerRef}
       className={`relative flex items-center bg-glass-bg-accent rounded-lg border transition-all shrink-0 ${
         isFocused
-          ? "w-48 sm:w-72 border-blue-500/50 ring-1 ring-blue-500/20"
-          : "w-32 sm:w-48 border-glass-border-light"
+          ? "w-48 sm:w-80 border-blue-500/50 ring-1 ring-blue-500/20"
+          : "w-32 sm:w-56 border-glass-border-light"
       }`}
     >
-      <Flex align="center" className="w-full px-3 py-2">
+      <Flex align="center" className="w-full px-3 py-2 overflow-hidden">
         <Search size={16} className="text-gray-400 mr-2 shrink-0" />
 
-        {/* Active Tag Chip */}
-        {selectedTag && (
-          <Flex align="center" gap="xs" className="bg-blue-500/20 text-blue-300 text-xs px-2 py-0.5 rounded-full mr-2 whitespace-nowrap">
-            <span className="max-w-[80px] truncate">{selectedTag}</span>
+        {/* Active Tag Chips */}
+        {activeTags.size > 0 && (
+          <Flex align="center" gap="xs" className="mr-2 overflow-hidden shrink-0">
+             {Array.from(activeTags).slice(0, 2).map(tag => (
+                <div key={tag} className="flex items-center bg-blue-500/20 text-blue-300 text-xs px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                   <span className="max-w-[60px] truncate">{tag}</span>
+                   <button 
+                     onClick={(e) => { e.stopPropagation(); onTagToggle?.(tag); }}
+                     className="ml-1 hover:text-white"
+                   >
+                     <X size={10} />
+                   </button>
+                </div>
+             ))}
+             {activeTags.size > 2 && (
+                <div className="text-xs text-blue-400 px-1">+{activeTags.size - 2}</div>
+             )}
+             
             <Button
               variant="close"
               size="icon-sm"
               onClick={(e) => {
                 e.stopPropagation();
-                clearTag();
+                onClearTags?.();
               }}
-              aria-label="Clear tag filter"
+              aria-label="Clear all tags"
+              className="ml-1"
             >
               <X size={10} />
             </Button>
@@ -94,7 +107,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
         <input
           type="text"
-          placeholder={selectedTag ? t('searchInTag') : t('searchPlaceholder')}
+          placeholder={activeTags.size > 0 ? "Add tag..." : t('searchPlaceholder')}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}

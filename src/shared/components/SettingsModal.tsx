@@ -5,6 +5,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { useTranslation } from "react-i18next";
 import { useLocalShortcuts, ShortcutMap } from "../hooks/useLocalShortcuts";
+import { KEYBOARD_SHORTCUTS, ShortcutCategory } from "../constants/shortcuts";
 import { useTheme } from "../contexts/ThemeContext";
 import { secureStorage } from "../../services/secureStorage";
 import { 
@@ -31,7 +32,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	useCinematicCarousel = false,
 	onToggleCinematicCarousel,
 }) => {
-	const { t, i18n } = useTranslation(['settings', 'common']);
+	const { t, i18n } = useTranslation(['settings', 'common', 'shortcuts']);
 	const [activeTab, setActiveTab] = useState<SettingsTab>("general");
 	const [apiKey, setApiKey] = useState("");
 	const [dbPath, setDbPath] = useState("");
@@ -131,7 +132,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={onClose}
-						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[var(--z-modal-overlay)]"
+						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
 					/>
 
 					{/* Modal Container */}
@@ -139,7 +140,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						initial={{ opacity: 0, scale: 0.95, y: 20 }}
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 20 }}
-						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[600px] bg-background border border-glass-border rounded-2xl shadow-2xl z-[var(--z-modal)] overflow-hidden flex"
+						className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[600px] bg-background border border-glass-border rounded-2xl shadow-2xl z-(--z-modal) overflow-hidden flex"
 					>
 						{/* Sidebar Navigation */}
 						<TabList>
@@ -561,31 +562,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-							{/* Group: Navigation */}
-							<div className="space-y-4">
-								<h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider">{t('settings:navigation')}</h4>
-								<div className="space-y-3">
-									<ShortcutRow label={t('settings:moveUp')} action="NAV_UP" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:moveDown')} action="NAV_DOWN" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:moveLeft')} action="NAV_LEFT" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:moveRight')} action="NAV_RIGHT" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:openFullscreen')} action="OPEN_VIEW" shortcuts={shortcuts} update={updateShortcut} />
-								</div>
-							</div>
+                            {Object.values(ShortcutCategory).map((category) => {
+                                const categoryShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === category);
+                                if (!categoryShortcuts.length) return null;
 
-							{/* Group: Tagging */}
-							<div className="space-y-4">
-								<h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">{t('settings:colorTags')}</h4>
-								<div className="space-y-3">
-									<ShortcutRow label={t('settings:red')} action="TAG_RED" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:orange')} action="TAG_ORANGE" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:yellow')} action="TAG_YELLOW" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:green')} action="TAG_GREEN" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:blue')} action="TAG_BLUE" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:purple')} action="TAG_PURPLE" shortcuts={shortcuts} update={updateShortcut} />
-									<ShortcutRow label={t('settings:clearTag')} action="TAG_REMOVE" shortcuts={shortcuts} update={updateShortcut} />
-								</div>
-							</div>
+                                return (
+                                    <div key={category} className="space-y-4">
+                                        <h4 className="text-xs font-bold text-primary/80 uppercase tracking-wider">
+                                            {t(`shortcuts:category.${category}` as any)}
+                                        </h4>
+                                        <div className="space-y-3">
+                                            {categoryShortcuts.map((shortcut) => (
+                                                <ShortcutRow 
+                                                    key={shortcut.id}
+                                                    label={t(shortcut.label as any)} 
+                                                    id={shortcut.id} 
+                                                    defaultKeys={shortcut.keys}
+                                                    shortcuts={shortcuts} 
+                                                    update={updateShortcut} 
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
 						</div>
 					</div>
 				)}
@@ -631,21 +631,41 @@ const FormRow = ({ label, description, children }: { label: string, description:
 );
 
 // Helper for Shortcuts to clean up main component
-const ShortcutRow = ({ label, action, shortcuts, update }: { label: string, action: keyof ShortcutMap, shortcuts: ShortcutMap, update: (action: keyof ShortcutMap, keys: string[]) => void }) => {
+const ShortcutRow = ({ 
+    label, 
+    id, 
+    defaultKeys, 
+    shortcuts, 
+    update 
+}: { 
+    label: string, 
+    id: string, 
+    defaultKeys: string[], 
+    shortcuts: ShortcutMap, 
+    update: (action: keyof ShortcutMap, keys: string[]) => void 
+}) => {
+    // Check if this shortcut is manageable via useLocalShortcuts
+    const isCustomizable = id in shortcuts;
+    const currentKeys = isCustomizable ? shortcuts[id as keyof ShortcutMap] : defaultKeys;
+
     return (
         <div className="flex items-center justify-between group">
             <span className="text-sm text-white/70 group-hover:text-white transition-colors">{label}</span>
             <Button
                 variant="glass"
                 size="sm"
-                className="px-3 py-1.5 text-xs font-mono text-primary min-w-12 text-center focus:ring-2 focus:ring-primary"
+                className={`px-3 py-1.5 text-xs font-mono min-w-12 text-center focus:ring-2 focus:ring-primary ${
+                    isCustomizable ? 'text-primary cursor-pointer' : 'text-white/50 cursor-default hover:bg-white/5'
+                }`}
                 onClick={() => {
+                   if (!isCustomizable) return; 
                    // Simple prompt for now, could be improved with a key recorder
                    const key = prompt("Press a key (e.g., ArrowUp, a, b, Enter)");
-                   if (key) update(action, [key]);
+                   if (key) update(id as keyof ShortcutMap, [key]);
                 }}
+                disabled={!isCustomizable}
             >
-                {shortcuts[action] ? shortcuts[action].join(" + ") : "..."}
+                {currentKeys.join(" + ")}
             </Button>
         </div>
     );

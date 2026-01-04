@@ -1,35 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Settings as SettingsIcon, Save } from "lucide-react";
 import { Button } from "@/shared/components/ui";
-
-interface TagSettings {
-	similarityPreset: "strict" | "balanced" | "aggressive";
-	levenshteinThreshold: number;
-	jaccardThreshold: number;
-	minUsageCount: number;
-	enableSemanticSimilarity: boolean;
-	showAITagsSeparately: boolean;
-	suggestAliasesWhileTyping: boolean;
-	autoMergeObviousDuplicates: boolean;
-	confirmBeforeMerge: boolean;
-}
-
-const DEFAULT_SETTINGS: TagSettings = {
-	similarityPreset: "balanced",
-	levenshteinThreshold: 2,
-	jaccardThreshold: 80,
-	minUsageCount: 1,
-	enableSemanticSimilarity: false,
-	showAITagsSeparately: true,
-	suggestAliasesWhileTyping: true,
-	autoMergeObviousDuplicates: false,
-	confirmBeforeMerge: true,
-};
+import {
+  loadTagSettings,
+  saveTagSettings,
+  resetTagSettings,
+  DEFAULT_TAG_SETTINGS,
+  type TagSettings
+} from "@/shared/utils/tagSettings";
 
 export const SettingsTab: React.FC = () => {
 	const { t } = useTranslation(["tags", "common"]);
-	const [settings, setSettings] = useState<TagSettings>(DEFAULT_SETTINGS);
+	const [settings, setSettings] = useState<TagSettings>(() => loadTagSettings());
+    const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Load on mount (in case initialization didn't catch separate tab mount behavior, though lazy init usually works)
+    useEffect(() => {
+        const loaded = loadTagSettings();
+        setSettings(loaded);
+    }, []);
+
+    const debouncedSave = useCallback((newSettings: TagSettings) => {
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+            saveTagSettings(newSettings);
+        }, 500);
+    }, []);
+
+    const updateSettings = (newSettings: TagSettings) => {
+        setSettings(newSettings);
+        debouncedSave(newSettings);
+    };
 
 	const handlePresetChange = (preset: "strict" | "balanced" | "aggressive") => {
 		const presets = {
@@ -37,18 +39,22 @@ export const SettingsTab: React.FC = () => {
 			balanced: { levenshteinThreshold: 2, jaccardThreshold: 80, minUsageCount: 1 },
 			aggressive: { levenshteinThreshold: 3, jaccardThreshold: 60, minUsageCount: 0 },
 		};
-		setSettings({ ...settings, similarityPreset: preset, ...presets[preset] });
+        // Explicitly cast the preset properties to match TagSettings types if needed,
+        // but since TagSettings numbers match, it should be fine.
+		updateSettings({ ...settings, similarityPreset: preset, ...presets[preset] } as TagSettings); // Cast to help TS if strict
 	};
 
 	const handleSave = () => {
-		// TODO: Persist settings to localStorage or database
-		console.log("Saving settings:", settings);
+        // Force save immediately
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+		saveTagSettings(settings);
 		alert(t("tags:settingsSavedSuccess"));
 	};
 
 	const handleReset = () => {
-		if (confirm(t("tags:resetSettingsConfirm"))) {
-			setSettings(DEFAULT_SETTINGS);
+		if (confirm(t("tags:confirmResetSettings" as any))) {
+			const defaults = resetTagSettings();
+			setSettings(defaults);
 		}
 	};
 
@@ -102,7 +108,7 @@ export const SettingsTab: React.FC = () => {
 							max="3"
 							value={settings.levenshteinThreshold}
 							onChange={(e) =>
-								setSettings({ ...settings, levenshteinThreshold: Number(e.target.value) })
+								updateSettings({ ...settings, levenshteinThreshold: Number(e.target.value) })
 							}
 							className="w-full"
 						/>
@@ -125,7 +131,7 @@ export const SettingsTab: React.FC = () => {
 							max="95"
 							value={settings.jaccardThreshold}
 							onChange={(e) =>
-								setSettings({ ...settings, jaccardThreshold: Number(e.target.value) })
+								updateSettings({ ...settings, jaccardThreshold: Number(e.target.value) })
 							}
 							className="w-full"
 						/>
@@ -146,7 +152,7 @@ export const SettingsTab: React.FC = () => {
 							max="10"
 							value={settings.minUsageCount}
 							onChange={(e) =>
-								setSettings({ ...settings, minUsageCount: Number(e.target.value) })
+								updateSettings({ ...settings, minUsageCount: Number(e.target.value) })
 							}
 							className="w-full"
 						/>
@@ -162,7 +168,7 @@ export const SettingsTab: React.FC = () => {
 						</span>
 						<Button
 							onClick={() =>
-								setSettings({
+								updateSettings({
 									...settings,
 									enableSemanticSimilarity: !settings.enableSemanticSimilarity,
 								})
@@ -207,7 +213,7 @@ export const SettingsTab: React.FC = () => {
 						<div key={key} className="flex items-center justify-between py-2">
 							<span className="text-sm text-gray-400">{label}</span>
 							<Button
-								onClick={() => setSettings({ ...settings, [key]: !settings[key] })}
+								onClick={() => updateSettings({ ...settings, [key]: !settings[key] })}
 								className={`w-12 h-6 rounded-full transition-all relative ${
 									settings[key] ? "bg-blue-500" : "bg-gray-600"
 								}`}

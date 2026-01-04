@@ -1,7 +1,7 @@
 // TypeScript types for i18next autocomplete
 
 // Available namespaces
-export type Namespace = 'common' | 'tags' | 'settings' | 'library' | 'errors' | 'navigation';
+export type Namespace = 'common' | 'tags' | 'settings' | 'library' | 'errors' | 'navigation' | 'shortcuts';
 
 // Translation function type
 export type TFunction = (key: string, options?: any) => string;
@@ -17,6 +17,7 @@ declare module 'i18next' {
       library: typeof import('./locales/en/library.json');
       errors: typeof import('./locales/en/errors.json');
       navigation: typeof import('./locales/en/navigation.json');
+      shortcuts: typeof import('./locales/en/shortcuts.json');
     };
   }
 }

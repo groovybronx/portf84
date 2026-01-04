@@ -13,6 +13,8 @@ export interface ModalState {
   isSmartCollectionBuilderOpen: boolean;
 
   isTagHubOpen: boolean;
+  isBatchTagPanelOpen: boolean;
+  isShortcutsHelpOpen: boolean;
 
   // Tag Hub active tab
   tagHubActiveTab: TagHubTab;
@@ -28,6 +30,8 @@ export interface ModalState {
 
   setIsTagHubOpen: (open: boolean) => void;
   setTagHubActiveTab: (tab: TagHubTab) => void;
+  setIsBatchTagPanelOpen: (open: boolean) => void;
+  setIsShortcutsHelpOpen: (open: boolean) => void;
 }
 
 /**
@@ -44,7 +48,10 @@ export const useModalState = (): ModalState => {
   const [isSmartCollectionBuilderOpen, setIsSmartCollectionBuilderOpen] = useState(false);
 
   const [isTagHubOpen, setIsTagHubOpen] = useState(false);
+  const [isBatchTagPanelOpen, setIsBatchTagPanelOpen] = useState(false);
+  const [isShortcutsHelpOpen, setIsShortcutsHelpOpen] = useState(false);
   const [tagHubActiveTab, setTagHubActiveTab] = useState<TagHubTab>("browse");
+
 
   return {
     // States
@@ -57,6 +64,7 @@ export const useModalState = (): ModalState => {
     isSmartCollectionBuilderOpen,
 
     isTagHubOpen,
+    isBatchTagPanelOpen,
     tagHubActiveTab,
 
     // Actions
@@ -70,5 +78,13 @@ export const useModalState = (): ModalState => {
 
     setIsTagHubOpen,
     setTagHubActiveTab,
+
+    // Batch Tag Panel
+    // Batch Tag Panel
+    setIsBatchTagPanelOpen,
+
+    // Shortcuts Help
+    isShortcutsHelpOpen,
+    setIsShortcutsHelpOpen,
   };
 };

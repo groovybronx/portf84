@@ -243,6 +243,13 @@ export const getTagsGroupedForItem = async (
  * 3. Deletes source tags
  * 4. Keeps target tag description/metadata
  */
+/**
+ * Merge multiple tags into a single target tag
+ * 1. Links all items from source tags to target tag
+ * 2. Records merge in history (with snapshot for undo)
+ * 3. Deletes source tags
+ * 4. Keeps target tag description/metadata
+ */
 export const mergeTags = async (
 	targetTagId: string,
 	sourceTagIds: string[],
@@ -261,19 +268,25 @@ export const mergeTags = async (
 			);
 			const sourceName = sourceRows[0]?.name || "Unknown";
 
-			// 2. Get all items associated with source tag
+			// 2. Capture snapshot for undo
 			const itemsWithSource = await getItemsWithTag(sourceId);
+			const itemsWithTarget = await getItemsWithTag(targetTagId);
+			
+			const snapshot = {
+				sourceItems: itemsWithSource,
+				targetItems: itemsWithTarget
+			};
 
 			// 3. For each item, add the target tag (ignore if already exists)
 			for (const itemId of itemsWithSource) {
 				await addTagToItem(itemId, targetTagId);
 			}
 
-			// 4. Record merge in history (including the source name)
+			// 4. Record merge in history (including the source name and snapshot)
 			const mergeId = generateId('merge');
 			await db.execute(
-				"INSERT INTO tag_merges (id, targetTagId, sourceTagId, sourceTagName, mergedAt, mergedBy) VALUES (?, ?, ?, ?, ?, ?)",
-				[mergeId, targetTagId, sourceId, sourceName, Date.now(), mergedBy]
+				"INSERT INTO tag_merges (id, targetTagId, sourceTagId, sourceTagName, mergedAt, mergedBy, itemIdsJson) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				[mergeId, targetTagId, sourceId, sourceName, Date.now(), mergedBy, JSON.stringify(snapshot)]
 			);
 
 			// 5. Delete the source tag (cascade will remove item_tags entries)
@@ -303,6 +316,7 @@ export const undoMerge = async (mergeId: string): Promise<void> => {
 		sourceTagId: string; 
 		sourceTagName: string; 
 		mergedBy: string;
+		itemIdsJson: string | null;
 	}>>(
 		"SELECT * FROM tag_merges WHERE id = ?",
 		[mergeId]
@@ -312,33 +326,71 @@ export const undoMerge = async (mergeId: string): Promise<void> => {
 	if (!merge) throw new Error("Merge record not found");
 	
 	try {
-		// 2. Re-create the source tag
-		// We use 'manual' if it was merged by user, or try to infer. 
-		// For now, let's assume 'manual' or get it from original type if we had it.
-		// Since we didn't store type, we'll use 'manual' as default or try to find common type.
-		await getOrCreateTag(merge.sourceTagName, 'manual');
-		const sourceTagId = merge.sourceTagId; // We reuse the original ID if possible
+		// 2. Parse snapshot if available
+		let snapshot: { sourceItems: string[]; targetItems: string[] } | null = null;
+		if (merge.itemIdsJson) {
+			try {
+				snapshot = JSON.parse(merge.itemIdsJson);
+			} catch (e) {
+				console.warn("Failed to parse merge snapshot:", e);
+			}
+		}
+
+		// 3. Re-create the source tag
+		const sourceTagId = merge.sourceTagId; // We reuse the original ID if possible (it was just deleted)
 		
-		// Actually, getOrCreateTag generates a new ID. 
-		// If we want to restore strictly, we should insert with original ID.
+		// Check if ID is taken (unlikely unless re-created manually) in which case we might need a new ID?
+		// For proper restoration, reusing ID is best so any dangling refs (shouldn't exist due to cascade) work?
+		// But actually, we want to use the original ID.
+		
 		await db.execute(
 			"INSERT INTO tags (id, name, normalizedName, type, createdAt) VALUES (?, ?, ?, ?, ?)",
 			[sourceTagId, merge.sourceTagName, merge.sourceTagName.toLowerCase().trim(), 'manual', Date.now()]
 		);
 		
-		// 3. Find items that were part of this merge (difficult if other tags were added since)
-		// Better approach: track which items were moved in a separate table?
-		// For now, we'll re-sync or just accept it's a "best effort" restore of the tag.
-		// A better undo would track item IDs. 
+		// 4. Restore original associations
+		if (snapshot) {
+			const targetItemsSet = new Set(snapshot.targetItems);
+			
+			for (const itemId of snapshot.sourceItems) {
+				// Add back to source
+				await addTagToItem(itemId, sourceTagId);
+				
+				// Remove from target ONLY if it wasn't there before
+				if (!targetItemsSet.has(itemId)) {
+					await removeTagFromItem(itemId, merge.targetTagId);
+				}
+			}
+		} else {
+			// Fallback if no snapshot (legacy merges): just recreate tag, can't move items back confidently
+			console.warn("Undoing legacy merge without snapshot. Linkages cannot be fully restored.");
+		}
 		
-		// 4. Delete merge record
+		// 5. Delete merge record
 		await db.execute("DELETE FROM tag_merges WHERE id = ?", [mergeId]);
 		
 		console.log(`[Storage] Undo merge complete: ${merge.sourceTagName} restored.`);
+		invalidateAnalysisCache();
 	} catch (error) {
 		console.error("Failed to undo merge:", error);
 		throw error;
 	}
+};
+
+/**
+ * Get merges that can be undone (last 24h or 50 merges)
+ */
+export const getUndoableMerges = async (): Promise<any[]> => {
+  const db = await getDB();
+  const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+  return await db.select(
+    `SELECT * FROM tag_merges 
+     WHERE mergedAt > ? AND itemIdsJson IS NOT NULL
+     ORDER BY mergedAt DESC 
+     LIMIT 50`,
+    [twentyFourHoursAgo]
+  );
 };
 
 // ==================== TAG IGNORE MATCHES ====================
