@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Tag, Plus, X, Sparkles } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Tag, Plus, X, Sparkles, Lightbulb } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PortfolioItem } from "../../../shared/types";
 import { storageService } from "../../../services/storageService";
@@ -7,6 +7,10 @@ import { getTagByAlias, getMostUsedTags } from "../../../services/storage/tags";
 import { ParsedTag } from "../../../shared/types/database";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../../../shared/components/ui";
+import {
+	suggestTagsFromSimilar,
+	extractTagsFromDescription,
+} from "../../../services/tagSuggestionService";
 
 // Constants
 const ALIAS_CHECK_DEBOUNCE_MS = 300;
@@ -15,27 +19,90 @@ interface TagManagerProps {
 	item: PortfolioItem;
 	onUpdateItem: (item: PortfolioItem) => void;
 	availableTags: string[];
+	allItems?: PortfolioItem[]; // Optional: for smart suggestions from similar images
 }
 
 export const TagManager: React.FC<TagManagerProps> = ({
 	item,
 	onUpdateItem,
 	availableTags,
+	allItems = [],
 }) => {
 	const { t } = useTranslation(["tags", "library"]);
 	const [newTag, setNewTag] = useState("");
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const [aliasSuggestion, setAliasSuggestion] = useState<string | null>(null);
 	const [quickTags, setQuickTags] = useState<ParsedTag[]>([]);
+	const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
+	const [extractedTags, setExtractedTags] = useState<string[]>([]);
 
 	// Load quick tags (most used)
 	useEffect(() => {
 		const loadQuickTags = async () => {
-			const used = await getMostUsedTags(10);
+			const used = await getMostUsedTags(9); // Top 9 for shortcuts 1-9
 			setQuickTags(used);
 		};
 		loadQuickTags();
 	}, [item.manualTags]);
+
+	// Load smart suggestions from similar images
+	useEffect(() => {
+		const loadSuggestions = async () => {
+			if (item.aiDescription && allItems.length > 0) {
+				const suggestions = await suggestTagsFromSimilar(
+					item,
+					allItems,
+					5
+				);
+				setSuggestedTags(suggestions);
+			}
+		};
+		loadSuggestions();
+	}, [item.id, item.aiDescription, allItems]);
+
+	// Extract tags from AI description
+	useEffect(() => {
+		if (item.aiDescription) {
+			const extracted = extractTagsFromDescription(item.aiDescription);
+			// Filter out tags already applied
+			const filtered = extracted.filter(
+				(tag) => !(item.manualTags || []).includes(tag)
+			);
+			setExtractedTags(filtered);
+		}
+	}, [item.aiDescription, item.manualTags]);
+
+	// Keyboard shortcuts for quick tags (1-9)
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Ignore if typing in input
+			if (
+				e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement
+			) {
+				return;
+			}
+
+			// Check for number keys 1-9
+			const key = parseInt(e.key);
+			if (!isNaN(key) && key >= 1 && key <= 9) {
+				e.preventDefault();
+				const tagIndex = key - 1;
+				if (quickTags[tagIndex]) {
+					const tag = quickTags[tagIndex];
+					const isApplied = item.manualTags?.includes(tag.name);
+					if (isApplied) {
+						handleRemoveTag(tag.name);
+					} else {
+						handleAddTag(tag.name);
+					}
+				}
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [quickTags, item.manualTags, handleAddTag, handleRemoveTag]);
 
 	// Check for alias suggestions when user types
 	useEffect(() => {
@@ -69,7 +136,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		)
 		.slice(0, 5); // Limit to 5 suggestions
 
-	const handleAddTag = async (tagValue?: string) => {
+	const handleAddTag = useCallback(async (tagValue?: string) => {
 		const tagToAdd = (tagValue || newTag).trim();
 		if (!tagToAdd) return;
 
@@ -84,9 +151,9 @@ export const TagManager: React.FC<TagManagerProps> = ({
 		setNewTag("");
 		setShowSuggestions(false);
 		setAliasSuggestion(null);
-	};
+	}, [newTag, item, onUpdateItem]);
 
-	const handleRemoveTag = async (tagToRemove: string) => {
+	const handleRemoveTag = useCallback(async (tagToRemove: string) => {
 		const updatedTags = (item.manualTags || []).filter(
 			(t) => t !== tagToRemove
 		);
@@ -94,7 +161,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 
 		await storageService.saveMetadata(updatedItem, item.id);
 		onUpdateItem(updatedItem);
-	};
+	}, [item, onUpdateItem]);
 
 	return (
 		<div className="bg-glass-bg-accent rounded-lg p-4 space-y-3 border border-glass-border-light relative">
@@ -138,15 +205,16 @@ export const TagManager: React.FC<TagManagerProps> = ({
 				)}
 			</div>
 
-			{/* Quick Tags (Most Used) */}
+			{/* Quick Tags (Most Used) with Keyboard Shortcuts */}
 			{quickTags.length > 0 && (
 				<div className="space-y-1">
 					<span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold px-1">
-						{t('tags:quickTags')}
+						{t('tags:quickTags')} (1-9)
 					</span>
 					<div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide no-scrollbar">
-						{quickTags.map((tag) => {
+						{quickTags.map((tag, idx) => {
 							const isApplied = item.manualTags?.includes(tag.name);
+							const shortcutKey = idx + 1;
 							return (
 								<Button
 									key={tag.id}
@@ -158,11 +226,78 @@ export const TagManager: React.FC<TagManagerProps> = ({
 											? 'bg-blue-500/30 border-blue-500/50 text-blue-200' 
 											: 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
 									}`}
+									title={`Press ${shortcutKey} to toggle`}
 								>
+									<span className="opacity-50 mr-1">{shortcutKey}</span>
 									{tag.name}
 								</Button>
 							);
 						})}
+					</div>
+				</div>
+			)}
+
+			{/* Suggested Tags from Similar Images */}
+			{suggestedTags.length > 0 && (
+				<div className="space-y-1.5">
+					<div className="flex items-center gap-1.5">
+						<Lightbulb size={12} className="text-purple-400" />
+						<span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">
+							{t('tags:suggestedFromSimilar')}
+						</span>
+					</div>
+					<div className="flex flex-wrap gap-1.5 p-2 bg-purple-500/5 border border-purple-500/20 rounded">
+						{suggestedTags.map((tag) => (
+							<Button
+								key={tag}
+								variant="ghost"
+								size="sm"
+								onClick={() => handleAddTag(tag)}
+								className="px-2 py-1 text-[11px] rounded border border-purple-400/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 h-auto"
+							>
+								<Plus size={10} className="mr-1" />
+								{tag}
+							</Button>
+						))}
+					</div>
+				</div>
+			)}
+
+			{/* Extract Tags from AI Description */}
+			{extractedTags.length > 0 && (
+				<div className="space-y-1.5">
+					<div className="flex items-center gap-1.5">
+						<Sparkles size={12} className="text-green-400" />
+						<span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">
+							{t('tags:extractFromAI')}
+						</span>
+					</div>
+					<div className="flex flex-wrap gap-1.5 p-2 bg-green-500/5 border border-green-500/20 rounded">
+						{extractedTags.slice(0, 6).map((tag) => (
+							<Button
+								key={tag}
+								variant="ghost"
+								size="sm"
+								onClick={() => handleAddTag(tag)}
+								className="px-2 py-1 text-[11px] rounded border border-green-400/30 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:border-green-400/50 h-auto"
+							>
+								<Plus size={10} className="mr-1" />
+								{tag}
+							</Button>
+						))}
+						{extractedTags.length > 6 && (
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => {
+									// Add all extracted tags
+									extractedTags.forEach((tag) => handleAddTag(tag));
+								}}
+								className="px-2 py-1 text-[11px] rounded border border-green-400/30 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:border-green-400/50 h-auto"
+							>
+								{t('tags:extractAll')} ({extractedTags.length})
+							</Button>
+						)}
 					</div>
 				</div>
 			)}
