@@ -2,42 +2,96 @@
 import { getAllTags, getIgnoredMatches } from "./storage/tags";
 import { ParsedTag } from "../shared/types/database";
 
-// Simple Levenshtein distance implementation
-const levenshteinDistance = (a: string, b: string): number => {
-  const matrix: number[][] = [];
+/**
+ * Space-optimized Levenshtein distance calculation
+ * Uses rolling array technique: O(min(m,n)) space instead of O(m*n)
+ * Includes early termination when distance exceeds threshold
+ */
+const levenshteinDistance = (
+	a: string,
+	b: string,
+	threshold: number = Infinity
+): number => {
+	// Ensure a is the shorter string (optimize space)
+	if (a.length > b.length) {
+		[a, b] = [b, a];
+	}
 
-  for (let i = 0; i <= b.length; i++) {
-    matrix[i] = [i];
-  }
+	const m = a.length;
+	const n = b.length;
 
-  for (let j = 0; j <= a.length; j++) {
-    if (!matrix[0]) matrix[0] = [];
-    matrix[0][j] = j;
-  }
+	// Early exit if length difference alone exceeds threshold
+	if (Math.abs(m - n) > threshold) {
+		return threshold + 1;
+	}
 
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i]![j] = matrix[i - 1]![j - 1]!;
-      } else {
-        matrix[i]![j] = Math.min(
-          matrix[i - 1]![j - 1]! + 1, // substitution
-          Math.min(
-            matrix[i]![j - 1]! + 1, // insertion
-            matrix[i - 1]![j]! + 1 // deletion
-          )
-        );
-      }
-    }
-  }
+	// Use two rows instead of full matrix
+	let prevRow = Array.from({ length: m + 1 }, (_, i) => i);
+	let currRow = new Array(m + 1);
 
-  return matrix[b.length]![a.length]!;
+	for (let i = 1; i <= n; i++) {
+		currRow[0] = i;
+		let minInRow = i; // Track minimum for early termination
+
+		for (let j = 1; j <= m; j++) {
+			const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+
+			currRow[j] = Math.min(
+				prevRow[j]! + 1, // deletion
+				currRow[j - 1]! + 1, // insertion
+				prevRow[j - 1]! + cost // substitution
+			);
+
+			minInRow = Math.min(minInRow, currRow[j]!);
+		}
+
+		// Early termination: if minimum in this row exceeds threshold,
+		// final distance will also exceed threshold
+		if (minInRow > threshold) {
+			return threshold + 1;
+		}
+
+		// Swap rows
+		[prevRow, currRow] = [currRow, prevRow];
+	}
+
+	return prevRow[m]!;
 };
 
 export interface TagGroup {
-    target: ParsedTag;
-    candidates: ParsedTag[];
+	target: ParsedTag;
+	candidates: ParsedTag[];
 }
+
+// Caching interface for analysis results
+interface AnalysisCache {
+	timestamp: number;
+	tagHash: string; // Hash of all tag IDs
+	tagCount: number;
+	results: TagGroup[];
+}
+
+// Global cache instance
+let analysisCache: AnalysisCache | null = null;
+
+// Cache TTL: 5 minutes
+const CACHE_TTL = 5 * 60 * 1000;
+
+/**
+ * Generate a simple hash of tag IDs for cache validation
+ */
+const hashTagIds = (tagIds: string[]): string => {
+	return tagIds.sort().join("|");
+};
+
+/**
+ * Invalidate the analysis cache
+ * Should be called after tag operations: merge, delete, rename, create
+ */
+export const invalidateAnalysisCache = (): void => {
+	analysisCache = null;
+	console.log("[TagAnalysis] Cache invalidated");
+};
 
 // Stop words to ignore during advanced comparison
 const STOP_WORDS = new Set(["et", "and", "&", "le", "la", "les", "the", "a", "an", "de", "of", "in", "en"]);
@@ -56,88 +110,121 @@ const tokenize = (str: string): Set<string> => {
 };
 
 // Check if two sets of tokens are essentially the same
-const areTokensSimilar = (a: Set<string>, b: Set<string>): boolean => {
-    if (a.size === 0 || b.size === 0) return false;
-    
-    // Intersection
-    const intersection = new Set([...a].filter(x => b.has(x)));
-    
-    // Jaccard Index
-    const unionSize = new Set([...a, ...b]).size;
-    const jaccard = intersection.size / unionSize;
-    
-    return jaccard >= 0.8; // High similarity threshold for tokens
+const areTokensSimilar = (
+	a: Set<string>,
+	b: Set<string>,
+	threshold: number = 0.8
+): boolean => {
+	if (a.size === 0 || b.size === 0) return false;
+
+	// Intersection
+	const intersection = new Set([...a].filter((x) => b.has(x)));
+
+	// Jaccard Index
+	const unionSize = new Set([...a, ...b]).size;
+	const jaccard = intersection.size / unionSize;
+
+	return jaccard >= threshold; // High similarity threshold for tokens
 };
 
-export const analyzeTagRedundancy = async (maxTags?: number): Promise<TagGroup[]> => {
-    const tags = await getAllTags();
-    const ignoredMatches = await getIgnoredMatches();
-    const ignoredSet = new Set(ignoredMatches.map(pair => pair.sort().join('|')));
+export const analyzeTagRedundancy = async (
+	maxTags?: number,
+	forceRefresh = false
+): Promise<TagGroup[]> => {
+	const tags = await getAllTags();
+	const currentHash = hashTagIds(tags.map((t) => t.id));
 
-    console.log(`[TagAnalysis] Analyzing ${tags.length} tags for redundancy...`);
-    
-    // Performance optimization: For very large datasets, warn the user
-    if (tags.length > LARGE_DATASET_THRESHOLD) {
-        console.warn(`[TagAnalysis] Large dataset detected (${tags.length} tags). Analysis may take longer.`);
-    }
+	// Check cache validity
+	const cacheValid =
+		!forceRefresh &&
+		analysisCache &&
+		analysisCache.tagCount === tags.length &&
+		analysisCache.tagHash === currentHash &&
+		Date.now() - analysisCache.timestamp < CACHE_TTL;
 
-    const groups: TagGroup[] = [];
-    const processedIds = new Set<string>();
+	if (cacheValid && analysisCache) {
+		console.log("[TagAnalysis] Cache HIT - Using cached analysis");
+		return analysisCache.results;
+	}
 
-    // Normalize tags and pre-calculate tokens
-    const simpleTags = tags.map(t => ({
-        ...t,
-        simpleName: t.name.toLowerCase().trim().replace(/s$/, ""), // Remove plural 's' roughly
-        tokens: tokenize(t.name)
-    }));
+	console.log("[TagAnalysis] Cache MISS - Running analysis");
+	const ignoredMatches = await getIgnoredMatches();
+	const ignoredSet = new Set(ignoredMatches.map((pair) => pair.sort().join("|")));
 
-    // Apply limit if specified (for testing or preview)
-    const tagsToProcess = maxTags ? simpleTags.slice(0, maxTags) : simpleTags;
+	console.log(`[TagAnalysis] Analyzing ${tags.length} tags for redundancy...`);
 
-    for (let i = 0; i < tagsToProcess.length; i++) {
-        const root = tagsToProcess[i];
-        if (!root) continue;
-        if (processedIds.has(root.id)) continue;
+	// Performance optimization: For very large datasets, warn the user
+	if (tags.length > LARGE_DATASET_THRESHOLD) {
+		console.warn(
+			`[TagAnalysis] Large dataset detected (${tags.length} tags). Analysis may take longer.`
+		);
+	}
 
-        const group: TagGroup = {
-            target: root,
-            candidates: []
-        };
+	const groups: TagGroup[] = [];
+	const processedIds = new Set<string>();
 
-        for (let j = i + 1; j < simpleTags.length; j++) {
-            const candidate = simpleTags[j];
-            if (!candidate) continue;
-            if (processedIds.has(candidate.id)) continue;
+	// Normalize tags and pre-calculate tokens
+	const simpleTags = tags.map((t) => ({
+		...t,
+		simpleName: t.name.toLowerCase().trim().replace(/s$/, ""), // Remove plural 's' roughly
+		tokens: tokenize(t.name),
+	}));
 
-            // 1. Check if this pair is ignored
-            const pairKey = [root.id, candidate.id].sort().join('|');
-            if (ignoredSet.has(pairKey)) continue;
+	// Apply limit if specified (for testing or preview)
+	const tagsToProcess = maxTags ? simpleTags.slice(0, maxTags) : simpleTags;
 
-            // 2. Performance: Early exit if length difference is too large for Levenshtein match
-            // and no tokens overlap significantly
-            const lengthDiff = Math.abs(root.simpleName.length - candidate.simpleName.length);
-            if (lengthDiff > 2 && root.tokens.size === 0 && candidate.tokens.size === 0) continue;
+	for (let i = 0; i < tagsToProcess.length; i++) {
+		const root = tagsToProcess[i];
+		if (!root) continue;
+		if (processedIds.has(root.id)) continue;
 
-            const dist = levenshteinDistance(root.simpleName, candidate.simpleName);
-            
-            const isLevenshteinMatch = 
-                dist <= 1 || 
-                (dist <= 2 && root.simpleName.length > 5);
+		const group: TagGroup = {
+			target: root,
+			candidates: [],
+		};
 
-            const isTokenMatch = areTokensSimilar(root.tokens, candidate.tokens);
+		for (let j = i + 1; j < simpleTags.length; j++) {
+			const candidate = simpleTags[j];
+			if (!candidate) continue;
+			if (processedIds.has(candidate.id)) continue;
 
-            if (isLevenshteinMatch || isTokenMatch || root.simpleName === candidate.simpleName) {
-                group.candidates.push(candidate);
-                processedIds.add(candidate.id);
-            }
-        }
+			// 1. Check if this pair is ignored
+			const pairKey = [root.id, candidate.id].sort().join("|");
+			if (ignoredSet.has(pairKey)) continue;
 
-        if (group.candidates.length > 0) {
-            groups.push(group);
-            processedIds.add(root.id);
-        }
-    }
+			// 2. Performance: Early exit if length difference is too large for Levenshtein match
+			// and no tokens overlap significantly
+			const lengthDiff = Math.abs(root.simpleName.length - candidate.simpleName.length);
+			if (lengthDiff > 2 && root.tokens.size === 0 && candidate.tokens.size === 0) continue;
 
-    console.log(`[TagAnalysis] Found ${groups.length} groups with duplicates`);
-    return groups;
+			// Use threshold of 2 for Levenshtein optimization
+			const dist = levenshteinDistance(root.simpleName, candidate.simpleName, 2);
+
+			const isLevenshteinMatch = dist <= 1 || (dist <= 2 && root.simpleName.length > 5);
+
+			const isTokenMatch = areTokensSimilar(root.tokens, candidate.tokens);
+
+			if (isLevenshteinMatch || isTokenMatch || root.simpleName === candidate.simpleName) {
+				group.candidates.push(candidate);
+				processedIds.add(candidate.id);
+			}
+		}
+
+		if (group.candidates.length > 0) {
+			groups.push(group);
+			processedIds.add(root.id);
+		}
+	}
+
+	console.log(`[TagAnalysis] Found ${groups.length} groups with duplicates`);
+
+	// Store results in cache
+	analysisCache = {
+		timestamp: Date.now(),
+		tagHash: currentHash,
+		tagCount: tags.length,
+		results: groups,
+	};
+
+	return groups;
 };

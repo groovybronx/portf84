@@ -11,6 +11,7 @@ import type {
 	TagType,
 	TagNode,
 } from "../../shared/types/database";
+import { invalidateAnalysisCache } from "../tagAnalysisService";
 
 // ==================== UTILITIES ====================
 
@@ -53,6 +54,7 @@ export const getOrCreateTag = async (
 	);
 
 	console.log(`[Storage] Tag created: ${name} (${type})`);
+	invalidateAnalysisCache();
 	return id;
 };
 
@@ -182,6 +184,7 @@ export const deleteTag = async (tagId: string): Promise<void> => {
 	// item_tags will be cleaned up via CASCADE
 	await db.execute("DELETE FROM tags WHERE id = ?", [tagId]);
 	console.log(`[Storage] Tag deleted: ${tagId}`);
+	invalidateAnalysisCache();
 };
 
 /**
@@ -278,6 +281,7 @@ export const mergeTags = async (
 		}
 		
 		console.log(`[Storage] Merged ${sourceTagIds.length} tags into ${targetTagId}`);
+		invalidateAnalysisCache();
 
 	} catch (error) {
 		console.error("Failed to merge tags:", error);
@@ -568,6 +572,7 @@ export const renameTag = async (tagId: string, newName: string): Promise<void> =
 	);
 	
 	console.log(`[Storage] Tag renamed: ${tagId} -> ${newName}`);
+	invalidateAnalysisCache();
 };
 
 /**
@@ -579,6 +584,7 @@ export const bulkDeleteTags = async (tagIds: string[]): Promise<void> => {
 	const placeholders = tagIds.map(() => "?").join(",");
 	await db.execute(`DELETE FROM tags WHERE id IN (${placeholders})`, tagIds);
 	console.log(`[Storage] Bulk deleted ${tagIds.length} tags`);
+	invalidateAnalysisCache();
 };
 
 /**
