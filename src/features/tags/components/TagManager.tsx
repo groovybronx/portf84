@@ -36,6 +36,39 @@ export const TagManager: React.FC<TagManagerProps> = ({
 	const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
 	const [extractedTags, setExtractedTags] = useState<string[]>([]);
 
+	// A stable function for adding a tag by name, which doesn't depend on `newTag`.
+	const addTagByName = useCallback(async (tagName: string) => {
+		const tagToAdd = tagName.trim();
+		if (!tagToAdd) return;
+
+		const updatedTags = [...(item.manualTags || [])];
+		if (!updatedTags.includes(tagToAdd)) {
+			updatedTags.push(tagToAdd);
+			const updatedItem = { ...item, manualTags: updatedTags };
+
+			await storageService.saveMetadata(updatedItem, item.id);
+			onUpdateItem(updatedItem);
+		}
+	}, [item, onUpdateItem]);
+
+	// A new handler for the input field and add button.
+	const handleAddTagFromInput = useCallback(async () => {
+		await addTagByName(newTag);
+		setNewTag("");
+		setShowSuggestions(false);
+		setAliasSuggestion(null);
+	}, [newTag, addTagByName]);
+
+	const handleRemoveTag = useCallback(async (tagToRemove: string) => {
+		const updatedTags = (item.manualTags || []).filter(
+			(t) => t !== tagToRemove
+		);
+		const updatedItem = { ...item, manualTags: updatedTags };
+
+		await storageService.saveMetadata(updatedItem, item.id);
+		onUpdateItem(updatedItem);
+	}, [item, onUpdateItem]);
+
 	// Load quick tags (most used)
 	useEffect(() => {
 		const loadQuickTags = async () => {
@@ -94,7 +127,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 					if (isApplied) {
 						handleRemoveTag(tag.name);
 					} else {
-						handleAddTag(tag.name);
+						addTagByName(tag.name);
 					}
 				}
 			}
@@ -102,7 +135,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [quickTags, item.manualTags, handleAddTag, handleRemoveTag]);
+	}, [quickTags, item.manualTags, addTagByName, handleRemoveTag]);
 
 	// Check for alias suggestions when user types
 	useEffect(() => {
@@ -135,33 +168,6 @@ export const TagManager: React.FC<TagManagerProps> = ({
 				!item.manualTags?.includes(tag)
 		)
 		.slice(0, 5); // Limit to 5 suggestions
-
-	const handleAddTag = useCallback(async (tagValue?: string) => {
-		const tagToAdd = (tagValue || newTag).trim();
-		if (!tagToAdd) return;
-
-		const updatedTags = [...(item.manualTags || [])];
-		if (!updatedTags.includes(tagToAdd)) {
-			updatedTags.push(tagToAdd);
-			const updatedItem = { ...item, manualTags: updatedTags };
-
-			await storageService.saveMetadata(updatedItem, item.id);
-			onUpdateItem(updatedItem);
-		}
-		setNewTag("");
-		setShowSuggestions(false);
-		setAliasSuggestion(null);
-	}, [newTag, item, onUpdateItem]);
-
-	const handleRemoveTag = useCallback(async (tagToRemove: string) => {
-		const updatedTags = (item.manualTags || []).filter(
-			(t) => t !== tagToRemove
-		);
-		const updatedItem = { ...item, manualTags: updatedTags };
-
-		await storageService.saveMetadata(updatedItem, item.id);
-		onUpdateItem(updatedItem);
-	}, [item, onUpdateItem]);
 
 	return (
 		<div className="bg-glass-bg-accent rounded-lg p-4 space-y-3 border border-glass-border-light relative">
@@ -220,7 +226,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 									key={tag.id}
 									variant="ghost"
 									size="sm"
-									onClick={() => isApplied ? handleRemoveTag(tag.name) : handleAddTag(tag.name)}
+									onClick={() => isApplied ? handleRemoveTag(tag.name) : addTagByName(tag.name)}
 									className={`px-2.5 py-1 text-[11px] rounded-md border shrink-0 h-auto ${
 										isApplied 
 											? 'bg-blue-500/30 border-blue-500/50 text-blue-200' 
@@ -252,7 +258,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 								key={tag}
 								variant="ghost"
 								size="sm"
-								onClick={() => handleAddTag(tag)}
+								onClick={() => addTagByName(tag)}
 								className="px-2 py-1 text-[11px] rounded border border-purple-400/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 h-auto"
 							>
 								<Plus size={10} className="mr-1" />
@@ -278,7 +284,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 								key={tag}
 								variant="ghost"
 								size="sm"
-								onClick={() => handleAddTag(tag)}
+								onClick={() => addTagByName(tag)}
 								className="px-2 py-1 text-[11px] rounded border border-green-400/30 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:border-green-400/50 h-auto"
 							>
 								<Plus size={10} className="mr-1" />
@@ -291,7 +297,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 								size="sm"
 								onClick={() => {
 									// Add all extracted tags
-									extractedTags.forEach((tag) => handleAddTag(tag));
+									extractedTags.forEach((tag) => addTagByName(tag));
 								}}
 								className="px-2 py-1 text-[11px] rounded border border-green-400/30 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:border-green-400/50 h-auto"
 							>
@@ -317,14 +323,14 @@ export const TagManager: React.FC<TagManagerProps> = ({
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
 								e.preventDefault();
-								handleAddTag();
+								handleAddTagFromInput();
 							}
 						}}
 						placeholder={t('tags:addManualTag')}
 						className="flex-1 bg-black/50 border border-glass-border text-white text-xs px-3 py-2 rounded-lg focus:outline-none focus:border-blue-500/50"
 					/>
 					<Button
-						onClick={() => handleAddTag()}
+						onClick={() => handleAddTagFromInput()}
 						disabled={!newTag.trim()}
 						size="icon-sm"
 					>
@@ -341,7 +347,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() => handleAddTag(aliasSuggestion)}
+								onClick={() => addTagByName(aliasSuggestion)}
 								className="text-purple-300 hover:text-purple-200 font-medium underline h-auto py-0 px-1"
 							>
 								{aliasSuggestion}
@@ -358,7 +364,7 @@ export const TagManager: React.FC<TagManagerProps> = ({
 								key={suggestion}
 								variant="ghost"
 								className="w-full justify-start gap-2 rounded-none text-xs"
-								onMouseDown={() => handleAddTag(suggestion)}
+								onMouseDown={() => addTagByName(suggestion)}
 							>
 								<Tag size={10} className="text-gray-500" />
 								{suggestion}
