@@ -1,7 +1,7 @@
 
 import { getAllTags, getIgnoredMatches } from "./storage/tags";
 import { ParsedTag } from "../shared/types/database";
-import { getCache, setCache, invalidateAnalysisCache } from "./tagAnalysisCache";
+import { getCache, setCache, invalidateAnalysisCache, hashTagIds } from "./tagAnalysisCache";
 
 export { invalidateAnalysisCache };
 
@@ -118,9 +118,6 @@ export const analyzeTagRedundancy = async (
 ): Promise<TagGroup[]> => {
 	const tags = await getAllTags();
 	const tagIds = tags.map((t) => t.id);
-	
-	// Import hashTagIds from cache module
-	const { hashTagIds } = await import("./tagAnalysisCache");
 	const currentHash = hashTagIds(tagIds);
 
 	// Check cache validity (includes maxTags parameter)
