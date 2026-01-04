@@ -1,4 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
+import {
+	ANALYZE_IMAGE_PROMPT,
+	ANALYZE_IMAGE_PROMPT_WITH_THINKING,
+	VISION_MODEL_ID,
+} from "../vision.config";
 import { PortfolioItem, AiTagDetailed } from "../../../shared/types";
 import { STORAGE_KEYS } from "../../../shared/constants";
 import i18next from "i18next";
@@ -108,7 +113,7 @@ export const analyzeImage = async (
 		}
 
 		// Using Gemini 3 Flash Preview as requested
-		const modelId = "gemini-3-flash-preview";
+		const modelId = VISION_MODEL_ID;
 
 		const response = await ai.models.generateContent({
 			model: modelId,
@@ -123,15 +128,7 @@ export const analyzeImage = async (
 							},
 						},
 						{
-							text: `Analyze this image. 
-                    1. Provide a concise description (max 2 sentences).
-                    2. List 5-8 relevant tags.
-                    
-                    Return valid JSON only matching this structure:
-                    {
-                      "description": "string",
-                      "tags": [ {"name": "string", "confidence": 0.0-1.0} ]
-                    }`,
+							text: ANALYZE_IMAGE_PROMPT,
 						},
 					],
 				},
@@ -207,35 +204,13 @@ export const analyzeImageStream = async (
 				throw new Error(i18next.t('errors:failedToLoadImage'));
 			}
 		}
-		const modelId = "gemini-3-flash-preview";
+		const modelId = VISION_MODEL_ID;
 
 		// Prompt engineering for optional Thinking Process
-		let prompt = `Analyze this image.
-    1. Provide a concise description (max 2 sentences).
-    2. List 5-8 relevant tags.
-    
-    Return valid JSON only matching this structure:
-    {
-      "description": "string",
-      "tags": [ {"name": "string", "confidence": 0.0-1.0} ]
-    }`;
+		let prompt = ANALYZE_IMAGE_PROMPT;
 
 		if (enableThinking) {
-			prompt = `Analyze this image.
-      STEP 1: THINKING PROCESS
-      Analyze the image composition, style, lighting, and subject matter step-by-step. 
-      Explain your reasoning for choosing specific tags.
-      
-      STEP 2: FINAL OUTPUT
-      After your analysis, output the separator "---JSON---" and then the final JSON object.
-      
-      Structure:
-      [Your thinking process here...]
-      ---JSON---
-      {
-        "description": "string",
-        "tags": [ {"name": "string", "confidence": 0.0-1.0} ]
-      }`;
+			prompt = ANALYZE_IMAGE_PROMPT_WITH_THINKING;
 		}
 
 		const result = await ai.models.generateContentStream({
