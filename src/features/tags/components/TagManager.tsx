@@ -35,7 +35,6 @@ export const TagManager: React.FC<TagManagerProps> = ({
 	const [quickTags, setQuickTags] = useState<ParsedTag[]>([]);
 	const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
 	const [extractedTags, setExtractedTags] = useState<string[]>([]);
-	const [isAddingAllTags, setIsAddingAllTags] = useState(false);
 
 	// A stable function for adding a tag by name, which doesn't depend on `newTag`.
 	const addTagByName = useCallback(async (tagName: string) => {
@@ -298,22 +297,13 @@ export const TagManager: React.FC<TagManagerProps> = ({
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={async () => {
-									setIsAddingAllTags(true);
-									try {
-										// Add all extracted tags
-										await Promise.all(extractedTags.map((tag) => addTagByName(tag)));
-									} catch (error) {
-										console.error("Failed to add some tags:", error);
-										// User feedback could be added here via a toast/notification system
-									} finally {
-										setIsAddingAllTags(false);
-									}
+								onClick={() => {
+									// Add all extracted tags
+									extractedTags.forEach((tag) => addTagByName(tag));
 								}}
-								disabled={isAddingAllTags}
 								className="px-2 py-1 text-[11px] rounded border border-green-400/30 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:border-green-400/50 h-auto"
 							>
-								{isAddingAllTags ? t('tags:adding') || "Adding..." : `${t('tags:extractAll')} (${extractedTags.length})`}
+								{t('tags:extractAll')} ({extractedTags.length})
 							</Button>
 						)}
 					</div>
