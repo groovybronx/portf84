@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "../../../utils/cn";
+import { Button } from "../../ui";
 
 interface TabsProps {
   value: string;

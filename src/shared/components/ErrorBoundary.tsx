@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Button } from "./ui";
 
 interface ErrorLog {
 	error: Error;
