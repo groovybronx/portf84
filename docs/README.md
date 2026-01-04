@@ -1,113 +1,29 @@
-# Lumina Portfolio - Documentation Technique
+# Lumina Portfolio - Documentation
 
-Last update : 01/01/2026
+Welcome to the official documentation for Lumina Portfolio. This documentation is organized into four main sections, each designed to provide targeted information for different needs.
 
-> 📢 **Audit de Documentation Disponible** : Un audit complet de la documentation a été effectué le 1er janvier 2026. Consultez [AUDIT/2026-01-01_DOCS_INDEX.md](./AUDIT/2026-01-01_DOCS_INDEX.md) pour plus d'informations.
+## Documentation Sections
 
-Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
+### 1. Getting Started
 
-## Stack Technologique
+-   **Location**: [`/docs/1_getting_started/`](./1_getting_started/)
+-   **Content**: This section provides a comprehensive guide to installing the application, setting up your development environment, and configuring your GitHub repository for contributions. It is the ideal starting point for new users and contributors.
 
-| Technologie                 | Version       | Rôle                    |
-| --------------------------- | ------------- | ----------------------- |
-| **React**                   | 19.x          | Framework UI            |
-| **Tailwind CSS**            | 4.x           | Styling (@theme syntax) |
-| **Tauri**                   | 2.x           | Runtime natif           |
-| **SQLite**                  | via plugin    | Persistance locale      |
-| **@tanstack/react-virtual** | 3.13          | Virtualisation UI       |
-| **Framer Motion**           | 12.x          | Animations              |
-| **Gemini AI**               | @google/genai | Image analysis          |
-| **i18next**                 | 24.x          | Multilanguage support   |
-| **Vitest**                  | 4.x           | Tests unitaires         |
+### 2. User Guide
 
----
+-   **Location**: [`/docs/2_user_guide/`](./2_user_guide/)
+-   **Content**: The user guide offers a detailed overview of Lumina Portfolio's features and functionality. It covers everything from the core interface to advanced features like the Tag Hub, and provides tips and shortcuts to improve your workflow.
 
-## Sommaire
+### 3. Developer Guide
 
-1. [Architecture & Données](guides/architecture/ARCHITECTURE.md)
-   - Structure Feature-Based (src/features)
-   - Contexts Split (State/Dispatch)
-   - Base de données SQLite (Projets & Shadow Folders)
-   - Asset Protocol & permissions
-   - Déploiement & CI/CD
-2. [Composants UI & UX](guides/features/COMPONENTS.md)
-   - Système de vues (Grid Virtuelle, Carousel, List)
-   - Navigation Sidebar (Accordéons & Smart Folders)
-   - PhotoCard (React.memo + Lazy Loading)
-   - Dialog natif Tauri
-   - Moteur d'animation
-3. [Service AI (Gemini)](guides/architecture/AI_SERVICE.md)
-   - Intégration de l'API
-   - Streaming & Thinking Process
-   - Ingénierie du Prompt
-   - Batch processing
-4. [Interactions & Shortcuts](guides/features/INTERACTIONS.md)
-   - Keyboard management (Auto-Scroll)
-   - Color tagging system
-   - Drag & Drop
-   - Multi-selection
-5. [Multilanguage Support (i18n)](guides/features/I18N_GUIDE.md)
-   - Configuration & Namespaces
-   - Adding a new language
-   - Best practices
-6. [Plans de Projet](guides/project/CHANGELOG.md)
-    - Suivi des versions
-    - Analyse de branches
+-   **Location**: [`/docs/3_developer_guide/`](./3_developer_guide/)
+-   **Content**: This section is intended for developers and provides a deep dive into the technical architecture of the application. It covers topics such as the code structure, data persistence, AI integration, and performance optimization strategies.
 
----
+### 4. Contribution Guide
 
-## Installation Rapide
+-   **Location**: [`/docs/4_contribution_guide/`](./4_contribution_guide/)
+-   **Content**: The contribution guide outlines the project's Git workflow and branching strategy. It provides clear instructions on how to contribute to the project, including how to create feature branches, prepare releases, and submit pull requests.
 
-### Prérequis
+## Navigating the Documentation
 
-- **Node.js** (LTS recommandé)
-- **Rust** (stable toolchain)
-- **macOS** 10.15+ (pour le build natif)
-
-### Développement
-
-```bash
-# Installer les dépendances
-npm install
-
-# Lancer en mode développement (Frontend + Tauri)
-npm run tauri:dev
-
-# Lancer uniquement le frontend (web)
-npm run dev
-```
-
-### Build Production
-
-```bash
-# Générer l'application native (.dmg pour macOS)
-npm run tauri:build
-```
-
----
-
-## Conventions de Code
-
-| Convention         | Description                                     |
-| ------------------ | ----------------------------------------------- |
-| **Feature-Based**  | Architecture modulaire (`src/features`)         |
-| **Context Split**  | Séparation State/Dispatch pour performance      |
-| **React.memo**     | Optimisation rendu des composants critiques     |
-| **Virtualisation** | `@tanstack/react-virtual` pour grilles infinies |
-| **Glassmorphism**  | `backdrop-blur` + couleurs semi-transparentes   |
-| **Persistance**    | SQLite via `@tauri-apps/plugin-sql`             |
-
----
-
-## Configuration
-
-### Clé API Gemini
-
-Deux méthodes :
-
-1. **Via l'interface** : Settings → Entrer la clé
-2. **Via environnement** : Créer `.env.local` avec `VITE_GEMINI_API_KEY=your_key`
-
-### Tauri Capabilities
-
-Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir **[Architecture](./guides/architecture/ARCHITECTURE.md)** pour les détails.
+Each section is self-contained and provides the information you need to get the most out of Lumina Portfolio, whether you are a user, developer, or contributor. Use the links above to navigate to the section that best suits your needs.

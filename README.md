@@ -101,20 +101,13 @@ npm run test
 
 ## 📚 Documentation
 
-Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
+La documentation a été restructurée pour une meilleure clarté et accessibilité.
 
-- [Architecture](./docs/guides/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
-- [Composants](./docs/guides/features/COMPONENTS.md) - UI/UX détaillé
-- [AI Service](./docs/guides/architecture/AI_SERVICE.md) - Intégration Gemini
-- [Interactions](./docs/guides/features/INTERACTIONS.md) - Raccourcis clavier
-
-### Gestion Git & GitHub
-- [🚀 Quick Start](./docs/QUICK_START.md) - Guide rapide en 10 minutes
-- [Résumé Configuration GitHub](./docs/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
-- [Stratégie de Branches](./docs/guides/architecture/GIT_WORKFLOW.md) - Workflow Git et gestion des branches
-- [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
-- [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
-### 🤖 GitHub Copilot Configuration
+- **[📄 README Docs](./docs/README.md)**: Point d'entrée principal de la documentation.
+- **[🚀 Getting Started](./docs/1_getting_started/index.md)**: Guide d'installation et de configuration.
+- **[📘 User Guide](./docs/2_user_guide/index.md)**: Informations détaillées sur les fonctionnalités.
+- **[🛠️ Developer Guide](./docs/3_developer_guide/01_architecture.md)**: Aperçu technique et architectural.
+- **[🤝 Contribution Guide](./docs/4_contribution_guide/01_git_workflow.md)**: Normes de contribution et flux de travail Git.
 
 Ce projet inclut une configuration complète pour GitHub Copilot avec des règles personnalisées qui aident à générer du code conforme aux conventions du projet :
 
