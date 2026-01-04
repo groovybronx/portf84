@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 
+export type TagHubTab = "browse" | "manage" | "fusion" | "settings";
+
 export interface ModalState {
   // States
   isFolderDrawerOpen: boolean;
@@ -10,6 +12,10 @@ export interface ModalState {
   isCollectionManagerOpen: boolean;
   isSmartCollectionBuilderOpen: boolean;
   isTagStudioOpen: boolean;
+  isTagHubOpen: boolean;
+
+  // Tag Hub active tab
+  tagHubActiveTab: TagHubTab;
 
   // Actions
   setIsFolderDrawerOpen: (open: boolean) => void;
@@ -20,6 +26,8 @@ export interface ModalState {
   setIsCollectionManagerOpen: (open: boolean) => void;
   setIsSmartCollectionBuilderOpen: (open: boolean) => void;
   setIsTagStudioOpen: (open: boolean) => void;
+  setIsTagHubOpen: (open: boolean) => void;
+  setTagHubActiveTab: (tab: TagHubTab) => void;
 }
 
 /**
@@ -35,6 +43,8 @@ export const useModalState = (): ModalState => {
   const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
   const [isSmartCollectionBuilderOpen, setIsSmartCollectionBuilderOpen] = useState(false);
   const [isTagStudioOpen, setIsTagStudioOpen] = useState(false);
+  const [isTagHubOpen, setIsTagHubOpen] = useState(false);
+  const [tagHubActiveTab, setTagHubActiveTab] = useState<TagHubTab>("browse");
 
   return {
     // States
@@ -46,6 +56,8 @@ export const useModalState = (): ModalState => {
     isCollectionManagerOpen,
     isSmartCollectionBuilderOpen,
     isTagStudioOpen,
+    isTagHubOpen,
+    tagHubActiveTab,
 
     // Actions
     setIsFolderDrawerOpen,
@@ -56,5 +68,7 @@ export const useModalState = (): ModalState => {
     setIsCollectionManagerOpen,
     setIsSmartCollectionBuilderOpen,
     setIsTagStudioOpen,
+    setIsTagHubOpen,
+    setTagHubActiveTab,
   };
 };

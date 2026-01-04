@@ -24,6 +24,7 @@ interface TopBarProps {
 	batchAIProgress: number;
 	onOpenSettings: () => void;
 	onOpenTagManager: () => void;
+	onOpenTagHub: () => void;
 	showColorTags: boolean;
 	onToggleColorTags: () => void;
 	isSidebarPinned?: boolean;
@@ -39,6 +40,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	batchAIProgress,
 	onOpenSettings,
 	onOpenTagManager,
+	onOpenTagHub,
 	showColorTags,
 	onToggleColorTags,
 	isSidebarPinned = false,
@@ -143,6 +145,15 @@ export const TopBar: React.FC<TopBarProps> = ({
 							title={t('navigation:smartTagManager')}
 						>
 							<Icon action="smart_tags" size={18} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onOpenTagHub}
+							className="text-gray-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
+							title="Tag Hub (Ctrl+T)"
+						>
+							<Icon action="tag" size={18} />
 						</Button>
 						<Button
 							variant="ghost"
