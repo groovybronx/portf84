@@ -116,7 +116,7 @@
   "keyboardShortcutTip": "💡 Astuce: Utilisez Ctrl+A pour tout sélectionner, Suppr pour supprimer",
   "levenshteinHelp": "Différence de caractères autorisée (1-3)",
   "jaccardHelp": "Similarité de mots requise (60-95%)",
-  "minUsageHelp": "Ignorer les tags avec moins d'utilisations (0-10)"
+  "minUsageHelp": "Ignorer les tags avec moins d'utilisations (0-10)",
   "batchTagging": "Tagging par lot",
   "itemsSelected": "{{count}} élément sélectionné",
   "itemsSelected_plural": "{{count}} éléments sélectionnés",
