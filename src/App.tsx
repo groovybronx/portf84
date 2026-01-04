@@ -18,6 +18,7 @@ import {
   ErrorBoundary,
 } from "./shared/components";
 import { TagManagerModal } from "./features/tags/components/TagManagerModal";
+import { TagHub } from "./features/tags/components/TagHub";
 import { SmartCollectionBuilder } from "./features/collections/components/SmartCollectionBuilder";
 import { deleteSmartCollection, SmartCollection } from "./services/smartCollectionService";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -153,6 +154,10 @@ const App: React.FC = () => {
     setIsSmartCollectionBuilderOpen,
     isTagStudioOpen,
     setIsTagStudioOpen,
+    isTagHubOpen,
+    setIsTagHubOpen,
+    tagHubActiveTab,
+    setTagHubActiveTab,
   } = useModalState();
   const [editingSmartCollection, setEditingSmartCollection] = useState<SmartCollection | null>(null);
   const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
@@ -203,6 +208,19 @@ const App: React.FC = () => {
     applyColorTagToSelection,
     gridColumns,
   });
+
+  // Tag Hub keyboard shortcut (Ctrl+T)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 't') {
+        e.preventDefault();
+        setIsTagHubOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setIsTagHubOpen]);
 
   // Helper functions
   const toggleColorTags = () => setShowColorTags(!showColorTags);
@@ -399,6 +417,7 @@ const App: React.FC = () => {
             batchAIProgress={batchProgress}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenTagManager={() => setIsTagManagerOpen(true)}
+            onOpenTagHub={() => setIsTagHubOpen(true)}
             showColorTags={showColorTags}
             onToggleColorTags={toggleColorTags}
           />
@@ -597,6 +616,18 @@ const App: React.FC = () => {
         onTagsUpdated={async () => {
              console.log("[App] Tags merged, refreshing library...");
              await refreshMetadata();
+        }}
+      />
+
+      {/* Tag Hub */}
+      <TagHub
+        isOpen={isTagHubOpen}
+        onClose={() => setIsTagHubOpen(false)}
+        activeTab={tagHubActiveTab}
+        onTabChange={setTagHubActiveTab}
+        onTagsUpdated={async () => {
+          console.log("[App] Tags updated from Tag Hub, refreshing library...");
+          await refreshMetadata();
         }}
       />
 
