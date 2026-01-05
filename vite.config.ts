@@ -11,21 +11,33 @@ export default defineConfig(({ mode }) => {
 			strictPort: env.VITE_STRICT_PORT !== "false",
 			host: env.VITE_HOST || "0.0.0.0",
 		},
-		plugins: [react(), tailwindcss()],
+		plugins: [
+			react({
+				jsxRuntime: "automatic",
+				jsxImportSource: "react",
+			}),
+			tailwindcss(),
+		],
 		build: {
+			minify: "esbuild",
 			rollupOptions: {
 				output: {
 					manualChunks(id) {
 						if (id.includes("node_modules")) {
 							if (id.includes("framer-motion")) return "vendor-framer";
 							if (id.includes("lucide-react")) return "vendor-lucide";
-							if (id.includes("react")) return "vendor-react";
+							if (id.includes("react") || id.includes("scheduler")) {
+								return "vendor-react";
+							}
 							return "vendor";
 						}
 						return undefined;
 					},
 				},
 			},
+		},
+		optimizeDeps: {
+			include: ["react", "react-dom", "react/jsx-runtime"],
 		},
 		define: {
 			"process.env.API_KEY": JSON.stringify(env.GEMINI_API_KEY),
