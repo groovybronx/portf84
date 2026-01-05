@@ -31,7 +31,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 						variant="accent"
 						padding="lg"
 						border={false}
-						as={motion.div}
 						animate={{
 							scale: [1, 1.1, 1],
 							rotate: [0, 5, -5, 0],

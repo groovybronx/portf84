@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Search, Grid, List, Tag as TagIcon, Sparkles } from 'lucide-react';
 import { Button, Flex, Stack, Grid as LayoutGrid, GlassCard } from '@/shared/components/ui';
 import { getTagsWithUsageStats, TagWithUsage } from '@/services/storage/tags';
-import { ParsedTag } from '@/shared/types/database';
 
 type ViewMode = 'grid' | 'list';
 type FilterMode = 'all' | 'manual' | 'ai' | 'unused' | 'mostUsed';
@@ -90,7 +89,8 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         </div>
 
         {/* View Mode Toggle */}
-        <GlassCard variant="accent" padding="sm" as={Flex} gap="xs" className="shrink-0">
+        <GlassCard variant="accent" padding="sm" className="shrink-0">
+          <Flex gap="xs">
           <Button
             onClick={() => setViewMode('grid')}
             aria-label={t('tags:gridView')}
@@ -113,6 +113,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
           >
             <List size={16} />
           </Button>
+          </Flex>
         </GlassCard>
       </Flex>
 

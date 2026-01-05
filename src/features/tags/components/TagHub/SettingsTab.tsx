@@ -70,9 +70,8 @@ export const SettingsTab: React.FC = () => {
           variant="accent"
           padding="md"
           border
-          as={Stack}
-          spacing="lg"
         >
+          <Stack spacing="lg">
           {/* Preset Selection */}
           <div>
             <label className="text-sm text-gray-400 block mb-2">{t('tags:preset')}</label>
@@ -171,6 +170,7 @@ export const SettingsTab: React.FC = () => {
               {settings.enableSemanticSimilarity ? t('common:enabled') : t('common:disabled')}
             </Button>
           </Flex>
+          </Stack>
         </GlassCard>
       </Stack>
 
@@ -182,9 +182,8 @@ export const SettingsTab: React.FC = () => {
           variant="accent"
           padding="md"
           border
-          as={Stack}
-          spacing="sm"
         >
+          <Stack spacing="sm">
           {[
             {
               key: 'showAITagsSeparately' as keyof TagSettings,
@@ -219,21 +218,19 @@ export const SettingsTab: React.FC = () => {
               </Button>
             </Flex>
           ))}
+          </Stack>
         </GlassCard>
       </Stack>
 
       {/* Action Buttons */}
       <Flex align="center" justify="between" className="pt-4 border-t border-white/10">
-        <GlassCard
-          variant="accent"
-          padding="sm"
-          border
-          as={Button}
+        <Button
+          variant="ghost"
           onClick={handleReset}
-          className="text-gray-400 hover:text-gray-300 text-sm transition-colors cursor-pointer"
+          className="px-4 py-2 text-gray-400 hover:text-gray-300 text-sm transition-colors bg-glass-bg-accent border border-glass-border-light rounded-lg"
         >
           {t('tags:resetToDefaults')}
-        </GlassCard>
+        </Button>
         <Button
           onClick={handleSave}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg flex items-center gap-2 transition-all active:scale-95"

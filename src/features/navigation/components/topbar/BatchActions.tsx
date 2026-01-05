@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Share2, FolderInput, X, Sparkles } from "lucide-react";
+import { Share2, FolderInput, Sparkles } from "lucide-react";
 import { Button, Flex, GlassCard } from "../../../../shared/components/ui";
 
 interface BatchActionsProps {

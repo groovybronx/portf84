@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Trash2, Merge, CheckSquare, Square, BarChart3, Plus, Tag as TagIcon } from 'lucide-react';
+import { Trash2, Merge, CheckSquare, Square, BarChart3, Tag as TagIcon } from 'lucide-react';
 import { Button, ConfirmDialog, Flex, Stack, GlassCard } from '@/shared/components/ui';
 import { getAllTags, deleteTag, mergeTags } from '@/services/storage/tags';
 import { ParsedTag } from '@/shared/types/database';
@@ -248,9 +248,8 @@ export const ManageTab: React.FC = () => {
             variant="accent"
             padding="md"
             border
-            as={Stack}
-            spacing="md"
           >
+            <Stack spacing="md">
             <Stack spacing="xs">
               <div className="text-xs text-gray-500 uppercase tracking-wider">
                 {t('tags:totalTags')}
@@ -285,6 +284,7 @@ export const ManageTab: React.FC = () => {
                 </Stack>
               </>
             )}
+            </Stack>
           </GlassCard>
 
           <div className="text-[10px] text-gray-600 text-center px-2">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { XCircle, Eye, EyeOff, Palette } from 'lucide-react';
+import { XCircle, Eye, EyeOff } from 'lucide-react';
 import { COLOR_PALETTE } from '../../../../shared/types';
 import { Button, Flex, GlassCard } from '../../../../shared/components/ui';
 
@@ -25,11 +25,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       variant="accent"
       padding="sm"
       border
-      as={Flex}
-      align="center"
-      gap="sm"
       className="hidden lg:flex shrink-0"
     >
+      <Flex align="center" gap="sm">
       {Object.entries(COLOR_PALETTE).map(([key, hex]) => (
         <Button
           key={key}
@@ -65,6 +63,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       >
         {showColorTags ? <Eye size={14} /> : <EyeOff size={14} />}
       </Button>
+      </Flex>
     </GlassCard>
   );
 };

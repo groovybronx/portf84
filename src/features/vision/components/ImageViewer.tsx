@@ -409,11 +409,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-xs font-medium"
+                                className="flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-xs font-medium"
                               >
-                                <Flex align="center" gap="xs">
-                                  <Tag size={10} /> {tag}
-                                </Flex>
+                                <Tag size={10} /> {tag}
                               </motion.span>
                             ))}
                           </Flex>

@@ -211,7 +211,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
                         onChange={(e) => setNewCollectionName(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
                         placeholder={t('library:projectNamePlaceholder')}
-                        className="w-full px-4 py-2 bg-glass-bg border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
                         autoFocus
                       />
                     <Flex gap="sm">
