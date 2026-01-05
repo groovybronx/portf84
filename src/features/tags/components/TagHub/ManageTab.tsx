@@ -204,7 +204,7 @@ export const ManageTab: React.FC = () => {
                   padding="sm"
                   border
                   onClick={() => toggleSelection(tag.id)}
-                  className={`cursor-pointer transition-all flex items-center gap-3 ${
+                  className={`cursor-pointer transition-all ${
                     isSelected
                       ? 'border-blue-500/50 bg-blue-500/10'
                       : 'hover:border-glass-border-light'

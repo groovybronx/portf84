@@ -3,7 +3,7 @@
  * Back face of the card showing metadata, tags, and file info
  */
 import React, { useMemo } from "react";
-import { Button } from "../../../../shared/components/ui";
+import { Button, Flex, Stack } from "../../../../shared/components/ui";
 import { useTranslation } from "react-i18next";
 import {
 	Maximize2,
@@ -54,8 +54,8 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 			onClick={(e) => e.stopPropagation()}
 		>
 			{/* 1. File Name Header */}
-			<div className="flex items-start justify-between min-h-0">
-				<div className="flex items-center gap-2 flex-1 pr-2 min-w-0">
+			<Flex align="start" justify="between" className="min-h-0">
+				<Flex align="center" gap="sm" className="flex-1 pr-2 min-w-0">
 					{item.colorTag && (
 						<div
 							className="w-3 h-3 rounded-full shrink-0 shadow-sm border border-white/20"
@@ -66,7 +66,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 					<h4 className="text-[10px] font-medium text-white/80 line-clamp-1 leading-tight">
 						{item.name}
 					</h4>
-				</div>
+				</Flex>
 				<Button
 					onClick={onFlip}
 					className="p-1.5 -mr-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
@@ -74,11 +74,11 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 				>
 					<Maximize2 size={16} />
 				</Button>
-			</div>
+			</Flex>
 
 			{/* Location (Folder/Collection) */}
 			{locationInfo && (
-				<div className="flex items-center gap-2">
+				<Flex align="center" gap="sm">
 					<div
 						className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
 							locationInfo.isShadowFolder
@@ -95,7 +95,7 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 					<span className="text-xs text-gray-400 truncate">
 						{locationInfo.name}
 					</span>
-				</div>
+				</Flex>
 			)}
 
 			<div className="h-px bg-white/10 w-full shrink-0" />
@@ -119,11 +119,11 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 			<div className="h-px bg-white/10 w-full shrink-0" />
 
 			{/* 3. Tags */}
-			<div className="flex-1 min-h-0 flex flex-col gap-2">
+			<Stack spacing="sm" className="flex-1 min-h-0">
 				<span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">
 					{t('tags')}
 				</span>
-				<div className="flex flex-wrap gap-2">
+				<Flex wrap="wrap" gap="sm">
 					{(item.manualTags || []).length === 0 &&
 						(item.aiTags || []).length === 0 && (
 							<p className="text-xs text-gray-600 italic">{t('noTags')}</p>
@@ -160,8 +160,8 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 							</Button>
 						);
 					})}
-				</div>
-			</div>
+				</Flex>
+			</Stack>
 
 			<div className="h-px bg-white/10 w-full shrink-0" />
 
@@ -170,31 +170,31 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 
 			{/* 4. File Info */}
 			<div className="grid grid-cols-2 gap-x-4 gap-y-3 text-[11px] font-mono shrink-0">
-				<div className="flex flex-col gap-0.5">
+				<Stack spacing="xs">
 					<span className="text-[9px] uppercase tracking-widest text-gray-500">
 						{t('type')}
 					</span>
 					<span className="text-gray-300">
 						{item.type.split("/")[1]?.toUpperCase() || "UNKNOWN"}
 					</span>
-				</div>
-				<div className="flex flex-col gap-0.5">
+				</Stack>
+				<Stack spacing="xs">
 					<span className="text-[9px] uppercase tracking-widest text-gray-500">
 						{t('size')}
 					</span>
 					<span className="text-gray-300">
 						{(item.size / 1024 / 1024).toFixed(2)} MB
 					</span>
-				</div>
+				</Stack>
 				{item.width && (
-					<div className="flex flex-col gap-0.5 col-span-2 pt-1">
+					<Stack spacing="xs" className="col-span-2 pt-1">
 						<span className="text-[9px] uppercase tracking-widest text-gray-500">
 							{t('resolution')}
 						</span>
 						<span className="text-gray-300">
 							{item.width} x {item.height} px
 						</span>
-					</div>
+					</Stack>
 				)}
 			</div>
 		</GlassCard>

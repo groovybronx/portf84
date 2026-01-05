@@ -193,9 +193,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               {item.name}
             </h2>
             <Flex align="center" wrap="wrap" gap="md" className="text-sm text-gray-500 font-mono">
-              <span className="flex items-center gap-1">
+              <Flex align="center" gap="xs">
                 <Info size={14} /> {(item.size / 1024 / 1024).toFixed(2)} MB
-              </span>
+              </Flex>
               <span>|</span>
               <span className="uppercase">{item.type.split('/')[1]}</span>
             </Flex>
@@ -233,9 +233,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               {/* Color Tag Info Section - CLICKABLE */}
               <div className="p-4 bg-glass-bg-accent rounded-lg border border-glass-border-light">
                 <Flex align="center" justify="between" className="mb-2">
-                  <span className="flex items-center gap-2 text-xs uppercase text-gray-500">
+                  <Flex align="center" gap="sm" className="text-xs uppercase text-gray-500">
                     <Palette size={12} /> Color Label
-                  </span>
+                  </Flex>
                   <span className="text-xs text-gray-500 font-mono">Keys 1-6</span>
                 </Flex>
                 <Flex gap="sm">
@@ -260,15 +260,18 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                       />
                     )
                   )}
-                  <Button
+                  <Flex
+                    as={Button}
+                    align="center"
+                    justify="center"
                     onClick={() => onUpdateItem({ ...item, colorTag: undefined })}
-                    className={`w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-xs text-gray-500 hover:text-white hover:border-white ${
+                    className={`w-6 h-6 rounded-full border border-white/20 text-xs text-gray-500 hover:text-white hover:border-white ${
                       !item.colorTag ? 'opacity-100 cursor-default' : 'opacity-50'
                     }`}
                     title="Remove Tag"
                   >
                     <X size={12} />
-                  </Button>
+                  </Flex>
                 </Flex>
               </div>
 
@@ -278,146 +281,149 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                 gap="md"
                 className="p-4 bg-glass-bg-accent rounded-lg border border-glass-border-light"
               >
-                <div>
-                  <span className="flex items-center gap-2 text-xs uppercase text-gray-500 mb-1">
+                <Stack spacing="xs">
+                  <Flex align="center" gap="sm" className="text-xs uppercase text-gray-500">
                     <Maximize2 size={12} /> Dimensions
-                  </span>
+                  </Flex>
                   <span className="text-white font-mono text-sm">
                     {dimensions ? `${dimensions.width} x ${dimensions.height}` : '...'}
                   </span>
-                </div>
-                <div>
-                  <span className="flex items-center gap-2 text-xs uppercase text-gray-500 mb-1">
+                </Stack>
+                <Stack spacing="xs">
+                  <Flex align="center" gap="sm" className="text-xs uppercase text-gray-500">
                     <Calendar size={12} /> Modified
-                  </span>
+                  </Flex>
                   <span className="text-white font-mono text-sm">
                     {new Date(item.lastModified).toLocaleDateString()}
                   </span>
-                </div>
+                </Stack>
               </Grid>
 
               {/* AI Section */}
-              <div className="space-y-4">
+              <Stack spacing="md">
                 <Flex align="center" justify="between">
-                  <h3 className="text-lg font-semibold text-blue-400 flex items-center gap-2">
+                  <Flex align="center" gap="sm" className="text-lg font-semibold text-blue-400">
                     <Sparkles size={18} /> AI Analysis
-                  </h3>
+                  </Flex>
                 </Flex>
-              </div>
 
-              <div className="space-y-4">
-                {!item.aiDescription && !analyzing ? (
-                  <>
-                    <Button
-                      onClick={handleAnalyze}
-                      className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
-                    >
-                      <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
-                      Generate Description
-                    </Button>
-                    <Flex align="center" gap="sm" justify="center" className="mt-2">
-                      <input
-                        type="checkbox"
-                        id="deepMode"
-                        checked={deepAnalysis}
-                        onChange={(e) => setDeepAnalysis(e.target.checked)}
-                        className="rounded border-glass-border bg-glass-bg-accent text-blue-500 focus:ring-blue-500/50"
-                      />
-                      <label
-                        htmlFor="deepMode"
-                        className="text-xs text-gray-400 cursor-pointer hover:text-white transition-colors"
+                <Stack spacing="md">
+                  {!item.aiDescription && !analyzing ? (
+                    <>
+                      <Button
+                        onClick={handleAnalyze}
+                        className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
                       >
-                        Detailed Reasoning (Tokens++)
-                      </label>
-                    </Flex>
-                  </>
-                ) : analyzing ? (
-                  <div className="space-y-3">
-                    <Flex
-                      align="center"
-                      gap="md"
-                      className="text-gray-400 animate-pulse bg-glass-bg-accent p-4 rounded-lg border border-glass-border-light"
-                    >
-                      <Loader size={18} className="animate-spin" />
-                      <span>{thinkingText ? 'Reasoning...' : 'Analyzing image context...'}</span>
-                    </Flex>
-                    {thinkingText && (
-                      <div className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg text-xs font-mono text-purple-300 max-h-40 overflow-y-auto custom-scrollbar">
-                        <p className="font-bold mb-1 uppercase tracking-wider text-[10px] text-purple-400">
-                          Thinking Process:
-                        </p>
-                        <p className="whitespace-pre-wrap">{thinkingText}</p>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-4 bg-glass-bg-accent rounded-lg border border-glass-border-light"
-                    >
-                      <p className="text-gray-300 italic leading-relaxed text-sm">
-                        "{item.aiDescription}"
-                      </p>
-                    </motion.div>
-
-                    <div className="space-y-2">
-                      <h4 className="text-xs uppercase text-gray-500 font-semibold mb-2">
-                        Detected Tags
-                      </h4>
-                      {item.aiTagsDetailed ? (
-                        <div className="grid gap-2">
-                          {item.aiTagsDetailed.map((tag, i) => (
-                            <motion.div
-                              key={tag.name}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: i * 0.1 }}
-                              className="flex items-center gap-3 text-sm"
-                            >
-                              <div className="flex-1 flex justify-between">
-                                <span className="text-gray-300">{tag.name}</span>
-                                <span className="text-gray-500 text-xs font-mono">
-                                  {(tag.confidence * 100).toFixed(0)}%
-                                </span>
-                              </div>
-                              <div className="w-16 h-1.5 bg-glass-bg-accent rounded-full overflow-hidden">
-                                <motion.div
-                                  initial={{ width: 0 }}
-                                  animate={{
-                                    width: `${tag.confidence * 100}%`,
-                                  }}
-                                  transition={{
-                                    duration: 1,
-                                    delay: 0.5 + i * 0.1,
-                                  }}
-                                  className="h-full bg-blue-500 rounded-full"
-                                />
-                              </div>
-                            </motion.div>
-                          ))}
+                        <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
+                        Generate Description
+                      </Button>
+                      <Flex align="center" gap="sm" justify="center" className="mt-2">
+                        <input
+                          type="checkbox"
+                          id="deepMode"
+                          checked={deepAnalysis}
+                          onChange={(e) => setDeepAnalysis(e.target.checked)}
+                          className="rounded border-glass-border bg-glass-bg-accent text-blue-500 focus:ring-blue-500/50"
+                        />
+                        <label
+                          htmlFor="deepMode"
+                          className="text-xs text-gray-400 cursor-pointer hover:text-white transition-colors"
+                        >
+                          Detailed Reasoning (Tokens++)
+                        </label>
+                      </Flex>
+                    </>
+                  ) : analyzing ? (
+                    <Stack spacing="sm">
+                      <Flex
+                        align="center"
+                        gap="md"
+                        className="text-gray-400 animate-pulse bg-glass-bg-accent p-4 rounded-lg border border-glass-border-light"
+                      >
+                        <Loader size={18} className="animate-spin" />
+                        <span>{thinkingText ? 'Reasoning...' : 'Analyzing image context...'}</span>
+                      </Flex>
+                      {thinkingText && (
+                        <div className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg text-xs font-mono text-purple-300 max-h-40 overflow-y-auto custom-scrollbar">
+                          <p className="font-bold mb-1 uppercase tracking-wider text-[10px] text-purple-400">
+                            Thinking Process:
+                          </p>
+                          <p className="whitespace-pre-wrap">{thinkingText}</p>
                         </div>
-                      ) : (
-                        <Flex wrap="wrap" gap="sm">
-                          {item.aiTags?.map((tag, i) => (
-                            <motion.span
-                              key={tag}
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ delay: i * 0.1 }}
-                              className="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-xs font-medium flex items-center gap-1"
-                            >
-                              <Tag size={10} /> {tag}
-                            </motion.span>
-                          ))}
-                        </Flex>
                       )}
-                    </div>
-                  </div>
-                )}
-                {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-              </div>
+                    </Stack>
+                  ) : (
+                    <Stack spacing="md">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-glass-bg-accent rounded-lg border border-glass-border-light"
+                      >
+                        <p className="text-gray-300 italic leading-relaxed text-sm">
+                          "{item.aiDescription}"
+                        </p>
+                      </motion.div>
+
+                      <Stack spacing="sm">
+                        <h4 className="text-xs uppercase text-gray-500 font-semibold mb-2">
+                          Detected Tags
+                        </h4>
+                        {item.aiTagsDetailed ? (
+                          <Stack spacing="sm">
+                            {item.aiTagsDetailed.map((tag, i) => (
+                              <motion.div
+                                key={tag.name}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                              >
+                                <Flex align="center" gap="md" className="text-sm">
+                                  <Flex justify="between" className="flex-1">
+                                    <span className="text-gray-300">{tag.name}</span>
+                                    <span className="text-gray-500 text-xs font-mono">
+                                      {(tag.confidence * 100).toFixed(0)}%
+                                    </span>
+                                  </Flex>
+                                  <div className="w-16 h-1.5 bg-glass-bg-accent rounded-full overflow-hidden">
+                                    <motion.div
+                                      initial={{ width: 0 }}
+                                      animate={{
+                                        width: `${tag.confidence * 100}%`,
+                                      }}
+                                      transition={{
+                                        duration: 1,
+                                        delay: 0.5 + i * 0.1,
+                                      }}
+                                      className="h-full bg-blue-500 rounded-full"
+                                    />
+                                  </div>
+                                </Flex>
+                              </motion.div>
+                            ))}
+                          </Stack>
+                        ) : (
+                          <Flex wrap="wrap" gap="sm">
+                            {item.aiTags?.map((tag, i) => (
+                              <motion.span
+                                key={tag}
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-xs font-medium"
+                              >
+                                <Flex align="center" gap="xs">
+                                  <Tag size={10} /> {tag}
+                                </Flex>
+                              </motion.span>
+                            ))}
+                          </Flex>
+                        )}
+                      </Stack>
+                    </Stack>
+                  )}
+                  {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+                </Stack>
+              </Stack>
             </motion.div>
           )}
         </AnimatePresence>
