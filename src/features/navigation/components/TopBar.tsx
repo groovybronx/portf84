@@ -293,7 +293,11 @@ export const TopBar: React.FC<TopBarProps> = ({
             </Flex>
 
             {/* --- RIGHT SECTION (View Toggle) --- */}
-            <div className="flex items-center gap-2 shrink-0 pl-2 ml-2 border-l border-glass-border/10 relative z-50">
+            <Flex
+              align="center"
+              gap="sm"
+              className="shrink-0 pl-2 ml-2 border-l border-glass-border/10 relative z-50"
+            >
               <ViewToggle
                 currentViewMode={viewMode}
                 onModeChange={setViewMode}
@@ -301,7 +305,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 setIsViewMenuOpen={setIsViewMenuOpen}
                 useCinematicCarousel={useCinematicCarousel}
               />
-            </div>
+            </Flex>
           </Flex>
         </GlassCard>
       </motion.div>

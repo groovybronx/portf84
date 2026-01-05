@@ -5,7 +5,7 @@ import { getAllTags, undoMerge, getUndoableMerges } from '../../../services/stor
 import { getDB } from '../../../services/storage/db';
 import { useTranslation } from 'react-i18next';
 import { DBTagMerge, ParsedTag } from '../../../shared/types/database';
-import { Button, GlassCard } from '../../../shared/components/ui';
+import { Button, GlassCard, Flex, Stack, Grid } from '../../../shared/components/ui';
 
 interface TagMergeHistoryProps {
   isOpen: boolean;
@@ -119,8 +119,9 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
           >
             {' '}
             {/* Header */}
-            <div className="p-6 border-b border-white/10 flex justify-between items-center">
-              <div className="flex items-center gap-3">
+            {/* Header */}
+            <Flex justify="between" align="center" className="p-6 border-b border-white/10">
+              <Flex align="center" gap="md">
                 <div className="p-2 bg-blue-500/20 rounded-lg">
                   <History className="w-5 h-5 text-blue-400" />
                 </div>
@@ -128,8 +129,8 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                   <h2 className="text-xl font-bold text-white">{t('tags:mergeHistory')}</h2>
                   <p className="text-xs text-white/50">{t('tags:historyDesc')}</p>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
+              </Flex>
+              <Flex align="center" gap="sm">
                 <Button
                   onClick={loadHistory}
                   variant="glass-icon"
@@ -141,20 +142,24 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                 <Button onClick={onClose} variant="close" size="icon" aria-label="Close">
                   <X size={20} />
                 </Button>
-              </div>
-            </div>
+              </Flex>
+            </Flex>
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <Stack spacing="none" className="flex-1 overflow-y-auto p-6">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <Flex direction="col" align="center" justify="center" className="py-12 space-y-4">
                   <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
                   <p className="text-sm text-white/50">{t('tags:loadingHistory')}</p>
-                </div>
+                </Flex>
               ) : error ? (
-                <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                  <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
+                <Flex direction="col" align="center" justify="center" className="py-12 space-y-4">
+                  <Flex
+                    align="center"
+                    justify="center"
+                    className="w-16 h-16 bg-red-500/10 rounded-full mx-auto"
+                  >
                     <X className="w-8 h-8 text-red-400" />
-                  </div>
+                  </Flex>
                   <h3 className="text-lg font-medium text-white">
                     {t('tags:errorLoadingHistory')}
                   </h3>
@@ -162,7 +167,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                   <Button onClick={loadHistory} variant="glass" size="md">
                     {t('tags:tryAgain')}
                   </Button>
-                </div>
+                </Flex>
               ) : history.length === 0 ? (
                 <div className="text-center py-12 space-y-3">
                   <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto">
@@ -176,8 +181,10 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
               ) : (
                 <div className="space-y-3" role="table" aria-label="Tag merge history">
                   {/* Table Header */}
-                  <div
-                    className="grid grid-cols-12 gap-4 px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10"
+                  <Grid
+                    cols={12}
+                    gap="md"
+                    className="px-4 py-2 text-xs font-semibold text-white/50 uppercase tracking-wider border-b border-white/10"
                     role="row"
                   >
                     <div className="col-span-2" role="columnheader">
@@ -195,65 +202,68 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                     <div className="col-span-2 text-right" role="columnheader">
                       {t('tags:actions')}
                     </div>
-                  </div>
+                  </Grid>
 
                   {/* Table Rows */}
                   {currentItems.map((entry) => (
                     <GlassCard
                       variant="accent"
-                      padding="sm"
+                      padding="none"
                       key={entry.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="grid grid-cols-12 gap-4 hover:border-white/20 transition-colors items-center"
                       role="row"
                     >
-                      {' '}
-                      <div className="col-span-2 text-xs text-white/50" role="cell">
-                        {formatDate(entry.mergedAt)}
-                      </div>
-                      <div className="col-span-3" role="cell">
-                        <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-500/30 inline-block overflow-hidden text-ellipsis max-w-full">
-                          {entry.targetTagName}
-                        </span>
-                      </div>
-                      <div className="col-span-3" role="cell">
-                        <span className="px-3 py-1.5 rounded-full bg-red-500/10 text-red-300/70 text-sm border border-red-500/20 inline-block line-through decoration-red-400/50 overflow-hidden text-ellipsis max-w-full">
-                          {entry.sourceTagName}
-                        </span>
-                      </div>
-                      <div className="col-span-2" role="cell">
-                        <span
-                          className={`px-2 py-1 rounded text-[10px] font-medium ${
-                            entry.mergedBy === 'auto'
-                              ? 'bg-purple-500/20 text-purple-200 border border-purple-500/30'
-                              : 'bg-green-500/20 text-green-200 border border-green-500/30'
-                          }`}
-                        >
-                          {formatMergeType(entry.mergedBy)}
-                        </span>
-                      </div>
-                      <div className="col-span-2 text-right flex justify-end" role="cell">
-                        {entry.itemIdsJson && (
-                          <Button
-                            onClick={() => handleUndoClick(entry)}
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            title={t('tags:undo')}
+                      <Grid
+                        cols={12}
+                        gap="md"
+                        className="p-3 items-center hover:bg-white/5 transition-colors"
+                      >
+                        <div className="col-span-2 text-xs text-white/50" role="cell">
+                          {formatDate(entry.mergedAt)}
+                        </div>
+                        <div className="col-span-3" role="cell">
+                          <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-500/30 inline-block overflow-hidden text-ellipsis max-w-full">
+                            {entry.targetTagName}
+                          </span>
+                        </div>
+                        <div className="col-span-3" role="cell">
+                          <span className="px-3 py-1.5 rounded-full bg-red-500/10 text-red-300/70 text-sm border border-red-500/20 inline-block line-through decoration-red-400/50 overflow-hidden text-ellipsis max-w-full">
+                            {entry.sourceTagName}
+                          </span>
+                        </div>
+                        <div className="col-span-2" role="cell">
+                          <span
+                            className={`px-2 py-1 rounded text-[10px] font-medium ${
+                              entry.mergedBy === 'auto'
+                                ? 'bg-purple-500/20 text-purple-200 border border-purple-500/30'
+                                : 'bg-green-500/20 text-green-200 border border-green-500/30'
+                            }`}
                           >
-                            <RotateCcw className="w-4 h-4 text-white/70 hover:text-white" />
-                          </Button>
-                        )}
-                      </div>
+                            {formatMergeType(entry.mergedBy)}
+                          </span>
+                        </div>
+                        <Flex className="col-span-2 text-right" justify="end" role="cell">
+                          {entry.itemIdsJson && (
+                            <Button
+                              onClick={() => handleUndoClick(entry)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              title={t('tags:undo')}
+                            >
+                              <RotateCcw className="w-4 h-4 text-white/70 hover:text-white" />
+                            </Button>
+                          )}
+                        </Flex>
+                      </Grid>
                     </GlassCard>
                   ))}
                 </div>
               )}
-            </div>
-            {/* Pagination */}
+            </Stack>
             {history.length > ITEMS_PER_PAGE && (
-              <div className="p-4 border-t border-white/10 flex items-center justify-between">
+              <Flex align="center" justify="between" className="p-4 border-t border-white/10">
                 <div className="text-sm text-white/50">
                   {t('tags:showingEntries', {
                     start: startIndex + 1,
@@ -261,7 +271,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                     total: history.length,
                   })}
                 </div>
-                <div className="flex items-center gap-2">
+                <Flex align="center" gap="sm">
                   <Button
                     onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                     disabled={currentPage === 1}
@@ -283,8 +293,8 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
                   >
                     <ChevronRight size={16} />
                   </Button>
-                </div>
-              </div>
+                </Flex>
+              </Flex>
             )}
           </GlassCard>
         </>
