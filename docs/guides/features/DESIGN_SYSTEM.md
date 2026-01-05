@@ -1,11 +1,12 @@
 # Design System - Lumina Portfolio
 
-**Version**: 1.0 (Phase 1 Complete)  
-**Date**: 2026-01-01
+**Version**: 1.1 (Phase 4 Complete)
+**Date**: 2026-01-05
 
 ---
 
 ## Table of Contents
+
 1. [Principles](#principles)
 2. [Design Tokens](#design-tokens)
 3. [UI Components](#ui-components)
@@ -17,13 +18,16 @@
 ## Principles
 
 ### Core Values
+
 - **Cohérence**: Tous les composants suivent les mêmes patterns visuels
 - **Réutilisabilité**: Code DRY (Don't Repeat Yourself)
 - **Maintenabilité**: Changements centralisés
 - **Accessibilité**: WCAG AA minimum
 
 ### Glassmorphism
+
 Le design system utilise un effet glassmorphism cohérent :
+
 - Backdrop blur standardisé
 - Opacité contrôlée
 - Borders subtiles
@@ -35,6 +39,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ### Colors
 
 #### Theme Colors (Dynamiques)
+
 ```css
 --color-primary: #3b82f6      /* Interface principale */
 --color-secondary: #a855f7    /* Intelligence AI */
@@ -44,6 +49,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ```
 
 #### Glass Colors
+
 ```css
 --color-glass-bg: rgba(10, 10, 10, 0.8)
 --color-glass-bg-accent: rgba(255, 255, 255, 0.05)
@@ -53,6 +59,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ```
 
 ### Spacing Scale
+
 ```css
 --spacing-xs: 4px
 --spacing-sm: 8px
@@ -64,6 +71,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ```
 
 ### Typography Scale
+
 ```css
 --text-xs: 12px
 --text-sm: 14px
@@ -74,6 +82,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ```
 
 ### Shadow Scale
+
 ```css
 --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05)
 --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1)
@@ -82,6 +91,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ```
 
 ### Border Radius Scale
+
 ```css
 --radius-sm: 6px
 --radius-md: 8px
@@ -92,6 +102,7 @@ Le design system utilise un effet glassmorphism cohérent :
 ```
 
 ### Z-Index Scale
+
 ```css
 --z-base: 0
 --z-grid-item: 10
@@ -100,6 +111,7 @@ Le design system utilise un effet glassmorphism cohérent :
 --z-drawer: 70
 --z-modal: 90
 --z-context-menu: 100
+--z-tooltip: 110
 --z-image-viewer: 110
 --z-overlay: 120
 ```
@@ -111,7 +123,8 @@ Le design system utilise un effet glassmorphism cohérent :
 ### Primitives
 
 #### Button
-**Variants**: `primary`, `secondary`, `ghost`, `danger`, `glass`, `glass-icon`, `close`, `nav-arrow`  
+
+**Variants**: `primary`, `secondary`, `ghost`, `danger`, `glass`, `glass-icon`, `close`, `nav-arrow`
 **Sizes**: `sm`, `md`, `lg`, `icon`, `icon-lg`, `icon-sm`
 
 ```tsx
@@ -126,72 +139,80 @@ import { Button } from "@/shared/components/ui";
 <Button variant="glass-icon" size="icon">
   <Icon action="settings" />
 </Button>
-
-// Bouton de fermeture
-<Button variant="close" size="icon">
-  <Icon action="close" />
-</Button>
 ```
 
 #### Input
-```tsx
-import { Input } from "@/shared/components/ui";
 
-<Input 
-  type="text"
-  placeholder="Search..."
-  leftIcon={<Icon action="search" />}
-/>
+```tsx
+import { Input } from '@/shared/components/ui';
+
+<Input type="text" placeholder="Search..." leftIcon={<Icon action="search" />} />;
 ```
 
 ### Surfaces
 
 #### GlassCard
-**Variants**: `base`, `accent`, `bordered`, `panel`, `card`, `overlay`  
+
+**Variants**: `base`, `accent`, `bordered`, `panel`, `card`, `overlay`
 **Props**: `padding` (none|sm|md|lg), `border` (boolean), `hoverEffect` (boolean)
 
 ```tsx
-import { GlassCard } from "@/shared/components/ui";
+import { GlassCard } from '@/shared/components/ui';
 
 // Card standard
 <GlassCard variant="card" padding="md">
   {content}
-</GlassCard>
-
-// Panneau latéral
-<GlassCard variant="panel" border={false}>
-  {drawer content}
-</GlassCard>
-
-// Overlay plein écran
-<GlassCard variant="overlay" padding="none">
-  {overlay content}
-</GlassCard>
+</GlassCard>;
 ```
 
-#### Modal
-```tsx
-import { Modal } from "@/shared/components/ui";
+### Overlays (New in Phase 4)
 
-<Modal 
-  isOpen={isOpen} 
-  onClose={onClose}
-  title="Settings"
-  size="md"
->
+#### Drawer
+
+Slide-in panel for side content.
+
+```tsx
+<Drawer isOpen={isOpen} onClose={close} side="right" size="md">
   {content}
-</Modal>
+</Drawer>
+```
+
+#### Popover
+
+Floating content trigger.
+
+```tsx
+<Popover trigger={<Button>Open</Button>} content={<div>Menu</div>} placement="bottom" />
+```
+
+#### Tooltip
+
+Simple hover hint.
+
+```tsx
+<Tooltip content="Helper text">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+#### Dialog
+
+Alert/Confirmation modal.
+
+```tsx
+<Dialog isOpen={isOpen} title="Delete?" description="Are you sure?" onClose={close} />
 ```
 
 ### Utilities
 
 #### Icon
+
 **69 icônes centralisées**
 
 ```tsx
-import { Icon } from "@/shared/components/Icon";
+import { Icon } from '@/shared/components/Icon';
 
-<Icon action="settings" size={20} />
+<Icon action="settings" size={20} />;
 ```
 
 ---
@@ -201,71 +222,44 @@ import { Icon } from "@/shared/components/Icon";
 ### Patterns à Utiliser
 
 #### ✅ Boutons
+
 ```tsx
 // Correct: Utiliser le composant Button
-<Button variant="primary" size="md">Click Me</Button>
-
-// ❌ À éviter: Bouton HTML avec styles inline
-<button className="px-4 py-2 bg-primary...">Click Me</button>
+<Button variant="primary" size="md">
+  Click Me
+</Button>
 ```
 
 #### ✅ Surfaces Glass
+
 ```tsx
 // Correct: Utiliser GlassCard
 <GlassCard variant="card">Content</GlassCard>
-
-// ❌ À éviter: Styles glass inline
-<div className="bg-glass-bg backdrop-blur-md...">Content</div>
 ```
 
-#### ✅ Icônes
-```tsx
-// Correct: Registre centralisé
-<Icon action="settings" size={20} />
+#### ✅ Overlays Estndardisés
 
-// ❌ À éviter: Import direct de Lucide
-import { Settings } from "lucide-react";
-<Settings size={20} />
-```
-
-### Spacing
-Utiliser les tokens CSS au lieu de classes Tailwind quand possible :
-```css
-/* Correct */
-padding: var(--spacing-md);
-
-/* Acceptable avec Tailwind */
-className="p-4"
-```
+Utiliser `Drawer` au lieu de créer des `motion.div` custom pour les panneaux latéraux.
+Utiliser `Dialog` pour les confirmations au lieu du gros `Modal`.
 
 ---
 
 ## Accessibility
 
 ### Standards
+
 - **WCAG AA** minimum
 - **Contraste de couleurs**: Minimum 4.5:1
 - **Focus visible**: Tous les éléments interactifs
 - **ARIA labels**: Sur tous les boutons icône
 
 ### Exemples
+
 ```tsx
 // Bouton accessible
-<Button 
-  variant="close" 
-  aria-label="Close dialog"
->
+<Button variant="close" aria-label="Close dialog">
   <Icon action="close" />
 </Button>
-
-// Modal accessible
-<Modal 
-  isOpen={isOpen} 
-  onClose={onClose}
-  title="Settings"  // Utilisé pour aria-labelledby
->
-  {content}
-</Modal>
 ```
 
 ---
@@ -273,31 +267,8 @@ className="p-4"
 ## Layout Components (Phase 2 - Complete)
 
 Les composants de layout suivants sont maintenant disponibles :
+
 - **`Stack`** (`ui/layout/Stack.tsx`) - Empilage vertical/horizontal
 - **`Flex`** (`ui/layout/Flex.tsx`) - Wrapper flexbox déclaratif
 - **`Grid`** (`ui/layout/Grid.tsx`) - Grid responsive
 - **`Container`** (`ui/layout/Container.tsx`) - Conteneur responsive
-
-```tsx
-import { Flex, Stack, Grid, Container } from "@/shared/components/ui/layout";
-
-// Flex déclaratif
-<Flex justify="between" align="center" gap="md">
-  {content}
-</Flex>
-
-// Stack vertical
-<Stack spacing="lg">
-  {items}
-</Stack>
-
-// Grid responsive
-<Grid cols={3} gap="md">
-  {cards}
-</Grid>
-```
-
----
-
-**Dernière mise à jour**: 02/01/2026  
-**Maintenu par**: Équipe technique

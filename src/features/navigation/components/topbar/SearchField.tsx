@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { Search, Tag, X } from "lucide-react";
-import { Button, GlassCard, Flex } from "../../../../shared/components/ui";
+import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Search, Tag, X } from 'lucide-react';
+import { Button, GlassCard, Flex } from '../../../../shared/components/ui';
 
 interface SearchFieldProps {
   value: string;
@@ -20,7 +20,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
   onTagToggle,
   onClearTags,
 }) => {
-  const { t } = useTranslation("navigation");
+  const { t } = useTranslation('navigation');
   const [isFocused, setIsFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,15 +28,12 @@ export const SearchField: React.FC<SearchFieldProps> = ({
   // Close suggestions on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsFocused(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Filter suggestions based on input
@@ -55,7 +52,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
   const handleSuggestionClick = (tag: string) => {
     if (onTagToggle) {
       onTagToggle(tag);
-      onChange(""); // Clear search after selecting tag
+      onChange(''); // Clear search after selecting tag
       setIsFocused(false);
     }
   };
@@ -65,8 +62,8 @@ export const SearchField: React.FC<SearchFieldProps> = ({
       ref={containerRef}
       className={`relative flex items-center bg-glass-bg-accent rounded-lg border transition-all shrink-0 ${
         isFocused
-          ? "w-48 sm:w-80 border-blue-500/50 ring-1 ring-blue-500/20"
-          : "w-32 sm:w-56 border-glass-border-light"
+          ? 'w-48 sm:w-80 border-blue-500/50 ring-1 ring-blue-500/20'
+          : 'w-32 sm:w-56 border-glass-border-light'
       }`}
     >
       <Flex align="center" className="w-full px-3 py-2 overflow-hidden">
@@ -75,21 +72,32 @@ export const SearchField: React.FC<SearchFieldProps> = ({
         {/* Active Tag Chips */}
         {activeTags.size > 0 && (
           <Flex align="center" gap="xs" className="mr-2 overflow-hidden shrink-0">
-             {Array.from(activeTags).slice(0, 2).map(tag => (
-                <div key={tag} className="flex items-center bg-blue-500/20 text-blue-300 text-xs px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                   <span className="max-w-[60px] truncate">{tag}</span>
-                   <button 
-                     onClick={(e) => { e.stopPropagation(); onTagToggle?.(tag); }}
-                     className="ml-1 hover:text-white"
-                   >
-                     <X size={10} />
-                   </button>
+            {Array.from(activeTags)
+              .slice(0, 2)
+              .map((tag) => (
+                <div
+                  key={tag}
+                  className="flex items-center bg-blue-500/20 text-blue-300 text-xs px-1.5 py-0.5 rounded-full whitespace-nowrap"
+                >
+                  <span className="max-w-[60px] truncate">{tag}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTagToggle?.(tag);
+                    }}
+                    aria-label="Remove tag filter"
+                    className="ml-1 h-3 w-3 p-0 hover:text-white hover:bg-transparent"
+                  >
+                    <X size={10} />
+                  </Button>
                 </div>
-             ))}
-             {activeTags.size > 2 && (
-                <div className="text-xs text-blue-400 px-1">+{activeTags.size - 2}</div>
-             )}
-             
+              ))}
+            {activeTags.size > 2 && (
+              <div className="text-xs text-blue-400 px-1">+{activeTags.size - 2}</div>
+            )}
+
             <Button
               variant="close"
               size="icon-sm"
@@ -107,7 +115,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
         <input
           type="text"
-          placeholder={activeTags.size > 0 ? "Add tag..." : t('searchPlaceholder')}
+          placeholder={activeTags.size > 0 ? 'Add tag...' : t('searchPlaceholder')}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
@@ -117,7 +125,10 @@ export const SearchField: React.FC<SearchFieldProps> = ({
 
       {/* Autocomplete Dropdown */}
       {isFocused && suggestions.length > 0 && (
-        <GlassCard variant="overlay" className="absolute top-full left-0 right-0 mt-2 border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100">
+        <GlassCard
+          variant="overlay"
+          className="absolute top-full left-0 right-0 mt-2 border border-glass-border rounded-xl shadow-2xl overflow-hidden z-100"
+        >
           <div className="px-3 py-2 text-xs text-gray-500 font-medium uppercase tracking-wider border-b border-white/5">
             {t('suggestions')}
           </div>
