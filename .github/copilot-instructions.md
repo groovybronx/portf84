@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-Lumina Portfolio is a **Local-First** desktop photo gallery application built with **Tauri v2**, **React 19**, and **SQLite**. The app features AI-powered image analysis via Gemini, hybrid folder/collection management, and an optimized UI with infinite scroll and lazy loading.
+Lumina Portfolio is a **Local-First** desktop photo gallery application built with **Tauri v2**, **React 18.3.1**, and **SQLite**. The app features AI-powered image analysis via Gemini, hybrid folder/collection management, and an optimized UI with infinite scroll and lazy loading.
 
 ## Tech Stack
 
-- **Frontend**: React 19, TypeScript, Tailwind CSS v4, Vite
+- **Frontend**: React 18.3.1, TypeScript, Tailwind CSS v4, Vite
 - **Backend**: Tauri v2 (Rust), SQLite
 - **AI**: Google Gemini API (@google/genai)
 - **Testing**: Vitest, React Testing Library
