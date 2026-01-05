@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Trash2, Merge, CheckSquare, Square, BarChart3, Plus, Tag as TagIcon } from 'lucide-react';
-import { Button, ConfirmDialog, Flex, Stack } from '@/shared/components/ui';
+import { Button, ConfirmDialog, Flex, Stack, GlassCard } from '@/shared/components/ui';
 import { getAllTags, deleteTag, mergeTags } from '@/services/storage/tags';
 import { ParsedTag } from '@/shared/types/database';
 
@@ -198,13 +198,16 @@ export const ManageTab: React.FC = () => {
             {tags.map((tag) => {
               const isSelected = selectedTagIds.has(tag.id);
               return (
-                <div
+                <GlassCard
                   key={tag.id}
+                  variant="accent"
+                  padding="sm"
+                  border
                   onClick={() => toggleSelection(tag.id)}
-                  className={`bg-glass-bg-accent border rounded-lg p-3 cursor-pointer transition-all flex items-center gap-3 ${
+                  className={`cursor-pointer transition-all flex items-center gap-3 ${
                     isSelected
                       ? 'border-blue-500/50 bg-blue-500/10'
-                      : 'border-glass-border hover:border-glass-border-light'
+                      : 'hover:border-glass-border-light'
                   }`}
                 >
                   <Flex align="center" gap="md" className="flex-1">
@@ -224,7 +227,7 @@ export const ManageTab: React.FC = () => {
                       {tag.type === 'manual' ? t('tags:manualTags') : t('tags:aiTags')}
                     </span>
                   </Flex>
-                </div>
+                </GlassCard>
               );
             })}
           </Stack>
@@ -241,9 +244,12 @@ export const ManageTab: React.FC = () => {
             </h3>
           </Flex>
 
-          <Stack
+          <GlassCard
+            variant="accent"
+            padding="md"
+            border
+            as={Stack}
             spacing="md"
-            className="bg-glass-bg-accent border border-glass-border rounded-lg p-4"
           >
             <Stack spacing="xs">
               <div className="text-xs text-gray-500 uppercase tracking-wider">
@@ -279,7 +285,7 @@ export const ManageTab: React.FC = () => {
                 </Stack>
               </>
             )}
-          </Stack>
+          </GlassCard>
 
           <div className="text-[10px] text-gray-600 text-center px-2">
             {t('tags:keyboardShortcutTip')}

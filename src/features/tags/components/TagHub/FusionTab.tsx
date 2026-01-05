@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { Merge, RefreshCw, Tag as TagIcon, ArrowLeftRight, History } from 'lucide-react';
-import { Button, ConfirmDialog, Flex, Stack } from '@/shared/components/ui';
+import { Button, ConfirmDialog, Flex, Stack, GlassCard } from '@/shared/components/ui';
 import { analyzeTagRedundancy, TagGroup } from '@/services/tagAnalysisService';
 import { mergeTags, ignoreTagMatch } from '@/services/storage/tags';
 import { TagMergeHistory } from '../TagMergeHistory';
@@ -149,7 +149,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
           </Button>
           <Button
             onClick={loadAnalysis}
-            className="px-3 py-2 bg-glass-bg-accent hover:bg-glass-bg-accent-hover border border-glass-border rounded-lg text-gray-300 text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-3 py-2 border border-glass-border rounded-lg text-gray-300 text-sm font-medium transition-colors flex items-center gap-2 bg-glass-bg hover:bg-glass-bg-active"
           >
             <RefreshCw size={16} />
             {t('tags:refresh')}
@@ -217,12 +217,16 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
               const effectiveCandidates = allTags.filter((t) => t.id !== effectiveTarget.id);
 
               return (
-                <Flex
+                <GlassCard
+                  variant="accent"
+                  padding="md"
+                  border
+                  as={Flex}
                   key={group.target.id}
                   align="center"
                   justify="between"
                   gap="md"
-                  className="bg-glass-bg-accent border border-glass-border rounded-lg p-4 group-hover:border-glass-border transition-colors"
+                  className="group-hover:border-glass-border transition-colors"
                 >
                   <Flex align="center" gap="lg" className="flex-1">
                     <Stack spacing="xs" className="w-fit">
@@ -289,7 +293,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
                       {t('tags:ignoreMatch')}
                     </Button>
                   </Stack>
-                </Flex>
+                </GlassCard>
               );
             })}
           </Stack>

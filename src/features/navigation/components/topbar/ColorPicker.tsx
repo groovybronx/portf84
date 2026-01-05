@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { XCircle, Eye, EyeOff, Palette } from 'lucide-react';
 import { COLOR_PALETTE } from '../../../../shared/types';
-import { Button, Flex } from '../../../../shared/components/ui';
+import { Button, Flex, GlassCard } from '../../../../shared/components/ui';
 
 interface ColorPickerProps {
   activeColorFilter: string | null;
@@ -21,10 +21,14 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 }) => {
   const { t } = useTranslation('navigation');
   return (
-    <Flex
+    <GlassCard
+      variant="accent"
+      padding="sm"
+      border
+      as={Flex}
       align="center"
       gap="sm"
-      className="hidden lg:flex bg-glass-bg-accent px-3 py-2 rounded-xl border border-glass-border-light shrink-0"
+      className="hidden lg:flex shrink-0"
     >
       {Object.entries(COLOR_PALETTE).map(([key, hex]) => (
         <Button
@@ -61,6 +65,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       >
         {showColorTags ? <Eye size={14} /> : <EyeOff size={14} />}
       </Button>
-    </Flex>
+    </GlassCard>
   );
 };

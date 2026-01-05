@@ -60,10 +60,10 @@ export const SearchField: React.FC<SearchFieldProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex items-center bg-glass-bg-accent rounded-lg border transition-all shrink-0 ${
+      className={`relative flex items-center rounded-lg border transition-all shrink-0 ${
         isFocused
-          ? 'w-48 sm:w-80 border-blue-500/50 ring-1 ring-blue-500/20'
-          : 'w-32 sm:w-56 border-glass-border-light'
+          ? 'w-48 sm:w-80 border-blue-500/50 ring-1 ring-blue-500/20 bg-glass-bg-accent'
+          : 'w-32 sm:w-56 border-glass-border-light bg-glass-bg-accent'
       }`}
     >
       <Flex align="center" className="w-full px-3 py-2 overflow-hidden">

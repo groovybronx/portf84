@@ -118,7 +118,7 @@ export const TagHub: React.FC<TagHubProps> = ({
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                         isActive
                           ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
-                          : 'bg-glass-bg-accent text-gray-400 hover:bg-glass-bg-accent-hover hover:text-gray-300'
+                          : 'text-gray-400 hover:text-gray-300 bg-glass-bg hover:bg-glass-bg-active'
                       }`}
                     >
                       <Icon size={16} />

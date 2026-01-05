@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FolderPlus, FolderInput, FolderHeart, Plus, ArrowLeft } from 'lucide-react';
 import { Folder } from '../../../shared/types';
-import { Modal, Button, Input, Flex, Stack } from '../../../shared/components/ui';
+import { Modal, Button, Input, Flex, Stack, GlassCard } from '../../../shared/components/ui';
 
 interface CreateFolderModalProps {
   isOpen: boolean;
@@ -158,9 +158,9 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
             onClick={() => setIsCreating(true)}
             className="w-full justify-start gap-4 p-3 rounded-xl border border-dashed border-glass-border/20 hover:border-purple-500/50 hover:bg-purple-500/10 text-gray-300 hover:text-white h-auto"
           >
-            <div className="w-10 h-10 rounded-lg bg-glass-bg-accent flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors">
+            <GlassCard variant="accent" padding="sm" className="w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors">
               <Plus size={20} />
-            </div>
+            </GlassCard>
             <Stack spacing="none" className="flex-1">
               <p className="font-medium">Create New Collection</p>
               <p className="text-xs text-gray-500">Add folder and move items</p>

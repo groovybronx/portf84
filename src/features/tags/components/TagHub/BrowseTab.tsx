@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Grid, List, Tag as TagIcon, Sparkles } from 'lucide-react';
-import { Button, Flex, Stack, Grid as LayoutGrid } from '@/shared/components/ui';
+import { Button, Flex, Stack, Grid as LayoutGrid, GlassCard } from '@/shared/components/ui';
 import { getTagsWithUsageStats, TagWithUsage } from '@/services/storage/tags';
 import { ParsedTag } from '@/shared/types/database';
 
@@ -90,7 +90,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         </div>
 
         {/* View Mode Toggle */}
-        <Flex gap="xs" className="bg-glass-bg-accent rounded-lg p-1 shrink-0">
+        <GlassCard variant="accent" padding="sm" as={Flex} gap="xs" className="shrink-0">
           <Button
             onClick={() => setViewMode('grid')}
             aria-label={t('tags:gridView')}
@@ -113,7 +113,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
           >
             <List size={16} />
           </Button>
-        </Flex>
+        </GlassCard>
       </Flex>
 
       {/* Filters */}
@@ -131,7 +131,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
             className={`px-3 py-1.5 text-xs rounded-full whitespace-nowrap ${
               filterMode === filter.id
                 ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
-                : 'bg-glass-bg-accent text-gray-400 hover:bg-glass-bg-accent-hover'
+                : 'text-gray-400 hover:bg-glass-bg-active bg-glass-bg'
             }`}
           >
             {filter.label}
@@ -156,16 +156,19 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
       ) : viewMode === 'grid' ? (
         <LayoutGrid cols={4} gap="md" className="sm:grid-cols-3 grid-cols-2">
           {filteredTags.map((tag) => (
-            <div
+            <GlassCard
               key={tag.id}
-              className="bg-glass-bg-accent border border-glass-border rounded-lg p-4 hover:border-blue-500/50 transition-all cursor-pointer group"
+              variant="accent"
+              padding="md"
+              border
+              className="hover:border-blue-500/50 transition-all cursor-pointer group"
               onClick={() => onSelectTag?.(tag.name)}
             >
               <Flex align="start" justify="between" className="mb-2">
                 <span className="text-sm font-medium text-white truncate flex-1">{tag.name}</span>
-                <span className="text-xs text-gray-500 bg-glass-bg-accent px-1.5 py-0.5 rounded">
+                <GlassCard variant="accent" padding="sm" className="text-xs text-gray-500">
                   {tag.usageCount}
-                </span>
+                </GlassCard>
                 {tag.type === 'ai' && (
                   <Sparkles className="w-3 h-3 text-purple-400 shrink-0 ml-1" />
                 )}
@@ -173,15 +176,18 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
               <div className="text-xs text-gray-500">
                 {tag.type === 'manual' ? t('tags:manualTags') : t('tags:aiTags')}
               </div>
-            </div>
+            </GlassCard>
           ))}
         </LayoutGrid>
       ) : (
         <Stack spacing="sm">
           {filteredTags.map((tag) => (
-            <div
+            <GlassCard
               key={tag.id}
-              className="bg-glass-bg-accent border border-glass-border rounded-lg p-3 hover:border-blue-500/50 transition-all cursor-pointer flex items-center justify-between group"
+              variant="accent"
+              padding="sm"
+              border
+              className="hover:border-blue-500/50 transition-all cursor-pointer flex items-center justify-between group"
               onClick={() => onSelectTag?.(tag.name)}
             >
               <Flex align="center" gap="sm">
@@ -193,7 +199,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
               <div className="text-xs text-gray-500">
                 {tag.type === 'manual' ? t('tags:manualTags') : t('tags:aiTags')}
               </div>
-            </div>
+            </GlassCard>
           ))}
         </Stack>
       )}

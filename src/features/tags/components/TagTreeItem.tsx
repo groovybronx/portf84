@@ -25,12 +25,16 @@ export const TagTreeItem: React.FC<TagTreeItemProps> = ({
   hasChildren = false,
 }) => {
   return (
-    <motion.div
+    <GlassCard
+      variant="accent"
+      padding="sm"
+      border={false}
+      as={motion.div}
       layout
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 10 }}
-      className="group flex items-center gap-2 p-2 rounded-lg hover:bg-glass-bg-accent transition-colors"
+      className="group flex items-center gap-2 hover:border-glass-border-light transition-colors"
       style={{ paddingLeft: `${(level * 12) + 8}px` }}
     >
       {hasChildren && (

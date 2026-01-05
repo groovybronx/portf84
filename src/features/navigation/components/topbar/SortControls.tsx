@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowUpDown } from "lucide-react";
 import { SortOption, SortDirection } from "../../../../shared/types";
-import { Button, Flex } from "../../../../shared/components/ui";
+import { Button, Flex, GlassCard } from "../../../../shared/components/ui";
 
 interface SortControlsProps {
 	sortOption: SortOption;
@@ -20,10 +20,10 @@ export const SortControls: React.FC<SortControlsProps> = ({
 	const { t } = useTranslation("navigation");
 	return (
 		<Flex align="center" gap="xs" className="hidden lg:flex">
-			<select
+			<GlassCard variant="accent" padding="sm" border as="select"
 				value={sortOption}
-				onChange={(e) => onSortChange(e.target.value as SortOption)}
-				className="bg-glass-bg-accent text-white border border-glass-border-light text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer w-20 appearance-none transition-colors hover:bg-glass-bg-active"
+				onChange={(e: any) => onSortChange(e.target.value as SortOption)}
+				className="text-white text-sm focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer w-20 appearance-none transition-colors hover:bg-glass-bg-active"
 			>
 				<option value="date" className="bg-gray-900">
 					{t('date')}
@@ -34,18 +34,19 @@ export const SortControls: React.FC<SortControlsProps> = ({
 				<option value="size" className="bg-gray-900">
 					{t('size')}
 				</option>
-			</select>
-			<Button
-				variant="ghost"
-				size="icon"
+			</GlassCard>
+			<GlassCard
+				variant="accent"
+				padding="sm"
+				as={Button}
 				onClick={onSortDirectionChange}
-				className="bg-glass-bg-accent border-glass-border-light hover:bg-glass-bg-active text-gray-400"
+				className="text-gray-400 hover:text-white cursor-pointer"
 			>
 				<ArrowUpDown
 					size={16}
 					className={sortDirection === "desc" ? "transform rotate-180" : ""}
 				/>
-			</Button>
+			</GlassCard>
 		</Flex>
 	);
 };

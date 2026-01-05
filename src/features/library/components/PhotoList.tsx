@@ -89,7 +89,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
 							)}
 
 							{/* Thumbnail */}
-							<div className={`shrink-0 w-32 h-32 rounded-lg overflow-hidden bg-glass-bg-accent ${!loadedItems.has(item.id) ? "animate-pulse" : ""}`}>
+							<GlassCard variant="accent" padding="none" className={`shrink-0 w-32 h-32 overflow-hidden ${!loadedItems.has(item.id) ? "animate-pulse" : ""}`}>
 								<img
 									src={item.url}
 									alt={item.name}
@@ -103,7 +103,7 @@ export const PhotoList: React.FC<PhotoListProps> = ({
                                         });
                                     }}
 								/>
-							</div>
+							</GlassCard>
 
 							{/* Info */}
 							<div className="flex-1 min-w-0">

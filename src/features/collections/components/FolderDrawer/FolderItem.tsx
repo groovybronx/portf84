@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Icon, IconAction } from '../../../../shared/components/Icon';
-import { Button, Flex, Stack } from '../../../../shared/components/ui';
+import { Button, Flex, Stack, GlassCard } from '../../../../shared/components/ui';
 import { Folder as FolderType } from '../../../../shared/types';
 
 interface FolderItemProps {
@@ -25,13 +25,17 @@ export const FolderItem: React.FC<FolderItemProps> = ({
 }) => {
   const { t } = useTranslation('library');
   return (
-    <Flex
+    <GlassCard
+      variant={isActive ? 'card' : 'accent'}
+      padding="sm"
+      border={isActive}
+      as={Flex}
       align="center"
       gap="sm"
-      className={`group relative p-2 rounded-lg cursor-pointer transition-all text-sm ${
+      className={`group relative cursor-pointer transition-all text-sm ${
         isActive
-          ? 'bg-glass-bg-active text-white border border-glass-border'
-          : 'text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent'
+          ? 'text-white'
+          : 'text-gray-400 hover:text-white'
       }`}
       onClick={() => onSelect(folder.id)}
     >
@@ -80,6 +84,6 @@ export const FolderItem: React.FC<FolderItemProps> = ({
           <Icon action="delete" size={14} />
         </Button>
       )}
-    </Flex>
+    </GlassCard>
   );
 };
