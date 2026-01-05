@@ -99,6 +99,30 @@ npm run test
 
 ---
 
+## 🔧 Dépannage
+
+### Erreur Build Tauri : `undefined is not an object (evaluating 'Z.Activity')`
+
+**Symptôme :** L'application plante au démarrage en production avec une erreur React dans le bundle vendor.
+
+**Cause :** React 19 nécessite une configuration explicite du plugin Vite pour préserver les APIs internes (comme `Activity`).
+
+**Solution :** Le fichier `vite.config.ts` est déjà configuré correctement avec :
+```typescript
+react({
+  jsxRuntime: "automatic",
+  jsxImportSource: "react",
+})
+```
+
+Si vous rencontrez toujours l'erreur :
+1. Vérifiez que toutes les dépendances sont à jour : `npm install`
+2. Supprimez `node_modules` et le cache : `rm -rf node_modules dist && npm install`
+3. Assurez-vous que `react` et `react-dom` sont en version 19.2+
+4. Vérifiez que vous n'utilisez pas `import * as React` (utiliser des imports nommés)
+
+---
+
 ## 📚 Documentation
 
 Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
