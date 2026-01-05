@@ -154,11 +154,45 @@ npm run test             # Run tests
 - Never commit `.env` files or secrets
 
 ### Development Workflow
-- Feature branches: `feature/description` or `fix/description`
-- Keep commits atomic and well-described
 - Test locally before pushing
 - Frontend changes: verify in browser (port 1420)
 - Tauri changes: test in native app window
+
+### Git Workflow
+
+#### Branch Strategy
+- **Main branch**: `main` - production-ready code
+- **Feature branches**: `feature/description` or `feature/component-name`
+- **Bug fixes**: `fix/description` or `fix/issue-number`
+- **Hotfixes**: `hotfix/description` for critical production issues
+- Branch naming: use lowercase with hyphens (e.g., `feature/ai-batch-processing`)
+
+#### Merge Strategy
+- Use **squash and merge** for pull requests to keep main branch history clean
+- Single commit per PR in main branch
+- Preserve detailed commit history in feature branches for development context
+
+#### Commit Message Conventions
+- Use descriptive, imperative mood messages (e.g., "Add batch AI processing feature")
+- Format: `<type>: <description>` for structured commits
+  - `feat:` - New feature
+  - `fix:` - Bug fix
+  - `docs:` - Documentation changes
+  - `refactor:` - Code refactoring
+  - `test:` - Adding or updating tests
+  - `chore:` - Maintenance tasks
+- Keep commits atomic and focused on single logical changes
+- Reference issue numbers when applicable (e.g., "fix: Resolve memory leak in image loader (#123)")
+
+#### Pull Request Process
+1. Create feature branch from main
+2. Make focused, well-tested changes
+3. Update documentation if needed
+4. Run linters, build, and tests locally
+5. Open PR with clear description of changes
+6. Address code review feedback
+7. Squash and merge after approval
+8. Delete feature branch after merge
 
 ---
 
@@ -196,8 +230,6 @@ const LibraryDispatchContext = createContext<Dispatch>();
 - `services/storage/`: SQLite database operations (metadata, tags, collections, folders)
 - `services/tagAnalysisService.ts`: Tag deduplication and similarity analysis
 - `services/secureStorage.ts`: Secure API key storage
-- Keep services pure and testable - no React dependenciesing
-- `storageService.ts`: SQLite database operations (CRUD)
 - Keep services pure and testable - no React dependencies
 
 ---
@@ -246,10 +278,8 @@ const LibraryDispatchContext = createContext<Dispatch>();
 - Project docs: `/docs/guides/project/` (CHANGELOG.md, bonne-pratique.md, KnowledgeBase/)
 - Audit reports: `/docs/AUDIT/`
 - User-facing docs: README.md
-- Use Markdown for all documentation
-- Include code examples where helpful
-- Technical docs: `/docs` directory (ARCHITECTURE.md, COMPONENTS.md, etc.)
-- User-facing docs: README.md
+- Copilot docs: `.github/copilot/` (EXAMPLES.md, README.md, REGLES_VERIFICATION.md)
+- Custom agents: `.github/agents/` (20+ specialized agents for different domains)
 - Use Markdown for all documentation
 - Include code examples where helpful
 
@@ -330,17 +360,11 @@ const LibraryDispatchContext = createContext<Dispatch>();
 - @tanstack/react-virtual 3.13.13
 - fuse.js 7.0.0
 - nanoid 5.1.6
-### Branch Strategy
-### Useful Aliases
-- `@/*` → `./*` (root-level imports, including src/)
-
 ### Important Conventions
-- Path alias resolves to project root, not just src/
 - Use tabs for indentation (not spaces)
 - Double quotes for strings
 - Semicolons at end of statements
-- Feature-based architecture with barrel exports (index.ts)fter merging
-- Regularly sync with main branch
+- Feature-based architecture with barrel exports (index.ts)
 
 ---
 
@@ -361,8 +385,122 @@ const LibraryDispatchContext = createContext<Dispatch>();
 - Vite config: `vite.config.ts`
 - TypeScript config: `tsconfig.json`
 
-### Useful Aliases
-- `@/*` → `./src/*`
+### Path Aliases
+- `@/*` → `./src/*` (configured in tsconfig.json)
+
+---
+
+## Custom Agents
+
+This project uses **20+ specialized GitHub Copilot agents** for different domains and tasks. These agents provide expert assistance for specific areas of the codebase.
+
+### Available Agents
+
+Agents are located in `.github/agents/` and include:
+
+#### Domain Agents
+- **project-architecture** - Overall architecture and structure
+- **react-frontend** - React 19, TypeScript, Tailwind CSS v4
+- **tauri-rust-backend** - Rust backend and Tauri v2
+- **database-sqlite** - SQLite schema and queries
+- **ai-gemini-integration** - AI features and Gemini API
+- **testing-vitest** - Vitest and React Testing Library
+- **i18n-manager** - Internationalization (i18next)
+
+#### Quality & Maintenance Agents
+- **code-cleaner** - Code cleanup and optimization
+- **code-quality-auditor** - Quality audits and technical debt
+- **bug-hunter** - Bug detection and analysis
+- **security-auditor** - Security vulnerabilities and best practices
+- **performance-optimizer** - Performance bottlenecks and optimization
+- **test-coverage-improver** - Test coverage improvements
+
+#### Workflow Agents
+- **meta-orchestrator** - Coordinates agents and manages workflow
+- **pr-resolver** - PR analysis and conflict resolution
+- **refactoring-tracker** - Multi-phase refactoring tracking
+- **migration-assistant** - Version migrations and updates
+- **dependency-manager** - Dependency management and updates
+- **documentation-generator** - Documentation generation and maintenance
+- **metrics-analyzer** - Project health metrics and statistics
+
+### Using Custom Agents
+
+To leverage custom agents effectively:
+1. **Consult the agent README**: See `.github/agents/README.md` for detailed agent descriptions
+2. **Choose the right agent**: Select the agent matching your task domain
+3. **Provide context**: Give the agent relevant context and specific instructions
+4. **Follow recommendations**: Apply agent suggestions to maintain code quality
+
+**Example**: When working on React components, consult the `react-frontend` agent. For database schema changes, use the `database-sqlite` agent.
+
+---
+
+## Code Examples
+
+For concrete code examples and patterns, see **`.github/copilot/EXAMPLES.md`**.
+
+The examples file includes:
+- React component patterns (functional components, hooks, state management)
+- TypeScript typing examples (props, interfaces, utility types)
+- Tailwind CSS styling patterns (glass morphism, responsive design)
+- Custom hooks implementation
+- Context API patterns
+- Service layer examples
+- Testing patterns with Vitest and React Testing Library
+- i18n integration examples
+
+**Quick Examples**:
+
+### React Component with TypeScript
+```typescript
+import React, { useState } from "react";
+import { useLibrary } from "@/shared/contexts/LibraryContext";
+
+export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, isSelected, onSelect }) => {
+	return (
+		<div 
+			className="relative cursor-pointer backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg overflow-hidden"
+			onClick={() => onSelect(photo.id)}
+		>
+			<img 
+				src={photo.path} 
+				alt={photo.name}
+				className="w-full h-full object-cover"
+			/>
+		</div>
+	);
+};
+
+interface PhotoCardProps {
+	photo: Photo;
+	isSelected: boolean;
+	onSelect: (id: string) => void;
+}
+```
+
+### Custom Hook with TypeScript
+```typescript
+export const usePhotoSelection = () => {
+	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+	
+	const toggleSelection = (id: string) => {
+		setSelectedIds(prev => {
+			const next = new Set(prev);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	};
+	
+	return { selectedIds, toggleSelection };
+};
+```
+
+**See `.github/copilot/EXAMPLES.md` for more complete examples and patterns.**
 
 ---
 
