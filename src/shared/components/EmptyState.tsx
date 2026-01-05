@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FolderOpen, Sparkles } from "lucide-react";
+import { GlassCard } from "./ui";
 
 interface EmptyStateProps {
 	title?: string;
@@ -26,7 +27,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 				{/* Animated Icon */}
 				<div className="relative inline-block">
 					<div className="absolute inset-0 bg-primary blur-xl opacity-20 rounded-full"></div>
-					<motion.div
+					<GlassCard
+						variant="accent"
+						padding="lg"
+						border={false}
+						as={motion.div}
 						animate={{
 							scale: [1, 1.1, 1],
 							rotate: [0, 5, -5, 0],
@@ -36,7 +41,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 							repeat: Infinity,
 							ease: "easeInOut",
 						}}
-						className="relative z-10 p-6 bg-glass-bg-accent rounded-full"
+						className="relative z-10 rounded-full"
 					>
 						<FolderOpen className="w-16 h-16 text-primary/70" strokeWidth={1.5} />
 						<motion.div
@@ -53,7 +58,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 						>
 							<Sparkles className="w-6 h-6 text-yellow-400" />
 						</motion.div>
-					</motion.div>
+					</GlassCard>
 				</div>
 
 				{/* Text Content */}

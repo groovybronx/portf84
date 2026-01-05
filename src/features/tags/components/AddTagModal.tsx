@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tag, X, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button, GlassCard } from '../../../shared/components/ui';
+import { Button, GlassCard, Flex, Stack } from '../../../shared/components/ui';
 
 interface AddTagModalProps {
   isOpen: boolean;
@@ -66,69 +66,71 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
+              <Flex align="center" justify="between" className="mb-4">
+                <Flex align="center" gap="sm">
                   <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
                     <Tag size={20} />
                   </div>
                   <h2 className="text-xl font-bold text-white">{t('tags:addTagTitle')}</h2>
-                </div>
+                </Flex>
                 <Button variant="close" size="icon" onClick={onClose}>
                   <X size={20} />
                 </Button>
-              </div>
+              </Flex>
 
               <p className="text-sm text-gray-400 mb-4">
                 {t('tags:addingTagTo', { count: selectedCount })}.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={tag}
-                    onChange={(e) => {
-                      setTag(e.target.value);
-                      setShowSuggestions(true);
-                    }}
-                    onFocus={() => setShowSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder={t('tags:enterTagName')}
-                    className="w-full bg-black/40 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
-                    autoFocus
-                  />
+              <form onSubmit={handleSubmit}>
+                <Stack spacing="md">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={tag}
+                      onChange={(e) => {
+                        setTag(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                      placeholder={t('tags:enterTagName')}
+                      className="w-full bg-black/40 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                      autoFocus
+                    />
 
-                  {/* Suggestions Dropdown */}
-                  {showSuggestions && tag && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-20 overflow-hidden">
-                      {suggestions.map((suggestion) => (
-                        <Button
-                          key={suggestion}
-                          variant="ghost"
-                          className="w-full justify-start gap-2 rounded-none"
-                          onMouseDown={() =>
-                            handleSubmit(
-                              { preventDefault: () => {} } as React.FormEvent,
-                              suggestion
-                            )
-                          }
-                        >
-                          <Tag size={12} className="text-gray-500" />
-                          {suggestion}
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                    {/* Suggestions Dropdown */}
+                    {showSuggestions && tag && suggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-20 overflow-hidden">
+                        {suggestions.map((suggestion) => (
+                          <Button
+                            key={suggestion}
+                            variant="ghost"
+                            className="w-full justify-start gap-2 rounded-none"
+                            onMouseDown={() =>
+                              handleSubmit(
+                                { preventDefault: () => {} } as React.FormEvent,
+                                suggestion
+                              )
+                            }
+                          >
+                            <Tag size={12} className="text-gray-500" />
+                            {suggestion}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-                <div className="flex justify-end gap-3 pt-2">
-                  <Button variant="ghost" onClick={onClose}>
-                    {t('common:cancel')}
-                  </Button>
-                  <Button type="submit" disabled={!tag.trim()} leftIcon={<Plus size={16} />}>
-                    {t('tags:addTag')}
-                  </Button>
-                </div>
+                  <Flex align="center" justify="end" gap="md" className="pt-2">
+                    <Button variant="ghost" onClick={onClose}>
+                      {t('common:cancel')}
+                    </Button>
+                    <Button type="submit" disabled={!tag.trim()} leftIcon={<Plus size={16} />}>
+                      {t('tags:addTag')}
+                    </Button>
+                  </Flex>
+                </Stack>
               </form>
             </motion.div>
           </GlassCard>

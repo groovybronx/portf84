@@ -233,10 +233,14 @@ export const TopBar: React.FC<TopBarProps> = ({
               />
 
               {viewMode === ViewMode.GRID && (
-                <Flex
+                <GlassCard
+                  variant="accent"
+                  padding="sm"
+                  border
+                  as={Flex}
                   align="center"
                   gap="sm"
-                  className="hidden sm:flex bg-glass-bg-accent px-3 py-2 rounded-xl border border-glass-border-light mx-2 shrink-0"
+                  className="hidden sm:flex mx-2 shrink-0"
                 >
                   <input
                     type="range"
@@ -247,7 +251,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     onChange={handleSliderChange}
                     className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:bg-text-primary [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
                   />
-                </Flex>
+                </GlassCard>
               )}
             </Flex>
 

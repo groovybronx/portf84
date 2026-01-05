@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings as SettingsIcon, Save } from 'lucide-react';
-import { Button, Flex, Stack } from '@/shared/components/ui';
+import { Button, Flex, Stack, GlassCard } from '@/shared/components/ui';
 import {
   loadTagSettings,
   saveTagSettings,
@@ -66,9 +66,12 @@ export const SettingsTab: React.FC = () => {
           <h3 className="text-lg font-semibold text-white">{t('tags:similarityDetection')}</h3>
         </Flex>
 
-        <Stack
+        <GlassCard
+          variant="accent"
+          padding="md"
+          border
+          as={Stack}
           spacing="lg"
-          className="bg-glass-bg-accent border border-glass-border rounded-lg p-4"
         >
           {/* Preset Selection */}
           <div>
@@ -81,7 +84,7 @@ export const SettingsTab: React.FC = () => {
                   className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     settings.similarityPreset === preset
                       ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
-                      : 'bg-glass-bg text-gray-400 hover:bg-glass-bg-accent'
+                      : 'text-gray-400 hover:bg-glass-bg-active bg-glass-bg'
                   }`}
                 >
                   {t(`tags:${preset}` as any)}
@@ -162,22 +165,25 @@ export const SettingsTab: React.FC = () => {
               className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
                 settings.enableSemanticSimilarity
                   ? 'bg-green-500/20 text-green-300 border border-green-500/50'
-                  : 'bg-glass-bg text-gray-500 border border-white/10'
+                  : 'text-gray-500 border border-white/10 bg-glass-bg'
               }`}
             >
               {settings.enableSemanticSimilarity ? t('common:enabled') : t('common:disabled')}
             </Button>
           </Flex>
-        </Stack>
+        </GlassCard>
       </Stack>
 
       {/* Preferences */}
       <Stack spacing="md">
         <h3 className="text-lg font-semibold text-white">{t('tags:preferences')}</h3>
 
-        <Stack
+        <GlassCard
+          variant="accent"
+          padding="md"
+          border
+          as={Stack}
           spacing="sm"
-          className="bg-glass-bg-accent border border-glass-border rounded-lg p-4"
         >
           {[
             {
@@ -213,17 +219,21 @@ export const SettingsTab: React.FC = () => {
               </Button>
             </Flex>
           ))}
-        </Stack>
+        </GlassCard>
       </Stack>
 
       {/* Action Buttons */}
       <Flex align="center" justify="between" className="pt-4 border-t border-white/10">
-        <Button
+        <GlassCard
+          variant="accent"
+          padding="sm"
+          border
+          as={Button}
           onClick={handleReset}
-          className="px-4 py-2 bg-glass-bg-accent hover:bg-glass-bg-accent-hover text-gray-400 hover:text-gray-300 text-sm rounded-lg border border-white/10 transition-colors"
+          className="text-gray-400 hover:text-gray-300 text-sm transition-colors cursor-pointer"
         >
           {t('tags:resetToDefaults')}
-        </Button>
+        </GlassCard>
         <Button
           onClick={handleSave}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg flex items-center gap-2 transition-all active:scale-95"

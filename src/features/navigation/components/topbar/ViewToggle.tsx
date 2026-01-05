@@ -41,10 +41,13 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 
 	return (
 		<div className="relative">
-			<Button
-				variant="ghost"
+			<GlassCard
+				variant="accent"
+				border
+				padding="sm"
+				as={Button}
 				onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
-				className="bg-glass-bg-accent border-glass-border-light hover:bg-glass-bg-active transition-colors min-w-[120px] justify-between"
+				className="hover:bg-glass-bg-active transition-colors min-w-[120px] justify-between cursor-pointer"
 			>
 				<Flex align="center" gap="sm">
 					<currentModeData.icon size={16} className="text-blue-400" />
@@ -56,7 +59,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({
 						isViewMenuOpen ? "rotate-180" : ""
 					}`}
 				/>
-			</Button>
+			</GlassCard>
 
 			<AnimatePresence>
 				{isViewMenuOpen && (

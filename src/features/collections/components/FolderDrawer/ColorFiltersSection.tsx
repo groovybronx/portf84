@@ -6,7 +6,7 @@ import { Folder as FolderType, COLOR_PALETTE } from '../../../../shared/types';
 import { getColorName } from '../../../../services/storage/folders';
 import { Icon } from '../../../../shared/components/Icon';
 import { useTheme } from '../../../../shared/contexts/ThemeContext';
-import { Button, Flex, Stack } from '../../../../shared/components/ui';
+import { Button, Flex, Stack, GlassCard } from '../../../../shared/components/ui';
 
 interface ColorFiltersSectionProps {
   folders: FolderType[];
@@ -72,9 +72,12 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                 const isActive = activeColorFilter === hex;
 
                 return (
-                  <Button
+                  <GlassCard
+                    variant={isActive ? 'card' : 'accent'}
+                    padding="sm"
+                    border={isActive}
+                    as={Button}
                     key={hex}
-                    variant="ghost"
                     onClick={() => {
                       if (onColorFilterChange) {
                         if (isActive) {
@@ -85,10 +88,10 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                         }
                       }
                     }}
-                    className={`w-full group relative p-2 rounded-lg cursor-pointer transition-all text-sm h-auto ${
+                    className={`w-full group relative cursor-pointer transition-all text-sm h-auto ${
                       isActive
-                        ? 'bg-glass-bg-active text-white border border-glass-border'
-                        : 'text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent'
+                        ? 'text-white'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <Flex align="center" gap="md" className="w-full">
@@ -123,7 +126,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                         </p>
                       </Stack>
                     </Flex>
-                  </Button>
+                  </GlassCard>
                 );
               })}
             </Stack>

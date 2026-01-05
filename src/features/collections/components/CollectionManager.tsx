@@ -205,15 +205,15 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
                   exit={{ opacity: 0, height: 0 }}
                 >
                   <Stack spacing="sm">
-                    <input
-                      type="text"
-                      value={newCollectionName}
-                      onChange={(e) => setNewCollectionName(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-                      placeholder={t('library:projectNamePlaceholder')}
-                      className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
-                      autoFocus
-                    />
+                      <input
+                        type="text"
+                        value={newCollectionName}
+                        onChange={(e) => setNewCollectionName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+                        placeholder={t('library:projectNamePlaceholder')}
+                        className="w-full px-4 py-2 bg-glass-bg border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                        autoFocus
+                      />
                     <Flex gap="sm">
                       <Button
                         onClick={handleCreate}
