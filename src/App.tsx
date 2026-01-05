@@ -79,8 +79,10 @@ const App: React.FC = () => {
     setGridColumns,
     searchTerm,
     setSearchTerm,
-    selectedTag,
-    setSelectedTag,
+    activeTags,
+    setActiveTags,
+    toggleTag,
+    clearTags,
     activeColorFilter,
     setActiveColorFilter,
     sortOption,
@@ -509,7 +511,7 @@ const App: React.FC = () => {
                   e.preventDefault();
                   setContextMenu({ x: e.clientX, y: e.clientY, item });
                 }}
-                onTagClick={setSelectedTag}
+                onTagClick={toggleTag}
                 onFocusChange={setFocusedId}
                 folders={folders}
                 collections={collections}
