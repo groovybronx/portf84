@@ -688,10 +688,10 @@ Current test files:
 
 ### Related Documentation
 
-- [TAG_SYSTEM_ARCHITECTURE.md](../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) - Technical design
-- [TAG_SYSTEM_GUIDE.md](../guides/architecture/TAG_SYSTEM_GUIDE.md) - User guide
-- [TAG_SYSTEM_README.md](../guides/features/TAG_SYSTEM_README.md) - Quick reference
-- [14_Feature_Tags.md](../guides/project/KnowledgeBase/14_Feature_Tags.md) - Knowledge base
+- [TAG_SYSTEM_ARCHITECTURE.md](../../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) - Technical design
+- [TAG_SYSTEM_GUIDE.md](../../guides/architecture/TAG_SYSTEM_GUIDE.md) - User guide
+- [TAG_SYSTEM_README.md](../../guides/features/TAG_SYSTEM_README.md) - Quick reference
+- [14_Feature_Tags.md](../../guides/project/KnowledgeBase/14_Feature_Tags.md) - Knowledge base
 
 ---
 

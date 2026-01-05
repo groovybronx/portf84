@@ -1,8 +1,8 @@
 # Lumina Portfolio - Documentation Technique
 
-Last update : 01/01/2026
+Last update : 05/01/2026
 
-> 📢 **Audit de Documentation Disponible** : Un audit complet de la documentation a été effectué le 1er janvier 2026. Consultez [AUDIT/2026-01-01_DOCS_INDEX.md](./AUDIT/2026-01-01_DOCS_INDEX.md) pour plus d'informations.
+> 📢 **Audit de Documentation Disponible** : Un audit complet de la documentation a été effectué le 1er janvier 2026. Consultez [AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_INDEX.md](./AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_INDEX.md) pour plus d'informations.
 
 Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
 
@@ -10,7 +10,7 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
 
 | Technologie                 | Version       | Rôle                    |
 | --------------------------- | ------------- | ----------------------- |
-| **React**                   | 19.x          | Framework UI            |
+| **React**                   | 18.3.1        | Framework UI            |
 | **Tailwind CSS**            | 4.x           | Styling (@theme syntax) |
 | **Tauri**                   | 2.x           | Runtime natif           |
 | **SQLite**                  | via plugin    | Persistance locale      |
@@ -51,8 +51,8 @@ Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette applica
    - Adding a new language
    - Best practices
 6. [Plans de Projet](guides/project/CHANGELOG.md)
-    - Suivi des versions
-    - Analyse de branches
+   - Suivi des versions
+   - Analyse de branches
 
 ---
 

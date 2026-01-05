@@ -399,9 +399,9 @@ Après P0 :
 
 ### Documentation Existante
 
-- [TAG_SYSTEM_ARCHITECTURE.md](../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) - Référence technique
-- [TAG_SYSTEM_GUIDE.md](../guides/architecture/TAG_SYSTEM_GUIDE.md) - Guide utilisateur
-- [TAG_SYSTEM_README.md](../guides/features/TAG_SYSTEM_README.md) - Référence rapide
+- [TAG_SYSTEM_ARCHITECTURE.md](../../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) - Référence technique
+- [TAG_SYSTEM_GUIDE.md](../../guides/architecture/TAG_SYSTEM_GUIDE.md) - Guide utilisateur
+- [TAG_SYSTEM_README.md](../../guides/features/TAG_SYSTEM_README.md) - Référence rapide
 
 ---
 

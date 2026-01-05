@@ -196,7 +196,7 @@ docs/AUDIT/UI_CONSOLIDATION/
 ├── 2026-01-04_ACTION_PLAN.md              # Plan d'action
 ├── 2026-01-01_UI_ROADMAP.md               # Roadmap UI/UX
 ├── 2026-01-01_UI_VERIFICATION_REPORT.md   # Rapport vérification
-└── 2026-01-01_UI_COMPONENT_ARCHITECTURE.md # Architecture composants
+└── 2026-01-01_2026-01-01_UI_COMPONENT_ARCHITECTURE.md # Architecture composants
 ```
 
 ---
@@ -206,10 +206,10 @@ docs/AUDIT/UI_CONSOLIDATION/
 ### Documentation Technique
 - `docs/guides/features/DESIGN_SYSTEM.md` - Spécifications complètes
 - `docs/guides/features/MIGRATION_GUIDE_PHASE3.md` - Guide migration
-- `docs/guides/features/COMPONENTS.md` - Catalogue composants
+- `docs/guides/../../guides/features/COMPONENTS.md` - Catalogue composants
 
 ### Architecture Projet
-- `docs/guides/architecture/ARCHITECTURE.md` - Vue d'ensemble
+- `docs/guides/../../guides/architecture/ARCHITECTURE.md` - Vue d'ensemble
 - `docs/guides/project/REFACTORING_PLAN.md` - Plan global
 - `.github/copilot-instructions.md` - Instructions Copilot
 

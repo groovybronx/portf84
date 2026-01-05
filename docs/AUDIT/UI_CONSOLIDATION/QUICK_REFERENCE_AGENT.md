@@ -310,7 +310,7 @@ echo "✅ Bundle Size OK"
 
 **Guide Migration**: `docs/guides/features/MIGRATION_GUIDE_PHASE3.md`
 
-**Composants**: `docs/guides/features/COMPONENTS.md`
+**Composants**: `docs/guides/../../guides/features/COMPONENTS.md`
 
 ---
 

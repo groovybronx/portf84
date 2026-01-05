@@ -1,8 +1,8 @@
 # 🧹 Plan de Nettoyage de la Documentation
 
-**Date de création**: 1er janvier 2026  
-**Statut**: ✅ Terminé (100%)  
-**Basé sur**: [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md)
+**Date de création**: 1er janvier 2026
+**Statut**: ✅ Terminé (100%)
+**Basé sur**: [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md)
 
 ---
 
@@ -28,25 +28,28 @@
 ### Phase 2: Suppression des Doublons 🔴 CRITIQUE
 
 #### 2.1 Supprimer docs/architecture/ (5 fichiers)
+
 - [x] Vérifier que docs/guides/architecture/ contient tous les fichiers
 - [x] Supprimer docs/architecture/AI_SERVICE.md
-- [x] Supprimer docs/architecture/ARCHITECTURE.md
+- [x] Supprimer docs/../../guides/architecture/ARCHITECTURE.md
 - [x] Supprimer docs/architecture/GIT_WORKFLOW.md
 - [x] Supprimer docs/architecture/TAG_SYSTEM_ARCHITECTURE.md
 - [x] Supprimer docs/architecture/TAG_SYSTEM_GUIDE.md
 - [x] Supprimer le dossier docs/architecture/
 
 #### 2.2 Déplacer les fichiers uniques de docs/features/
+
 - [x] Déplacer DESIGN_SYSTEM.md vers docs/guides/features/
 - [x] Déplacer MIGRATION_GUIDE_PHASE3.md vers docs/guides/features/
 - [x] Vérifier que les 4 fichiers communs sont identiques
-- [x] Supprimer docs/features/COMPONENTS.md (doublon)
+- [x] Supprimer docs/../../guides/features/COMPONENTS.md (doublon)
 - [x] Supprimer docs/features/I18N_GUIDE.md (doublon)
 - [x] Supprimer docs/features/INTERACTIONS.md (doublon)
 - [x] Supprimer docs/features/TAG_SYSTEM_README.md (doublon)
 - [x] Supprimer le dossier docs/features/
 
 #### 2.3 Synchroniser et nettoyer docs/project/
+
 - [x] Déplacer BRANCH_ANALYSIS.md vers docs/guides/project/
 - [x] Comparer docs/project/CHANGELOG.md avec docs/guides/project/CHANGELOG.md
 - [x] Copier la version la plus récente (docs/project/) vers docs/guides/project/
@@ -59,29 +62,34 @@
 ### Phase 3: Correction des Références 🔴 CRITIQUE
 
 #### 3.1 Mettre à jour README.md (racine)
+
 - [x] Remplacer `./docs/architecture/` par `./docs/guides/architecture/`
 - [x] Remplacer `./docs/features/` par `./docs/guides/features/`
 - [x] Corriger la section "Structure du Projet" (lignes 74-86)
 - [x] Vérifier tous les liens de documentation
 
 #### 3.2 Mettre à jour docs/README.md
+
 - [x] Remplacer `architecture/` par `guides/architecture/` (ligne 25)
 - [x] Remplacer `features/` par `guides/features/` (ligne 32)
 - [x] Remplacer `project/` par `guides/project/` (ligne 51)
 - [x] Vérifier le sommaire (lignes 24-55)
 
 #### 3.3 Mettre à jour docs/DOCUMENTATION_MAP.md
+
 - [x] Vérifier que tous les chemins incluent `guides/`
 - [x] Mettre à jour les liens vers les fichiers déplacés (DESIGN_SYSTEM.md, BRANCH_ANALYSIS.md)
 - [x] Vérifier la section "Where to Start?" (lignes 69-94)
 
 #### 3.4 Mettre à jour .github/copilot-instructions.md
+
 - [x] Chercher les références à `docs/architecture/`
 - [x] Chercher les références à `docs/features/`
 - [x] Chercher les références à `docs/project/`
 - [x] Remplacer par les chemins avec `guides/`
 
-#### 3.5 Mettre à jour .github/agents/*.md
+#### 3.5 Mettre à jour .github/agents/\*.md
+
 - [x] Vérifier ai-gemini-integration.md
 - [x] Vérifier database-sqlite.md
 - [x] Vérifier react-frontend.md
@@ -91,6 +99,7 @@
 ### Phase 4: Nettoyage des Archives 🟡 OPTIONNEL
 
 #### 4.1 Créer docs/ARCHIVES/historical/
+
 - [x] Créer le dossier historical/
 - [x] Déplacer BRANCH_MERGE_ANALYSIS.md
 - [x] Déplacer BRANCH_SYNC_FINAL_REPORT.md
@@ -107,6 +116,7 @@
 - [x] Déplacer TAG_CONSOLIDATION_SPEC.md
 
 #### 4.2 Créer un README.md dans ARCHIVES/
+
 - [x] Documenter le contenu de ARCHIVES/
 - [x] Expliquer le contenu de historical/
 - [x] Ajouter des dates et contextes
@@ -114,16 +124,18 @@
 ### Phase 5: Consolidation des Audits 🟡 OPTIONNEL
 
 #### 5.1 Créer docs/AUDIT/archive_2025/
+
 - [x] Créer le dossier archive_2025/
-- [x] Déplacer AUDIT_ACTION_PLAN.md
-- [x] Déplacer AUDIT_COMPLETION_NOTICE.md
-- [x] Déplacer AUDIT_DASHBOARD.md
+- [x] Déplacer 2024-12-30_COMPREHENSIVE_ACTION_PLAN.md
+- [x] Déplacer 2024-12-30_COMPREHENSIVE_COMPLETION.md
+- [x] Déplacer 2024-12-30_COMPREHENSIVE_DASHBOARD.md
 - [x] Déplacer CODE_CLEANUP_REPORT.md
-- [x] Déplacer COMPREHENSIVE_AUDIT_REPORT.md
+- [x] Déplacer 2024-12-30_COMPREHENSIVE_REPORT.md
 - [x] Déplacer README_UI_AUDIT.md
-- [x] Déplacer UI_*.md (9 fichiers)
+- [x] Déplacer UI\_\*.md (9 fichiers)
 
 #### 5.2 Créer AUDIT/README.md
+
 - [x] Documenter les audits de 2025
 - [x] Lister les audits actifs (ROADMAP.md, AUDIT_README.md)
 - [x] Expliquer le contenu de archive_2025/
@@ -131,11 +143,13 @@
 ### Phase 6: Validation 🔴 CRITIQUE
 
 #### 6.1 Créer le script de validation
+
 - [x] Créer scripts/validate-doc-links.sh
 - [x] Rendre le script exécutable
 - [x] Tester le script sur quelques fichiers
 
 #### 6.2 Exécuter la validation
+
 - [x] Valider docs/README.md
 - [x] Valider docs/DOCUMENTATION_MAP.md
 - [x] Valider README.md (racine)
@@ -147,6 +161,7 @@
 - [x] Valider tous les fichiers dans guides/project/
 
 #### 6.3 Tests manuels
+
 - [x] Naviguer à partir de README.md → cliquer tous les liens docs
 - [x] Naviguer à partir de docs/README.md → tester le sommaire
 - [x] Ouvrir DOCUMENTATION_MAP.md → tester "Where to Start?"
@@ -156,16 +171,19 @@
 ### Phase 7: Finalisation 🔴 CRITIQUE
 
 #### 7.1 Mettre à jour les documents de suivi
+
 - [x] Mettre à jour docs/REORGANIZATION_SUMMARY.md
 - [x] Ajouter une section "Cleanup 2026"
 - [x] Documenter les changements effectués
 
 #### 7.2 Créer un CHANGELOG entry
+
 - [x] Ajouter une entrée dans docs/guides/project/CHANGELOG.md
 - [x] Décrire le nettoyage de documentation
 - [x] Lister les fichiers supprimés et déplacés
 
 #### 7.3 Commit et Push
+
 - [x] Commit avec message descriptif
 - [x] Push vers la branche
 - [x] Créer ou mettre à jour la Pull Request
@@ -214,26 +232,26 @@ find docs README.md -name "*.md" -print0 | while IFS= read -r -d '' file; do
     if [[ $file == *"/ARCHIVES/"* ]] || [[ $file == *"/AUDIT/"* ]]; then
         continue
     fi
-    
+
     echo "Checking $file..."
-    
-    # Extract markdown links [text](path)
+
+    # Extract markdown links in format: [text](path)
     grep -oP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null | while IFS= read -r link; do
         # Skip external links
         if [[ $link == http* ]] || [[ $link == mailto:* ]] || [[ $link == \#* ]]; then
             continue
         fi
-        
+
         # Remove anchor
         link_path="${link%%#*}"
-        
+
         # Resolve relative path
         dir=$(dirname "$file")
         target="$dir/$link_path"
-        
+
         # Normalize path
         target=$(realpath -m "$target" 2>/dev/null)
-        
+
         if [[ ! -e "$target" ]]; then
             echo "  ❌ BROKEN: $link (in $file)"
             errors=$((errors + 1))
@@ -262,12 +280,12 @@ echo "🔍 Comparing duplicate files..."
 compare_files() {
     file1="$1"
     file2="$2"
-    
+
     if [ ! -f "$file1" ] || [ ! -f "$file2" ]; then
         echo "  ⚠️  One or both files don't exist"
         return
     fi
-    
+
     if diff -q "$file1" "$file2" > /dev/null; then
         echo "  ✅ IDENTICAL"
     else
@@ -310,12 +328,14 @@ echo "✅ Comparison complete"
 ## 📊 Statistiques Attendues
 
 ### Avant Nettoyage
+
 - **Total fichiers MD**: 129
 - **Doublons**: 29 (22%)
 - **Taille totale docs/**: ~2.8 MB
 - **Références cassées**: ~15-20
 
 ### Après Nettoyage
+
 - **Total fichiers MD**: ~100 (-22%)
 - **Doublons**: 0 (0%)
 - **Taille totale docs/**: ~2.2 MB (-21%)
@@ -326,17 +346,20 @@ echo "✅ Comparison complete"
 ## ⚠️ Précautions
 
 ### Avant de Commencer
+
 1. ✅ Créer une branche de travail
 2. ✅ Sauvegarder l'état actuel (déjà dans Git)
-3. ✅ Lire l'audit complet (DOCUMENTATION_AUDIT_2026.md)
+3. ✅ Lire l'audit complet (2026-01-01_DOCS_AUDIT.md)
 
 ### Pendant l'Exécution
+
 1. 🔍 Vérifier chaque fichier avant suppression
 2. 📋 Suivre la checklist dans l'ordre
 3. ✅ Valider après chaque phase
 4. 💾 Commit régulièrement
 
 ### Après le Nettoyage
+
 1. 🔗 Valider tous les liens
 2. 🧪 Tester la navigation manuellement
 3. 📝 Documenter les changements
@@ -358,7 +381,8 @@ echo "✅ Comparison complete"
 ## 📞 Support
 
 En cas de problème ou question :
-1. Consulter [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md)
+
+1. Consulter [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md)
 2. Vérifier les scripts de validation
 3. Créer une issue GitHub avec le tag `documentation`
 
@@ -366,14 +390,14 @@ En cas de problème ou question :
 
 ## 📚 Références
 
-- [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md) - Audit complet
-- [DOCUMENTATION_MAP.md](./DOCUMENTATION_MAP.md) - Carte de navigation
-- [REORGANIZATION_SUMMARY.md](./REORGANIZATION_SUMMARY.md) - Historique de réorganisation
+- [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md) - Audit complet
+- [DOCUMENTATION_MAP.md](../../DOCUMENTATION_MAP.md) - Carte de navigation
+- [REORGANIZATION_SUMMARY.md](../../REORGANIZATION_SUMMARY.md) - Historique de réorganisation
 
 ---
 
 **🎯 Objectif**: Une documentation propre, cohérente et facile à maintenir pour Lumina Portfolio.
 
-**Date de création**: 1er janvier 2026  
-**Auteur**: GitHub Copilot  
+**Date de création**: 1er janvier 2026
+**Auteur**: GitHub Copilot
 **Version**: 1.0

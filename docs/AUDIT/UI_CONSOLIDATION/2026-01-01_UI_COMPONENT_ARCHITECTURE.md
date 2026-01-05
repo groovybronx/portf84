@@ -1,7 +1,7 @@
 # Architecture des Composants UI - État Actuel vs Proposé
 
 **Date**: 1er janvier 2026  
-**Complément**: UI_UX_CONSOLIDATION_AUDIT.md
+**Complément**: 2026-01-01_UI_CONSOLIDATION_AUDIT.md
 
 ---
 

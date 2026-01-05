@@ -1,8 +1,18 @@
 # Tag Hub - User Guide
 
+**Version**: 2.0 (TagHub Overhaul - v0.3.0-beta.1)
+**Last update**: 05/01/2026
+
 ## Overview
 
 Tag Hub is a centralized interface for managing all tags in your photo library. It provides a unified location for browsing, managing, merging, and configuring tags.
+
+**New in v0.3.0-beta.1**:
+
+- 🔍 **Advanced filters**: Search intelligently with Fuse.js
+- 📊 **Multiple view modes**: Grid/List toggle
+- ⚡ **Tag presets**: Save and reuse frequent configurations
+- 🎨 **Enhanced UI**: Complete design system integration
 
 ## Opening Tag Hub
 
@@ -20,6 +30,7 @@ Tag Hub consists of 4 tabs, each with a specific purpose:
 **Purpose**: Explore and navigate all tags in your library
 
 **Features**:
+
 - **Search**: Type to filter tags by name (Press `/` to focus search)
 - **View Modes**: Switch between Grid and List view
 - **Filters**:
@@ -37,6 +48,7 @@ Tag Hub consists of 4 tabs, each with a specific purpose:
   - Filtered item count displays in TopBar
 
 **Keyboard Shortcuts**:
+
 - `/` - Focus search input
 - `Esc` - Blur search input
 
@@ -48,6 +60,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 **Purpose**: Perform CRUD operations and bulk editing
 
 **Features**:
+
 - **Bulk Selection**: Click tags to select multiple
 - **Statistics Panel**: Shows real-time metrics
   - Total tags count
@@ -58,6 +71,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
   - Delete Selected
 
 **Keyboard Shortcuts**:
+
 - `Ctrl+A` - Select/Deselect all tags
 - `Delete` - Delete selected tags
 
@@ -66,6 +80,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 **Purpose**: Smart duplicate detection and merging
 
 **Features**:
+
 - **Automatic Detection**: Finds similar tags using:
   - Levenshtein distance (character similarity)
   - Jaccard similarity (word token matching)
@@ -77,6 +92,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 - **History**: View past merge operations
 
 **How It Works**:
+
 1. Tag Hub analyzes all tags for similarity
 2. Groups similar tags together
 3. Suggests which tag to keep (most used/longest)
@@ -88,6 +104,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 **Purpose**: Configure tag similarity detection and preferences
 
 **Features**:
+
 - **Similarity Presets**:
   - **Strict**: Levenshtein 1, Jaccard 90%, Min usage 5
   - **Balanced**: Levenshtein 2, Jaccard 80%, Min usage 1 (Default)
@@ -105,12 +122,14 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 ## Typical Workflows
 
 ### Browse and Filter Tags
+
 1. Open Tag Hub (`Ctrl+T`)
 2. Switch to Browse tab
 3. Use search or filters to find tags
 4. Click tags to filter library (coming soon)
 
 ### Clean Up Duplicate Tags
+
 1. Open Tag Hub (`Ctrl+T`)
 2. Switch to Fusion tab (`3`)
 3. Review suggested merge groups
@@ -119,6 +138,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 6. Check History to verify merges
 
 ### Bulk Delete Unused Tags
+
 1. Open Tag Hub (`Ctrl+T`)
 2. Switch to Browse tab
 3. Filter by "Unused Tags"
@@ -127,6 +147,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 6. Press `Delete` or click "Delete Selected"
 
 ### Batch Tagging
+
 1. **Select images** (Ctrl+Click or Shift+Click)
 2. **Open BatchTagPanel**:
    - Button in TopBar (Tags icon)
@@ -144,6 +165,7 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 6. **Preview and Apply**: Verify changes before confirming
 
 ### Customize Similarity Detection
+
 1. Open Tag Hub (`Ctrl+T`)
 2. Switch to Settings tab (`4`)
 3. Choose a preset or adjust sliders
@@ -168,15 +190,15 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 
 ## Keyboard Shortcuts Reference
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+T` | Open/Close Tag Hub |
+| Shortcut       | Action                                     |
+| -------------- | ------------------------------------------ |
+| `Ctrl+T`       | Open/Close Tag Hub                         |
 | `Ctrl+Shift+T` | Open Batch Tag Panel (when items selected) |
-| `1-4` | Switch to tab 1-4 |
-| `/` | Focus search (Browse tab) |
-| `Ctrl+A` | Select/Deselect all (Manage tab) |
-| `Delete` | Delete selected tags (Manage tab) |
-| `Esc` | Blur search input |
+| `1-4`          | Switch to tab 1-4                          |
+| `/`            | Focus search (Browse tab)                  |
+| `Ctrl+A`       | Select/Deselect all (Manage tab)           |
+| `Delete`       | Delete selected tags (Manage tab)          |
+| `Esc`          | Blur search input                          |
 
 ## Future Enhancements
 
@@ -191,19 +213,23 @@ If you select tags "Portrait" and "Outdoor", only photos that have BOTH tags wil
 ## Troubleshooting
 
 **Issue**: Tag Hub button doesn't appear
+
 - **Solution**: Refresh the application
 
 **Issue**: Keyboard shortcuts don't work
+
 - **Solution**: Make sure no input field is focused
 
 **Issue**: Merge operations fail
+
 - **Solution**: Check that database is not locked, try smaller batches
 
 **Issue**: Tags not updating after merge
+
 - **Solution**: Library metadata is refreshed automatically, wait a moment
 
 ## Related Documentation
 
-- [Tag System Architecture](../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md)
-- [Tag System Guide](../guides/architecture/TAG_SYSTEM_GUIDE.md)
-- [Tag UI Redesign Proposal](AUDIT/2026-01-02_TAG_UI_REDESIGN_PROPOSAL.md)
+- [Tag System Architecture](./guides/architecture/TAG_SYSTEM_ARCHITECTURE.md)
+- [Tag System Guide](./guides/architecture/TAG_SYSTEM_GUIDE.md)
+- [Tag UI Redesign Proposal](./AUDIT/TAG_SYSTEM/2026-01-02_TAG_UI_REDESIGN_PROPOSAL.md)

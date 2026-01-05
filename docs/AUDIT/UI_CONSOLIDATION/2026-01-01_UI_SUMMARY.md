@@ -303,9 +303,9 @@ Total Bundle Size: ~1038 KB
 **Priorité Suggérée**: Moyenne (optimisations progressives)
 
 **Documents Référence**:
-- 📄 [UI_SIMPLIFICATION_VERIFICATION_REPORT.md](./UI_SIMPLIFICATION_VERIFICATION_REPORT.md) - Rapport détaillé
-- 📄 [UI_UX_CONSOLIDATION_AUDIT.md](./UI_UX_CONSOLIDATION_AUDIT.md) - Audit original
-- 🎨 **[Design System](../guides/features/DESIGN_SYSTEM.md)** - Spécifications visuelles complètes
+- 📄 [2026-01-01_UI_CONSOLIDATION_AUDIT.md](./2026-01-01_UI_CONSOLIDATION_AUDIT.md) - Rapport détaillé
+- 📄 [2026-01-01_UI_CONSOLIDATION_AUDIT.md](./2026-01-01_UI_CONSOLIDATION_AUDIT.md) - Audit original
+- 🎨 **[Design System](../../guides/features/DESIGN_SYSTEM.md)** - Spécifications visuelles complètes
 
 ---
 

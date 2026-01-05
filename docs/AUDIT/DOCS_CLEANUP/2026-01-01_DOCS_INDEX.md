@@ -18,14 +18,14 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 ## 📚 Documents d'Audit
 
 ### 1. Pour la Direction
-**[📊 DOCUMENTATION_EXECUTIVE_SUMMARY.md](./DOCUMENTATION_EXECUTIVE_SUMMARY.md)**
+**[📊 2026-01-01_DOCS_EXECUTIVE_SUMMARY.md](./2026-01-01_DOCS_EXECUTIVE_SUMMARY.md)**
 - Résumé en 30 secondes
 - Statistiques clés
 - Recommandations
 - ROI et bénéfices
 
 ### 2. Pour l'Équipe Technique
-**[🔍 DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md)**
+**[🔍 2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md)**
 - Audit technique complet (16 KB)
 - Analyse détaillée des problèmes
 - Liste exhaustive des doublons
@@ -130,8 +130,8 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 ## 🚀 Comment Utiliser Cet Audit
 
 ### Pour Comprendre les Problèmes
-1. Lire [DOCUMENTATION_EXECUTIVE_SUMMARY.md](./DOCUMENTATION_EXECUTIVE_SUMMARY.md) (5 min)
-2. Consulter [DOCUMENTATION_AUDIT_2026.md](./DOCUMENTATION_AUDIT_2026.md) pour les détails (15 min)
+1. Lire [2026-01-01_DOCS_EXECUTIVE_SUMMARY.md](./2026-01-01_DOCS_EXECUTIVE_SUMMARY.md) (5 min)
+2. Consulter [2026-01-01_DOCS_AUDIT.md](./2026-01-01_DOCS_AUDIT.md) pour les détails (15 min)
 
 ### Pour Exécuter le Nettoyage
 1. Lire [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md) (10 min)
@@ -168,7 +168,7 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 - Consulter [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md)
 
 ### Approuver le Nettoyage
-- Review [DOCUMENTATION_EXECUTIVE_SUMMARY.md](./DOCUMENTATION_EXECUTIVE_SUMMARY.md)
+- Review [2026-01-01_DOCS_EXECUTIVE_SUMMARY.md](./2026-01-01_DOCS_EXECUTIVE_SUMMARY.md)
 - Valider le plan dans [2026-01-01_DOCS_CLEANUP_PLAN.md](./2026-01-01_DOCS_CLEANUP_PLAN.md)
 
 ---
@@ -177,8 +177,8 @@ Cet audit complet identifie et propose des solutions pour les problèmes de docu
 
 | Document | Audience | Temps Lecture | Priorité |
 |----------|----------|---------------|----------|
-| [Executive Summary](./DOCUMENTATION_EXECUTIVE_SUMMARY.md) | Direction | 5 min | ⚡ Haute |
-| [Audit Complet](./DOCUMENTATION_AUDIT_2026.md) | Technique | 15 min | ⚡ Haute |
+| [Executive Summary](./2026-01-01_DOCS_EXECUTIVE_SUMMARY.md) | Direction | 5 min | ⚡ Haute |
+| [Audit Complet](./2026-01-01_DOCS_AUDIT.md) | Technique | 15 min | ⚡ Haute |
 | [Plan de Nettoyage](./2026-01-01_DOCS_CLEANUP_PLAN.md) | Technique | 10 min | ⚡ Haute |
 | [Guide Migration](./2026-01-01_DOCS_MIGRATION_GUIDE.md) | Contributeurs | 10 min | 📊 Moyenne |
 

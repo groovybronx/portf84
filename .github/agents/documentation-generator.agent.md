@@ -176,8 +176,8 @@ function Example() {
 
 ## Related Components
 
-- [RelatedComponent1](./RelatedComponent1.md)
-- [RelatedComponent2](./RelatedComponent2.md)
+- [RelatedComponent1](# Example: ./RelatedComponent1.md)
+- [RelatedComponent2](# Example: ./RelatedComponent2.md)
 ```
 
 ### 3. Feature Documentation
@@ -385,7 +385,7 @@ What this feature does and why it's useful.
 A: Instructions...
 
 ## See Also
-- [Related Feature](./related.md)
+- [Related Feature](# Example: ./related.md)
 ```
 
 ### 7. Inline Code Comments

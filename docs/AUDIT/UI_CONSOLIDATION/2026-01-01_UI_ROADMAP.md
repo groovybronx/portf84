@@ -377,7 +377,7 @@ SettingsModal: 629 → ~400 lignes (-36%)
 ### Priorité BASSE - Optimisations Continues
 
 #### Console Statements Cleanup (2-4h)
-**Référence**: COMPREHENSIVE_AUDIT_REPORT.md
+**Référence**: 2024-12-30_COMPREHENSIVE_REPORT.md
 
 - [ ] Créer utility logger
   ```typescript
@@ -430,7 +430,7 @@ SettingsModal: 629 → ~400 lignes (-36%)
 
 #### Accessibilité Audit (1 semaine)
 
-**Référence**: COMPREHENSIVE_AUDIT_REPORT.md (Score: 5/10)
+**Référence**: 2024-12-30_COMPREHENSIVE_REPORT.md (Score: 5/10)
 
 **Jour 1-2**: ARIA et Labels
 - [ ] Ajouter ARIA labels manquants
@@ -653,12 +653,12 @@ grep -r "<button" src | wc -l # Compter HTML buttons (<30)
 ## 📞 Support et Questions
 
 ### Pour Questions Techniques
-- 📄 Voir [DESIGN_SYSTEM.md](../guides/features/DESIGN_SYSTEM.md) - Specs UI/UX
-- 📄 Voir [UI_SIMPLIFICATION_VERIFICATION_REPORT.md](./UI_SIMPLIFICATION_VERIFICATION_REPORT.md)
+- 📄 Voir [DESIGN_SYSTEM.md](../../guides/features/DESIGN_SYSTEM.md) - Specs UI/UX
+- 📄 Voir [2026-01-01_UI_CONSOLIDATION_AUDIT.md](./2026-01-01_UI_CONSOLIDATION_AUDIT.md)
 
 ### Pour Suivi de Progression
 - 📄 Ce document (ROADMAP.md)
-- 📄 Voir [UI_AUDIT_SUMMARY.md](./UI_AUDIT_SUMMARY.md)
+- 📄 Voir [2026-01-01_UI_SUMMARY.md](./2026-01-01_UI_SUMMARY.md)
 
 ---
 
@@ -817,9 +817,9 @@ Cette roadmap établit un plan clair et actionnable pour compléter la consolida
 ### 📞 Support et Ressources
 
 **Documentation Technique**:
-- 📄 [DESIGN_SYSTEM.md](../guides/features/DESIGN_SYSTEM.md) - Spécifications UI/UX complètes
-- 📄 [COMPONENTS.md](../guides/features/COMPONENTS.md) - Catalogue composants
-- 📄 [MIGRATION_GUIDE_PHASE3.md](../guides/features/MIGRATION_GUIDE_PHASE3.md) - Guide migration
+- 📄 [DESIGN_SYSTEM.md](../../guides/features/DESIGN_SYSTEM.md) - Spécifications UI/UX complètes
+- 📄 [COMPONENTS.md](../../guides/features/COMPONENTS.md) - Catalogue composants
+- 📄 [MIGRATION_GUIDE_PHASE3.md](../../guides/features/MIGRATION_GUIDE_PHASE3.md) - Guide migration
 
 **Rapports d'Audit**:
 - 📄 [UI_VERIFICATION_REPORT.md](./2026-01-01_UI_VERIFICATION_REPORT.md) - État actuel vérifié
