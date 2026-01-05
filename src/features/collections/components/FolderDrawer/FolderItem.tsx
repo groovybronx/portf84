@@ -1,8 +1,8 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Icon, IconAction } from "../../../../shared/components/Icon";
-import { Button, Flex, Stack } from "../../../../shared/components/ui";
-import { Folder as FolderType } from "../../../../shared/types";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Icon, IconAction } from '../../../../shared/components/Icon';
+import { Button, Flex, Stack } from '../../../../shared/components/ui';
+import { Folder as FolderType } from '../../../../shared/types';
 
 interface FolderItemProps {
   folder: FolderType;
@@ -23,15 +23,15 @@ export const FolderItem: React.FC<FolderItemProps> = ({
   iconColorClass,
   iconBgClass,
 }) => {
-  const { t } = useTranslation("library");
+  const { t } = useTranslation('library');
   return (
     <Flex
       align="center"
       gap="sm"
       className={`group relative p-2 rounded-lg cursor-pointer transition-all text-sm ${
         isActive
-          ? "bg-glass-bg-active text-white border border-glass-border"
-          : "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
+          ? 'bg-glass-bg-active text-white border border-glass-border'
+          : 'text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent'
       }`}
       onClick={() => onSelect(folder.id)}
     >
@@ -57,16 +57,14 @@ export const FolderItem: React.FC<FolderItemProps> = ({
         <Icon action={iconAction} size={16} className={iconColorClass} />
       </Flex>
 
-      <div className="flex-1 min-w-0">
-        <Flex align="center" gap="sm">
-          <p className={`font-medium text-sm truncate ${isActive ? "text-white" : iconColorClass}`}>
-            {folder.name}
-          </p>
-        </Flex>
-        						<span className="text-xs text-secondary-bright/50">
-							{t('itemCount', { count: folder.items.length })}
-						</span>
-      </div>
+      <Stack spacing="none" className="flex-1 min-w-0">
+        <p className={`font-medium text-sm truncate ${isActive ? 'text-white' : iconColorClass}`}>
+          {folder.name}
+        </p>
+        <span className="text-xs text-secondary-bright/50">
+          {t('itemCount', { count: folder.items.length })}
+        </span>
+      </Stack>
 
       {onDelete && (
         <Button
@@ -77,7 +75,7 @@ export const FolderItem: React.FC<FolderItemProps> = ({
             onDelete(folder.id);
           }}
           className="opacity-0 group-hover:opacity-100 h-7 w-7 text-gray-500 hover:text-red-400 hover:bg-red-500/20"
-          					title={t("deleteCollection")}
+          title={t('deleteCollection')}
         >
           <Icon action="delete" size={14} />
         </Button>

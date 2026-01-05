@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
-import { Palette, ChevronRight, CheckCircle2, Circle } from "lucide-react";
-import { Folder as FolderType, COLOR_PALETTE } from "../../../../shared/types";
-import { getColorName } from "../../../../services/storage/folders";
-import { Icon } from "../../../../shared/components/Icon";
-import { useTheme } from "../../../../shared/contexts/ThemeContext";
-import { Button, Flex, Stack } from "../../../../shared/components/ui";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Palette, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
+import { Folder as FolderType, COLOR_PALETTE } from '../../../../shared/types';
+import { getColorName } from '../../../../services/storage/folders';
+import { Icon } from '../../../../shared/components/Icon';
+import { useTheme } from '../../../../shared/contexts/ThemeContext';
+import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
 interface ColorFiltersSectionProps {
   folders: FolderType[];
@@ -21,7 +21,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
   onColorFilterChange,
   onSelectFolder,
 }) => {
-  const { t } = useTranslation("library");
+  const { t } = useTranslation('library');
   const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -32,30 +32,30 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
       <Button
         variant="ghost"
         onClick={toggleSection}
-        className={`w-full justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        className={`w-full mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
           isExpanded
-            ? "bg-primary/10 border-primary/20 shadow-[0_0_15px_-5px_var(--color-primary)]"
-            : "hover:bg-primary/5 border-transparent"
+            ? 'bg-primary/10 border-primary/20 shadow-[0_0_15px_-5px_var(--color-primary)]'
+            : 'hover:bg-primary/5 border-transparent'
         }`}
       >
-        <Flex justify="between" align="center">
+        <Flex justify="between" align="center" className="w-full">
           <h3 className="text-secondary-bright/40 uppercase text-[10px] font-bold tracking-widest flex items-center gap-2">
             <Palette size={12} /> {t('colorFiltersTitle')}
           </h3>
+          <ChevronRight
+            size={14}
+            className={`transition-transform duration-300 text-primary ${
+              isExpanded ? 'rotate-90' : 'opacity-50'
+            }`}
+          />
         </Flex>
-        <ChevronRight
-          size={14}
-          className={`transition-transform duration-300 text-primary ${
-            isExpanded ? "rotate-90" : "opacity-50"
-          }`}
-        />
       </Button>
 
       <AnimatePresence>
         {isExpanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
@@ -65,9 +65,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                 // Count items with this color (unique items across all folders)
                 const uniqueItems = new Set();
                 folders.forEach((f) =>
-                  f.items
-                    .filter((i) => i.colorTag === hex)
-                    .forEach((i) => uniqueItems.add(i.id))
+                  f.items.filter((i) => i.colorTag === hex).forEach((i) => uniqueItems.add(i.id))
                 );
                 const count = uniqueItems.size;
 
@@ -82,51 +80,49 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                         if (isActive) {
                           onColorFilterChange(null);
                         } else {
-                          onSelectFolder("all"); // Switch to "All" scope
+                          onSelectFolder('all'); // Switch to "All" scope
                           onColorFilterChange(hex);
                         }
                       }
                     }}
-                    className={`w-full group relative justify-start gap-3 p-2 rounded-lg cursor-pointer transition-all text-sm h-auto ${
+                    className={`w-full group relative p-2 rounded-lg cursor-pointer transition-all text-sm h-auto ${
                       isActive
-                        ? "bg-glass-bg-active text-white border border-glass-border"
-                        : "text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent"
+                        ? 'bg-glass-bg-active text-white border border-glass-border'
+                        : 'text-gray-400 hover:bg-glass-bg-accent hover:text-white border border-transparent'
                     }`}
                   >
-                    <div className="shrink-0">
-                      {isActive ? (
-                        <CheckCircle2 size={16} style={{ color: hex }} />
-                      ) : (
-                        <Circle
-                          size={16}
-                          className="text-gray-600 group-hover:text-gray-400"
-                        />
-                      )}
-                    </div>
+                    <Flex align="center" gap="md" className="w-full">
+                      <div className="shrink-0">
+                        {isActive ? (
+                          <CheckCircle2 size={16} style={{ color: hex }} />
+                        ) : (
+                          <Circle size={16} className="text-gray-600 group-hover:text-gray-400" />
+                        )}
+                      </div>
 
-                    <div
-                      className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-glass-border-light transition-all"
-                      style={{
-                        backgroundColor: `${hex}15`, // 10% opacity hex
-                        borderColor: isActive ? hex : "transparent",
-                      }}
-                    >
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: hex }}
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0 text-left">
-                      <p
-                        className={`font-medium text-sm truncate ${
-                          isActive ? "text-white" : ""
-                        }`}
+                      <Flex
+                        align="center"
+                        justify="center"
+                        className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-glass-border-light transition-all"
+                        style={{
+                          backgroundColor: `${hex}15`, // 10% opacity hex
+                          borderColor: isActive ? hex : 'transparent',
+                        }}
                       >
-                        {colorName}
-                      </p>
-                      <p className="text-xs opacity-60">{count} {t('items')}</p>
-                    </div>
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: hex }} />
+                      </Flex>
+
+                      <Stack spacing="none" className="flex-1 min-w-0 text-left">
+                        <p
+                          className={`font-medium text-sm truncate ${isActive ? 'text-white' : ''}`}
+                        >
+                          {colorName}
+                        </p>
+                        <p className="text-xs opacity-60">
+                          {count} {t('items')}
+                        </p>
+                      </Stack>
+                    </Flex>
                   </Button>
                 );
               })}
