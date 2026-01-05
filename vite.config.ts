@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
 							if (id.includes("framer-motion")) {
 								return "vendor-animations";
 							}
-							// Don't split React - keep it with other vendors to avoid circular deps
+							// Keep React with other vendors to prevent circular dependency between vendor chunks
 						}
 						return undefined;
 					},
