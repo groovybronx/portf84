@@ -13,16 +13,19 @@ export default defineConfig(({ mode }) => {
 		},
 		plugins: [react(), tailwindcss()],
 		build: {
+			chunkSizeWarningLimit: 600,
 			rollupOptions: {
 				output: {
 					manualChunks(id) {
+						// Only split out the largest packages to avoid circular dependencies
 						if (id.includes("node_modules")) {
-							if (id.includes("framer-motion")) return "vendor-framer";
-							if (id.includes("lucide-react")) return "vendor-lucide";
-							if (id.includes("react") || id.includes("scheduler")) {
-								return "vendor-react";
+							if (id.includes("@google/genai")) {
+								return "vendor-ai";
 							}
-							return "vendor";
+							if (id.includes("framer-motion")) {
+								return "vendor-animations";
+							}
+							// Don't split React - keep it with other vendors to avoid circular deps
 						}
 						return undefined;
 					},

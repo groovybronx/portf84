@@ -142,7 +142,7 @@ Start here:
 ## 🔧 Technical Stack Reference
 
 ### Frontend
-- **React 19** - UI framework
+- **React 18.3.1** - UI framework
 - **TypeScript ~5.8** - Type safety
 - **Tailwind CSS 4** - Styling
 - **Framer Motion** - Animations
