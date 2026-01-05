@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Palette, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 import { Folder as FolderType, COLOR_PALETTE } from '../../../../shared/types';
 import { getColorName } from '../../../../services/storage/folders';
-import { Icon } from '../../../../shared/components/Icon';
 import { useTheme } from '../../../../shared/contexts/ThemeContext';
 import { Button, Flex, Stack, GlassCard } from '../../../../shared/components/ui';
 

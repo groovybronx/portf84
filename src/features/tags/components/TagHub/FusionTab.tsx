@@ -221,13 +221,10 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
                   variant="accent"
                   padding="md"
                   border
-                  as={Flex}
                   key={group.target.id}
-                  align="center"
-                  justify="between"
-                  gap="md"
                   className="group-hover:border-glass-border transition-colors"
                 >
+                  <Flex align="center" justify="between" gap="md">
                   <Flex align="center" gap="lg" className="flex-1">
                     <Stack spacing="xs" className="w-fit">
                       <Button
@@ -293,6 +290,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
                       {t('tags:ignoreMatch')}
                     </Button>
                   </Stack>
+                  </Flex>
                 </GlassCard>
               );
             })}

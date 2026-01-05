@@ -29,7 +29,6 @@ export const TagTreeItem: React.FC<TagTreeItemProps> = ({
       variant="accent"
       padding="sm"
       border={false}
-      as={motion.div}
       layout
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}

@@ -237,11 +237,9 @@ export const TopBar: React.FC<TopBarProps> = ({
                   variant="accent"
                   padding="sm"
                   border
-                  as={Flex}
-                  align="center"
-                  gap="sm"
                   className="hidden sm:flex mx-2 shrink-0"
                 >
+                  <Flex align="center" gap="sm">
                   <input
                     type="range"
                     min={2}
@@ -251,6 +249,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     onChange={handleSliderChange}
                     className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:bg-text-primary [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
                   />
+                  </Flex>
                 </GlassCard>
               )}
             </Flex>

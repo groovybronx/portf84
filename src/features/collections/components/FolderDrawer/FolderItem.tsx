@@ -29,9 +29,6 @@ export const FolderItem: React.FC<FolderItemProps> = ({
       variant={isActive ? 'card' : 'accent'}
       padding="sm"
       border={isActive}
-      as={Flex}
-      align="center"
-      gap="sm"
       className={`group relative cursor-pointer transition-all text-sm ${
         isActive
           ? 'text-white'
@@ -39,6 +36,7 @@ export const FolderItem: React.FC<FolderItemProps> = ({
       }`}
       onClick={() => onSelect(folder.id)}
     >
+      <Flex align="center" gap="sm">
       <div
         className="shrink-0"
         onClick={(e) => {
@@ -84,6 +82,7 @@ export const FolderItem: React.FC<FolderItemProps> = ({
           <Icon action="delete" size={14} />
         </Button>
       )}
+      </Flex>
     </GlassCard>
   );
 };
