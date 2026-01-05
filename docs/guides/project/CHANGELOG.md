@@ -1,6 +1,6 @@
 # Changelog
 
-Dernière mise à jour : 01/01/2026 à 05:45
+Dernière mise à jour : 05/01/2026 à 21:15
 
 Ce fichier suit l'évolution du projet Lumina Portfolio.
 
@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Finalisation Implémentation Multilangage (i18n)
+**Session en cours** : Stabilisation Build & Compatibilité React 18
 
 **Progression** :
 - ✅ Synchronisation GitHub (develop & main) : 100% complété
@@ -16,13 +16,46 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 - ✅ Intégration Système de Tags (Alias, Fusion, Historique) : 100% complété
 - ✅ Documentation Technique (TAG_SYSTEM_GUIDE/README) : 100% complété
 - ✅ Migration i18n Multilangage (EN/FR) : 100% complété
+- ✅ Fix Compatibilité React 18 / Framer Motion : 100% complété
 - ↩️ Revert Support RAW (Retour état stable)
 
 **Prochaines étapes** :
 - [x] Tests de non-régression sur le build de production (Validé)
-- [ ] Déploiement v0.9.5 (Prêt)
+- [x] Fix erreur build Tauri (React 19 → React 18.3.1)
+- [ ] Déploiement v0.2.0-beta.1 (Prêt)
 
-**Dernière modification** : 01/01/2026 à 05:45
+**Dernière modification** : 05/01/2026 à 21:15
+
+---
+
+## [05/01/2026 - 21:15] - Fix Build Error: React 18 Compatibility
+
+### Type : Bug Fix / Critical
+
+**Composants** : 
+- `package.json` (Dependencies)
+- React & React-DOM (Downgrade)
+
+**Problème** :
+- Erreur critique au build Tauri: `TypeError: undefined is not an object (evaluating '$.Activity=N')`
+- React 19.2.3 introduit une nouvelle API `Activity` incompatible avec Framer Motion 12.x
+- Framer Motion officiellement incompatible avec React 19 (confirmé par les mainteneurs)
+
+**Solution** :
+- ⬇️ Downgrade React & React-DOM : `19.2.3` → `18.3.1` (dernière version stable React 18)
+- ➕ Ajout des types TypeScript : `@types/react@18.3.27` et `@types/react-dom@18.3.7`
+- 🧪 Validation complète : Build ✅, Tests (149/149) ✅
+- 📦 Optimisation bundle : vendor-react réduit de 206KB à 155KB
+
+**Impact** : 
+- ✅ Build Tauri fonctionnel
+- ✅ Aucune fonctionnalité React 19 n'était utilisée
+- ✅ Compatibilité totale avec tous les autres packages
+- ✅ Solution recommandée par l'équipe Framer Motion
+
+**Références** :
+- [Framer Motion Issue #2668](https://github.com/motiondivision/motion/issues/2668)
+- [React 19 Activity API](https://react.dev/reference/react/Activity)
 
 ---
 

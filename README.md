@@ -5,7 +5,7 @@
 **Galerie Photo Intelligente • Application Desktop Native**
 
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)
 ![Tailwind](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwindcss)
 ![Gemini](https://img.shields.io/badge/Gemini-AI-4285F4?logo=google)
 
@@ -101,18 +101,21 @@ npm run test
 
 ## 🔧 Dépannage
 
-### Erreur Build Tauri : `undefined is not an object (evaluating 'Z.Activity')`
+### Erreur Build Tauri : `undefined is not an object (evaluating '$.Activity')`
 
 **Symptôme :** L'application plante au démarrage en production avec une erreur React dans le bundle vendor.
 
-**Cause :** React 19 nécessite une configuration explicite du plugin Vite pour préserver les APIs internes (comme `Activity`).
+**Cause :** React 19.x est incompatible avec Framer Motion 12.x. React 19 introduit une nouvelle API `Activity` qui cause des erreurs de bundling avec Framer Motion.
 
-**Solution :** Le fichier `vite.config.ts` est configuré pour préserver les APIs React 19 en incluant le scheduler dans le bundle et en pré-optimisant les dépendances React.
+**Solution Implémentée :** Le projet utilise maintenant React 18.3.1 (dernière version stable React 18) pour assurer la compatibilité avec Framer Motion.
 
 Si vous rencontrez toujours l'erreur :
 1. Vérifiez que toutes les dépendances sont à jour : `npm install`
 2. Supprimez `node_modules` et le cache : `rm -rf node_modules dist && npm install`
-3. Assurez-vous que `react` et `react-dom` sont en version 19.2+
+3. Assurez-vous que `react` et `react-dom` sont en version **18.3.1**
+4. Vérifiez que `@types/react` et `@types/react-dom` sont installés
+
+**Note :** Ne mettez pas à jour vers React 19 tant que Framer Motion n'est pas officiellement compatible. Suivez [l'issue GitHub #2668](https://github.com/motiondivision/motion/issues/2668) pour les mises à jour.
 
 ---
 
