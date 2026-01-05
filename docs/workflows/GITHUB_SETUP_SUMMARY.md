@@ -9,7 +9,8 @@ Ce document résume toutes les actions effectuées pour configurer GitHub et am�
 ## 📚 Documentation Créée
 
 ### 1. **BRANCH_STRATEGY.md** (Anglais)
-- **Chemin** : `docs/BRANCH_STRATEGY.md`
+
+- **Chemin** : `docs/workflows/BRANCH_STRATEGY.md`
 - **Contenu** :
   - Structure complète des branches (main, develop, release, feature)
   - Instructions détaillées pour configurer GitHub
@@ -17,7 +18,8 @@ Ce document résume toutes les actions effectuées pour configurer GitHub et am�
   - Exemples de commandes Git
 
 ### 2. **CONFIGURATION_GITHUB_FR.md** (Français)
-- **Chemin** : `docs/CONFIGURATION_GITHUB_FR.md`
+
+- **Chemin** : `docs/workflows/CONFIGURATION_GITHUB_FR.md`
 - **Contenu** :
   - Guide pas à pas en français
   - Configuration de la branche par défaut (develop)
@@ -26,7 +28,8 @@ Ce document résume toutes les actions effectuées pour configurer GitHub et am�
   - Création de la branche de release
 
 ### 3. **CREATE_RELEASE_BRANCH_INSTRUCTIONS.md** (Français)
-- **Chemin** : `docs/CREATE_RELEASE_BRANCH_INSTRUCTIONS.md`
+
+- **Chemin** : `docs/workflows/CREATE_RELEASE_BRANCH_INSTRUCTIONS.md`
 - **Contenu** :
   - Instructions détaillées pour créer release/v0.2.0-beta.1
   - Méthode automatique et manuelle
@@ -38,6 +41,7 @@ Ce document résume toutes les actions effectuées pour configurer GitHub et am�
 ## 🛠️ Scripts Créés
 
 ### 1. **cleanup-branches.sh**
+
 - **Chemin** : `scripts/cleanup-branches.sh`
 - **Fonction** : Nettoie automatiquement les branches obsolètes
 - **Fonctionnalités** :
@@ -47,6 +51,7 @@ Ce document résume toutes les actions effectuées pour configurer GitHub et am�
   - Fournit un résumé des opérations
 
 **Branches ciblées pour suppression** :
+
 ```
 copilot/add-tag-merge-history-component
 copilot/check-develop-main-sync
@@ -65,11 +70,13 @@ feature/knowledge-doc-8019855004813516228
 ```
 
 **Usage** :
+
 ```bash
 ./scripts/cleanup-branches.sh
 ```
 
 ### 2. **create-release-branch.sh**
+
 - **Chemin** : `scripts/create-release-branch.sh`
 - **Fonction** : Crée automatiquement une nouvelle branche de release
 - **Fonctionnalités** :
@@ -80,11 +87,13 @@ feature/knowledge-doc-8019855004813516228
   - Commite et pousse les changements
 
 **Usage** :
+
 ```bash
 ./scripts/create-release-branch.sh
 ```
 
 ### 3. **scripts/README.md**
+
 - **Chemin** : `scripts/README.md`
 - **Contenu** : Documentation des scripts avec exemples d'utilisation
 
@@ -93,10 +102,12 @@ feature/knowledge-doc-8019855004813516228
 ## 📝 Fichiers Modifiés
 
 ### README.md
+
 **Ajout** : Références vers la nouvelle documentation
+
 ```markdown
-- [Stratégie de Branches](/docs/BRANCH_STRATEGY.md)
-- [Configuration GitHub](/docs/CONFIGURATION_GITHUB_FR.md)
+- [Stratégie de Branches](./BRANCH_STRATEGY.md)
+- [Configuration GitHub](./CONFIGURATION_GITHUB_FR.md)
 ```
 
 ---
@@ -108,6 +119,7 @@ Les actions suivantes doivent être effectuées **manuellement** sur GitHub car 
 ### 1. ⚙️ Définir `develop` comme Branche Par Défaut
 
 **Étapes** :
+
 1. Aller sur https://github.com/groovybronx/portf84
 2. **Settings** → **Branches**
 3. Sous "Default branch", cliquer sur ⇄
@@ -119,6 +131,7 @@ Les actions suivantes doivent être effectuées **manuellement** sur GitHub car 
 ### 2. 🔒 Protéger la Branche `main`
 
 **Étapes** :
+
 1. **Settings** → **Branches** → **Add rule**
 2. Branch name pattern : `main`
 3. Activer :
@@ -133,20 +146,24 @@ Les actions suivantes doivent être effectuées **manuellement** sur GitHub car 
 ### 3. 🧹 Nettoyer les Branches Inutiles
 
 **Méthode A** : Utiliser le script
+
 ```bash
 ./scripts/cleanup-branches.sh
 ```
 
 **Méthode B** : Suppression manuelle via Git
+
 ```bash
 git push origin --delete <nom-de-branche>
 ```
 
 **Méthode C** : Via l'interface GitHub
+
 - Aller sur https://github.com/groovybronx/portf84/branches
 - Cliquer sur l'icône de poubelle pour chaque branche à supprimer
 
 **Branches à conserver** :
+
 - ✅ `main` (production)
 - ✅ `develop` (intégration)
 - ✅ `copilot/setup-main-branch-protection` (cette branche, sera mergée puis supprimée)
@@ -154,11 +171,13 @@ git push origin --delete <nom-de-branche>
 ### 4. 🚀 Créer la Branche de Release Beta
 
 **Option A** : Utiliser le script automatisé
+
 ```bash
 ./scripts/create-release-branch.sh
 ```
 
 **Option B** : Créer manuellement
+
 ```bash
 git checkout develop
 git pull origin develop
@@ -176,6 +195,7 @@ git push -u origin release/v0.2.0-beta.1
 ## 📊 État des Branches
 
 ### Branches Actuelles
+
 ```
 main                    → Production (à protéger)
 develop                 → Intégration (à définir par défaut)
@@ -183,11 +203,13 @@ copilot/setup-main-branch-protection  → Cette PR
 ```
 
 ### Branches à Créer
+
 ```
 release/v0.2.0-beta.1   → Prochaine release (à créer après merge de cette PR)
 ```
 
 ### Branches à Supprimer (14 branches)
+
 ```
 9 branches copilot/* (anciennes)
 5 branches feature/* (mergées)
@@ -198,6 +220,7 @@ release/v0.2.0-beta.1   → Prochaine release (à créer après merge de cette P
 ## 🔄 Workflow Proposé
 
 ### Avant (Actuel)
+
 ```
 main ← commits directs possibles ❌
   ↑
@@ -205,6 +228,7 @@ PRs de n'importe où
 ```
 
 ### Après (Cible)
+
 ```
 main ← protégée, PRs uniquement depuis release/* ✅
   ↑
@@ -224,7 +248,7 @@ Après avoir effectué toutes les actions :
 - [ ] La branche `develop` est la branche par défaut sur GitHub
 - [ ] La branche `main` est protégée (pas de push direct)
 - [ ] Les PRs vers `main` nécessitent une approbation
-- [ ] Les anciennes branches copilot/* sont supprimées
+- [ ] Les anciennes branches copilot/\* sont supprimées
 - [ ] Les features branches mergées sont supprimées
 - [ ] La branche `release/v0.2.0-beta.1` existe
 - [ ] Le fichier `package.json` de la branche release a la version 0.2.0-beta.1
@@ -235,37 +259,45 @@ Après avoir effectué toutes les actions :
 ## 📖 Documentation de Référence
 
 ### Pour les Développeurs
+
 - **[BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)** - Stratégie complète en anglais
 - **[CONFIGURATION_GITHUB_FR.md](./CONFIGURATION_GITHUB_FR.md)** - Guide de configuration en français
 - **[CREATE_RELEASE_BRANCH_INSTRUCTIONS.md](./CREATE_RELEASE_BRANCH_INSTRUCTIONS.md)** - Instructions de release
 
 ### Pour les Scripts
-- **[scripts/README.md](../scripts/README.md)** - Documentation des scripts utilitaires
+
+- **[scripts/README.md](../../scripts/README.md)** - Documentation des scripts utilitaires
 
 ---
 
 ## 🎓 Concepts Clés
 
 ### Branch Protection
+
 **But** : Empêcher les modifications accidentelles ou non approuvées de la branche de production.
 
 **Avantages** :
+
 - Qualité du code garantie via reviews
 - Historique propre et traçable
 - Réduction des bugs en production
 
 ### Default Branch
+
 **But** : Définir quelle branche est utilisée par défaut pour les clones et PRs.
 
 **Pourquoi `develop`** :
+
 - C'est la branche d'intégration continue
 - Les développeurs travaillent toujours depuis `develop`
 - `main` ne contient que les releases stables
 
 ### Release Branches
+
 **But** : Préparer une nouvelle version avant de la déployer.
 
 **Workflow** :
+
 1. Créer depuis `develop` quand une version est prête
 2. Tester et fixer les bugs
 3. Merger dans `main` (release)
@@ -279,10 +311,12 @@ Après avoir effectué toutes les actions :
 ### En cas de problème :
 
 1. **Consulter la documentation** :
-   - **[BRANCH_STRATEGY.md](../BRANCH_STRATEGY.md)**
-   - **[CONFIGURATION_GITHUB_FR.md](../CONFIGURATION_GITHUB_FR.md)**
+
+   - **[BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)**
+   - **[CONFIGURATION_GITHUB_FR.md](./CONFIGURATION_GITHUB_FR.md)**
 
 2. **Vérifier les scripts** :
+
    - Les scripts sont dans `scripts/`
    - Ils ont des messages d'erreur explicites
 
@@ -295,20 +329,23 @@ Après avoir effectué toutes les actions :
 ## 📅 Maintenance
 
 ### Hebdomadaire
+
 - Supprimer les branches mergées
 - Vérifier les branches stales (>30 jours)
 
 ### Mensuel
+
 - Auditer les règles de protection
 - Mettre à jour cette documentation si nécessaire
 
 ### Par Release
+
 - Créer la branche release/vX.Y.Z
 - Mettre à jour CHANGELOG.md
 - Taguer après merge dans main
 
 ---
 
-**Créé le** : 2026-01-01  
-**Par** : GitHub Copilot Workspace Agent  
+**Créé le** : 2026-01-01
+**Par** : GitHub Copilot Workspace Agent
 **Pour** : Lumina Portfolio (groovybronx/portf84)

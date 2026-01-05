@@ -23,7 +23,7 @@ Cinq documents complets ont été créés pour couvrir tous les aspects du proje
 
 ---
 
-### 2. 📊 **AUDIT_DASHBOARD.md** - Vue d'Ensemble ⭐
+### 2. 📊 **2024-12-30_COMPREHENSIVE_DASHBOARD.md** - Vue d'Ensemble ⭐
 **Le document le plus important pour une vue rapide**
 
 - Scores visuels par catégorie
@@ -36,7 +36,7 @@ Cinq documents complets ont été créés pour couvrir tous les aspects du proje
 
 ---
 
-### 3. 📄 **COMPREHENSIVE_AUDIT_REPORT.md** - Analyse Technique
+### 3. 📄 **2024-12-30_COMPREHENSIVE_REPORT.md** - Analyse Technique
 **Rapport complet de 20,000+ mots**
 
 #### Sections :
@@ -84,7 +84,7 @@ Cinq documents complets ont été créés pour couvrir tous les aspects du proje
 
 ---
 
-### 4. 📋 **AUDIT_ACTION_PLAN.md** - Plan d'Action
+### 4. 📋 **2024-12-30_COMPREHENSIVE_ACTION_PLAN.md** - Plan d'Action
 **Guide d'implémentation étape par étape**
 
 #### Phase 1 : Pré-Lancement (Semaine 1)
@@ -225,8 +225,8 @@ less AUDIT_SUMMARY.txt
 ## 🎯 Prochaines Étapes
 
 ### Cette Semaine
-1. **Lire** [AUDIT_DASHBOARD.md](AUDIT_DASHBOARD.md) (5 min)
-2. **Assigner** les tâches de [AUDIT_ACTION_PLAN.md](AUDIT_ACTION_PLAN.md)
+1. **Lire** [2024-12-30_COMPREHENSIVE_DASHBOARD.md](2024-12-30_COMPREHENSIVE_DASHBOARD.md) (5 min)
+2. **Assigner** les tâches de [2024-12-30_COMPREHENSIVE_ACTION_PLAN.md](2024-12-30_COMPREHENSIVE_ACTION_PLAN.md)
 3. **Commencer** les fixes d'accessibilité
 
 ### Semaine Prochaine
@@ -277,9 +277,9 @@ less AUDIT_SUMMARY.txt
 ## 📞 Contact & Questions
 
 Pour questions sur l'audit :
-- **Technique :** Voir [COMPREHENSIVE_AUDIT_REPORT.md](COMPREHENSIVE_AUDIT_REPORT.md)
-- **Implémentation :** Voir [AUDIT_ACTION_PLAN.md](AUDIT_ACTION_PLAN.md)
-- **Business :** Voir [COMMERCIAL_AUDIT.md](../guides/project/COMMERCIAL_AUDIT.md)
+- **Technique :** Voir [2024-12-30_COMPREHENSIVE_REPORT.md](2024-12-30_COMPREHENSIVE_REPORT.md)
+- **Implémentation :** Voir [2024-12-30_COMPREHENSIVE_ACTION_PLAN.md](2024-12-30_COMPREHENSIVE_ACTION_PLAN.md)
+- **Business :** Voir [COMMERCIAL_AUDIT.md](../../guides/project/COMMERCIAL_AUDIT.md)
 
 ---
 

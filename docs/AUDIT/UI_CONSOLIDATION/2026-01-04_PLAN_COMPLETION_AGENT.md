@@ -689,11 +689,11 @@ git revert <commit-hash>
 
 - \`docs/guides/features/DESIGN_SYSTEM.md\`
 - \`docs/guides/features/MIGRATION_GUIDE_PHASE3.md\`
-- \`docs/guides/features/COMPONENTS.md\`
+- \`docs/guides/../../guides/features/COMPONENTS.md\`
 
 **Architecture**:
 
-- \`docs/guides/architecture/ARCHITECTURE.md\`
+- \`docs/guides/../../guides/architecture/ARCHITECTURE.md\`
 - \`docs/guides/project/REFACTORING_PLAN.md\`
 
 ### Rapports d'Audit

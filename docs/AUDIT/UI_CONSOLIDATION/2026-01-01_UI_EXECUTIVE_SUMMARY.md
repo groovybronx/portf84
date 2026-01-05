@@ -185,8 +185,8 @@ ROI à 1 an: +400-500% 🚀
    - Tests à chaque étape
 
 2. **Documentation Complète**
-   - Guide développeur (UI_QUICK_REFERENCE.md)
-   - Architecture détaillée (UI_COMPONENT_ARCHITECTURE.md)
+   - Guide développeur (2026-01-01_UI_QUICK_REFERENCE.md)
+   - Architecture détaillée (2026-01-01_UI_COMPONENT_ARCHITECTURE.md)
    - Exemples concrets de migration
 
 3. **Tests et Validation**
@@ -258,10 +258,10 @@ ROI à 1 an: +400-500% 🚀
 ## 📚 Documentation Complète
 
 **Pour aller plus loin:**
-- 📊 [UI_UX_CONSOLIDATION_AUDIT.md](./UI_UX_CONSOLIDATION_AUDIT.md) - Audit complet (650+ lignes)
-- 📐 [UI_COMPONENT_ARCHITECTURE.md](./UI_COMPONENT_ARCHITECTURE.md) - Architecture détaillée
-- 📖 [UI_QUICK_REFERENCE.md](./UI_QUICK_REFERENCE.md) - Guide rapide développeurs
-- 📈 [UI_CONSOLIDATION_DIAGRAMS.md](./UI_CONSOLIDATION_DIAGRAMS.md) - Diagrammes visuels
+- 📊 [2026-01-01_UI_CONSOLIDATION_AUDIT.md](./2026-01-01_UI_CONSOLIDATION_AUDIT.md) - Audit complet (650+ lignes)
+- 📐 [2026-01-01_UI_COMPONENT_ARCHITECTURE.md](./2026-01-01_UI_COMPONENT_ARCHITECTURE.md) - Architecture détaillée
+- 📖 [2026-01-01_UI_QUICK_REFERENCE.md](./2026-01-01_UI_QUICK_REFERENCE.md) - Guide rapide développeurs
+- 📈 [2026-01-01_UI_CONSOLIDATION_DIAGRAMS.md](./2026-01-01_UI_CONSOLIDATION_DIAGRAMS.md) - Diagrammes visuels
 
 ---
 

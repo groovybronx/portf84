@@ -50,11 +50,11 @@ Suite à la vérification de l'audit UI simplification, un nettoyage du code a �
 
 **Justification**:
 - Ces console.log/error/warn font partie d'un audit séparé
-- Mentionnés dans `COMPREHENSIVE_AUDIT_REPORT.md` comme "Code Quality" issue
+- Mentionnés dans `2024-12-30_COMPREHENSIVE_REPORT.md` comme "Code Quality" issue
 - Non liés à la simplification UI
 - Nécessitent un logger utility dédié (tâche séparée)
 
-**Référence**: COMPREHENSIVE_AUDIT_REPORT.md, section 1.1, page 42:
+**Référence**: 2024-12-30_COMPREHENSIVE_REPORT.md, section 1.1, page 42:
 > "Console Statements: 119 | ⚠️ Should be reduced"
 
 **Action Future**: Créer utility logger et migrer progressivement (2-4h estimé)

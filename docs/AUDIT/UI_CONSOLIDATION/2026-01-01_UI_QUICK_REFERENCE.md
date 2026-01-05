@@ -335,7 +335,7 @@ Lors de la création d'un nouveau composant:
 
 ### Q: Comment savoir quel composant utiliser?
 
-**R**: Consultez `/docs/features/COMPONENTS.md` et les exemples dans ce guide.
+**R**: Consultez `/docs/../../guides/features/COMPONENTS.md` et les exemples dans ce guide.
 
 ### Q: Et si j'ai besoin d'un style custom?
 
@@ -356,9 +356,9 @@ Lors de la création d'un nouveau composant:
 ## 📚 Ressources
 
 **Documentation Principale**:
-- `/docs/AUDIT/UI_UX_CONSOLIDATION_AUDIT.md` - Audit complet
-- `/docs/AUDIT/UI_COMPONENT_ARCHITECTURE.md` - Architecture visuelle
-- `/docs/features/COMPONENTS.md` - Documentation composants existants
+- `/docs/AUDIT/2026-01-01_UI_CONSOLIDATION_AUDIT.md` - Audit complet
+- `/docs/AUDIT/2026-01-01_UI_COMPONENT_ARCHITECTURE.md` - Architecture visuelle
+- `/docs/../../guides/features/COMPONENTS.md` - Documentation composants existants
 
 **Composants UI**:
 - `/src/shared/components/ui/` - UI Kit

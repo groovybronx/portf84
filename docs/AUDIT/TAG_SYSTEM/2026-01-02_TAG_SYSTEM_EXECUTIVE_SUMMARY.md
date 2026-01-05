@@ -431,9 +431,9 @@ After P0:
 
 ### Existing Documentation
 
-- [TAG_SYSTEM_ARCHITECTURE.md](../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) - Technical reference
-- [TAG_SYSTEM_GUIDE.md](../guides/architecture/TAG_SYSTEM_GUIDE.md) - User guide
-- [TAG_SYSTEM_README.md](../guides/features/TAG_SYSTEM_README.md) - Quick reference
+- [TAG_SYSTEM_ARCHITECTURE.md](../../guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) - Technical reference
+- [TAG_SYSTEM_GUIDE.md](../../guides/architecture/TAG_SYSTEM_GUIDE.md) - User guide
+- [TAG_SYSTEM_README.md](../../guides/features/TAG_SYSTEM_README.md) - Quick reference
 
 ---
 
