@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Icon, type IconAction, ALL_ICONS } from './Icon';
+import { Icon, type IconAction } from './Icon';
 import { open } from '@tauri-apps/plugin-dialog';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { useTranslation } from 'react-i18next';
-import { useLocalShortcuts, ShortcutMap } from '../hooks/useLocalShortcuts';
-import { KEYBOARD_SHORTCUTS, ShortcutCategory } from '../constants/shortcuts';
-import { useTheme } from '../contexts/ThemeContext';
+
 import { secureStorage } from '../../services/secureStorage';
-import { SettingRow, TabList, TabTrigger, Button, GlassCard, Stack, Flex } from './ui';
+import { TabList, TabTrigger, Button, GlassCard, Stack } from './ui';
 import { LanguageSelector } from './settings/LanguageSelector';
 import { ShortcutEditor } from './settings/ShortcutEditor';
 import { ThemeCustomizer } from './settings/ThemeCustomizer';
@@ -28,7 +26,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   useCinematicCarousel = false,
   onToggleCinematicCarousel,
 }) => {
-  const { t, i18n } = useTranslation(['settings', 'common']);
+  const { t } = useTranslation(['settings', 'common']);
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
   const [apiKey, setApiKey] = useState('');
   const [dbPath, setDbPath] = useState('');
