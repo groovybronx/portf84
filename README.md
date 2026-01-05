@@ -107,19 +107,12 @@ npm run test
 
 **Cause :** React 19 nécessite une configuration explicite du plugin Vite pour préserver les APIs internes (comme `Activity`).
 
-**Solution :** Le fichier `vite.config.ts` est déjà configuré correctement avec :
-```typescript
-react({
-  jsxRuntime: "automatic",
-  jsxImportSource: "react",
-})
-```
+**Solution :** Le fichier `vite.config.ts` est configuré pour préserver les APIs React 19 en incluant le scheduler dans le bundle et en pré-optimisant les dépendances React.
 
 Si vous rencontrez toujours l'erreur :
 1. Vérifiez que toutes les dépendances sont à jour : `npm install`
 2. Supprimez `node_modules` et le cache : `rm -rf node_modules dist && npm install`
 3. Assurez-vous que `react` et `react-dom` sont en version 19.2+
-4. Vérifiez que vous n'utilisez pas `import * as React` (utiliser des imports nommés)
 
 ---
 

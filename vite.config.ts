@@ -11,15 +11,8 @@ export default defineConfig(({ mode }) => {
 			strictPort: env.VITE_STRICT_PORT !== "false",
 			host: env.VITE_HOST || "0.0.0.0",
 		},
-		plugins: [
-			react({
-				jsxRuntime: "automatic",
-				jsxImportSource: "react",
-			}),
-			tailwindcss(),
-		],
+		plugins: [react(), tailwindcss()],
 		build: {
-			minify: "esbuild",
 			rollupOptions: {
 				output: {
 					manualChunks(id) {
