@@ -144,6 +144,12 @@ Si vous rencontrez toujours l'erreur :
 - [Configuration GitHub](./docs/workflows/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
 - [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
 
+### 💼 Analyse Commerciale & Qualité
+
+- [📊 Analyse Qualitative & Étude de Marché 2026](./docs/ANALYSE_QUALITATIVE_ET_MARCHE_2026.md) - **Analyse complète (87 pages)** - Qualité technique, analyse concurrentielle, projections financières
+- [📋 Synthèse Exécutive Commercialisation](./docs/SYNTHESE_EXECUTIVE_COMMERCIALISATION.md) - **Résumé (1 page)** - Verdict GO/NO-GO, roadmap de lancement 6 semaines
+- [📊 Project Health Report](./docs/PROJECT_HEALTH_REPORT.md) - Score de santé 87/100, métriques de code, couverture de tests
+
 ### 🤖 GitHub Copilot Configuration
 
 Ce projet inclut une configuration complète pour GitHub Copilot avec des règles personnalisées qui aident à générer du code conforme aux conventions du projet :
