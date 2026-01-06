@@ -27,7 +27,7 @@ You are an expert in:
 **Lumina Portfolio** is a native desktop photo gallery application with AI-powered features.
 
 ### Tech Stack
-- **Frontend**: React 19.2.3, TypeScript 5.8.2, Tailwind CSS v4.1.18, Framer Motion 12.23.26
+- **Frontend**: React 18.3.1, TypeScript 5.8.2, Tailwind CSS v4.1.18, Framer Motion 12.23.26
 - **Backend**: Tauri v2.9.5, Rust 1.77.2
 - **Database**: SQLite (via Tauri plugin-sql 2.3.1)
 - **AI**: Google Gemini API (@google/genai 1.34.0)
@@ -136,7 +136,7 @@ When working on architecture tasks, you should:
      "version": "0.2.0-beta.1",
      "dependencies": {
        "@tauri-apps/api": "^2.9.1",
-       "react": "^19.2.3",
+       "react": "^18.3.1",
        "@google/genai": "^1.34.0",
        "i18next": "^25.7.3",
        "react-i18next": "^16.5.0",

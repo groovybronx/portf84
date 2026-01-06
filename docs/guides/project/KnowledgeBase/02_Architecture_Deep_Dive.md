@@ -7,7 +7,7 @@ Lumina Portfolio follows a standard Tauri v2 architecture, separating the applic
 ```mermaid
 graph TD
     subgraph "Frontend (Webview)"
-        React[React 19 App]
+        React[React 18.3.1 App]
         Services[TypeScript Services]
         State[Context State]
     end
