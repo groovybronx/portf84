@@ -352,6 +352,7 @@ and patterns
 |----------|-------------|--------|---------|
 | [📊 Analyse Qualitative & Étude de Marché](./ANALYSE_QUALITATIVE_ET_MARCHE_2026.md) | **87-page comprehensive analysis** - Quality audit & market study | ✅ Complete | Jan 6, 2026 |
 | [📋 Synthèse Exécutive Commercialisation](./SYNTHESE_EXECUTIVE_COMMERCIALISATION.md) | **One-page summary** - Go/No-go decision & roadmap | ✅ Complete | Jan 6, 2026 |
+| [📊 Analyse Visuelle Marché](./ANALYSE_VISUELLE_MARCHE.md) | **Visual overview** - Charts, graphs, and key metrics | ✅ Complete | Jan 6, 2026 |
 | [💼 Commercial Audit (Legacy)](./guides/project/COMMERCIAL_AUDIT.md) | Previous business analysis | ✅ Reference | Dec 2025 |
 
 **Commercial Verdict**: ✅ **GO for Commercialization** (Confidence: 80%)
