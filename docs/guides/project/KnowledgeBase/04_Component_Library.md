@@ -1,7 +1,7 @@
 # Component Library & UI Patterns
 
 ## Overview
-Lumina Portfolio uses a custom component system built with **React 19**, **Tailwind CSS v4**, and **Framer Motion**. The UI is designed to be dark, sleek, and content-focused.
+Lumina Portfolio uses a custom component system built with **React 18.3.1**, **Tailwind CSS v4**, and **Framer Motion**. The UI is designed to be dark, sleek, and content-focused.
 
 ## Key Components
 

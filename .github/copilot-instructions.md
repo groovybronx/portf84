@@ -347,7 +347,7 @@ const LibraryDispatchContext = createContext<Dispatch>();
 ---
 
 ### Key Dependencies
-- React 19.2.3 / React DOM 19.2.3
+- React 18.3.1 / React DOM 18.3.1
 - TypeScript ~5.8.2
 - Tailwind CSS 4.1.18
 - Tauri 2.9.5 (@tauri-apps/api 2.9.1, @tauri-apps/cli 2.1.0)
@@ -371,7 +371,7 @@ const LibraryDispatchContext = createContext<Dispatch>();
 ## Quick Reference
 
 ### Key Dependencies
-- React 19.2.3
+- React 18.3.1
 - TypeScript ~5.8.2
 - Tailwind CSS 4.1.18
 - Tauri 2.9.5
@@ -400,7 +400,7 @@ Agents are located in `.github/agents/` and include:
 
 #### Domain Agents
 - **project-architecture** - Overall architecture and structure
-- **react-frontend** - React 19, TypeScript, Tailwind CSS v4
+- **react-frontend** - React 18.3.1, TypeScript, Tailwind CSS v4
 - **tauri-rust-backend** - Rust backend and Tauri v2
 - **database-sqlite** - SQLite schema and queries
 - **ai-gemini-integration** - AI features and Gemini API

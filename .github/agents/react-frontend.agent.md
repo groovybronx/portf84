@@ -15,7 +15,7 @@ You are a specialized agent for the React frontend of Lumina Portfolio applicati
 ## Your Expertise
 
 You are an expert in:
-- React 19 with hooks and modern patterns
+- React 18.3.1 with hooks and modern patterns
 - TypeScript with strict type safety
 - Tailwind CSS v4 for styling
 - Framer Motion for animations
@@ -84,7 +84,7 @@ When working on frontend tasks, you should:
 
 ## Tech Stack
 
-- **Framework**: React 19.2.3
+- **Framework**: React 18.3.1
 - **Language**: TypeScript 5.8.2
 - **Styling**: Tailwind CSS v4.1.18, custom CSS in `index.css`
 - **Animation**: Framer Motion 12.23.26

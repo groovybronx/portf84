@@ -389,7 +389,7 @@ From [latest audit](./AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md):
 ### 🔴 Critical (Week 1-2)
 1. **Enable BatchTagPanel UI Access** - 349-line component has no button/shortcut
 2. **Fix Settings Persistence** - TagHub settings reset every session
-3. **Update React Version Docs** - 10+ docs reference React 19 (actual: 18.3.1)
+3. **Update React Version Docs** - 10+ docs reference React 19 (actual: 18.3.1) ✅ DONE
 
 ### 🟡 High Priority (Week 3-4)
 4. **Add UI Component Tests** - Only 4 UI tests out of 149 total
