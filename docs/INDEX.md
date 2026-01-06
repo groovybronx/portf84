@@ -329,6 +329,23 @@ and patterns
 
 ---
 
+### 📊 Metrics & Analysis (NEW!)
+
+| Document | Description | Status | Updated |
+|----------|-------------|--------|---------|
+| [📊 Project Health Report](./PROJECT_HEALTH_REPORT.md) | **Complete project analysis** (Score: 87/100) | ✅ Latest | Jan 6, 2026 |
+| [📈 Metrics Summary](./METRICS_SUMMARY.md) | **Visual metrics overview** with priorities | ✅ Latest | Jan 6, 2026 |
+| [🧪 Test Coverage Analysis](./TEST_COVERAGE_ANALYSIS.md) | **Detailed test coverage** with action plan | ✅ Latest | Jan 6, 2026 |
+
+**Key Findings**:
+- ✅ Quality Score: 88/100
+- ⚠️ Test Coverage: 61% (target: 80%)
+- ✅ Performance: 92/100
+- ✅ Security: 100/100 (0 vulnerabilities)
+- ✅ Documentation: 90/100
+
+---
+
 ### 🔍 Audit Reports (Recent)
 
 | Report | Date | Focus | Status |

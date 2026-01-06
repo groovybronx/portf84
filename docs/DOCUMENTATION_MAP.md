@@ -78,9 +78,15 @@
 │   └── /docs/ARCHIVES/
 │       └── Historical documentation & migration guides
 │
-└── 🔍 AUDIT
-    └── /docs/AUDIT/
-        └── Security & quality audit reports
+├── 🔍 AUDIT
+│   └── /docs/AUDIT/
+│       └── Security & quality audit reports
+│
+└── 📊 METRICS & ANALYSIS (NEW!)
+    └── /docs/
+        ├── PROJECT_HEALTH_REPORT.md     → Complete Analysis (Score: 87/100)
+        ├── METRICS_SUMMARY.md           → Visual Metrics Overview
+        └── TEST_COVERAGE_ANALYSIS.md    → Test Coverage Deep Dive
 ```
 
 ---
@@ -115,6 +121,12 @@
 
 1. **[Troubleshooting & FAQ](./guides/project/KnowledgeBase/08_Troubleshooting_and_FAQ.md)** - Common issues
 2. **[GitHub Issues](https://github.com/groovybronx/portf84/issues)** - Report bugs
+
+### 📊 Want Project Metrics? (NEW!)
+
+1. **[Project Health Report](./PROJECT_HEALTH_REPORT.md)** - Complete analysis (Score: 87/100)
+2. **[Metrics Summary](./METRICS_SUMMARY.md)** - Visual overview with priorities
+3. **[Test Coverage Analysis](./TEST_COVERAGE_ANALYSIS.md)** - Coverage deep dive (61%)
 
 ---
 
