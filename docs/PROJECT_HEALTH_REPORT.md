@@ -452,6 +452,14 @@ docs/
 
 ---
 
+## 📚 Documents Complémentaires
+
+Pour une analyse commerciale et une étude de marché approfondie, consulter:
+- **[📊 Analyse Qualitative & Étude de Marché 2026](./ANALYSE_QUALITATIVE_ET_MARCHE_2026.md)** - Rapport complet de 87 pages
+- **[📋 Synthèse Exécutive Commercialisation](./SYNTHESE_EXECUTIVE_COMMERCIALISATION.md)** - Résumé d'une page avec recommandations Go-to-Market
+
+---
+
 **Généré le**: 2026-01-06  
 **Outil**: Metrics Analyzer Agent  
 **Version**: Lumina Portfolio 0.3.0-beta.1
