@@ -529,6 +529,63 @@ export const usePhotoSelection = () => {
 
 ---
 
+## 🤖 Documentation RAG Agent
+
+Ce projet utilise un agent RAG spécialisé pour accéder intelligemment à la documentation.
+
+### Utilisation de l'Agent RAG
+
+Pour toute question sur la documentation du projet, préférer l'agent RAG :
+- `@documentation-rag-agent [question]` - Questions sur la documentation
+- L'agent consulte automatiquement l'index de documentation (113+ documents)
+- Toutes les réponses incluent des citations avec chemins de fichiers exacts
+
+### Documentation comme Source de Vérité
+
+Avant de répondre à une question sur le projet :
+1. **Consulter d'abord l'agent RAG** ou l'index de documentation
+2. Vérifier `docs/INDEX.md` et `docs/QUICK_REFERENCE.md`
+3. **Toujours citer les sources** de documentation dans les réponses
+
+### Quand Consulter l'Agent RAG
+
+- Questions sur l'architecture du projet (TAG_SYSTEM_ARCHITECTURE.md, etc.)
+- Guides d'utilisation des fonctionnalités
+- État actuel du projet et métriques
+- Décisions de conception passées
+- Conventions et bonnes pratiques établies
+- Historique des changements et refactoring
+
+### Commandes Spéciales
+
+```bash
+# Recherche simple
+@documentation-rag-agent Comment fonctionne X ?
+
+# Recherche ciblée
+@documentation-rag-agent search:"terme" in:guides/features
+
+# Documents liés
+@documentation-rag-agent related:"docs/path/file.md"
+
+# Statistiques
+@documentation-rag-agent stats
+```
+
+### Système RAG
+
+Le système RAG utilise :
+- **Recherche hybride** : Lexicale (40%) + Sémantique (60%)
+- **Index automatique** : Reconstruit à chaque push de documentation
+- **4 niveaux de priorité** : Critical, High, Normal, Archive
+- **100+ mots-clés** : Extraction automatique pour recherche optimisée
+
+**Guide complet** : `docs/RAG_AGENT_GUIDE.md`  
+**Configuration** : `.github/copilot/rag-config.json`  
+**Scripts** : `npm run rag:build`, `npm run rag:search`, `npm run rag:test`
+
+---
+
 ## When in Doubt
 
 - Follow existing patterns in the codebase
