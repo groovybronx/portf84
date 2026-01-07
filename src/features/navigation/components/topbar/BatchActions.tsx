@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Share2, FolderInput, Sparkles } from "lucide-react";
+import { Share2, FolderInput, Sparkles, Tags } from "lucide-react";
 import { Button, Flex, GlassCard } from "../../../../shared/components/ui";
 
 interface BatchActionsProps {
@@ -12,6 +12,7 @@ interface BatchActionsProps {
 	onRunBatchAI: () => void;
 	isBatchAIProcessing: boolean;
 	batchAIProgress: number;
+	onOpenBatchTagPanel: () => void;
 }
 
 export const BatchActions: React.FC<BatchActionsProps> = ({
@@ -23,6 +24,7 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 	onRunBatchAI,
 	isBatchAIProcessing,
 	batchAIProgress,
+	onOpenBatchTagPanel,
 }) => {
 	const { t } = useTranslation("navigation");
 	if (!selectionMode) return null;
@@ -67,6 +69,17 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				) : (
 					<Sparkles size={18} />
 				)}
+			</Button>
+			<Button
+				variant="glass"
+				size="icon"
+				onClick={onOpenBatchTagPanel}
+				disabled={selectedCount === 0}
+				aria-label={t('batchTagHint')}
+				title={t('batchTagHint')}
+				className="text-purple-400 hover:border-purple-400/30"
+			>
+				<Tags size={18} />
 			</Button>
 		</Flex>
 	);

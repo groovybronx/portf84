@@ -265,6 +265,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 onRunBatchAI={onRunBatchAI}
                 isBatchAIProcessing={isBatchAIProcessing}
                 batchAIProgress={batchAIProgress}
+                onOpenBatchTagPanel={onOpenBatchTagPanel}
               />
 
               {!selectionMode && (

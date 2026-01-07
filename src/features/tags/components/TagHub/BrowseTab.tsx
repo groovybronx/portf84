@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Grid, List, Tag as TagIcon, Sparkles } from 'lucide-react';
 import { Button, Flex, Stack, Grid as LayoutGrid, GlassCard } from '@/shared/components/ui';
 import { getTagsWithUsageStats, TagWithUsage } from '@/services/storage/tags';
+import {
+	loadTagHubSettings,
+	saveTagHubSettings,
+	type TagHubSettings,
+} from '@/shared/utils/tagHubSettings';
 
 type ViewMode = 'grid' | 'list';
 type FilterMode = 'all' | 'manual' | 'ai' | 'unused' | 'mostUsed';
@@ -16,8 +21,47 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
   const [tags, setTags] = useState<TagWithUsage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [filterMode, setFilterMode] = useState<FilterMode>('all');
+  
+  // Load persisted settings on mount
+  const [settings, setSettings] = useState<TagHubSettings>(() => loadTagHubSettings());
+  const [viewMode, setViewMode] = useState<ViewMode>(settings.viewMode);
+  const [filterMode, setFilterMode] = useState<FilterMode>(settings.filterMode);
+  const [showUsageCount, setShowUsageCount] = useState(settings.showUsageCount);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounced save function
+  const debouncedSave = useCallback((newSettings: TagHubSettings) => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      saveTagHubSettings(newSettings);
+    }, 500);
+  }, []);
+
+  // Update settings and persist
+  const updateSettings = useCallback((updates: Partial<TagHubSettings>) => {
+    const newSettings = { ...settings, ...updates };
+    setSettings(newSettings);
+    debouncedSave(newSettings);
+  }, [settings, debouncedSave]);
+
+  // Sync local state with settings updates
+  useEffect(() => {
+    if (viewMode !== settings.viewMode) {
+      updateSettings({ viewMode });
+    }
+  }, [viewMode]);
+
+  useEffect(() => {
+    if (filterMode !== settings.filterMode) {
+      updateSettings({ filterMode });
+    }
+  }, [filterMode]);
+
+  useEffect(() => {
+    if (showUsageCount !== settings.showUsageCount) {
+      updateSettings({ showUsageCount });
+    }
+  }, [showUsageCount]);
 
   useEffect(() => {
     loadTags();

@@ -23,6 +23,8 @@
   "move": "Move",
   "share": "Share",
   "analyzeSelected": "Analyze Selected",
+  "batchTag": "Batch Tag",
+  "batchTagHint": "Tag multiple items at once (Ctrl+Shift+T)",
   "viewGrid": "Grid",
   "viewFlow": "Flow",
   "viewDetail": "Detail",
