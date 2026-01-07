@@ -17,7 +17,7 @@ L'application a dépassé le stade du prototype et est entrée dans la phase de 
 ### ✅ Points Forts (Différenciateurs)
 
 1.  **Architecture Local-First Robuste** :
-    *   Stack : **React 19 + Tauri v2 + SQLite**.
+    *   Stack : **React 19.2 + Tauri v2 + SQLite**.
     *   Avantage : Vitesse fulgurante, respect absolu de la vie privée (pas de cloud), pas de coûts serveurs récurrents.
     *   Persistance : Les données (favoris, tags, collections) sont sauvegardées localement de manière fiable.
 
