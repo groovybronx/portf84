@@ -84,12 +84,12 @@ export const saveTagHubSettings = (settings: TagHubSettings): void => {
 			lastUpdated: Date.now(),
 		};
 		localStorage.setItem(SETTINGS_KEY, JSON.stringify(toSave));
-		console.log('[TagHubSettings] Saved successfully');
+		console.debug('[TagHubSettings] Saved successfully');
 	} catch (error) {
 		console.error('[TagHubSettings] Failed to save:', error);
-		// Handle quota exceeded
+		// Handle quota exceeded - silently fail in production, log error for debugging
 		if (error instanceof Error && error.name === 'QuotaExceededError') {
-			alert('Storage quota exceeded. Please clear some browser data.');
+			console.error('[TagHubSettings] Storage quota exceeded. Settings may not persist.');
 		}
 	}
 };

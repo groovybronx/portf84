@@ -24,9 +24,6 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
   
   // Load persisted settings on mount
   const [settings, setSettings] = useState<TagHubSettings>(() => loadTagHubSettings());
-  const [viewMode, setViewMode] = useState<ViewMode>(settings.viewMode);
-  const [filterMode, setFilterMode] = useState<FilterMode>(settings.filterMode);
-  const [showUsageCount, setShowUsageCount] = useState(settings.showUsageCount);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced save function
@@ -37,20 +34,17 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
     }, 500);
   }, []);
 
-  // Sync local state changes to settings
-  useEffect(() => {
-    const newSettings: TagHubSettings = {
-      viewMode,
-      filterMode,
-      showUsageCount,
-      sortBy: settings.sortBy,
-      sortDirection: settings.sortDirection,
-      version: settings.version,
-      lastUpdated: Date.now(),
-    };
-    setSettings(newSettings);
-    debouncedSave(newSettings);
-  }, [viewMode, filterMode, showUsageCount, settings.sortBy, settings.sortDirection, settings.version, debouncedSave]);
+  // Update a single setting
+  const updateSetting = useCallback(<K extends keyof TagHubSettings>(
+    key: K,
+    value: TagHubSettings[K]
+  ) => {
+    setSettings(prev => {
+      const newSettings = { ...prev, [key]: value, lastUpdated: Date.now() };
+      debouncedSave(newSettings);
+      return newSettings;
+    });
+  }, [debouncedSave]);
 
   useEffect(() => {
     loadTags();
@@ -76,8 +70,8 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
     }
 
     // Type filter
-    if (filterMode === 'manual' && tag.type !== 'manual') return false;
-    if (filterMode === 'ai' && tag.type !== 'ai') return false;
+    if (settings.filterMode === 'manual' && tag.type !== 'manual') return false;
+    if (settings.filterMode === 'ai' && tag.type !== 'ai') return false;
 
     return true;
   });
@@ -125,10 +119,10 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         <GlassCard variant="accent" padding="sm" className="shrink-0">
           <Flex gap="xs">
           <Button
-            onClick={() => setViewMode('grid')}
+            onClick={() => updateSetting('viewMode', 'grid')}
             aria-label={t('tags:gridView')}
             className={`p-2 rounded ${
-              viewMode === 'grid'
+              settings.viewMode === 'grid'
                 ? 'bg-blue-500/20 text-blue-300'
                 : 'text-gray-500 hover:text-gray-300'
             }`}
@@ -136,10 +130,10 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
             <Grid size={16} />
           </Button>
           <Button
-            onClick={() => setViewMode('list')}
+            onClick={() => updateSetting('viewMode', 'list')}
             aria-label={t('tags:listView')}
             className={`p-2 rounded ${
-              viewMode === 'list'
+              settings.viewMode === 'list'
                 ? 'bg-blue-500/20 text-blue-300'
                 : 'text-gray-500 hover:text-gray-300'
             }`}
@@ -161,9 +155,9 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         ].map((filter) => (
           <Button
             key={filter.id}
-            onClick={() => setFilterMode(filter.id)}
+            onClick={() => updateSetting('filterMode', filter.id)}
             className={`px-3 py-1.5 text-xs rounded-full whitespace-nowrap ${
-              filterMode === filter.id
+              settings.filterMode === filter.id
                 ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
                 : 'text-gray-400 hover:bg-glass-bg-active bg-glass-bg'
             }`}
@@ -187,7 +181,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
           <h3 className="text-lg font-medium text-white">{t('tags:noTagsYet')}</h3>
           <p className="text-sm text-white/40">{t('tags:noSimilarTags')}</p>
         </Flex>
-      ) : viewMode === 'grid' ? (
+      ) : settings.viewMode === 'grid' ? (
         <LayoutGrid cols={4} gap="md" className="sm:grid-cols-3 grid-cols-2">
           {filteredTags.map((tag) => (
             <GlassCard
