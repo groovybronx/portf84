@@ -72,6 +72,12 @@ const handleMouseUp = () => {
 | **Tags Couleur**    | Touches `1` à `6`           |
 | **Effacer Tags**    | Touche `0`                  |
 
+### Mode Sélection (Grid)
+
+| Action                  | Touche par défaut           | Context                       |
+| ----------------------- | --------------------------- | ----------------------------- |
+| **Batch Tag Panel**     | `Ctrl/Cmd + Shift + T`      | Grid (selection mode)         |
+
 ---
 
 ## Configuration & Paramètres

@@ -29,5 +29,7 @@
   "clearFilter": "Effacer le filtre",
   "toggleColorTags": "Afficher les tags couleur",
   "pinLibrary": "Fixer la bibliothèque",
-  "unpinLibrary": "Détacher la bibliothèque"
+  "unpinLibrary": "Détacher la bibliothèque",
+  "batchTag": "Étiquetage groupé",
+  "batchTagHint": "Étiqueter plusieurs éléments (Ctrl+Shift+T)"
 }

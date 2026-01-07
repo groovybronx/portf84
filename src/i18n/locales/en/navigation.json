@@ -29,5 +29,7 @@
   "clearFilter": "Clear Filter",
   "toggleColorTags": "Toggle Color Tags",
   "pinLibrary": "Pin Library",
-  "unpinLibrary": "Unpin Library"
+  "unpinLibrary": "Unpin Library",
+  "batchTag": "Batch Tag",
+  "batchTagHint": "Tag multiple items at once (Ctrl+Shift+T)"
 }

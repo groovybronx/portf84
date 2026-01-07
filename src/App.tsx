@@ -143,6 +143,7 @@ const App: React.FC = () => {
     setIsCollectionManagerOpen,
   } = useModalState();
   const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
+  const [isBatchTagPanelOpen, setIsBatchTagPanelOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [showColorTags, setShowColorTags] = useState(true);
 
@@ -388,6 +389,7 @@ const App: React.FC = () => {
             onOpenTagManager={() => setIsTagManagerOpen(true)}
             showColorTags={showColorTags}
             onToggleColorTags={toggleColorTags}
+            onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
           />
         </div>
       </ErrorBoundary>

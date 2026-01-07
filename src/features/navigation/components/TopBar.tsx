@@ -27,6 +27,7 @@ interface TopBarProps {
 	showColorTags: boolean;
 	onToggleColorTags: () => void;
 	isSidebarPinned?: boolean;
+	onOpenBatchTagPanel: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -42,6 +43,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 	showColorTags,
 	onToggleColorTags,
 	isSidebarPinned = false,
+	onOpenBatchTagPanel,
 }) => {
 	const { t } = useTranslation(["navigation", "common"]);
 	// Context consumption
@@ -211,6 +213,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 							onRunBatchAI={onRunBatchAI}
 							isBatchAIProcessing={isBatchAIProcessing}
 							batchAIProgress={batchAIProgress}
+							onOpenBatchTagPanel={onOpenBatchTagPanel}
 						/>
 
 						{!selectionMode && (
