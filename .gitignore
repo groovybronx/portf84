@@ -89,7 +89,7 @@ coverage/
 # OpenMemory - IDE/Assistant specific rules
 
 # Documentation RAG Index (généré automatiquement)
-docs/.doc-index.json
+
 
 # Python cache files
 __pycache__/

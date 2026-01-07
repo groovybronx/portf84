@@ -11,9 +11,11 @@ Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumin
 Ces agents fournissent une expertise dans des domaines techniques spécifiques du projet.
 
 ### 1. 🏗️ Project Architecture Agent
+
 **Fichier**: `project-architecture.agent.md`
 
 **Expertise**:
+
 - Architecture globale de l'application
 - Structure du projet et organisation des fichiers
 - Flux de données et patterns architecturaux
@@ -25,9 +27,11 @@ Ces agents fournissent une expertise dans des domaines techniques spécifiques d
 ---
 
 ### 2. ⚛️ React Frontend Agent
+
 **Fichier**: `react-frontend.agent.md`
 
 **Expertise**:
+
 - Composants React et hooks
 - TypeScript et typage strict
 - Tailwind CSS v4 et styling
@@ -40,9 +44,11 @@ Ces agents fournissent une expertise dans des domaines techniques spécifiques d
 ---
 
 ### 3. 🦀 Tauri Rust Backend Agent
+
 **Fichier**: `tauri-rust-backend.agent.md`
 
 **Expertise**:
+
 - Rust et Tauri v2
 - Opérations du système de fichiers
 - Intégration SQLite via plugins Tauri
@@ -54,9 +60,11 @@ Ces agents fournissent une expertise dans des domaines techniques spécifiques d
 ---
 
 ### 4. 🗄️ SQLite Database Agent
+
 **Fichier**: `database-sqlite.agent.md`
 
 **Expertise**:
+
 - Design de schéma SQLite
 - Optimisation des requêtes SQL
 - Indexation et performances
@@ -68,9 +76,11 @@ Ces agents fournissent une expertise dans des domaines techniques spécifiques d
 ---
 
 ### 5. 🤖 AI/Gemini Integration Agent
+
 **Fichier**: `ai-gemini-integration.agent.md`
 
 **Expertise**:
+
 - Google Gemini AI API
 - Vision AI et analyse d'images
 - Génération automatique de tags
@@ -82,9 +92,11 @@ Ces agents fournissent une expertise dans des domaines techniques spécifiques d
 ---
 
 ### 6. 🧪 Testing Agent (Vitest)
+
 **Fichier**: `testing-vitest.agent.md`
 
 **Expertise**:
+
 - Framework Vitest
 - React Testing Library
 - Mocking des APIs Tauri
@@ -100,9 +112,11 @@ Ces agents fournissent une expertise dans des domaines techniques spécifiques d
 Ces agents assurent la qualité du code et automatisent le nettoyage.
 
 ### 7. 🔍 Code Quality Auditor Agent
+
 **Fichier**: `code-quality-auditor.agent.md`
 
 **Expertise**:
+
 - Détection de code smells et anti-patterns
 - Analyse de complexité cyclomatique
 - Détection de code dupliqué
@@ -115,9 +129,11 @@ Ces agents assurent la qualité du code et automatisent le nettoyage.
 ---
 
 ### 8. 🧹 Code Cleaner Agent
+
 **Fichier**: `code-cleaner.agent.md`
 
 **Expertise**:
+
 - Élimination du code mort
 - Optimisation des imports
 - Nettoyage des console.log
@@ -130,9 +146,11 @@ Ces agents assurent la qualité du code et automatisent le nettoyage.
 ---
 
 ### 9. 🔒 Security Auditor Agent
+
 **Fichier**: `security-auditor.agent.md`
 
 **Expertise**:
+
 - Détection de vulnérabilités OWASP Top 10
 - Gestion des secrets et API keys
 - Prévention d'injection SQL et XSS
@@ -145,9 +163,11 @@ Ces agents assurent la qualité du code et automatisent le nettoyage.
 ---
 
 ### 10. ⚡ Performance Optimizer Agent
+
 **Fichier**: `performance-optimizer.agent.md`
 
 **Expertise**:
+
 - Optimisation du rendu React
 - Virtual scrolling et windowing
 - Optimisation de la taille des bundles
@@ -164,9 +184,11 @@ Ces agents assurent la qualité du code et automatisent le nettoyage.
 Ces agents améliorent la couverture de tests et détectent les bugs.
 
 ### 11. 📊 Test Coverage Improver Agent
+
 **Fichier**: `test-coverage-improver.agent.md`
 
 **Expertise**:
+
 - Analyse de couverture de code
 - Génération automatique de tests
 - Tests unitaires et d'intégration
@@ -179,9 +201,11 @@ Ces agents améliorent la couverture de tests et détectent les bugs.
 ---
 
 ### 12. 🐛 Bug Hunter Agent
+
 **Fichier**: `bug-hunter.agent.md`
 
 **Expertise**:
+
 - Analyse statique de code
 - Détection de patterns de bugs
 - Détection de race conditions
@@ -198,9 +222,11 @@ Ces agents améliorent la couverture de tests et détectent les bugs.
 Ces agents gèrent la documentation et les migrations de versions.
 
 ### 13. 📚 Documentation Generator Agent
+
 **Fichier**: `documentation-generator.agent.md`
 
 **Expertise**:
+
 - Génération de JSDoc/TSDoc
 - Documentation des composants React
 - Documentation d'API et services
@@ -213,9 +239,11 @@ Ces agents gèrent la documentation et les migrations de versions.
 ---
 
 ### 14. 🔄 Migration Assistant Agent
+
 **Fichier**: `migration-assistant.agent.md`
 
 **Expertise**:
+
 - Migrations de versions de dépendances
 - Gestion des breaking changes
 - Gestion des dépréciations
@@ -232,9 +260,11 @@ Ces agents gèrent la documentation et les migrations de versions.
 Ces agents fournissent des insights et gèrent des aspects spécifiques du projet.
 
 ### 15. 📈 Metrics Analyzer Agent
+
 **Fichier**: `metrics-analyzer.agent.md`
 
 **Expertise**:
+
 - Analyse de métriques de code
 - Indicateurs de santé du projet
 - Tracking de performances
@@ -247,9 +277,11 @@ Ces agents fournissent des insights et gèrent des aspects spécifiques du proje
 ---
 
 ### 16. 🌐 i18n Manager Agent
+
 **Fichier**: `i18n-manager.agent.md`
 
 **Expertise**:
+
 - Gestion de i18next et react-i18next
 - Gestion des clés de traduction
 - Synchronisation des fichiers de langue
@@ -262,9 +294,11 @@ Ces agents fournissent des insights et gèrent des aspects spécifiques du proje
 ---
 
 ### 17. 📦 Dependency Manager Agent
+
 **Fichier**: `dependency-manager.agent.md`
 
 **Expertise**:
+
 - Gestion des packages npm et Cargo
 - Versioning sémantique (semver)
 - Analyse de vulnérabilités
@@ -281,9 +315,11 @@ Ces agents fournissent des insights et gèrent des aspects spécifiques du proje
 Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 
 ### 18. 🔀 PR Resolver Agent
+
 **Fichier**: `pr-resolver.agent.md`
 
 **Expertise**:
+
 - Analyse automatique de PR
 - Code review automatisé
 - Résolution de conflits de merge
@@ -296,9 +332,11 @@ Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 ---
 
 ### 19. 📋 Refactoring Tracker Agent
+
 **Fichier**: `refactoring-tracker.agent.md`
 
 **Expertise**:
+
 - Suivi de plans de refactoring multi-phases
 - Gestion de l'implémentation par phases
 - Monitoring de progrès
@@ -311,9 +349,11 @@ Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 ---
 
 ### 20. 🎭 Meta Orchestrator Agent
+
 **Fichier**: `meta-orchestrator.agent.md`
 
 **Expertise**:
+
 - Coordination de tous les agents
 - Décomposition de tâches complexes
 - Gestion de workflow multi-agents
@@ -325,16 +365,33 @@ Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 
 ---
 
+### 21. 📖 Documentation RAG Agent
+
+**Fichier**: `documentation-rag-agent.agent.md`
+
+**Expertise**:
+
+- Recherche intelligente dans la documentation
+- Synthèse contextuelle et citations précises
+- Suggestions de lectures complémentaires
+- Détection de lacunes documentaires
+
+**Quand l'utiliser**: Pour toute question sur la documentation, l'architecture, les guides, ou l'historique du projet.
+
+---
+
 ## 🚀 Comment Utiliser les Agents
 
 ### Via GitHub Copilot Chat
 
 1. **Mentionner l'agent spécifique** dans vos questions:
+
    ```
    @workspace En utilisant le React Frontend Agent, comment puis-je optimiser le rendu de PhotoGrid?
    ```
 
 2. **Pour des tâches complexes**, mentionner plusieurs agents:
+
    ```
    @workspace En utilisant le Database Agent et le React Frontend Agent, implémente une nouvelle fonctionnalité de filtre avancé.
    ```
@@ -354,60 +411,70 @@ Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 ### Exemples de Questions
 
 **Pour le React Frontend Agent**:
+
 ```
 Comment implémenter un nouveau composant modal avec Tailwind CSS v4 et Framer Motion?
 Quelles sont les meilleures pratiques pour optimiser un composant qui affiche 1000+ items?
 ```
 
 **Pour le Tauri Rust Backend Agent**:
+
 ```
 Comment créer une nouvelle commande Tauri pour lire des métadonnées EXIF?
 Quelles permissions dois-je ajouter dans capabilities/ pour accéder au dossier Documents?
 ```
 
 **Pour le Database Agent**:
+
 ```
 Comment ajouter une nouvelle table pour stocker l'historique des modifications?
 Comment optimiser cette requête SQL qui est lente avec 10000+ entrées?
 ```
 
 **Pour le AI/Gemini Integration Agent**:
+
 ```
 Comment implémenter un système de retry avec exponential backoff pour l'API Gemini?
 Comment structurer le prompt pour obtenir des tags plus précis?
 ```
 
 **Pour le Testing Agent**:
+
 ```
 Comment écrire un test pour un hook qui utilise useEffect avec des dépendances async?
 Comment mocker le plugin Tauri FS pour tester le chargement de fichiers?
 ```
 
 **Pour le Project Architecture Agent**:
+
 ```
 Quelle est la meilleure façon d'ajouter une nouvelle feature qui touche frontend et backend?
 Comment organiser le code pour une nouvelle fonctionnalité de collaboration?
 ```
 
 **Pour le Code Quality Auditor Agent**:
+
 ```
 Effectue un audit de qualité complet du code
 Trouve les fonctions avec une complexité cyclomatique élevée
 ```
 
 **Pour le Security Auditor Agent**:
+
 ```
 Scanne pour des secrets hardcodés dans le code
 Vérifie les vulnérabilités dans les requêtes SQL
 ```
 
 **Pour le Performance Optimizer Agent**:
+
 ```
 Optimise le rendu du PhotoGrid
 Analyse la taille des bundles et suggère des optimisations
 ```
 
 **Pour le Meta Orchestrator Agent**:
+
 ```
 Améliore la qualité globale du code (coordonne audit, nettoyage, tests)
 Prépare le code pour la release (audit complet, tests, documentation)
@@ -420,6 +487,7 @@ Prépare le code pour la release (audit complet, tests, documentation)
 Les agents sont conçus pour travailler ensemble de manière coordonnée:
 
 ### Workflow Qualité Complète
+
 ```
 Meta Orchestrator
   ├─> Code Quality Auditor (audit)
@@ -430,6 +498,7 @@ Meta Orchestrator
 ```
 
 ### Workflow Développement de Feature
+
 ```
 Meta Orchestrator
   ├─> Project Architecture (design)
@@ -440,6 +509,7 @@ Meta Orchestrator
 ```
 
 ### Workflow Refactoring
+
 ```
 Refactoring Tracker (plan)
   ├─> Test Coverage Improver (tests de sécurité)
@@ -453,6 +523,7 @@ Refactoring Tracker (plan)
 ## 🔄 Maintenance des Agents
 
 Les agents doivent être mis à jour quand:
+
 - De nouvelles fonctionnalités majeures sont ajoutées
 - L'architecture change significativement
 - De nouveaux patterns ou best practices sont adoptés
@@ -472,6 +543,7 @@ Un script de maintenance automatique est disponible pour valider la configuratio
 ```
 
 Le script vérifie:
+
 - ✅ Existence et contenu des fichiers agents
 - ✅ Références dans le README
 - ✅ Taille et qualité du contenu
@@ -484,6 +556,7 @@ Le script vérifie:
 ## 📚 Documentation Complémentaire
 
 Pour plus de détails techniques, consultez:
+
 - [`/docs/guides/architecture/ARCHITECTURE.md`](../../docs/guides/architecture/ARCHITECTURE.md) - Architecture système complète
 - [`/docs/guides/features/COMPONENTS.md`](../../docs/guides/features/COMPONENTS.md) - Documentation des composants UI
 - [`/docs/guides/architecture/AI_SERVICE.md`](../../docs/guides/architecture/AI_SERVICE.md) - Service d'intégration AI
@@ -495,6 +568,7 @@ Pour plus de détails techniques, consultez:
 ## 💡 Contribution
 
 Pour améliorer ou ajouter un agent:
+
 1. Suivez le format markdown existant
 2. Incluez des exemples concrets
 3. Référencez la documentation pertinente
