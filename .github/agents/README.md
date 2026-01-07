@@ -2,7 +2,7 @@
 
 Ce dossier contient des agents GitHub Copilot spécialisés pour le projet Lumina Portfolio. Chaque agent est un expert dans un domaine spécifique du projet.
 
-**Total**: 20 agents spécialisés pour une productivité maximale.
+**Total**: 21 agents spécialisés pour une productivité maximale.
 
 ## 📋 Agents Disponibles
 
@@ -193,7 +193,7 @@ Ces agents améliorent la couverture de tests et détectent les bugs.
 
 ---
 
-## Agents de Documentation & Migration (2 agents)
+## Agents de Documentation & Migration (3 agents)
 
 Ces agents gèrent la documentation et les migrations de versions.
 
@@ -212,7 +212,30 @@ Ces agents gèrent la documentation et les migrations de versions.
 
 ---
 
-### 14. 🔄 Migration Assistant Agent
+### 14. 🤖 Documentation RAG Agent
+**Fichier**: `documentation-rag-agent.agent.md`
+
+**Expertise**:
+- Recherche intelligente dans la documentation via RAG
+- Synthèse contextuelle multi-documents
+- Citations précises avec chemins de fichiers
+- Suggestions proactives de documentation liée
+- Détection de lacunes documentaires
+- Recherche hybride lexicale et sémantique
+
+**Quand l'utiliser**: Pour rechercher dans la documentation du projet, trouver des informations architecturales, consulter des décisions passées, ou identifier des conventions établies.
+
+**Commandes spéciales**:
+```bash
+@documentation-rag-agent Comment fonctionne X ?
+@documentation-rag-agent search:"terme" in:guides/features
+@documentation-rag-agent related:"docs/path/file.md"
+@documentation-rag-agent stats
+```
+
+---
+
+### 15. 🔄 Migration Assistant Agent
 **Fichier**: `migration-assistant.agent.md`
 
 **Expertise**:
@@ -231,7 +254,7 @@ Ces agents gèrent la documentation et les migrations de versions.
 
 Ces agents fournissent des insights et gèrent des aspects spécifiques du projet.
 
-### 15. 📈 Metrics Analyzer Agent
+### 16. 📈 Metrics Analyzer Agent
 **Fichier**: `metrics-analyzer.agent.md`
 
 **Expertise**:
@@ -246,7 +269,7 @@ Ces agents fournissent des insights et gèrent des aspects spécifiques du proje
 
 ---
 
-### 16. 🌐 i18n Manager Agent
+### 17. 🌐 i18n Manager Agent
 **Fichier**: `i18n-manager.agent.md`
 
 **Expertise**:
@@ -261,7 +284,7 @@ Ces agents fournissent des insights et gèrent des aspects spécifiques du proje
 
 ---
 
-### 17. 📦 Dependency Manager Agent
+### 18. 📦 Dependency Manager Agent
 **Fichier**: `dependency-manager.agent.md`
 
 **Expertise**:
@@ -280,7 +303,7 @@ Ces agents fournissent des insights et gèrent des aspects spécifiques du proje
 
 Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 
-### 18. 🔀 PR Resolver Agent
+### 19. 🔀 PR Resolver Agent
 **Fichier**: `pr-resolver.agent.md`
 
 **Expertise**:
@@ -295,7 +318,7 @@ Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 
 ---
 
-### 19. 📋 Refactoring Tracker Agent
+### 20. 📋 Refactoring Tracker Agent
 **Fichier**: `refactoring-tracker.agent.md`
 
 **Expertise**:
@@ -310,7 +333,7 @@ Ces agents coordonnent le workflow et résolvent les problèmes complexes.
 
 ---
 
-### 20. 🎭 Meta Orchestrator Agent
+### 21. 🎭 Meta Orchestrator Agent
 **Fichier**: `meta-orchestrator.agent.md`
 
 **Expertise**:
@@ -383,6 +406,14 @@ Comment écrire un test pour un hook qui utilise useEffect avec des dépendances
 Comment mocker le plugin Tauri FS pour tester le chargement de fichiers?
 ```
 
+**Pour le Documentation RAG Agent**:
+```
+Comment fonctionne le système de tags dans l'application?
+Quelle est l'architecture complète de l'intégration Gemini AI?
+Recherche toutes les décisions architecturales concernant SQLite
+Y a-t-il de la documentation sur le système de collections?
+```
+
 **Pour le Project Architecture Agent**:
 ```
 Quelle est la meilleure façon d'ajouter une nouvelle feature qui touche frontend et backend?
@@ -432,6 +463,7 @@ Meta Orchestrator
 ### Workflow Développement de Feature
 ```
 Meta Orchestrator
+  ├─> Documentation RAG Agent (recherche similaires)
   ├─> Project Architecture (design)
   ├─> React Frontend / Tauri Backend (implémentation)
   ├─> Testing Agent (tests)
@@ -442,10 +474,19 @@ Meta Orchestrator
 ### Workflow Refactoring
 ```
 Refactoring Tracker (plan)
+  ├─> Documentation RAG Agent (contexte historique)
   ├─> Test Coverage Improver (tests de sécurité)
   ├─> React/Tauri Agents (refactoring)
   ├─> Performance Optimizer (validation)
   └─> Documentation Generator (mise à jour docs)
+```
+
+### Workflow Recherche Documentation
+```
+Meta Orchestrator
+  ├─> Documentation RAG Agent (recherche et synthèse)
+  ├─> Documentation Generator (mise à jour si lacunes)
+  └─> Code Quality Auditor (vérification conformité)
 ```
 
 ---
@@ -504,3 +545,16 @@ Pour améliorer ou ajouter un agent:
 ---
 
 **Créé pour optimiser le développement avec GitHub Copilot** 🚀
+
+---
+
+## Changelog
+
+### 2026-01-07 - Ajout de l'Agent RAG de Documentation
+- **Ajouté**: Documentation RAG Agent dans la section Documentation & Migration
+- **Mis à jour**: Total d'agents de 20 à 21
+- **Ajouté**: Exemples d'usage pour le RAG Agent
+- **Ajouté**: Commandes spéciales du RAG Agent
+- **Mis à jour**: Workflows pour inclure l'agent RAG
+- **Ajouté**: Workflow de recherche documentation
+- **Renumerotation**: Tous les agents suivants (16-21) pour cohérence

@@ -279,7 +279,7 @@ const LibraryDispatchContext = createContext<Dispatch>();
 - Audit reports: `/docs/AUDIT/`
 - User-facing docs: README.md
 - Copilot docs: `.github/copilot/` (EXAMPLES.md, README.md, REGLES_VERIFICATION.md)
-- Custom agents: `.github/agents/` (20+ specialized agents for different domains)
+- Custom agents: `.github/agents/` (21 specialized agents for different domains)
 - Use Markdown for all documentation
 - Include code examples where helpful
 
@@ -392,7 +392,7 @@ const LibraryDispatchContext = createContext<Dispatch>();
 
 ## Custom Agents
 
-This project uses **20+ specialized GitHub Copilot agents** for different domains and tasks. These agents provide expert assistance for specific areas of the codebase.
+This project uses **21 specialized GitHub Copilot agents** for different domains and tasks. These agents provide expert assistance for specific areas of the codebase.
 
 ### Available Agents
 
@@ -422,6 +422,7 @@ Agents are located in `.github/agents/` and include:
 - **migration-assistant** - Version migrations and updates
 - **dependency-manager** - Dependency management and updates
 - **documentation-generator** - Documentation generation and maintenance
+- **documentation-rag-agent** - RAG-powered documentation search and synthesis
 - **metrics-analyzer** - Project health metrics and statistics
 
 ### Using Custom Agents
