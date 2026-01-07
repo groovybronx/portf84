@@ -39,14 +39,34 @@ export const loadTagHubSettings = (): TagHubSettings => {
 			return DEFAULT_TAGHUB_SETTINGS;
 		}
 
-		const parsed = JSON.parse(stored) as TagHubSettings;
+		const parsed = JSON.parse(stored) as Partial<TagHubSettings>;
+
+		// Validate parsed object has expected structure
+		if (!parsed || typeof parsed !== 'object') {
+			console.warn('[TagHubSettings] Invalid stored data, using defaults');
+			return DEFAULT_TAGHUB_SETTINGS;
+		}
 
 		// Version migration
-		if (parsed.version < CURRENT_VERSION) {
+		if (typeof parsed.version === 'number' && parsed.version < CURRENT_VERSION) {
 			return migrateTagHubSettings(parsed);
 		}
 
-		return parsed;
+		// Validate required properties
+		const validViewModes = ['grid', 'list'];
+		const validSortBy = ['name', 'usage', 'date'];
+		const validSortDirection = ['asc', 'desc'];
+		const validFilterMode = ['all', 'manual', 'ai', 'unused', 'mostUsed'];
+
+		if (!validViewModes.includes(parsed.viewMode as string) ||
+		    !validSortBy.includes(parsed.sortBy as string) ||
+		    !validSortDirection.includes(parsed.sortDirection as string) ||
+		    !validFilterMode.includes(parsed.filterMode as string)) {
+			console.warn('[TagHubSettings] Invalid property values, using defaults');
+			return DEFAULT_TAGHUB_SETTINGS;
+		}
+
+		return parsed as TagHubSettings;
 	} catch (error) {
 		console.error('[TagHubSettings] Failed to load:', error);
 		return DEFAULT_TAGHUB_SETTINGS;

@@ -39,15 +39,18 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
 
   // Sync local state changes to settings
   useEffect(() => {
-    const newSettings = {
-      ...settings,
+    const newSettings: TagHubSettings = {
       viewMode,
       filterMode,
       showUsageCount,
+      sortBy: settings.sortBy,
+      sortDirection: settings.sortDirection,
+      version: settings.version,
+      lastUpdated: Date.now(),
     };
     setSettings(newSettings);
     debouncedSave(newSettings);
-  }, [viewMode, filterMode, showUsageCount, debouncedSave]);
+  }, [viewMode, filterMode, showUsageCount, settings.sortBy, settings.sortDirection, settings.version, debouncedSave]);
 
   useEffect(() => {
     loadTags();
