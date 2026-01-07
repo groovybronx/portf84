@@ -72,12 +72,12 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				)}
 			</Button>
 			<Button
-				variant="glass"
+				variant="ghost"
 				size="icon"
 				onClick={onOpenBatchTagPanel}
 				disabled={selectedCount === 0}
 				aria-label={t('batchTag')}
-				className="text-purple-400 hover:border-purple-400/30"
+				className="bg-glass-bg-accent border-glass-border-light text-purple-400 hover:border-purple-400/30"
 				title={t('batchTagHint')}
 			>
 				<Tags size={18} />
