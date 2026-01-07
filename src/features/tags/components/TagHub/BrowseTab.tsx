@@ -37,31 +37,17 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
     }, 500);
   }, []);
 
-  // Update settings and persist
-  const updateSettings = useCallback((updates: Partial<TagHubSettings>) => {
-    const newSettings = { ...settings, ...updates };
+  // Sync local state changes to settings
+  useEffect(() => {
+    const newSettings = {
+      ...settings,
+      viewMode,
+      filterMode,
+      showUsageCount,
+    };
     setSettings(newSettings);
     debouncedSave(newSettings);
-  }, [settings, debouncedSave]);
-
-  // Sync local state with settings updates
-  useEffect(() => {
-    if (viewMode !== settings.viewMode) {
-      updateSettings({ viewMode });
-    }
-  }, [viewMode]);
-
-  useEffect(() => {
-    if (filterMode !== settings.filterMode) {
-      updateSettings({ filterMode });
-    }
-  }, [filterMode]);
-
-  useEffect(() => {
-    if (showUsageCount !== settings.showUsageCount) {
-      updateSettings({ showUsageCount });
-    }
-  }, [showUsageCount]);
+  }, [viewMode, filterMode, showUsageCount, debouncedSave]);
 
   useEffect(() => {
     loadTags();
