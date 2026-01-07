@@ -18,6 +18,18 @@ from pathlib import Path
 from typing import Dict, List, Any
 
 
+# Module-level constant for stop words to avoid recreating on every call
+STOP_WORDS = {
+	"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "of",
+	"with", "by", "from", "as", "is", "are", "was", "were", "be", "been", "being",
+	"have", "has", "had", "do", "does", "did", "will", "would", "should", "could",
+	"may", "might", "can", "this", "that", "these", "those", "it", "its",
+	# French stop words
+	"de", "la", "le", "les", "un", "une", "des", "et", "ou", "dans", "pour",
+	"avec", "par", "sur",
+}
+
+
 class DocumentationIndexBuilder:
 	"""Builds searchable index from markdown documentation files."""
 
@@ -166,68 +178,9 @@ class DocumentationIndexBuilder:
 		# Split into words
 		words = re.findall(r"\b\w+\b", text.lower())
 
-		# Filter out common words and short words
-		stop_words = {
-			"the",
-			"a",
-			"an",
-			"and",
-			"or",
-			"but",
-			"in",
-			"on",
-			"at",
-			"to",
-			"for",
-			"of",
-			"with",
-			"by",
-			"from",
-			"as",
-			"is",
-			"are",
-			"was",
-			"were",
-			"be",
-			"been",
-			"being",
-			"have",
-			"has",
-			"had",
-			"do",
-			"does",
-			"did",
-			"will",
-			"would",
-			"should",
-			"could",
-			"may",
-			"might",
-			"can",
-			"this",
-			"that",
-			"these",
-			"those",
-			"it",
-			"its",
-			"de",
-			"la",
-			"le",
-			"les",
-			"un",
-			"une",
-			"des",
-			"et",
-			"ou",
-			"dans",
-			"pour",
-			"avec",
-			"par",
-			"sur",
-		}
-
+		# Filter out stop words and short words using module-level constant
 		filtered_words = [
-			word for word in words if len(word) > 3 and word not in stop_words
+			word for word in words if len(word) > 3 and word not in STOP_WORDS
 		]
 
 		# Count frequency
@@ -244,14 +197,21 @@ class DocumentationIndexBuilder:
 			file_path: Path to the markdown file
 
 		Returns:
-			Document metadata and content
+			Document metadata and content, or None on error
 		"""
 		# Read file
 		try:
 			with open(file_path, "r", encoding="utf-8") as f:
 				content = f.read()
-		except Exception as e:
+		except (IOError, UnicodeDecodeError) as e:
 			print(f"⚠️  Error reading {file_path}: {e}")
+			import traceback
+			traceback.print_exc()
+			return None
+		except Exception as e:
+			print(f"⚠️  Unexpected error reading {file_path}: {e}")
+			import traceback
+			traceback.print_exc()
 			return None
 
 		# Get file stats

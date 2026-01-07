@@ -3,7 +3,11 @@
 Documentation Search Engine for RAG System
 
 This script provides search functionality over the documentation index,
-implementing hybrid search (lexical + semantic) with ranking.
+implementing lexical keyword search with word boundary detection and
+multi-factor ranking.
+
+Current implementation: Lexical keyword matching only
+Future enhancement: Semantic search with embeddings (planned for v1.1)
 
 Usage:
     python scripts/rag/search_documentation.py "your query here"
@@ -13,12 +17,12 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 from collections import Counter
 
 
 class DocumentationSearchEngine:
-	"""Search engine for documentation with hybrid ranking."""
+	"""Search engine for documentation with lexical keyword matching and priority-based ranking."""
 
 	def __init__(self, index_path: str = "docs/.doc-index.json"):
 		"""
@@ -42,9 +46,19 @@ class DocumentationSearchEngine:
 		with open(self.index_path, "r", encoding="utf-8") as f:
 			self.index_data = json.load(f)
 
-		print(
-			f"📚 Loaded index with {self.index_data['metadata']['total_documents']} documents"
-		)
+		# Be defensive about potentially missing metadata in the index file
+		total_documents = 0
+		if isinstance(self.index_data, dict):
+			metadata = self.index_data.get("metadata")
+			if isinstance(metadata, dict):
+				total_documents = metadata.get("total_documents", 0)
+			# Fallback: count documents array if metadata is missing
+			if total_documents == 0:
+				documents = self.index_data.get("documents", [])
+				if isinstance(documents, list):
+					total_documents = len(documents)
+
+		print(f"📚 Loaded index with {total_documents} documents")
 
 	def extract_query_keywords(self, query: str) -> List[str]:
 		"""
@@ -71,7 +85,7 @@ class DocumentationSearchEngine:
 		self, document: Dict[str, Any], query_keywords: List[str]
 	) -> float:
 		"""
-		Calculate relevance score for a document.
+		Calculate relevance score for a document using lexical keyword matching.
 
 		Args:
 			document: Document to score
@@ -83,28 +97,36 @@ class DocumentationSearchEngine:
 		if not query_keywords:
 			return 0.0
 
-		score = 0.0
-
 		# Get document text for matching
 		doc_title = document.get("title", "").lower()
 		doc_keywords = [k.lower() for k in document.get("keywords", [])]
 		doc_sections = document.get("sections", [])
 
-		# 1. Title matching (weight: 0.3)
-		title_matches = sum(1 for kw in query_keywords if kw in doc_title)
+		# 1. Title matching with word boundaries (weight: 0.3)
+		title_matches = 0
+		for kw in query_keywords:
+			# Use word boundary regex to avoid partial matches
+			if re.search(r'\b' + re.escape(kw) + r'\b', doc_title):
+				title_matches += 1
 		title_score = (title_matches / len(query_keywords)) * 0.3
 
-		# 2. Keyword matching (weight: 0.3)
-		keyword_matches = sum(1 for kw in query_keywords if kw in doc_keywords)
+		# 2. Keyword matching with word boundaries (weight: 0.3)
+		keyword_matches = 0
+		doc_keywords_text = " ".join(doc_keywords)
+		for kw in query_keywords:
+			if re.search(r'\b' + re.escape(kw) + r'\b', doc_keywords_text):
+				keyword_matches += 1
 		keyword_score = (keyword_matches / len(query_keywords)) * 0.3
 
-		# 3. Section content matching (weight: 0.2)
+		# 3. Section content matching with word boundaries (weight: 0.2)
 		section_matches = 0
 		for section in doc_sections:
 			section_text = (
 				section.get("title", "") + " " + section.get("content", "")
 			).lower()
-			section_matches += sum(1 for kw in query_keywords if kw in section_text)
+			for kw in query_keywords:
+				if re.search(r'\b' + re.escape(kw) + r'\b', section_text):
+					section_matches += 1
 
 		max_possible_section_matches = len(query_keywords) * len(doc_sections)
 		if max_possible_section_matches > 0:
@@ -112,7 +134,7 @@ class DocumentationSearchEngine:
 		else:
 			section_score = 0.0
 
-		# 4. Priority boost (weight: 0.2)
+		# 4. Priority boost (weight: 0.2, normalized so critical = 0.2 max)
 		priority_multipliers = {
 			"critical": 2.0,
 			"high": 1.5,
@@ -120,7 +142,8 @@ class DocumentationSearchEngine:
 			"archive": 0.3,
 		}
 		priority = document.get("priority", "normal")
-		priority_score = priority_multipliers.get(priority, 1.0) * 0.2
+		# Normalize by dividing by 2.0 so critical documents get full 0.2 weight
+		priority_score = priority_multipliers.get(priority, 1.0) * 0.2 / 2.0
 
 		# Calculate total score
 		score = title_score + keyword_score + section_score + priority_score

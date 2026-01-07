@@ -14,7 +14,7 @@ RAG combine deux approches :
 
 - **Mémoire Persistante** : Accès permanent à 100+ documents de documentation
 - **Réponses Précises** : Citations avec chemins de fichiers exacts
-- **Recherche Intelligente** : Hybride lexicale (40%) + sémantique (60%)
+- **Recherche Intelligente** : Recherche lexicale par mots-clés avec détection de frontières de mots
 - **Suggestions Proactives** : Documents liés et lectures complémentaires
 - **Toujours à Jour** : Index reconstruit automatiquement
 
@@ -104,6 +104,8 @@ Voir les statistiques de l'index de documentation :
 
 ### Liste des Commandes
 
+Les commandes suivantes sont **gérées par l'agent GitHub Copilot**, pas par les scripts Python backend. Les scripts Python fournissent uniquement la recherche de base.
+
 | Commande | Syntaxe | Description |
 |----------|---------|-------------|
 | **Recherche simple** | `@documentation-rag-agent [question]` | Question en langage naturel |
@@ -112,6 +114,8 @@ Voir les statistiques de l'index de documentation :
 | **Documents liés** | `@documentation-rag-agent related:"chemin/fichier.md"` | Documents connexes |
 | **Statistiques** | `@documentation-rag-agent stats` | Stats de l'index |
 | **Rebuild** | `@documentation-rag-agent rebuild-index` | Reconstruction manuelle |
+
+> **Note**: Les scripts Python (`scripts/rag/`) fournissent la fonctionnalité de recherche de base par mots-clés. Les commandes avancées ci-dessus sont interprétées et exécutées par l'agent GitHub Copilot qui utilise ces scripts en backend.
 
 ### Format de Réponse
 
@@ -311,8 +315,9 @@ Le fichier `docs/.doc-metadata.json` contient :
 │            Documentation Search Engine                      │
 │       (scripts/rag/search_documentation.py)                 │
 │                                                             │
-│  • Hybrid Search (Lexical 40% + Semantic 60%)              │
-│  • Multi-factor Ranking                                    │
+│  • Lexical Keyword Search with Word Boundaries             │
+│  • Multi-factor Ranking (Title, Keywords, Sections)        │
+│  • Priority-based Scoring                                  │
 │  • Related Documents Discovery                             │
 └────────────────────────┬────────────────────────────────────┘
                          │
@@ -364,24 +369,39 @@ Le fichier `docs/.doc-metadata.json` contient :
 6. **Search Engine → RAG Agent** : Résultats classés avec scores
 7. **RAG Agent → User** : Réponse formatée avec citations
 
-### Stratégie de Recherche Hybride
+### Stratégie de Recherche Actuelle
 
-#### Lexical Search (40%)
-- Correspondance exacte des termes
-- TF-IDF sur les mots-clés
-- Bonus pour correspondance dans les titres
+Le système utilise actuellement une **recherche lexicale par mots-clés** avec les optimisations suivantes :
 
-#### Semantic Search (60%)
-- Compréhension du contexte
-- Relations entre concepts
-- Synonymes et termes liés
+#### Détection de Frontières de Mots
+- Utilise des expressions régulières pour éviter les correspondances partielles
+- Exemple : chercher "tag" ne correspondra pas à "stage" ou "advantage"
+- Améliore la précision des résultats
 
-#### Ranking Factors
-- **Keyword match** (30%) : Présence des mots-clés
+#### Facteurs de Classement
+- **Keyword match** (30%) : Présence des mots-clés dans le document
 - **Title match** (20%) : Correspondance dans le titre
-- **Priority boost** (20%) : Multiplicateur selon priorité
-- **Recency** (10%) : Date de modification
-- **Section relevance** (20%) : Pertinence des sections
+- **Priority boost** (20%) : Multiplicateur selon priorité (Critical: 2.0x, High: 1.5x, Normal: 1.0x, Archive: 0.3x)
+- **Section relevance** (20%) : Pertinence dans les sections du document
+
+#### Normalisation des Scores
+- Les scores sont normalisés entre 0 et 1
+- Le score de priorité est ajusté pour que les documents critiques obtiennent le poids maximum alloué
+- Tous les facteurs sont combinés de manière additive
+
+### Améliorations Futures Planifiées
+
+**Version 1.1** (recherche sémantique) :
+- Embeddings vectoriels pour compréhension contextuelle
+- Recherche hybride : lexicale (40%) + sémantique (60%)
+- Détection de synonymes et termes liés
+- Score de récence basé sur la date de modification
+
+**Version 1.2** (fonctionnalités avancées) :
+- Chunking de documents pour meilleur contexte
+- Cache de résultats pour performance
+- Recherche parallèle
+- Suivi des relations entre documents
 
 ---
 

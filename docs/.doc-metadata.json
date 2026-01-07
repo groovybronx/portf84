@@ -1,7 +1,7 @@
 {
   "metadata": {
     "version": "1.0.0",
-    "generated": "2026-01-07T16:08:45.656535",
+    "generated": "2026-01-07T16:38:35.447176",
     "total_documents": 114,
     "priority_breakdown": {
       "critical": 7,
@@ -9,8 +9,8 @@
       "normal": 62,
       "archive": 13
     },
-    "total_sections": 3667,
-    "total_words": 155476,
+    "total_sections": 3668,
+    "total_words": 155669,
     "top_keywords": [
       "documentation",
       "features",
@@ -97,6 +97,7 @@
       "janvier",
       "plan",
       "après",
+      "sont",
       "complete",
       "table",
       "branch",
@@ -110,8 +111,7 @@
       "management",
       "time",
       "update",
-      "changes",
-      "images"
+      "changes"
     ]
   },
   "documents": [
@@ -119,7 +119,7 @@
       "path": "docs/REORGANIZATION_SUMMARY.md",
       "title": "📋 Documentation Reorganization Summary",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "documentation",
         "files",
@@ -172,21 +172,21 @@
       "path": "docs/RAG_AGENT_GUIDE.md",
       "title": "🤖 Guide de l'Agent RAG de Documentation",
       "priority": "high",
-      "modified": "2026-01-07T16:05:19.341967",
+      "modified": "2026-01-07T16:37:56.154177",
       "keywords": [
         "documentation",
         "index",
         "agent",
+        "recherche",
         "documents",
         "json",
-        "recherche",
+        "scripts",
         "metadata",
-        "docs",
         "github",
-        "vérifier"
+        "docs"
       ],
-      "word_count": 1950,
-      "heading_count": 72,
+      "word_count": 2143,
+      "heading_count": 73,
       "section_titles": [
         "🤖 Guide de l'Agent RAG de Documentation",
         "📚 Introduction",
@@ -236,10 +236,11 @@
         "🏗️ Architecture Technique",
         "Vue d'Ensemble",
         "Flux de Données",
-        "Stratégie de Recherche Hybride",
-        "Lexical Search (40%)",
-        "Semantic Search (60%)",
-        "Ranking Factors",
+        "Stratégie de Recherche Actuelle",
+        "Détection de Frontières de Mots",
+        "Facteurs de Classement",
+        "Normalisation des Scores",
+        "Améliorations Futures Planifiées",
         "🎓 Bonnes Pratiques",
         "Pour les Utilisateurs",
         "Pour les Contributeurs",
@@ -266,7 +267,7 @@
       "path": "docs/INDEX.md",
       "title": "🎨 Lumina Portfolio - Documentation Index",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "guides",
         "strong",
@@ -332,7 +333,7 @@
       "path": "docs/ANALYSE_QUALITATIVE_ET_MARCHE_2026.md",
       "title": "📊 Analyse Qualitative & Étude de Marché - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "privacy",
         "photo",
@@ -447,7 +448,7 @@
       "path": "docs/DOCUMENTATION_UPDATE_SUMMARY.md",
       "title": "Documentation Update Summary - v0.3.0-beta.1",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "jour",
         "release",
@@ -501,7 +502,7 @@
       "path": "docs/TAG_HUB_IMPLEMENTATION_SUMMARY.md",
       "title": "Tag Hub Implementation Summary",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "tags",
         "existing",
@@ -549,7 +550,7 @@
       "path": "docs/IMPLEMENTATION_SUMMARY.md",
       "title": "Batch & Solo Tagging Unified - Implementation Summary",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "tags",
         "features",
@@ -618,7 +619,7 @@
       "path": "docs/TEST_COVERAGE_ANALYSIS.md",
       "title": "🧪 Lumina Portfolio - Analyse de Couverture de Tests",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "tests",
         "handle",
@@ -679,7 +680,7 @@
       "path": "docs/DOCUMENTATION_MAP.md",
       "title": "📚 Documentation Map - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "guides",
         "architecture",
@@ -743,7 +744,7 @@
       "path": "docs/CONTRIBUTING_UI.md",
       "title": "Guide de Contribution UI",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "utilisez",
         "glasscard",
@@ -776,7 +777,7 @@
       "path": "docs/ANALYSE_VISUELLE_MARCHE.md",
       "title": "📊 Analyse Qualitative & Étude de Marché - Vue d'Ensemble Visuelle",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "launch",
         "marché",
@@ -813,7 +814,7 @@
       "path": "docs/METRICS_SUMMARY.md",
       "title": "📊 Lumina Portfolio - Résumé des Métriques",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "tests",
         "lignes",
@@ -854,7 +855,7 @@
       "path": "docs/README.md",
       "title": "Lumina Portfolio - Documentation Technique",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "2026",
         "guides",
@@ -904,7 +905,7 @@
       "path": "docs/ARCHITECTURAL_AUDIT.md",
       "title": "Audit d'Architecture - Portf84",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "découpage",
         "features",
@@ -934,7 +935,7 @@
       "path": "docs/RELEASE_NOTES_v0.3.0-beta.1.md",
       "title": "Release Notes - v0.3.0-beta.1",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "react",
         "commit",
@@ -995,7 +996,7 @@
       "path": "docs/SYNTHESE_EXECUTIVE_COMMERCIALISATION.md",
       "title": "📊 Synthèse Exécutive - Commercialisation Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "launch",
         "code",
@@ -1057,7 +1058,7 @@
       "path": "docs/QUICK_REFERENCE.md",
       "title": "⚡ Quick Reference - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "tauri",
         "docs",
@@ -1158,7 +1159,7 @@
       "path": "docs/TAG_HUB_VISUAL_REFERENCE.md",
       "title": "Tag Hub - Visual Reference",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "tags",
         "manual",
@@ -1191,7 +1192,7 @@
       "path": "docs/TAG_HUB_USER_GUIDE.md",
       "title": "Tag Hub - User Guide",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "tags",
         "merge",
@@ -1233,7 +1234,7 @@
       "path": "docs/TAG_ANALYSIS_OPTIMIZATIONS.md",
       "title": "Tag Analysis Service Optimizations (P0)",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "cache",
         "threshold",
@@ -1273,7 +1274,7 @@
       "path": "docs/PROJECT_HEALTH_REPORT.md",
       "title": "📊 Lumina Portfolio - Analyse Complète du Projet",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.570683",
       "keywords": [
         "lignes",
         "tests",
@@ -1336,7 +1337,7 @@
       "path": "docs/ARCHIVES/README.md",
       "title": "📦 Archives de Documentation",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "documentation",
         "dossier",
@@ -1362,7 +1363,7 @@
       "path": "docs/ARCHIVES/oldarchi.md",
       "title": "Architecture Technique - Lumina Portfolio V2",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "tauri",
         "text",
@@ -1411,7 +1412,7 @@
       "path": "docs/AUDIT/2026-01-06_DOCUMENTATION_UPDATE_COMPLETE.md",
       "title": "Documentation Update Complete - January 6, 2026",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "react",
         "docs",
@@ -1468,7 +1469,7 @@
       "path": "docs/AUDIT/AUDIT_README.md",
       "title": "🔍 Audit Repository - Documentation Index",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "2026",
         "audit",
@@ -1509,7 +1510,7 @@
       "path": "docs/AUDIT/2026-01-06_COMPREHENSIVE_PROGRESS_AND_DOCUMENTATION_AUDIT.md",
       "title": "📊 Comprehensive Progress & Documentation Audit",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "complete",
         "tests",
@@ -1644,7 +1645,7 @@
       "path": "docs/AUDIT/2026-01-06_ACTION_PLAN.md",
       "title": "📋 Action Plan - Post-Audit Priorities",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "tests",
         "docs",
@@ -1711,7 +1712,7 @@
       "path": "docs/AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md",
       "title": "📊 Executive Summary - Comprehensive Audit",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "documentation",
         "tests",
@@ -1764,7 +1765,7 @@
       "path": "docs/workflows/BRANCH_STRATEGY.md",
       "title": "Branch Strategy & GitHub Configuration Guide",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.638958",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "branch",
         "branches",
@@ -1829,7 +1830,7 @@
       "path": "docs/workflows/README.md",
       "title": "🔄 Git & GitHub Workflows",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.638958",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "branch",
         "release",
@@ -1882,7 +1883,7 @@
       "path": "docs/workflows/GITHUB_SETUP_SUMMARY.md",
       "title": "📋 Résumé : Configuration GitHub et Gestion des Branches",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.638958",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "branches",
         "release",
@@ -1943,7 +1944,7 @@
       "path": "docs/workflows/CREATE_RELEASE_BRANCH_INSTRUCTIONS.md",
       "title": "Instructions pour Créer la Branche Release v0.2.0-beta.1",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.638958",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "beta",
         "release",
@@ -1999,7 +2000,7 @@
       "path": "docs/workflows/CONFIGURATION_GITHUB_FR.md",
       "title": "Configuration GitHub - Guide Pas à Pas",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.638958",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "branche",
         "branches",
@@ -2054,7 +2055,7 @@
       "path": "docs/guides/README.md",
       "title": "📚 Lumina Portfolio - Technical Guides",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "project",
         "knowledgebase",
@@ -2103,7 +2104,7 @@
       "path": "docs/getting-started/QUICK_START.md",
       "title": "🚀 Quick Start Guide - Configuration GitHub",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "branche",
         "github",
@@ -2140,7 +2141,7 @@
       "path": "docs/getting-started/README.md",
       "title": "🚀 Getting Started with Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.635957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "guide",
         "guides",
@@ -2184,7 +2185,7 @@
       "path": "docs/ARCHIVES/historical/BRANCH_MERGE_ANALYSIS.md",
       "title": "Analyse des Branches - Fusion avec Develop",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "develop",
         "branches",
@@ -2231,7 +2232,7 @@
       "path": "docs/ARCHIVES/historical/SYNCHRONIZATION_PLAN.md",
       "title": "Plan de Synchronisation des Branches",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "main",
         "develop",
@@ -2273,7 +2274,7 @@
       "path": "docs/ARCHIVES/historical/FIX_DB_SCHEMA.md",
       "title": "CORRECTIF URGENT - Schéma DB",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "lumina",
         "schéma",
@@ -2302,7 +2303,7 @@
       "path": "docs/ARCHIVES/historical/ISSUES_IMPROVEMENTS.md",
       "title": "Issues, Bugs & Améliorations - Lumina Portfolio",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "images",
         "mode",
@@ -2340,7 +2341,7 @@
       "path": "docs/ARCHIVES/historical/REPONSE_SYNCHRONISATION.md",
       "title": "Réponse à la Question: \"Est ce que develop et main sont synchronisé\"",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "main",
         "develop",
@@ -2394,7 +2395,7 @@
       "path": "docs/ARCHIVES/historical/IMPLEMENTATION_SUMMARY.md",
       "title": "Tag System Enhancement - Implementation Summary",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "tests",
         "tags",
@@ -2445,7 +2446,7 @@
       "path": "docs/ARCHIVES/historical/MERGE_RESOLUTION_SUMMARY.md",
       "title": "Merge Conflict Resolution Summary",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "merge",
         "tests",
@@ -2504,7 +2505,7 @@
       "path": "docs/ARCHIVES/historical/BRANCH_SYNC_FINAL_REPORT.md",
       "title": "Branch Synchronization - Final Report",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "develop",
         "main",
@@ -2553,7 +2554,7 @@
       "path": "docs/ARCHIVES/historical/TAG_CONSOLIDATION_SPEC.md",
       "title": "Spécification : Gestionnaire de Tags avec Consolidation",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.565684",
       "keywords": [
         "tags",
         "consolidation",
@@ -2586,7 +2587,7 @@
       "path": "docs/ARCHIVES/historical/BRANCH_SYNC_STATUS.md",
       "title": "Branch Synchronization Status Report",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "develop",
         "main",
@@ -2629,7 +2630,7 @@
       "path": "docs/ARCHIVES/historical/DB_MIGRATION_v2.01.md",
       "title": "DB_MIGRATION_v2.01",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "sourcefolderid",
         "table",
@@ -2658,7 +2659,7 @@
       "path": "docs/ARCHIVES/historical/PROGRESS_PHASE4.md",
       "title": "Phase 4 - UI Updates",
       "priority": "archive",
-      "modified": "2026-01-07T15:59:23.629957",
+      "modified": "2026-01-07T16:34:05.564683",
       "keywords": [
         "folderdrawer",
         "type",
@@ -2682,7 +2683,7 @@
       "path": "docs/AUDIT/GENERAL_AUDIT/2024-12-30_COMPREHENSIVE_REPORT.md",
       "title": "🔍 Lumina Portfolio - Comprehensive Technical Audit Report",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "score",
         "good",
@@ -2759,7 +2760,7 @@
       "path": "docs/AUDIT/GENERAL_AUDIT/2026-01-01_CODE_CLEANUP_REPORT.md",
       "title": "Rapport de Nettoyage du Code",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "fichiers",
         "propre",
@@ -2807,7 +2808,7 @@
       "path": "docs/AUDIT/GENERAL_AUDIT/2024-12-30_COMPREHENSIVE_DASHBOARD.md",
       "title": "🎯 Lumina Portfolio - Audit Dashboard",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "code",
         "security",
@@ -2870,7 +2871,7 @@
       "path": "docs/AUDIT/GENERAL_AUDIT/2024-12-30_COMPREHENSIVE_ACTION_PLAN.md",
       "title": "📋 Lumina Portfolio - Audit Action Plan",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "security",
         "code",
@@ -2926,7 +2927,7 @@
       "path": "docs/AUDIT/GENERAL_AUDIT/2024-12-30_COMPREHENSIVE_COMPLETION.md",
       "title": "✅ Audit Complet - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "code",
         "2024",
@@ -2980,7 +2981,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/README_COMPLETION_PLAN.md",
       "title": "Guide de Complétion UI/UX - Navigation",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "phase",
         "plan",
@@ -3024,7 +3025,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-04_ACTION_PLAN.md",
       "title": "Plan d'Action - Complétion Refactorisation UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "phase",
         "tests",
@@ -3116,7 +3117,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-04_PLAN_COMPLETION_AGENT.md",
       "title": "Plan de Complétion - Consolidation UI et Finalisation Refactoring",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "fichiers",
         "composants",
@@ -3238,7 +3239,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_ROADMAP.md",
       "title": "🗺️ Roadmap UI/UX - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "phase",
         "composants",
@@ -3320,7 +3321,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-05_FINAL_REPORT.md",
       "title": "Rapport Final - Consolidation UI & UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "composants",
         "phase",
@@ -3351,7 +3352,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_VERIFICATION_REPORT.md",
       "title": "Rapport de Vérification - Simplification UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "fichiers",
         "phase",
@@ -3432,7 +3433,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_COMPONENT_ARCHITECTURE.md",
       "title": "Architecture des Composants UI - État Actuel vs Proposé",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "composants",
         "button",
@@ -3482,7 +3483,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-04_COMPLETION_AUDIT.md",
       "title": "Audit de Complétion - Plan de Refactorisation UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "phase",
         "composants",
@@ -3577,7 +3578,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_QUICK_REFERENCE.md",
       "title": "Guide Rapide: Consolidation UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "glass",
         "button",
@@ -3626,7 +3627,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/QUICK_REFERENCE_AGENT.md",
       "title": "Guide de Référence Rapide - Agent GitHub Copilot",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "button",
         "features",
@@ -3714,7 +3715,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_SUMMARY.md",
       "title": "📊 UI Simplification - Résumé Visuel",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "fichiers",
         "tokens",
@@ -3761,7 +3762,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-04_PLAN_DELIVERY_SUMMARY.md",
       "title": "Résumé de Livraison - Plan de Complétion UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "phase",
         "jour",
@@ -3821,7 +3822,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_README.md",
       "title": "📋 Guide de l'Audit UI/UX - Navigation",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "2026",
         "audit",
@@ -3878,7 +3879,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_CONSOLIDATION_AUDIT.md",
       "title": "Audit de Consolidation et Simplification de l'Interface UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "composants",
         "button",
@@ -3937,7 +3938,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_CONSOLIDATION_DIAGRAMS.md",
       "title": "Diagrammes de Consolidation UI/UX - Visualisation",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "button",
         "glasscard",
@@ -3968,7 +3969,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-04_QUICK_STATUS.md",
       "title": "État Rapide - Refactorisation UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.634957",
+      "modified": "2026-01-07T16:34:05.569684",
       "keywords": [
         "phase",
         "migration",
@@ -4004,7 +4005,7 @@
       "path": "docs/AUDIT/UI_CONSOLIDATION/2026-01-01_UI_EXECUTIVE_SUMMARY.md",
       "title": "Résumé Exécutif: Audit de Consolidation UI/UX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.633957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "phase",
         "2026",
@@ -4055,7 +4056,7 @@
       "path": "docs/AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_INDEX.md",
       "title": "2026-01-01_DOCS_INDEX",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "2026",
         "docs",
@@ -4105,7 +4106,7 @@
       "path": "docs/AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_CLEANUP_PLAN.md",
       "title": "🧹 Plan de Nettoyage de la Documentation",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "docs",
         "echo",
@@ -4173,7 +4174,7 @@
       "path": "docs/AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_EXECUTIVE_SUMMARY.md",
       "title": "📊 Résumé Exécutif - Audit de la Documentation",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "docs",
         "2026",
@@ -4225,7 +4226,7 @@
       "path": "docs/AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_COMPLETION_SUMMARY.md",
       "title": "🎉 Audit de Documentation - Résumé Final",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "2026",
         "audit",
@@ -4282,7 +4283,7 @@
       "path": "docs/AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_MIGRATION_GUIDE.md",
       "title": "🗺️ Guide de Migration de la Documentation",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "docs",
         "guides",
@@ -4353,7 +4354,7 @@
       "path": "docs/AUDIT/DOCS_CLEANUP/2026-01-01_DOCS_AUDIT.md",
       "title": "🔍 Audit de la Documentation - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.630957",
+      "modified": "2026-01-07T16:34:05.566684",
       "keywords": [
         "docs",
         "guides",
@@ -4436,7 +4437,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-02_TAG_SYSTEM_EXECUTIVE_SUMMARY.md",
       "title": "Tag System - Executive Summary",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "tags",
         "user",
@@ -4500,7 +4501,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-02_TAG_ANALYSIS_INDEX.md",
       "title": "Tag System Analysis - Documentation Index",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "analysis",
         "2026",
@@ -4557,7 +4558,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-02_TAG_SYSTEM_COMPREHENSIVE_AUDIT.md",
       "title": "Tag System - Comprehensive Audit & Analysis",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "tags",
         "merge",
@@ -4626,7 +4627,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-04_TAG_IMPLEMENTATION_PLAN.md",
       "title": "Plan d'Implémentation - Système de Tags",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.568684",
       "keywords": [
         "const",
         "tags",
@@ -4701,7 +4702,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-02_TAG_FUSION_OPTIMIZATION.md",
       "title": "Tag Fusion Algorithm - Optimization Analysis & Recommendations",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.631957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "const",
         "tags",
@@ -4765,7 +4766,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-04_TAG_FEATURE_AUDIT_FINAL_FR.md",
       "title": "Audit Complet du Feature Tags - Lumina Portfolio",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "tags",
         "état",
@@ -4874,7 +4875,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-02_TAG_UI_REDESIGN_PROPOSAL.md",
       "title": "Tag Management UI/UX Redesign Proposal",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "tags",
         "merge",
@@ -4950,7 +4951,7 @@
       "path": "docs/AUDIT/TAG_SYSTEM/2026-01-02_TAG_SYSTEM_EXECUTIVE_SUMMARY_FR.md",
       "title": "Système de Tags - Résumé Exécutif",
       "priority": "normal",
-      "modified": "2026-01-07T15:59:23.632957",
+      "modified": "2026-01-07T16:34:05.567683",
       "keywords": [
         "tags",
         "analyse",
@@ -5009,7 +5010,7 @@
       "path": "docs/guides/architecture/AI_SERVICE.md",
       "title": "Intégration AI (Gemini)",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "const",
         "item",
@@ -5045,7 +5046,7 @@
       "path": "docs/guides/architecture/ARCHITECTURE.md",
       "title": "Architecture Technique - Lumina Portfolio V2",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "tauri",
         "const",
@@ -5100,7 +5101,7 @@
       "path": "docs/guides/architecture/TAG_SYSTEM_GUIDE.md",
       "title": "Tag System - Technical Guide",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "tags",
         "merge",
@@ -5163,7 +5164,7 @@
       "path": "docs/guides/architecture/TAG_SYSTEM_ARCHITECTURE.md",
       "title": "Tag System Architecture - Technical Reference",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "tags",
         "string",
@@ -5241,7 +5242,7 @@
       "path": "docs/guides/architecture/GIT_WORKFLOW.md",
       "title": "Workflow Git - Lumina Portfolio",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "develop",
         "main",
@@ -5304,7 +5305,7 @@
       "path": "docs/guides/project/COMMERCIAL_AUDIT.md",
       "title": "Audit Commercial & Technique - Lumina Portfolio v0.9 (MVP)",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "sans",
         "photos",
@@ -5339,7 +5340,7 @@
       "path": "docs/guides/project/CHANGELOG.md",
       "title": "Changelog",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "docs",
         "type",
@@ -5461,7 +5462,7 @@
       "path": "docs/guides/project/bonne-pratique.md",
       "title": "Règles de Vérification Systématique",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.638958",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "erreurs",
         "sont",
@@ -5488,7 +5489,7 @@
       "path": "docs/guides/project/BRANCH_ANALYSIS.md",
       "title": "Branch Analysis and Cleanup Report",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "branches",
         "branch",
@@ -5529,7 +5530,7 @@
       "path": "docs/guides/project/REFACTORING_PLAN.md",
       "title": "Plan de Refactorisation - Lumina Portfolio",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "index",
         "phase",
@@ -5571,7 +5572,7 @@
       "path": "docs/guides/features/MIGRATION_GUIDE_PHASE3.md",
       "title": "Phase 3 Migration Guide - Progressive Migration",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "components",
         "buttons",
@@ -5613,7 +5614,7 @@
       "path": "docs/guides/features/DESIGN_SYSTEM.md",
       "title": "Design System - Lumina Portfolio",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "button",
         "icon",
@@ -5671,7 +5672,7 @@
       "path": "docs/guides/features/COMPONENTS.md",
       "title": "Composants UI & UX",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "composants",
         "components",
@@ -5702,7 +5703,7 @@
       "path": "docs/guides/features/INTERACTIONS.md",
       "title": "Interactions & Raccourcis",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "sélection",
         "clic",
@@ -5746,7 +5747,7 @@
       "path": "docs/guides/features/I18N_GUIDE.md",
       "title": "Guide i18n - Lumina Portfolio",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.571684",
       "keywords": [
         "json",
         "tags",
@@ -5804,7 +5805,7 @@
       "path": "docs/guides/features/TAG_SYSTEM_README.md",
       "title": "Tag System - Quick Reference",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.636957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "tags",
         "services",
@@ -5849,7 +5850,7 @@
       "path": "docs/guides/project/KnowledgeBase/11_Feature_Navigation.md",
       "title": "Feature: Navigation",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "folderdrawer",
         "topbar",
@@ -5876,7 +5877,7 @@
       "path": "docs/guides/project/KnowledgeBase/10_Feature_Library.md",
       "title": "Feature: Library",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "components",
         "logic",
@@ -5905,7 +5906,7 @@
       "path": "docs/guides/project/KnowledgeBase/08_Troubleshooting_and_FAQ.md",
       "title": "Troubleshooting & FAQ",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "lumina",
         "folder",
@@ -5934,7 +5935,7 @@
       "path": "docs/guides/project/KnowledgeBase/12_Feature_Vision.md",
       "title": "Feature: Vision (AI & Viewing)",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "imageviewer",
         "panel",
@@ -5962,7 +5963,7 @@
       "path": "docs/guides/project/KnowledgeBase/14_Feature_Tags.md",
       "title": "Feature: Tags",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "tags",
         "merge",
@@ -5996,7 +5997,7 @@
       "path": "docs/guides/project/KnowledgeBase/07_Developer_Guide.md",
       "title": "Developer Guide",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "tauri",
         "build",
@@ -6025,7 +6026,7 @@
       "path": "docs/guides/project/KnowledgeBase/01_Project_Overview.md",
       "title": "Project Overview: Lumina Portfolio",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "virtual",
         "react",
@@ -6060,7 +6061,7 @@
       "path": "docs/guides/project/KnowledgeBase/09_State_Management.md",
       "title": "State Management Deep Dive",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "state",
         "folders",
@@ -6095,7 +6096,7 @@
       "path": "docs/guides/project/KnowledgeBase/06_AI_Integration.md",
       "title": "AI Integration Details",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "image",
         "tags",
@@ -6125,7 +6126,7 @@
       "path": "docs/guides/project/KnowledgeBase/04_Component_Library.md",
       "title": "Component Library & UI Patterns",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "features",
         "component",
@@ -6161,7 +6162,7 @@
       "path": "docs/guides/project/KnowledgeBase/03_Database_Schema_and_Storage.md",
       "title": "Database Schema & Storage",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "text",
         "null",
@@ -6196,7 +6197,7 @@
       "path": "docs/guides/project/KnowledgeBase/13_Feature_Collections.md",
       "title": "Feature: Collections",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.573684",
       "keywords": [
         "folder",
         "folders",
@@ -6229,7 +6230,7 @@
       "path": "docs/guides/project/KnowledgeBase/02_Architecture_Deep_Dive.md",
       "title": "Architecture Deep Dive",
       "priority": "critical",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "tauri",
         "local",
@@ -6262,7 +6263,7 @@
       "path": "docs/guides/project/KnowledgeBase/05_Services_and_Logic.md",
       "title": "Services & Business Logic",
       "priority": "high",
-      "modified": "2026-01-07T15:59:23.637957",
+      "modified": "2026-01-07T16:34:05.572684",
       "keywords": [
         "metadata",
         "services",
