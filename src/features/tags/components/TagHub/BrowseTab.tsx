@@ -7,10 +7,9 @@ import {
 	loadTagHubSettings,
 	saveTagHubSettings,
 	type TagHubSettings,
+	type ViewMode,
+	type FilterMode,
 } from '@/shared/utils/tagHubSettings';
-
-type ViewMode = 'grid' | 'list';
-type FilterMode = 'all' | 'manual' | 'ai' | 'unused' | 'mostUsed';
 
 interface BrowseTabProps {
   onSelectTag?: (tagName: string) => void;

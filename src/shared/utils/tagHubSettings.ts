@@ -3,12 +3,18 @@
  * Stores user preferences for TagHub Browse tab in localStorage
  */
 
+// Export types for reuse
+export type ViewMode = 'grid' | 'list';
+export type FilterMode = 'all' | 'manual' | 'ai' | 'unused' | 'mostUsed';
+export type SortBy = 'name' | 'usage' | 'date';
+export type SortDirection = 'asc' | 'desc';
+
 export interface TagHubSettings {
 	// View preferences
-	viewMode: 'grid' | 'list';
-	sortBy: 'name' | 'usage' | 'date';
-	sortDirection: 'asc' | 'desc';
-	filterMode: 'all' | 'manual' | 'ai' | 'unused' | 'mostUsed';
+	viewMode: ViewMode;
+	sortBy: SortBy;
+	sortDirection: SortDirection;
+	filterMode: FilterMode;
 	showUsageCount: boolean;
 
 	// Metadata
@@ -53,15 +59,19 @@ export const loadTagHubSettings = (): TagHubSettings => {
 		}
 
 		// Validate required properties
-		const validViewModes = ['grid', 'list'];
-		const validSortBy = ['name', 'usage', 'date'];
-		const validSortDirection = ['asc', 'desc'];
-		const validFilterMode = ['all', 'manual', 'ai', 'unused', 'mostUsed'];
+		const isValidEnum = (value: unknown, validValues: readonly string[]): boolean => {
+			return typeof value === 'string' && validValues.includes(value);
+		};
 
-		if (!validViewModes.includes(parsed.viewMode as string) ||
-		    !validSortBy.includes(parsed.sortBy as string) ||
-		    !validSortDirection.includes(parsed.sortDirection as string) ||
-		    !validFilterMode.includes(parsed.filterMode as string)) {
+		const validViewModes = ['grid', 'list'] as const;
+		const validSortBy = ['name', 'usage', 'date'] as const;
+		const validSortDirection = ['asc', 'desc'] as const;
+		const validFilterMode = ['all', 'manual', 'ai', 'unused', 'mostUsed'] as const;
+
+		if (!isValidEnum(parsed.viewMode, validViewModes) ||
+		    !isValidEnum(parsed.sortBy, validSortBy) ||
+		    !isValidEnum(parsed.sortDirection, validSortDirection) ||
+		    !isValidEnum(parsed.filterMode, validFilterMode)) {
 			console.warn('[TagHubSettings] Invalid property values, using defaults');
 			return DEFAULT_TAGHUB_SETTINGS;
 		}
@@ -107,7 +117,7 @@ export const resetTagHubSettings = (): TagHubSettings => {
  * Migrate TagHub settings from old version
  */
 const migrateTagHubSettings = (old: Partial<TagHubSettings>): TagHubSettings => {
-	console.log('[TagHubSettings] Migrating from version', old.version, 'to', CURRENT_VERSION);
+	console.debug('[TagHubSettings] Migrating from version', old.version, 'to', CURRENT_VERSION);
 	
 	// Add migration logic here as versions evolve
 	return {
