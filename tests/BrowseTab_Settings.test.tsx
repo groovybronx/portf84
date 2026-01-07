@@ -87,8 +87,8 @@ describe('BrowseTab Settings Persistence', () => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
     });
 
-    // Click the manual tags filter button
-    const manualButton = screen.getByText('tags:manualTags');
+    // Click the manual tags filter button - use getByRole to be more specific
+    const manualButton = screen.getByRole('button', { name: 'tags:manualTags' });
     await userEvent.click(manualButton);
 
     // Wait for debounced save (500ms)
