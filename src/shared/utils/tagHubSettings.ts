@@ -54,7 +54,7 @@ export const loadTagHubSettings = (): TagHubSettings => {
 		}
 
 		// Version migration
-		if (typeof parsed.version === 'number' && parsed.version < CURRENT_VERSION) {
+		if (typeof parsed.version === 'number' && parsed.version !== CURRENT_VERSION) {
 			return migrateTagHubSettings(parsed);
 		}
 
@@ -71,7 +71,8 @@ export const loadTagHubSettings = (): TagHubSettings => {
 		if (!isValidEnum(parsed.viewMode, validViewModes) ||
 		    !isValidEnum(parsed.sortBy, validSortBy) ||
 		    !isValidEnum(parsed.sortDirection, validSortDirection) ||
-		    !isValidEnum(parsed.filterMode, validFilterMode)) {
+		    !isValidEnum(parsed.filterMode, validFilterMode) ||
+		    typeof parsed.showUsageCount !== 'boolean') {
 			console.warn('[TagHubSettings] Invalid property values, using defaults');
 			return DEFAULT_TAGHUB_SETTINGS;
 		}
@@ -94,10 +95,11 @@ export const saveTagHubSettings = (settings: TagHubSettings): void => {
 			lastUpdated: Date.now(),
 		};
 		localStorage.setItem(SETTINGS_KEY, JSON.stringify(toSave));
-		console.debug('[TagHubSettings] Saved successfully');
+		console.log('[TagHubSettings] Saved successfully');
 	} catch (error) {
 		console.error('[TagHubSettings] Failed to save:', error);
-		// Handle quota exceeded - silently fail in production, log error for debugging
+		// Handle quota exceeded - silently fail to avoid intrusive alerts
+		// Note: This differs from tagSettings.ts which uses alert() for better UX
 		if (error instanceof Error && error.name === 'QuotaExceededError') {
 			console.error('[TagHubSettings] Storage quota exceeded. Settings may not persist.');
 		}
@@ -110,14 +112,14 @@ export const saveTagHubSettings = (settings: TagHubSettings): void => {
 export const resetTagHubSettings = (): TagHubSettings => {
 	const defaults = { ...DEFAULT_TAGHUB_SETTINGS };
 	saveTagHubSettings(defaults);
-	return defaults;
+	return loadTagHubSettings();
 };
 
 /**
  * Migrate TagHub settings from old version
  */
 const migrateTagHubSettings = (old: Partial<TagHubSettings>): TagHubSettings => {
-	console.debug('[TagHubSettings] Migrating from version', old.version, 'to', CURRENT_VERSION);
+	console.log('[TagHubSettings] Migrating from version', old.version, 'to', CURRENT_VERSION);
 	
 	// Add migration logic here as versions evolve
 	return {

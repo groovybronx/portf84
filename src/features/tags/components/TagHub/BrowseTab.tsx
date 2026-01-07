@@ -39,11 +39,20 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
     value: TagHubSettings[K]
   ) => {
     setSettings(prev => {
-      const newSettings = { ...prev, [key]: value, lastUpdated: Date.now() };
+      const newSettings = { ...prev, [key]: value };
       debouncedSave(newSettings);
       return newSettings;
     });
   }, [debouncedSave]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     loadTags();
