@@ -77,7 +77,8 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				onClick={onOpenBatchTagPanel}
 				disabled={selectedCount === 0}
 				aria-label={t('batchTag')}
-				className="bg-glass-bg-accent border-glass-border-light text-purple-400 hover:border-purple-400/30"
+				// Purple theme for batch tagging (distinct from other actions)
+				className="bg-glass-bg-accent border-glass-border-light text-purple-400 hover:bg-purple-400/10 hover:border-purple-400/30"
 				title={t('batchTagHint')}
 			>
 				<Tags size={18} />
