@@ -32,7 +32,7 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for better metadata
+          fetch-depth: 0 # Full history for better metadata
 
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
@@ -53,22 +53,22 @@ jobs:
       - name: ✅ Validate generated JSON files
         run: |
           echo "Validating index files..."
-          
+
           # Check that files were created
           if [ ! -f "docs/.doc-index.json" ]; then
             echo "❌ Error: docs/.doc-index.json not generated"
             exit 1
           fi
-          
+
           if [ ! -f "docs/.doc-metadata.json" ]; then
             echo "❌ Error: docs/.doc-metadata.json not generated"
             exit 1
           fi
-          
+
           # Validate JSON syntax
           python -c "import json; json.load(open('docs/.doc-index.json'))"
           python -c "import json; json.load(open('docs/.doc-metadata.json'))"
-          
+
           echo "✅ JSON files are valid"
 
       - name: 📊 Display index statistics
@@ -89,10 +89,10 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
           # Add only the metadata file (not the full index)
           git add docs/.doc-metadata.json
-          
+
           # Check if there are changes
           if git diff --staged --quiet; then
             echo "No changes to commit"
@@ -119,27 +119,27 @@ jobs:
             const fs = require('fs');
             const metadata = JSON.parse(fs.readFileSync('docs/.doc-metadata.json', 'utf8'));
             const stats = metadata.metadata;
-            
+
             const comment = `## 📚 Documentation Index Updated
-            
+
             The documentation index has been successfully rebuilt:
-            
+
             - **Total documents**: ${stats.total_documents}
             - **Total sections**: ${stats.total_sections}
             - **Total words**: ${stats.total_words.toLocaleString()}
             - **Generated**: ${stats.generated}
-            
+
             ### Priority Breakdown
-            ${Object.entries(stats.priority_breakdown).map(([priority, count]) => 
+            ${Object.entries(stats.priority_breakdown).map(([priority, count]) =>
               `- **${priority.charAt(0).toUpperCase() + priority.slice(1)}**: ${count}`
             ).join('\n')}
-            
+
             ### Top Keywords
             ${stats.top_keywords.slice(0, 10).join(', ')}
-            
+
             The RAG documentation agent can now access the latest documentation!
             `;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -176,10 +176,10 @@ jobs:
       - name: 🔍 Test search queries
         run: |
           echo "Testing search functionality..."
-          
+
           # Test various queries
           python scripts/rag/search_documentation.py "architecture" > /dev/null
           python scripts/rag/search_documentation.py "tags system" > /dev/null
           python scripts/rag/search_documentation.py "React components" > /dev/null
-          
+
           echo "✅ Search queries executed successfully"
