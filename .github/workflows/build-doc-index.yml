@@ -168,7 +168,7 @@ jobs:
           python-version: '3.11'
 
       - name: 📥 Download index artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: documentation-index
           path: docs/
