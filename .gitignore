@@ -87,3 +87,16 @@ coverage/
 *.sw?
 
 # OpenMemory - IDE/Assistant specific rules
+
+# Documentation RAG Index (généré automatiquement)
+docs/.doc-index.json
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Garder les métadonnées (versionné)
+# docs/.doc-metadata.json

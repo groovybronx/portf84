@@ -1,0 +1,223 @@
+{
+	"version": "1.0.0",
+	"system": {
+		"name": "Lumina Portfolio Documentation RAG",
+		"description": "Retrieval-Augmented Generation system for intelligent documentation access",
+		"enabled": true,
+		"last_updated": "2026-01-07T15:59:00Z"
+	},
+	"paths": {
+		"documentation_root": "docs",
+		"index_file": "docs/.doc-index.json",
+		"metadata_file": "docs/.doc-metadata.json",
+		"archive_dir": "docs/ARCHIVES",
+		"excluded_patterns": [
+			"**/.doc-*",
+			"**/.*",
+			"**/*.tmp",
+			"**/*.temp",
+			"**/*.backup",
+			"**/*.bak"
+		]
+	},
+	"search_strategy": {
+		"type": "lexical",
+		"description": "Lexical keyword matching search with word boundary detection and priority-based ranking",
+		"ranking_factors": {
+			"keyword_match": 0.3,
+			"title_match": 0.2,
+			"priority_boost": 0.2,
+			"section_relevance": 0.2
+		},
+		"note": "Current implementation uses lexical search only. Semantic search with embeddings is planned for future versions."
+	},
+	"search_parameters": {
+		"max_results": 5,
+		"min_score_threshold": 0.3,
+		"include_related": true,
+		"max_related": 3,
+		"highlight_matches": true,
+		"return_full_sections": true
+	},
+	"priority_levels": {
+		"critical": {
+			"score_multiplier": 2.0,
+			"description": "Architecture, security, major decisions",
+			"patterns": [
+				"**/ARCHITECTURE.md",
+				"**/TAG_SYSTEM_ARCHITECTURE.md",
+				"**/security-*.md",
+				"**/*_ARCHITECTURE.md"
+			]
+		},
+		"high": {
+			"score_multiplier": 1.5,
+			"description": "Implementation guides, APIs, features",
+			"patterns": [
+				"**/guides/**/*.md",
+				"**/*_GUIDE.md",
+				"**/*_IMPLEMENTATION*.md",
+				"**/COMPONENTS.md"
+			]
+		},
+		"normal": {
+			"score_multiplier": 1.0,
+			"description": "General documentation",
+			"patterns": [
+				"**/README.md",
+				"**/*.md"
+			]
+		},
+		"archive": {
+			"score_multiplier": 0.3,
+			"description": "Historical documents, deprecated info",
+			"patterns": [
+				"**/ARCHIVES/**/*.md",
+				"**/*_OLD.md",
+				"**/*_DEPRECATED.md"
+			]
+		}
+	},
+	"search_parameters": {
+		"max_results": 5,
+		"min_score_threshold": 0.3,
+		"include_related": true,
+		"max_related": 3,
+		"highlight_matches": true,
+		"return_full_sections": true
+	},
+	"response_formatting": {
+		"include_citations": true,
+		"citation_format": "markdown",
+		"include_metadata": true,
+		"include_related_docs": true,
+		"include_confidence_score": true,
+		"max_excerpt_length": 200,
+		"template": {
+			"header": "## 🎯 Réponse\n\n{content}\n",
+			"sources": "### 📚 Sources\n{sources}\n",
+			"related": "### 🔗 Documentation Liée\n{related}\n",
+			"metadata": "### 📊 Métadonnées\n{metadata}"
+		}
+	},
+	"indexing": {
+		"auto_rebuild": {
+			"enabled": true,
+			"triggers": [
+				"docs_push",
+				"pull_request",
+				"manual_dispatch",
+				"scheduled_cron"
+			],
+			"schedule": "0 2 * * *",
+			"description": "Rebuild index daily at 2:00 UTC"
+		},
+		"parse_sections": true,
+		"extract_keywords": true,
+		"max_keywords": 100,
+		"build_hierarchy": true
+	},
+	"metadata_extraction": {
+		"file_properties": [
+			"path",
+			"size",
+			"modified_date"
+		],
+		"content_properties": [
+			"title",
+			"sections",
+			"keywords",
+			"priority",
+			"word_count",
+			"heading_count"
+		]
+	},
+	"integrations": {
+		"github_copilot": {
+			"enabled": true,
+			"agent_name": "documentation-rag-agent",
+			"invocation_prefix": "@documentation-rag-agent"
+		},
+		"other_agents": {
+			"meta_orchestrator": true,
+			"documentation_generator": true,
+			"code_quality_auditor": true,
+			"refactoring_tracker": true,
+			"security_auditor": true
+		}
+	},
+	"languages": {
+		"supported": ["fr", "en"],
+		"default": "en",
+		"detect_from_content": true
+	},
+	"special_commands": {
+		"search": {
+			"syntax": "@documentation-rag-agent search:\"term\" in:folder",
+			"description": "Targeted search in specific folder"
+		},
+		"suggest": {
+			"syntax": "@documentation-rag-agent suggest:\"topic\"",
+			"description": "Get document suggestions for a topic"
+		},
+		"related": {
+			"syntax": "@documentation-rag-agent related:\"docs/path/file.md\"",
+			"description": "Find related documents"
+		},
+		"stats": {
+			"syntax": "@documentation-rag-agent stats",
+			"description": "Show index statistics"
+		},
+		"rebuild": {
+			"syntax": "@documentation-rag-agent rebuild-index",
+			"description": "Trigger index rebuild"
+		},
+		"note": "Special commands are handled by the GitHub Copilot agent layer, not directly by Python scripts"
+	},
+	"quality_metrics": {
+		"target_citation_rate": 0.95,
+		"target_confidence_score": 0.70,
+		"target_search_time_ms": 500,
+		"target_found_rate": 0.90
+	},
+	"future_enhancements": {
+		"description": "Features planned for future versions but not yet implemented",
+		"chunking": {
+			"enabled": false,
+			"chunk_size": 1000,
+			"chunk_overlap": 200,
+			"strategy": "semantic",
+			"description": "Document chunking for better context handling - Planned for v1.1"
+		},
+		"semantic_search": {
+			"enabled": false,
+			"lexical_weight": 0.4,
+			"semantic_weight": 0.6,
+			"description": "True semantic search with embeddings - Planned for v1.1"
+		},
+		"caching": {
+			"enabled": false,
+			"ttl_seconds": 86400,
+			"description": "Cache search results for better performance - Planned for v1.1"
+		},
+		"recency_scoring": {
+			"enabled": false,
+			"weight": 0.1,
+			"description": "Factor document modification date into scoring - Planned for v1.1"
+		},
+		"relationship_tracking": {
+			"enabled": false,
+			"description": "Track document relationships and backlinks - Planned for v1.2"
+		},
+		"parallel_search": {
+			"enabled": false,
+			"max_workers": 5,
+			"description": "Parallel search across multiple indices - Planned for v1.2"
+		},
+		"error_logging": {
+			"enabled": false,
+			"log_path": "logs/rag-errors.log",
+			"description": "Structured error logging - Planned for v1.2"
+		}
+	}
+}
