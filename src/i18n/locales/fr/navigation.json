@@ -23,6 +23,8 @@
   "move": "Déplacer",
   "share": "Partager",
   "analyzeSelected": "Analyser la sélection",
+  "batchTag": "Étiquetage groupé",
+  "batchTagHint": "Étiqueter plusieurs éléments (Ctrl+Shift+T)",
   "viewGrid": "Grille",
   "viewFlow": "Flux",
   "viewDetail": "Détails",

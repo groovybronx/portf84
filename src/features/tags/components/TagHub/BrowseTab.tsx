@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Grid, List, Tag as TagIcon, Sparkles } from 'lucide-react';
 import { Button, Flex, Stack, Grid as LayoutGrid, GlassCard } from '@/shared/components/ui';
 import { getTagsWithUsageStats, TagWithUsage } from '@/services/storage/tags';
-
-type ViewMode = 'grid' | 'list';
-type FilterMode = 'all' | 'manual' | 'ai' | 'unused' | 'mostUsed';
+import {
+	loadTagHubSettings,
+	saveTagHubSettings,
+	type TagHubSettings,
+	type ViewMode,
+	type FilterMode,
+} from '@/shared/utils/tagHubSettings';
 
 interface BrowseTabProps {
   onSelectTag?: (tagName: string) => void;
@@ -16,8 +20,39 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
   const [tags, setTags] = useState<TagWithUsage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [filterMode, setFilterMode] = useState<FilterMode>('all');
+  
+  // Load persisted settings on mount
+  const [settings, setSettings] = useState<TagHubSettings>(() => loadTagHubSettings());
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounced save function
+  const debouncedSave = useCallback((newSettings: TagHubSettings) => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      saveTagHubSettings(newSettings);
+    }, 500);
+  }, []);
+
+  // Update a single setting
+  const updateSetting = useCallback(<K extends keyof TagHubSettings>(
+    key: K,
+    value: TagHubSettings[K]
+  ) => {
+    setSettings(prev => {
+      const newSettings = { ...prev, [key]: value };
+      debouncedSave(newSettings);
+      return newSettings;
+    });
+  }, [debouncedSave]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     loadTags();
@@ -43,8 +78,8 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
     }
 
     // Type filter
-    if (filterMode === 'manual' && tag.type !== 'manual') return false;
-    if (filterMode === 'ai' && tag.type !== 'ai') return false;
+    if (settings.filterMode === 'manual' && tag.type !== 'manual') return false;
+    if (settings.filterMode === 'ai' && tag.type !== 'ai') return false;
 
     return true;
   });
@@ -92,10 +127,10 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         <GlassCard variant="accent" padding="sm" className="shrink-0">
           <Flex gap="xs">
           <Button
-            onClick={() => setViewMode('grid')}
+            onClick={() => updateSetting('viewMode', 'grid')}
             aria-label={t('tags:gridView')}
             className={`p-2 rounded ${
-              viewMode === 'grid'
+              settings.viewMode === 'grid'
                 ? 'bg-blue-500/20 text-blue-300'
                 : 'text-gray-500 hover:text-gray-300'
             }`}
@@ -103,10 +138,10 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
             <Grid size={16} />
           </Button>
           <Button
-            onClick={() => setViewMode('list')}
+            onClick={() => updateSetting('viewMode', 'list')}
             aria-label={t('tags:listView')}
             className={`p-2 rounded ${
-              viewMode === 'list'
+              settings.viewMode === 'list'
                 ? 'bg-blue-500/20 text-blue-300'
                 : 'text-gray-500 hover:text-gray-300'
             }`}
@@ -128,9 +163,9 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         ].map((filter) => (
           <Button
             key={filter.id}
-            onClick={() => setFilterMode(filter.id)}
+            onClick={() => updateSetting('filterMode', filter.id)}
             className={`px-3 py-1.5 text-xs rounded-full whitespace-nowrap ${
-              filterMode === filter.id
+              settings.filterMode === filter.id
                 ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
                 : 'text-gray-400 hover:bg-glass-bg-active bg-glass-bg'
             }`}
@@ -154,7 +189,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
           <h3 className="text-lg font-medium text-white">{t('tags:noTagsYet')}</h3>
           <p className="text-sm text-white/40">{t('tags:noSimilarTags')}</p>
         </Flex>
-      ) : viewMode === 'grid' ? (
+      ) : settings.viewMode === 'grid' ? (
         <LayoutGrid cols={4} gap="md" className="sm:grid-cols-3 grid-cols-2">
           {filteredTags.map((tag) => (
             <GlassCard
