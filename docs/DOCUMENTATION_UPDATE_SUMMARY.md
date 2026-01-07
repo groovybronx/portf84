@@ -56,7 +56,7 @@ Création d'un document exhaustif de release notes incluant:
 - ⚡ Optimisations de Performance:
   - Tag Analysis (-68% temps, -50% mémoire)
   - React 18 Activity API Fix
-- 🤖 GitHub Copilot Integration (20+ agents)
+- 🤖 GitHub Copilot Integration (21 agents)
 - 🐛 Bug Fixes détaillés
 - 📚 Documentation (audits et guides)
 - 🧪 Tests (149 tests, coverage)
@@ -97,7 +97,7 @@ Création d'un document exhaustif de release notes incluant:
 - TagHub overhaul avec filtres avancés et presets
 - UI consolidation complète vers design system
 - Optimisations tag analysis (-68% temps, -50% mémoire)
-- 20+ agents GitHub Copilot spécialisés
+- 21 agents GitHub Copilot spécialisés
 - Multi-tag filtering et batch tagging améliorés
 ```
 
@@ -152,10 +152,10 @@ Création d'un document exhaustif de release notes incluant:
 
 ### 4. GitHub Copilot
 
-- 20+ agents spécialisés (.github/agents/)
+- 21 agents spécialisés (.github/agents/)
 - Domain agents (architecture, frontend, backend, etc.)
 - Quality agents (auditor, bug-hunter, optimizer, etc.)
-- Workflow agents (orchestrator, pr-resolver, etc.)
+- Workflow agents (orchestrator, pr-resolver, documentation-rag, etc.)
 
 ---
 

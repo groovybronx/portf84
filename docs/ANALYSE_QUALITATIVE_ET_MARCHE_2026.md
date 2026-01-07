@@ -229,7 +229,7 @@ docs/
 - Guide utilisateur (TAG_HUB_USER_GUIDE.md)
 - Référence visuelle (captures d'écran)
 - Changelog maintenu (RELEASE_NOTES)
-- 20+ agents Copilot documentés
+- 21 agents Copilot documentés
 - Instructions Copilot complètes (.github/copilot/)
 
 **Points d'Attention** ⚠️

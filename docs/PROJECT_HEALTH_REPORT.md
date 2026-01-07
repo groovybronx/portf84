@@ -287,7 +287,7 @@ docs/
 - ✅ Changelog maintenu (RELEASE_NOTES_v0.3.0-beta.1.md)
 - ✅ Contributing guidelines
 - ✅ Copilot instructions (.github/copilot/)
-- ✅ 20+ agents spécialisés (.github/agents/)
+- ✅ 21 agents spécialisés (.github/agents/)
 
 **Documentation Technique**:
 - Audit architectural complet ✅

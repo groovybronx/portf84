@@ -39,6 +39,7 @@ interface AgentRegistry {
 	
 	// Documentation & Migration
 	documentationGenerator: Agent; // Generates documentation
+	documentationRagAgent: Agent;  // RAG-powered documentation search
 	migrationAssistant: Agent;     // Handles version migrations
 	
 	// Analysis & Management
@@ -88,6 +89,15 @@ function selectAgents(task: Task): Agent[] {
 		agents.push(agentRegistry.refactoringTracker);
 		agents.push(agentRegistry.testCoverageImprover);
 		agents.push(agentRegistry.codeQualityAuditor);
+	}
+	
+	if (task.type === "documentation-query") {
+		agents.push(agentRegistry.documentationRagAgent);
+	}
+	
+	if (task.type === "documentation-update") {
+		agents.push(agentRegistry.documentationRagAgent);
+		agents.push(agentRegistry.documentationGenerator);
 	}
 	
 	if (task.requiresReactExpertise) {
@@ -244,39 +254,44 @@ const qualityWorkflow = [
 const featureWorkflow = [
 	{
 		step: 1,
+		agent: "documentationRagAgent",
+		action: "Search existing documentation for similar features"
+	},
+	{
+		step: 2,
 		agent: "projectArchitecture",
 		action: "Design feature architecture"
 	},
 	{
-		step: 2,
+		step: 3,
 		agent: "reactFrontend",
 		action: "Implement UI components",
 		parallel: true
 	},
 	{
-		step: 2,
+		step: 3,
 		agent: "tauriRustBackend",
 		action: "Implement backend (if needed)",
 		parallel: true
 	},
 	{
-		step: 2,
+		step: 3,
 		agent: "databaseSqlite",
 		action: "Design database schema (if needed)",
 		parallel: true
 	},
 	{
-		step: 3,
+		step: 4,
 		agent: "testingVitest",
 		action: "Add tests"
 	},
 	{
-		step: 4,
+		step: 5,
 		agent: "documentationGenerator",
 		action: "Generate documentation"
 	},
 	{
-		step: 5,
+		step: 6,
 		agent: "prResolver",
 		action: "Review and validate PR"
 	}
@@ -616,6 +631,9 @@ function adaptStrategy(outcome: TaskOutcome): void {
 
 # Post-feature workflow
 @workspace [Meta Orchestrator] Complete post-feature tasks (tests, docs, review)
+
+# Documentation research workflow
+@workspace [Meta Orchestrator] Research documentation on [topic] and provide comprehensive answer
 ```
 
 ### Status and Reporting
@@ -658,6 +676,12 @@ function adaptStrategy(outcome: TaskOutcome): void {
 - Validate agent outputs
 - Resolve inter-agent conflicts
 
+### With Documentation RAG Agent
+- Query documentation for context before delegating tasks
+- Validate that implementations match documented conventions
+- Ensure new features are documented through Documentation Generator
+- Use RAG agent to search for similar patterns in existing codebase
+
 ### Workflow Examples
 
 **Quality Improvement**:
@@ -669,11 +693,17 @@ function adaptStrategy(outcome: TaskOutcome): void {
 6. Verify improvements
 
 **Feature Development**:
-1. Project Architecture → Design
-2. React Frontend → Implement UI
-3. Testing Vitest → Add tests
-4. Documentation Generator → Document
-5. PR Resolver → Review
+1. Documentation RAG Agent → Search similar features
+2. Project Architecture → Design
+3. React Frontend → Implement UI
+4. Testing Vitest → Add tests
+5. Documentation Generator → Document
+6. PR Resolver → Review
+
+**Documentation Research**:
+1. Documentation RAG Agent → Search and synthesize
+2. Documentation Generator → Update if gaps found
+3. Code Quality Auditor → Verify documentation matches code
 
 ## Success Metrics
 
@@ -707,3 +737,15 @@ function adaptStrategy(outcome: TaskOutcome): void {
 - Project architecture: `docs/guides/architecture/`
 - Workflow patterns: Common development workflows
 - Quality standards: `.github/copilot-instructions.md`
+
+---
+
+## Changelog
+
+### 2026-01-07 - Integration RAG Agent
+- **Added**: Documentation RAG Agent to AgentRegistry interface
+- **Added**: Task selection logic for documentation queries and updates
+- **Added**: Feature development workflow now starts with RAG documentation search
+- **Added**: Documentation research workflow example
+- **Added**: Integration section with Documentation RAG Agent
+- **Updated**: Workflow examples to include RAG agent usage
