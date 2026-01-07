@@ -143,6 +143,7 @@ const App: React.FC = () => {
     setIsCollectionManagerOpen,
   } = useModalState();
   const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
+  // TODO: Wire to BatchTagPanel component when implemented
   const [isBatchTagPanelOpen, setIsBatchTagPanelOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [showColorTags, setShowColorTags] = useState(true);
