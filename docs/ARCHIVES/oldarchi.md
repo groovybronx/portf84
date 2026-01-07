@@ -6,7 +6,7 @@ Lumina Portfolio est une application native **Local-First** construite avec **Ta
 
 ```mermaid
 graph TD
-    A[React 19.2 + Vite] --> B[Tauri v2 Core]
+    A[React 18.3.1 + Vite] --> B[Tauri v2 Core]
     B --> C[SQLite Database]
     B --> D[Native File System]
     B --> E[Asset Protocol]
@@ -15,10 +15,10 @@ graph TD
 
 ## Stack Technologique
 
-| Layer              | Technologie                       | Rôle                           |
-| ------------------ | --------------------------------- | ------------------------------ |
-| **Frontend**       | React 19.2 + Tailwind CSS v4        | Interface utilisateur          |
-| **Runtime**        | Tauri v2                          | Bridge natif, sécurité, bundle |
+| Layer              | Technologie                          | Rôle                           |
+| ------------------ | ------------------------------------ | ------------------------------ |
+| **Frontend**       | React 18.3.1 + Tailwind CSS v4       | Interface utilisateur          |
+| **Runtime**        | Tauri v2                             | Bridge natif, sécurité, bundle |
 | **Persistance**    | SQLite (`@tauri-apps/plugin-sql`) | Base de données locale         |
 | **Fichiers**       | `@tauri-apps/plugin-fs`           | Accès système de fichiers      |
 | **UI Native**      | `@tauri-apps/plugin-dialog`       | Sélecteur de dossiers natif    |

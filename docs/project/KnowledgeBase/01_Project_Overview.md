@@ -1,7 +1,7 @@
 # Project Overview: Lumina Portfolio
 
 ## Introduction
-**Lumina Portfolio** is a high-performance, local-first native desktop application designed for photographers and creatives to manage, analyze, and showcase their image portfolios. Built with **Tauri v2** and **React 19.2**, it bridges the gap between a lightweight file viewer and a robust digital asset manager (DAM).
+**Lumina Portfolio** is a high-performance, local-first native desktop application designed for photographers and creatives to manage, analyze, and showcase their image portfolios. Built with **Tauri v2** and **React 18.3.1**, it bridges the gap between a lightweight file viewer and a robust digital asset manager (DAM).
 
 The core philosophy is **"Hybrid Management"**: users can manage their physical files on disk while simultaneously organizing them into virtual collections, enriched with AI-generated metadata, without altering the original files.
 
@@ -14,7 +14,7 @@ The core philosophy is **"Hybrid Management"**: users can manage their physical 
 ## Technology Stack
 
 ### Frontend
--   **Framework**: [React 19.2](https://react.dev/)
+-   **Framework**: [React 18.3.1](https://react.dev/)
 -   **Build Tool**: [Vite](https://vitejs.dev/)
 -   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 -   **State Management**: React Context (Split Pattern)
