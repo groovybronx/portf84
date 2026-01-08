@@ -188,7 +188,7 @@ trigger: always_on
 ## Development Workflow
 
 ### Feature Development
-1. Create feature branch from main
+1. Create feature branch from develop
 2. Implement with TypeScript strict mode
 3. Add comprehensive tests
 4. Verify performance impact

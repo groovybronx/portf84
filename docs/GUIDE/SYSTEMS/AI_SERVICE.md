@@ -104,7 +104,7 @@ await SecureStorageService.storeApiKey('your-api-key');
 // src/services/geminiService.ts
 export interface GeminiConfig {
   apiKey: string;
-  model: 'gemini-pro-vision';
+  model: 'gemini-3-flash-preview';
   temperature: number;
   maxTokens: number;
   batchSize: number;
@@ -114,7 +114,7 @@ export interface GeminiConfig {
 
 const defaultConfig: GeminiConfig = {
   apiKey: process.env.VITE_GEMINI_API_KEY || '',
-  model: 'gemini-pro-vision',
+  model: 'gemini-3-flash-preview';
   temperature: 0.1,
   maxTokens: 2048,
   batchSize: 5,
