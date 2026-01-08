@@ -10,7 +10,7 @@ Ce document décrit les règles de protection recommandées pour sécuriser les 
 
 ### 🔴 **Priorité Critique**
 - `main` - Branche de production (déploiement stable)
-- `develop` - Branche de développement principal
+- `develop` - Branche de développement principal (**branche par défaut**)
 
 ### 🟡 **Priorité Moyenne**
 - `lumina-v2.01` - Version stable 2.01
@@ -58,7 +58,7 @@ Branch name pattern: main
 
 ---
 
-### 2. **Protection de `develop` (Développement)**
+### 2. **Protection de `develop` (Développement - Branche par Défaut)**
 
 #### Configuration GitHub
 ```
@@ -82,6 +82,11 @@ Branch name pattern: develop
 
 🔓 **Allow force pushes** : Désactivé (mais admins peuvent bypass si nécessaire)
 🚫 **Allow deletions** : Désactivé
+
+#### Workflow Recommandé pour `develop`
+- **Branche par défaut** pour tous les nouveaux développements
+- **Intégration continue** : Les features sont mergées ici après review
+- **Synchronisation** : Regular sync avec `main` pour les releases
 
 ---
 
@@ -153,7 +158,7 @@ lumina-v2.x (release stable)
 
 ### Créer une Feature Branch
 ```bash
-git checkout develop
+git checkout develop  # Branche par défaut
 git pull origin develop
 git checkout -b feature/nom-descriptif
 ```
@@ -161,7 +166,7 @@ git checkout -b feature/nom-descriptif
 ### Pousser et Créer une PR
 ```bash
 git push origin feature/nom-descriptif
-# Aller sur GitHub et créer une PR vers 'develop'
+# Aller sur GitHub et créer une PR vers 'develop' (branche par défaut)
 ```
 
 ### Merger vers Production (après tests sur develop)
@@ -175,11 +180,11 @@ git push origin feature/nom-descriptif
 
 ## 🚨 Actions Interdites (avec ces protections)
 
-❌ Push direct sur `main` sans PR  
-❌ Force push sur `main` ou `develop`  
-❌ Suppression accidentelle de branches protégées  
-❌ Merge de PR non testée ou non reviewée  
-❌ Merge de PR avec commentaires non résolus  
+❌ Push direct sur `main` sans PR
+❌ Force push sur `main` ou `develop`
+❌ Suppression accidentelle de branches protégées
+❌ Merge de PR non testée ou non reviewée
+❌ Merge de PR avec commentaires non résolus
 
 ---
 
@@ -270,5 +275,5 @@ Si vous devez absolument bypass les règles (urgence) :
 
 ---
 
-**Dernière mise à jour** : 30/12/2024  
+**Dernière mise à jour** : 30/12/2024
 **Auteur** : Antigravity AI Assistant
