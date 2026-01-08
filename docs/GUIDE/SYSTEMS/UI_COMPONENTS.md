@@ -207,8 +207,8 @@ Form building blocks and validation
 ```typescript
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'glass' | 'glass-icon' | 'close' | 'nav-arrow';
+  size?: 'sm' | 'md' | 'lg' | 'icon' | 'icon-lg' | 'icon-sm';
   disabled?: boolean;
   loading?: boolean;
   icon?: React.ReactNode;
@@ -241,13 +241,20 @@ export const Button: React.FC<ButtonProps> = ({
     secondary: 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
     outline: 'border border-gray-400 hover:bg-gray-700 text-white focus:ring-gray-500',
     ghost: 'hover:bg-gray-700 text-white focus:ring-gray-500',
-    danger: 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500'
+    danger: 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
+    glass: 'bg-glass-bg text-white border border-glass-border-light hover:bg-glass-bg-active hover:border-glass-border backdrop-blur-md',
+    'glass-icon': 'p-2 rounded-full hover:bg-white/5 text-white/50 hover:text-white transition-colors border-none',
+    close: 'p-2 rounded-full hover:bg-white/5 text-white/60 hover:text-white transition-colors border-none',
+    'nav-arrow': 'p-2 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-all border border-white/10',
   };
 
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg'
+    lg: 'px-6 py-3 text-lg',
+    icon: 'h-9 w-9 p-0',
+    'icon-lg': 'h-11 w-11 p-0',
+    'icon-sm': 'h-7 w-7 p-0',
   };
 
   const classes = cn(

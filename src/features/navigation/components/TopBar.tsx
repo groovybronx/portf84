@@ -19,9 +19,6 @@ interface TopBarProps {
   onOpenFolders: () => void;
   onMoveSelected: () => void;
   onShareSelected: () => void;
-  onRunBatchAI: () => void;
-  isBatchAIProcessing: boolean;
-  batchAIProgress: number;
   onOpenSettings: () => void;
 
   onOpenTagHub: () => void;
@@ -36,9 +33,6 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenFolders,
   onMoveSelected,
   onShareSelected,
-  onRunBatchAI,
-  isBatchAIProcessing,
-  batchAIProgress,
   onOpenSettings,
 
   onOpenTagHub,
@@ -122,53 +116,21 @@ export const TopBar: React.FC<TopBarProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsPinned(!isPinned)}
+                icon={isPinned ? <Icon action="pin" size={16} fill="currentColor" /> : <Icon action="unpin" size={16} />}
                 className={isPinned ? 'text-primary bg-glass-bg-accent' : 'text-gray-500'}
                 title={isPinned ? t('navigation:unpin') : t('navigation:pin')}
-              >
-                {isPinned ? (
-                  <Icon action="pin" size={16} fill="currentColor" />
-                ) : (
-                  <Icon action="unpin" size={16} />
-                )}
-              </Button>
+              />
               <div className="h-6 w-px bg-glass-border/10 mx-1 hidden sm:block" />
               <Button
                 variant="ghost"
                 onClick={onOpenFolders}
-                leftIcon={<Icon action="library" size={18} />}
+                icon={<Icon action="library" size={18} />}
+                iconPosition="left"
                 className="text-primary hover:text-white"
               >
                 <span className="hidden md:inline max-w-[100px] truncate">
                   {folderName || t('navigation:library')}
                 </span>
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onOpenTagHub}
-                className="text-gray-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
-                title="Tag Hub (Ctrl+T)"
-              >
-                <Icon action="tag" size={18} />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size={selectedCount > 0 ? 'sm' : 'icon'}
-                onClick={onOpenBatchTagPanel}
-                disabled={selectedCount === 0}
-                className={`transition-colors ${
-                  selectedCount > 0
-                    ? 'text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 px-3'
-                    : 'text-gray-500 hover:text-blue-400 hover:bg-blue-500/10'
-                }`}
-                title={t('tags:batchTagSelectedItems' as any) || 'Batch Tag'}
-              >
-                <Icon action="tags" size={18} />
-                {selectedCount > 0 && (
-                  <span className="ml-2 text-xs font-medium">{selectedCount}</span>
-                )}
               </Button>
               <Button
                 variant="ghost"
@@ -176,9 +138,8 @@ export const TopBar: React.FC<TopBarProps> = ({
                 onClick={onOpenSettings}
                 className="text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
                 title={t('navigation:settings')}
-              >
-                <Icon action="settings" size={18} />
-              </Button>
+                icon={<Icon action="settings" size={18} />}
+              />
             </Flex>
 
             {/* AUTO-ANALYZE SAFETY INDICATOR */}
@@ -262,14 +223,20 @@ export const TopBar: React.FC<TopBarProps> = ({
                 onMoveSelected={onMoveSelected}
                 onShareSelected={onShareSelected}
                 onToggleSelectionMode={handleToggleSelectionMode}
-                onRunBatchAI={onRunBatchAI}
-                isBatchAIProcessing={isBatchAIProcessing}
-                batchAIProgress={batchAIProgress}
                 onOpenBatchTagPanel={onOpenBatchTagPanel}
               />
 
               {!selectionMode && (
                 <Flex align="center" gap="sm">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onOpenTagHub}
+                    className="text-gray-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
+                    title="Tag Hub (Ctrl+T)"
+                  >
+                    <Icon action="tag" size={18} />
+                  </Button>
                   <SortControls
                     sortOption={sortOption}
                     sortDirection={sortDirection}

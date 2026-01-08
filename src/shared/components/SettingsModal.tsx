@@ -366,12 +366,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <div className="p-6 border-t border-glass-border flex justify-end gap-3 bg-background/50 backdrop-blur-md">
                 <Button
                   onClick={handleSave}
+                  disabled={isSaved}
+                  loading={isSaved}
                   variant="primary"
                   size="md"
                   className={`relative px-6 py-2.5 transition-all duration-300 overflow-hidden shadow-lg ${
                     isSaved ? 'ring-2 ring-green-500' : ''
                   }`}
-                  leftIcon={<>{!isSaved && <Icon action="save" size={16} />}</>}
+                  icon={!isSaved && <Icon action="save" size={16} />}
                 >
                   {isSaved ? t('settings:saved') : t('settings:saveChanges')}
                 </Button>

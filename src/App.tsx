@@ -284,7 +284,7 @@ const App: React.FC = () => {
       // Find the updated version of the selected item in the folders
       const allItems = folders.flatMap(f => f.items);
       const freshItem = allItems.find(i => i.id === selectedItem.id);
-      
+
       // Update if reference changed (implies data update)
       if (freshItem && freshItem !== selectedItem) {
         console.log("[App] Syncing selectedItem with library update");
@@ -311,7 +311,7 @@ const App: React.FC = () => {
 
       if (selected) {
         const paths = Array.isArray(selected) ? selected : [selected];
-        
+
         // Filter out existing source folders to prevent duplicates
         const existingPaths = new Set(sourceFolders.map(f => f.path));
         const newPaths = paths.filter(path => !existingPaths.has(path));
@@ -320,7 +320,7 @@ const App: React.FC = () => {
           const skippedCount = paths.length - newPaths.length;
           alert(t('library:foldersSkipped', { count: skippedCount }));
         }
-        
+
         for (const path of newPaths) {
             await addSourceFolder(path);
             await loadFromPath(path);
@@ -379,7 +379,7 @@ const App: React.FC = () => {
       onMouseUp={handleMouseUp}
     >
       <LoadingOverlay isVisible={collectionsLoading} />
-      
+
       {/* Drag Selection Box */}
       {isDragSelecting && dragBox && (
         <div
@@ -426,9 +426,6 @@ const App: React.FC = () => {
             }}
             onMoveSelected={() => setIsMoveModalOpen(true)}
             onShareSelected={handleShareSelected}
-            onRunBatchAI={handleRunBatchAI}
-            isBatchAIProcessing={isBatchProcessing}
-            batchAIProgress={batchProgress}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenTagHub={() => setIsTagHubOpen(true)}
             onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
@@ -462,7 +459,7 @@ const App: React.FC = () => {
             onRemoveSourceFolder={async (path) => {
               await removeSourceFolder(path);
               clearLibrary();
-              
+
               // Reload remaining folders
               if (activeCollection && sourceFolders.length > 0) {
                 const remainingFolders = sourceFolders.filter(sf => sf.path !== path);
@@ -666,7 +663,7 @@ const App: React.FC = () => {
             // Don't close hub on multi-select, or maybe user wants to?
             // Requirement says "select multiple tags", so probably keep open or let user decide.
             // For now, let's keep it open to allow multi-selection.
-            // setIsTagHubOpen(false); 
+            // setIsTagHubOpen(false);
         }}
       />
 

@@ -4,11 +4,13 @@ import { cn } from "../../utils/cn";
 export { cn } from "../../utils/cn";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	variant?: "primary" | "secondary" | "ghost" | "danger" | "glass" | "glass-icon" | "close" | "nav-arrow";
+	variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "glass" | "glass-icon" | "close" | "nav-arrow";
 	size?: "sm" | "md" | "lg" | "icon" | "icon-lg" | "icon-sm";
-	isLoading?: boolean;
-	leftIcon?: React.ReactNode;
-	rightIcon?: React.ReactNode;
+	loading?: boolean;
+	icon?: React.ReactNode;
+	iconPosition?: "left" | "right";
+	fullWidth?: boolean;
+	className?: string;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -17,9 +19,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			className,
 			variant = "primary",
 			size = "md",
-			isLoading = false,
-			leftIcon,
-			rightIcon,
+			loading = false,
+			icon,
+			iconPosition = "left",
+			fullWidth = false,
 			children,
 			disabled,
 			...props
@@ -29,7 +32,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		return (
 			<button
 				ref={ref}
-				disabled={disabled || isLoading}
+				disabled={disabled || loading}
 				className={cn(
 					// Base styles
 					"inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none active:scale-95",
@@ -64,14 +67,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 						"h-7 w-7 p-0": size === "icon-sm",
 					},
 
+					fullWidth && "w-full",
 					className
 				)}
 				{...props}
 			>
-				{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-				{!isLoading && leftIcon && <span className="mr-2">{leftIcon}</span>}
+				{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+				{!loading && icon && iconPosition === "left" && <span className="mr-2">{icon}</span>}
 				{children}
-				{!isLoading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+				{!loading && icon && iconPosition === "right" && <span className="ml-2">{icon}</span>}
 			</button>
 		);
 	}

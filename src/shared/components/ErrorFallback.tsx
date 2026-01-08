@@ -55,7 +55,8 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
 							onClick={onReset}
 							variant="primary"
 							size="md"
-							leftIcon={<RefreshCw size={16} />}
+							icon={<RefreshCw size={16} />}
+							iconPosition="left"
 							className="flex-1"
 						>
 							Try Again
@@ -67,7 +68,8 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
 							onClick={onGoHome}
 							variant="glass"
 							size="md"
-							leftIcon={<Home size={16} />}
+							icon={<Home size={16} />}
+							iconPosition="left"
 							className="flex-1"
 						>
 							Go Home

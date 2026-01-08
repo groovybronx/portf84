@@ -126,7 +126,7 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                     <Button variant="ghost" onClick={onClose}>
                       {t('common:cancel')}
                     </Button>
-                    <Button type="submit" disabled={!tag.trim()} leftIcon={<Plus size={16} />}>
+                    <Button type="submit" disabled={!tag.trim()} icon={<Plus size={16} />} iconPosition="left">
                       {t('tags:addTag')}
                     </Button>
                   </Flex>

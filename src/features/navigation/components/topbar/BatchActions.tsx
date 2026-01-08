@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Share2, FolderInput, Sparkles, Tags } from "lucide-react";
+import { Share2, FolderInput, Tags } from "lucide-react";
 import { Button, Flex, GlassCard } from "../../../../shared/components/ui";
 
 interface BatchActionsProps {
@@ -9,9 +9,6 @@ interface BatchActionsProps {
 	onMoveSelected: () => void;
 	onShareSelected: () => void;
 	onToggleSelectionMode: () => void;
-	onRunBatchAI: () => void;
-	isBatchAIProcessing: boolean;
-	batchAIProgress: number;
 	onOpenBatchTagPanel: () => void;
 }
 
@@ -21,9 +18,6 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 	onMoveSelected,
 	onShareSelected,
 	onToggleSelectionMode,
-	onRunBatchAI,
-	isBatchAIProcessing,
-	batchAIProgress,
 	onOpenBatchTagPanel,
 }) => {
 	const { t } = useTranslation("navigation");
@@ -40,9 +34,8 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				onClick={onMoveSelected}
 				disabled={selectedCount === 0}
 				aria-label={t('move')}
-			>
-				<FolderInput size={18} />
-			</Button>
+				icon={<FolderInput size={18} />}
+			/>
 			<Button
 				variant="glass"
 				size="icon"
@@ -50,26 +43,8 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				disabled={selectedCount === 0}
 				aria-label={t('share')}
 				className="text-primary hover:border-primary/30"
-			>
-				<Share2 size={18} />
-			</Button>
-			<Button
-				variant="glass"
-				size="icon"
-				onClick={onRunBatchAI}
-				disabled={selectedCount === 0 || isBatchAIProcessing}
-				aria-label={t('analyzeSelected')}
-				className="text-secondary hover:border-secondary/30 relative overflow-hidden"
-			>
-				{isBatchAIProcessing ? (
-					<div
-						className="absolute inset-0 bg-secondary/20"
-						style={{ width: `${batchAIProgress * 100}%` }}
-					/>
-				) : (
-					<Sparkles size={18} />
-				)}
-			</Button>
+				icon={<Share2 size={18} />}
+			/>
 			<Button
 				variant="glass"
 				size="icon"
@@ -78,9 +53,8 @@ export const BatchActions: React.FC<BatchActionsProps> = ({
 				aria-label={t('batchTagHint')}
 				title={t('batchTagHint')}
 				className="text-purple-400 hover:border-purple-400/30"
-			>
-				<Tags size={18} />
-			</Button>
-		</Flex>
+				icon={<Tags size={18} />}
+			/>
+					</Flex>
 	);
 };

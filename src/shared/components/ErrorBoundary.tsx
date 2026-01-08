@@ -149,7 +149,7 @@ export class ErrorBoundary extends Component<Props, State> {
 							variant="primary"
 							size="md"
 							className="w-full bg-blue-600 hover:bg-blue-500"
-							leftIcon={
+							icon={
 								<svg
 									className="w-4 h-4"
 									fill="none"
@@ -164,6 +164,7 @@ export class ErrorBoundary extends Component<Props, State> {
 									/>
 								</svg>
 							}
+							iconPosition="left"
 						>
 							Try Again
 						</Button>

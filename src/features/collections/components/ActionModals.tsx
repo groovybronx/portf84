@@ -40,7 +40,8 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
           <Button
             onClick={handleSubmit}
             disabled={!name.trim()}
-            leftIcon={<FolderPlus size={18} />}
+            icon={<FolderPlus size={18} />}
+            iconPosition="left"
           >
             Create
           </Button>
@@ -132,14 +133,16 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
               <Button
                 variant="ghost"
                 onClick={() => setIsCreating(false)}
-                leftIcon={<ArrowLeft size={16} />}
+                icon={<ArrowLeft size={16} />}
+                iconPosition="left"
               >
                 Back
               </Button>
               <Button
                 onClick={handleCreateSubmit}
                 disabled={!newFolderName.trim()}
-                leftIcon={<FolderInput size={18} />}
+                icon={<FolderInput size={18} />}
+                iconPosition="left"
               >
                 Create & Move
               </Button>
