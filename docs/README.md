@@ -1,52 +1,62 @@
-# Lumina Portfolio - Documentation Technique
+# 🎨 Lumina Portfolio - Documentation
+
+<div align="center">
+
+**Desktop Photo Gallery with AI-Powered Intelligence**
 
 [![Version](https://img.shields.io/badge/version-0.3.0--beta.1-blue)](./RELEASE_NOTES_v0.3.0-beta.1.md)
-[![Status](https://img.shields.io/badge/status-95%25%20Complete-brightgreen)](./AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md)
-[![Docs](https://img.shields.io/badge/docs-54%20files-informational)](./INDEX.md)
-[![Last Audit](https://img.shields.io/badge/last%20audit-Jan%206%2C%202026-success)](./AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md)
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://react.dev/)
+[![Tauri](https://img.shields.io/badge/Tauri-v2-FFC131?logo=tauri)](https://tauri.app/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Status](https://img.shields.io/badge/status-95%25%20Complete-brightgreen)](./AUDITS/2026-01-06_EXECUTIVE_SUMMARY.md)
 
-**Last Update**: January 6, 2026
+**Last Comprehensive Audit**: January 6, 2026 | [📊 View Executive Summary](./AUDITS/2026-01-06_EXECUTIVE_SUMMARY.md)
+
+</div>
 
 ---
 
-## 🧭 Quick Navigation
+## 🚀 Quick Start
 
 <table>
 <tr>
 <td align="center" width="25%">
 
-### 📚 Master Index
-Complete visual guide
-to all documentation
-
-[**→ Browse INDEX.md**](./INDEX.md)
+### 📦 Install
+```bash
+npm install
+npm run tauri:dev
+```
+[📖 Full Guide](./USER_GUIDE.md#installation)
 
 </td>
 <td align="center" width="25%">
 
-### ⚡ Quick Reference
+### 🔨 Build
+```bash
+npm run build
+npm run tauri:build
+```
+[📖 Build Docs](./GUIDE/DEPLOYMENT.md)
+
+</td>
+<td align="center" width="25%">
+
+### 🧪 Test
+```bash
+npm test
+npm run type-check
+```
+[📖 Testing Guide](./DEVELOPER_GUIDE.md#testing)
+
+</td>
+<td align="center" width="25%">
+
+### 📚 Quick Reference
 One-page cheat sheet
 with commands & tips
 
-[**→ View Cheat Sheet**](./QUICK_REFERENCE.md)
-
-</td>
-<td align="center" width="25%">
-
-### 🗺️ Documentation Map
-Alternative navigation
-with visual tree
-
-[**→ Explore Map**](./DOCUMENTATION_MAP.md)
-
-</td>
-<td align="center" width="25%">
-
-### 📊 Latest Audit
-Comprehensive audit
-from Jan 6, 2026
-
-[**→ Read Summary**](./AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md)
+[📖 Quick Reference](./QUICK_REFERENCE.md)
 
 </td>
 </tr>
@@ -54,176 +64,265 @@ from Jan 6, 2026
 
 ---
 
-> 📢 **New Documentation Structure**: We've reorganized our documentation for better accessibility! Start with [INDEX.md](./INDEX.md) for a complete visual guide, or jump to [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) for a one-page developer cheat sheet.
+## 🧭 Navigation by User Journey
 
-Bienvenue dans la documentation technique de **Lumina Portfolio**. Cette application est une galerie photo haute performance construite avec Tauri v2, offrant une expérience desktop native avec intelligence artificielle intégrée.
+### 🆕 New to the Project? (Start Here!)
 
-## Stack Technologique
+| Step | Document | Description | Time |
+|------|----------|-------------|------|
+| 1️⃣ | [**Getting Started**](./GUIDE/USER_GUIDE.md) | Installation, setup, and first run | 30 min |
+| 2️⃣ | [**Project Overview**](./GUIDE/USER_GUIDE.md#project-overview) | Understanding the big picture | 15 min |
+| 3️⃣ | [**What's New (v0.3.0-beta.1)**](./GUIDE/CHANGELOG.md) | Latest features and improvements | 10 min |
 
-| Technologie                 | Version       | Rôle                    |
-| --------------------------- | ------------- | ----------------------- |
-| **React**                   | 18.3.1        | Framework UI            |
-| **Tailwind CSS**            | 4.x           | Styling (@theme syntax) |
-| **Tauri**                   | 2.x           | Runtime natif           |
-| **SQLite**                  | via plugin    | Persistance locale      |
-| **@tanstack/react-virtual** | 3.13          | Virtualisation UI       |
-| **Framer Motion**           | 12.x          | Animations              |
-| **Gemini AI**               | @google/genai | Image analysis          |
-| **i18next**                 | 24.x          | Multilanguage support   |
-| **Vitest**                  | 4.x           | Tests unitaires         |
+**Total Time**: ~1 hour
 
 ---
 
-## 📖 Sommaire
+### 💻 Developers Path
 
-### 🏗️ Architecture & System (Status: ✅ Complete)
+| Step | Document | Description | Time |
+|------|----------|-------------|------|
+| 1️⃣ | [**Developer Guide**](./GUIDE/DEVELOPER_GUIDE.md) | Development workflow and best practices | 1 hour |
+| 2️⃣ | [**Architecture**](./GUIDE/ARCHITECTURE.md) | System design and patterns | 1.5 hours |
+| 3️⃣ | [**Component Library**](./GUIDE/SYSTEMS/UI_COMPONENTS.md) | 35+ reusable UI components | 1 hour |
+| 4️⃣ | [**Quick Reference**](./GUIDE/QUICK_REFERENCE.md) | Commands, shortcuts, troubleshooting | 15 min |
 
-| Document | Description | Last Updated |
-|----------|-------------|--------------|
-| [System Architecture](guides/architecture/ARCHITECTURE.md) | Feature-based structure, contexts, SQLite, CI/CD | Jan 5, 2026 |
-| [Architecture Deep Dive](guides/project/KnowledgeBase/02_Architecture_Deep_Dive.md) | Detailed technical architecture | Jan 1, 2026 |
-| [Database Schema](guides/project/KnowledgeBase/03_Database_Schema_and_Storage.md) | SQLite data model and storage | Jan 1, 2026 |
-| [Tag System Architecture](guides/architecture/TAG_SYSTEM_ARCHITECTURE.md) | Tag system design and algorithms | Jan 2, 2026 |
-| [AI Service](guides/architecture/AI_SERVICE.md) | Gemini AI integration and processing | Jan 1, 2026 |
-| [Git Workflow](guides/architecture/GIT_WORKFLOW.md) | Git architecture and branching | Dec 2025 |
-
-### ✨ UI Components & Features (Status: ✅ Complete)
-
-| Document | Description | Last Updated |
-|----------|-------------|--------------|
-| [Component Library](guides/features/COMPONENTS.md) | 35+ reusable UI components | Jan 5, 2026 |
-| [Design System](guides/features/DESIGN_SYSTEM.md) | Glass morphism styling guide | Jan 5, 2026 |
-| [Interactions Guide](guides/features/INTERACTIONS.md) | Keyboard shortcuts, drag & drop | Dec 2025 |
-| [i18n Guide](guides/features/I18N_GUIDE.md) | Multilanguage support (EN/FR) | Dec 2025 |
-| [Tag System README](guides/features/TAG_SYSTEM_README.md) | Tag feature overview | Jan 2, 2026 |
-
-### 💻 Development & Workflow (Status: ✅ Complete)
-
-| Document | Description | Last Updated |
-|----------|-------------|--------------|
-| [Developer Guide](guides/project/KnowledgeBase/07_Developer_Guide.md) | Development workflow and testing | Jan 1, 2026 |
-| [Best Practices](guides/project/bonne-pratique.md) | Coding standards and conventions | Dec 2025 |
-| [Branch Strategy](workflows/BRANCH_STRATEGY.md) | Git branching model | Dec 2025 |
-| [Release Process](workflows/CREATE_RELEASE_BRANCH_INSTRUCTIONS.md) | Creating and publishing releases | Dec 2025 |
-
-### 🚀 Getting Started (Status: ✅ Complete)
-
-| Document | Description | Last Updated |
-|----------|-------------|--------------|
-| [Getting Started](getting-started/README.md) | Installation and first steps | Dec 2025 |
-| [Quick Start (GitHub)](getting-started/QUICK_START.md) | 10-minute GitHub setup | Dec 2025 |
-| [Project Overview](guides/project/KnowledgeBase/01_Project_Overview.md) | High-level introduction | Jan 1, 2026 |
-| [Troubleshooting & FAQ](guides/project/KnowledgeBase/08_Troubleshooting_and_FAQ.md) | Common issues and solutions | Jan 1, 2026 |
-
-### 📦 Feature-Specific Guides (Status: ✅ Complete)
-
-| Feature | Document | Last Updated |
-|---------|----------|--------------|
-| 📷 Library | [Library Feature](guides/project/KnowledgeBase/10_Feature_Library.md) | Jan 1, 2026 |
-| 🧭 Navigation | [Navigation Feature](guides/project/KnowledgeBase/11_Feature_Navigation.md) | Jan 1, 2026 |
-| 👁️ Vision (AI) | [Vision Feature](guides/project/KnowledgeBase/12_Feature_Vision.md) | Jan 1, 2026 |
-| 📁 Collections | [Collections Feature](guides/project/KnowledgeBase/13_Feature_Collections.md) | Jan 1, 2026 |
-| 🏷️ Tags | [Tags Feature](guides/project/KnowledgeBase/14_Feature_Tags.md) | Jan 1, 2026 |
-
-### 🔍 Recent Audit Reports (Status: ✅ Fresh)
-
-| Report | Date | Focus |
-|--------|------|-------|
-| [📊 Executive Summary](AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md) | Jan 6, 2026 | Overall health (95% complete) |
-| [📝 Comprehensive Audit](AUDIT/2026-01-06_COMPREHENSIVE_PROGRESS_AND_DOCUMENTATION_AUDIT.md) | Jan 6, 2026 | Progress + documentation |
-| [🎯 Action Plan](AUDIT/2026-01-06_ACTION_PLAN.md) | Jan 6, 2026 | Critical fixes |
-| [🏷️ Tag System Audit](AUDIT/TAG_SYSTEM/2026-01-02_TAG_SYSTEM_COMPREHENSIVE_AUDIT.md) | Jan 2, 2026 | Tag system completeness |
-| [🎨 UI Consolidation](AUDIT/UI_CONSOLIDATION/2026-01-05_FINAL_REPORT.md) | Jan 5, 2026 | UI component architecture |
+**Total Time**: ~4 hours
 
 ---
 
-## Installation Rapide
+### 🏗️ Architecture Deep Dive
 
-### Prérequis
+| Step | Document | Description | Time |
+|------|----------|-------------|------|
+| 1️⃣ | [**System Architecture**](./GUIDE/ARCHITECTURE.md) | High-level design and structure | 1 hour |
+| 2️⃣ | [**Database Schema**](./GUIDE/ARCHITECTURE.md#database-schema) | SQLite data model and storage | 45 min |
+| 3️⃣ | [**State Management**](./GUIDE/ARCHITECTURE.md#state-management) | React Context patterns and data flow | 30 min |
+| 4️⃣ | [**Services Layer**](./GUIDE/ARCHITECTURE.md#services-layer) | Business logic and service layer | 45 min |
 
-- **Node.js** 18+ LTS (recommandé)
-- **Rust** stable toolchain
-- **macOS** 10.15+ / **Windows** 10+ / **Linux** (pour le build natif)
-
-### Développement
-
-```bash
-# Installer les dépendances
-npm install
-
-# Lancer en mode développement (Frontend + Tauri)
-npm run tauri:dev
-
-# Lancer uniquement le frontend (web, port 1420)
-npm run dev
-```
-
-### Build Production
-
-```bash
-# Générer l'application native
-npm run tauri:build    # → .dmg (macOS) / .exe (Windows) / .AppImage (Linux)
-```
-
-**→ [Guide complet d'installation](./getting-started/README.md)**
+**Total Time**: ~3 hours
 
 ---
 
-## 📊 Current Status (Jan 6, 2026)
+### 🤖 AI Features Path
+
+| Step | Document | Description | Time |
+|------|----------|-------------|------|
+| 1️⃣ | [**AI Service**](./GUIDE/SYSTEMS/AI_SERVICE.md) | Gemini AI integration architecture | 1 hour |
+| 2️⃣ | [**Vision Feature**](./GUIDE/SYSTEMS/AI_SERVICE.md#vision-feature) | Image analysis and batch processing | 1 hour |
+| 3️⃣ | [**Tag System**](./GUIDE/SYSTEMS/TAG_SYSTEM/TAG_SYSTEM.md) | AI-powered tagging and management | 1 hour |
+
+**Total Time**: ~3 hours
+
+---
+
+## 📋 Document Index
+
+### 🏗️ Core Documentation
+
+| Document | Audience | Description | Status |
+|----------|-----------|-------------|---------|
+| [**User Guide**](./GUIDE/USER_GUIDE.md) | End Users | Complete usage documentation | ✅ Complete |
+| [**Developer Guide**](./GUIDE/DEVELOPER_GUIDE.md) | Developers | Development workflow & practices | ✅ Complete |
+| [**Architecture**](./GUIDE/ARCHITECTURE.md) | Developers | System design & technical details | ✅ Complete |
+| [**API Reference**](./GUIDE/API_REFERENCE.md) | Developers | Complete API documentation | ✅ Complete |
+| [**Deployment**](./GUIDE/DEPLOYMENT.md) | DevOps | Build, deploy & production | ✅ Complete |
+| [**Contributing**](./GUIDE/CONTRIBUTING.md) | Contributors | Contribution guidelines | ✅ Complete |
+| [**Troubleshooting**](./GUIDE/TROUBLESHOOTING.md) | All Users | Common issues & solutions | ✅ Complete |
+
+### 📦 Project Information
+
+| Document | Description | Last Updated |
+|----------|-------------|--------------|
+| [**CHANGELOG**](./GUIDE/CHANGELOG.md) | Version history and changes | Jan 6, 2026 |
+| [**Release Notes v0.3.0-beta.1**](./RELEASE_NOTES_v0.3.0-beta.1.md) | Latest release details | Jan 5, 2026 |
+| [**Quick Reference**](./GUIDE/QUICK_REFERENCE.md) | One-page developer cheat sheet | Jan 6, 2026 |
+
+### 🔧 System-Specific Documentation
+
+| System | Document | Description |
+|--------|-----------|-------------|
+| 🏷️ **Tag System** | [**Tag System**](./GUIDE/SYSTEMS/TAG_SYSTEM/TAG_SYSTEM.md) | Complete tag management documentation |
+| 🤖 **AI Service** | [**AI Service**](./GUIDE/SYSTEMS/AI_SERVICE.md) | Gemini AI integration and features |
+| 🎨 **UI Components** | [**UI Components**](./GUIDE/SYSTEMS/UI_COMPONENTS.md) | Component library and design system |
+
+### 📊 Analysis & Reports
+
+| Document | Type | Description |
+|----------|------|-------------|
+| [**Project Health Report**](./PROJECT_HEALTH_REPORT.md) | Analysis | Complete project analysis (Score: 87/100) |
+| [**Test Coverage Analysis**](./TEST_COVERAGE_ANALYSIS.md) | Analysis | Detailed test coverage with action plan |
+| [**Commercial Analysis**](./ANALYSE_QUALITATIVE_ET_MARCHE_2026.md) | Business | Market study and commercialization strategy |
+
+---
+
+## 🛠️ Technology Stack
+
+| Technology | Version | Role |
+|-------------|---------|------|
+| **React** | 18.3.1 | UI Framework |
+| **TypeScript** | ~5.8.2 | Type Safety |
+| **Tailwind CSS** | 4.x | Styling (@theme syntax) |
+| **Tauri** | v2 (2.9.5) | Native Runtime |
+| **SQLite** | via plugin | Local Persistence |
+| **@tanstack/react-virtual** | 3.13.13 | UI Virtualization |
+| **Framer Motion** | 12.x | Animations |
+| **Gemini AI** | @google/genai | Image Analysis |
+| **i18next** | 25.x | Internationalization |
+| **Vitest** | 4.x | Unit Testing |
+
+---
+
+## 📊 Project Status
 
 | Metric | Status | Details |
 |--------|--------|---------|
 | **Feature Completeness** | ✅ **95%** | All 5 major features complete |
-| **Documentation** | ⚠️ **85%** | Recent audit identified updates needed |
-| **Test Coverage** | ⚠️ **75%** | Services well-tested, UI tests needed |
+| **Documentation** | ✅ **90%** | Recently reorganized and consolidated |
+| **Test Coverage** | ⚠️ **75%** | Services well-tested, UI tests improving |
 | **UI Components** | ✅ **35+** | Comprehensive component library |
 | **Stability** | ✅ **Stable** | Production-ready beta |
 
-**📊 [View detailed audit →](./AUDIT/2026-01-06_EXECUTIVE_SUMMARY.md)**
+**📊 [View detailed audit →](./AUDITS/2026-01-06_EXECUTIVE_SUMMARY.md)**
 
 ---
 
-## Stack Technologique
+## 🎯 Popular Tasks
 
-| Technologie | Version | Rôle |
-|-------------|---------|------|
-| **React** | 18.3.1 | Framework UI |
-| **TypeScript** | ~5.8.2 | Type safety |
-| **Tailwind CSS** | 4.x | Styling (@theme syntax) |
-| **Tauri** | v2 (2.9.5) | Runtime natif |
-| **SQLite** | via plugin | Persistance locale |
-| **@tanstack/react-virtual** | 3.13.13 | Virtualisation UI |
-| **Framer Motion** | 12.x | Animations |
-| **Gemini AI** | @google/genai | Image analysis |
-| **i18next** | 25.x | Multilanguage support |
-| **Vitest** | 4.x | Tests unitaires |
+### 🔍 I want to...
 
-**→ [Architecture détaillée](./guides/architecture/ARCHITECTURE.md)**
+| Task | Document |
+|------|----------|
+| Install the app | [User Guide → Installation](./GUIDE/USER_GUIDE.md#installation) |
+| Understand the architecture | [Architecture](./GUIDE/ARCHITECTURE.md) |
+| Build a new feature | [Developer Guide](./GUIDE/DEVELOPER_GUIDE.md) |
+| Work with components | [UI Components](./GUIDE/SYSTEMS/UI_COMPONENTS.md) |
+| Use keyboard shortcuts | [User Guide → Shortcuts](./GUIDE/USER_GUIDE.md#keyboard-shortcuts) |
+| Set up development environment | [Developer Guide → Setup](./GUIDE/DEVELOPER_GUIDE.md#setup) |
+| Fix a problem | [Troubleshooting](./GUIDE/TROUBLESHOOTING.md) |
+| Create a release | [Deployment → Release Process](./GUIDE/DEPLOYMENT.md#release-process) |
 
----
+### 🛠️ Common Topics
 
-## Conventions de Code
-
-| Convention         | Description                                     |
-| ------------------ | ----------------------------------------------- |
-| **Feature-Based**  | Architecture modulaire (`src/features`)         |
-| **Context Split**  | Séparation State/Dispatch pour performance      |
-| **React.memo**     | Optimisation rendu des composants critiques     |
-| **Virtualisation** | `@tanstack/react-virtual` pour grilles infinies |
-| **Glassmorphism**  | `backdrop-blur` + couleurs semi-transparentes   |
-| **Persistance**    | SQLite via `@tauri-apps/plugin-sql`             |
+| Topic | Document |
+|-------|----------|
+| Tag System | [Tag System](./GUIDE/SYSTEMS/TAG_SYSTEM/TAG_SYSTEM.md) |
+| AI Integration | [AI Service](./GUIDE/SYSTEMS/AI_SERVICE.md) |
+| State Management | [Architecture → State](./GUIDE/ARCHITECTURE.md#state-management) |
+| Database Design | [Architecture → Database](./GUIDE/ARCHITECTURE.md#database-schema) |
+| Internationalization | [User Guide → i18n](./GUIDE/USER_GUIDE.md#internationalization) |
+| Testing | [Developer Guide → Testing](./GUIDE/DEVELOPER_GUIDE.md#testing) |
+| UI Design System | [UI Components](./GUIDE/SYSTEMS/UI_COMPONENTS.md) |
 
 ---
 
-## Configuration
+## 🗺️ Learning Paths
 
-### Clé API Gemini
+### 🎓 Path 1: New Contributor (4-6 hours)
+```
+1. User Guide (1 hour)
+   ↓
+2. Architecture (1.5 hours)
+   ↓
+3. Developer Guide (1 hour)
+   ↓
+4. Component Library (1 hour)
+   ↓
+5. Pick a System to Explore (1.5 hours)
+```
 
-Deux méthodes :
+### 🔬 Path 2: Deep Architecture Dive (6-8 hours)
+```
+1. System Architecture (1 hour)
+   ↓
+2. Database Schema (1.5 hours)
+   ↓
+3. State Management (1 hour)
+   ↓
+4. Services Layer (1.5 hours)
+   ↓
+5. AI Service (1 hour)
+   ↓
+6. Tag System (1 hour)
+```
 
-1. **Via l'interface** : Settings → Entrer la clé
-2. **Via environnement** : Créer `.env.local` avec `VITE_GEMINI_API_KEY=your_key`
+### 🎨 Path 3: UI/UX Developer (3-5 hours)
+```
+1. UI Components (1 hour)
+   ↓
+2. Design System (1 hour)
+   ↓
+3. User Guide (1 hour)
+   ↓
+4. Hands-on Component Building (1-2 hours)
+```
 
-### Tauri Capabilities
+### 🤖 Path 4: AI Feature Developer (3-4 hours)
+```
+1. AI Service Overview (1 hour)
+   ↓
+2. AI Integration Details (1.5 hours)
+   ↓
+3. Tag System (1 hour)
+   ↓
+4. Hands-on AI Implementation (0.5-1 hour)
+```
 
-Les permissions sont définies dans `src-tauri/capabilities/default.json`. Voir **[Architecture](./guides/architecture/ARCHITECTURE.md)** pour les détails.
+---
+
+## 🆘 Need Help?
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+### 💬 Ask Questions
+[GitHub Discussions](https://github.com/groovybronx/portf84/discussions)
+
+</td>
+<td align="center" width="33%">
+
+### 🐛 Report Issues
+[GitHub Issues](https://github.com/groovybronx/portf84/issues)
+
+</td>
+<td align="center" width="33%">
+
+### 📚 Read FAQ
+[Troubleshooting Guide](./TROUBLESHOOTING.md)
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📚 Historical Documentation
+
+Previous documentation has been archived and is still accessible:
+
+| Location | Content |
+|----------|---------|
+| [**ARCHIVES/OLD_DOCS/**](./ARCHIVES/OLD_DOCS/) | Previous guides, workflows, and documentation |
+| [**AUDITS/HISTORICAL/**](./AUDITS/HISTORICAL/) | All audit reports and historical analyses |
+
+---
+
+## 🎉 Contributing
+
+Interested in contributing? Start here:
+
+1. 📖 Read [User Guide](./USER_GUIDE.md)
+2. 💻 Check [Developer Guide](./DEVELOPER_GUIDE.md)
+3. ✅ Review [Contributing Guidelines](./CONTRIBUTING.md)
+4. 🚀 Pick an issue and start coding!
+
+---
+
+<div align="center">
+
+**Lumina Portfolio** - Making photo management intelligent and delightful ✨
+
+[🏠 Back to Main README](../README.md) | [📊 Latest Audit](./AUDITS/2026-01-06_EXECUTIVE_SUMMARY.md) | [⚡ Quick Reference](./QUICK_REFERENCE.md)
+
+</div>
