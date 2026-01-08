@@ -13,6 +13,7 @@
     "tauri:info": "tauri info",
     "tauri:icon": "tauri icon",
     "test": "vitest run",
+    "type-check": "tsc --noEmit",
     "rag:build": "python3 scripts/rag/build_doc_index.py",
     "rag:search": "python3 scripts/rag/search_documentation.py",
     "rag:test": "python3 scripts/rag/test_rag_system.py",

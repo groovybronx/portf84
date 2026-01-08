@@ -4,17 +4,15 @@ import { Icon } from '../../../../shared/components/Icon';
 import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
 interface FolderDrawerHeaderProps {
-  isPinned: boolean;
-  onTogglePin?: () => void;
   totalItems?: number;
   onAdd?: () => void;
+  onClose?: () => void;
 }
 
 export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
-  isPinned,
-  onTogglePin,
   totalItems = 0,
   onAdd,
+  onClose,
 }) => {
   const { t } = useTranslation(['library', 'navigation']);
   return (
@@ -43,24 +41,18 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
         </span>
       </Stack>
       <Flex align="center" gap="xs">
-        {onTogglePin && (
+        {onClose && (
           <Button
             variant="ghost"
             size="icon"
-            onClick={onTogglePin}
-            className={`rounded-full transition-all duration-300 ${
-              isPinned
-                ? 'text-primary bg-primary/10 shadow-lg shadow-primary/20'
-                : 'text-text-secondary hover:text-text-primary hover:bg-glass-bg-accent'
-            }`}
-            title={isPinned ? t('navigation:unpinLibrary') : t('navigation:pinLibrary')}
+            onClick={onClose}
+            className="rounded-full text-text-secondary hover:text-text-primary hover:bg-glass-bg-accent transition-all duration-300"
+            title="Close"
           >
             <Icon
-              action="pin"
+              action="close"
               size={18}
-              className={`transition-transform duration-300 ${
-                isPinned ? 'fill-current' : 'rotate-45'
-              }`}
+              className="transition-transform duration-300"
             />
           </Button>
         )}

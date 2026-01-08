@@ -2,7 +2,7 @@
 
 **Complete development workflow and best practices for Lumina Portfolio v0.3.0-beta.1**
 
-**Last Update**: January 8, 2026
+**Last Update**: January 8, 2026 (Updated with App.tsx refactoring documentation)
 
 ---
 
@@ -244,7 +244,217 @@ vi.mock('@tauri-apps/plugin-sql', () => ({
 
 ---
 
-## 🔧 Common Development Tasks
+## 🎣 **Custom Hooks**
+
+### Using App Handlers
+
+The `useAppHandlers` hook provides centralized event handling:
+
+```typescript
+import { useAppHandlers } from '@/shared/hooks';
+
+const {
+  handleDirectoryPicker,
+  handleShareSelected,
+  handleRunBatchAI,
+  handleNext,
+  handlePrev,
+  toggleColorTags,
+} = useAppHandlers({
+  t,
+  activeCollection,
+  sourceFolders,
+  processedItems,
+  // ... other params
+});
+```
+
+### Using Sidebar Logic
+
+The `useSidebarLogic` hook manages sidebar state:
+
+```typescript
+import { useSidebarLogic } from '@/shared/hooks';
+
+const {
+  isSidebarPinned,
+  setIsSidebarPinned,
+  handleSidebarToggle,
+  handleSidebarClose,
+} = useSidebarLogic({
+  initialPinned: false,
+  onFolderDrawerOpen: () => setIsFolderDrawerOpen(true),
+  onFolderDrawerClose: () => {
+    setIsFolderDrawerOpen(false);
+    setIsSidebarPinned(false);
+  },
+});
+```
+
+### Hook Best Practices
+- **Single Responsibility**: Each hook handles one specific area of logic
+- **Type Safety**: All hooks return typed interfaces
+- **Testability**: Hooks can be easily mocked in tests
+- **Reusability**: Hooks can be shared across components
+
+---
+
+## 🧪 **Testing with New Architecture**
+
+### Testing Layout Components
+
+#### Layout Component Tests
+```typescript
+// tests/features/layout/AppLayout.test.tsx
+import { render } from '@testing-library/react';
+import { AppLayout } from '@/features/layout';
+
+describe('AppLayout', () => {
+  it('should render with dynamic padding', () => {
+    render(
+      <AppLayout
+        topBar={<div>Top Bar</div>}
+        sidebar={<div>Sidebar</div>}
+        mainContent={<div>Main Content</div>}
+        isFolderDrawerOpen={true}
+        isSidebarPinned={false}
+        isTagHubOpen={false}
+      />
+    );
+
+    // Verify dynamic padding classes
+    const mainContent = screen.getByRole('main');
+    expect(mainContent).toHaveClass('pl-80');
+  });
+});
+```
+
+### Testing Hook Components
+
+#### Hook Tests
+```typescript
+// tests/shared/hooks/useSidebarLogic.test.ts
+import { renderHook } from '@testing-library/react';
+import { useSidebarLogic } from '@/shared/hooks/useSidebarLogic';
+
+describe('useSidebarLogic', () => {
+  it('should manage sidebar state', () => {
+    const { result } = renderHook(() =>
+      useSidebarLogic({
+        initialPinned: false,
+        onFolderDrawerOpen: vi.fn(),
+        onFolderDrawerClose: vi.fn(),
+      })
+    );
+
+    expect(result.current.isSidebarPinned).toBe(false);
+
+    act(() => {
+      result.current.handleSidebarToggle();
+    });
+
+    expect(result.current.isSidebarPinned).toBe(true);
+  });
+});
+```
+
+### Testing Mock Updates
+
+#### Updated Mock Structure
+```typescript
+// tests/setup.ts
+vi.mock('@/shared/hooks', () => ({
+  useBatchAI: vi.fn(),
+  useKeyboardShortcuts: vi.fn(),
+  useModalState: vi.fn(),
+  useItemActions: vi.fn(),
+  useSidebarLogic: () => ({
+    isSidebarPinned: false,
+    setIsSidebarPinned: vi.fn(),
+    handleSidebarToggle: vi.fn(),
+    handleSidebarClose: vi.fn(),
+  }),
+  useAppHandlers: () => ({
+    handleDirectoryPicker: vi.fn(),
+    handleShareSelected: vi.fn(),
+    handleRunBatchAI: vi.fn(),
+    handleNext: vi.fn(),
+    handlePrev: vi.fn(),
+    toggleColorTags: vi.fn(),
+  }),
+}));
+```
+
+### Testing Best Practices
+- **Component Tests**: Test layout behavior and dynamic classes
+- **Hook Tests**: Test state changes and user interactions
+- **Mock Updates**: Keep mocks current with new exports
+- **Integration Tests**: Test component interactions with new architecture
+
+---
+
+## 🔄 **Recent Refactoring (January 2026)**
+
+### App.tsx Modularization
+
+#### Overview
+In January 2026, we completed a major refactoring of the main `App.tsx` component (682 lines → modular structure) to improve maintainability and testability.
+
+#### Changes Made
+
+**Phase 1 - Layouts Extraction**
+- Created `src/features/layout/AppLayout.tsx` - Main layout structure
+- Created `src/features/layout/MainLayout.tsx` - Content layout wrapper
+- Moved layout logic from App.tsx to dedicated components
+
+**Phase 2 - Hooks Extraction**
+- Created `src/shared/hooks/useAppHandlers.ts` - Main event handlers
+- Created `src/shared/hooks/useSidebarLogic.ts` - Sidebar state management
+- Extracted 450+ lines of handler logic
+
+**Phase 3 - Overlays/Modals Extraction**
+- Created `src/features/overlays/AppOverlays.tsx` - Context menu, image viewer, drag selection
+- Created `src/features/overlays/AppModals.tsx` - All modal components
+- Extracted ~200 lines of overlay/modal code
+
+#### Results
+- **Before**: App.tsx = 682 lines monolithic
+- **After**: App.tsx = clean structure with 7 modular components
+- **Tests**: 171/171 pass (was 168/171)
+- **Maintainability**: Significantly improved
+
+#### New File Structure
+```
+src/features/
+├── layout/
+│   ├── AppLayout.tsx
+│   ├── MainLayout.tsx
+│   └── index.ts
+├── overlays/
+│   ├── AppOverlays.tsx
+│   ├── AppModals.tsx
+│   └── index.ts
+src/shared/hooks/
+├── useAppHandlers.ts
+├── useSidebarLogic.ts
+└── index.ts
+```
+
+#### Development Impact
+- **Easier Testing**: Smaller, focused components
+- **Better Reusability**: Layouts and hooks can be reused
+- **Improved Maintainability**: Clear separation of concerns
+- **Enhanced Developer Experience**: Easier to locate and modify code
+
+#### Best Practices Demonstrated
+- **Progressive Refactoring**: Phase-by-phase approach
+- **Type Safety**: Maintained TypeScript compatibility throughout
+- **Test Coverage**: Updated mocks and assertions alongside code changes
+- **Documentation**: Comprehensive change tracking
+
+---
+
+## 🔧 **Common Development Tasks**
 
 ### Adding a New Feature
 

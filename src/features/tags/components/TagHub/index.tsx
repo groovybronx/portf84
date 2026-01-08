@@ -65,49 +65,37 @@ export const TagHub: React.FC<TagHubProps> = ({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Side Panel - No backdrop blur */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-(--z-modal-overlay)"
-            aria-label={t('common:closeModal')}
-          />
-
-          {/* Modal */}
-          <GlassCard
-            variant="base"
-            padding="none"
-            border
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl rounded-xl! shadow-2xl z-(--z-modal) flex flex-col max-h-[85vh] overflow-hidden"
+            initial={{ x: '100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed right-0 top-0 h-full w-[min(20rem,20vw)] bg-slate-950/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-(--z-modal) flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="p-6 border-b border-white/10">
+            <div className="p-4 border-b border-white/10 shrink-0">
               <Flex align="center" justify="between">
-                <Flex align="center" gap="md">
-                  <div className="p-2 bg-blue-500/20 rounded-lg">
-                    <TagIcon className="w-5 h-5 text-blue-400" />
+                <Flex align="center" gap="sm">
+                  <div className="p-1.5 bg-blue-500/20 rounded-lg">
+                    <TagIcon className="w-4 h-4 text-blue-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">{t('tags:tagHub')}</h2>
-                    <p className="text-sm text-white/60">{t('tags:cleanupLibrary')}</p>
+                    <h2 className="text-lg font-bold text-white">{t('tags:tagHub')}</h2>
+                    <p className="text-xs text-white/60">{t('tags:cleanupLibrary')}</p>
                   </div>
                 </Flex>
                 <Button
                   onClick={onClose}
                   aria-label={t('common:close')}
-                  className="p-2 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors"
+                  className="p-1.5 hover:bg-glass-bg-accent rounded-full text-text-secondary hover:text-text-primary transition-colors"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </Button>
               </Flex>
 
               {/* Tab Navigation */}
-              <Flex gap="sm" className="mt-4">
+              <Flex gap="xs" className="mt-4 flex-wrap">
                 {tabs.map((tab, index) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -115,15 +103,15 @@ export const TagHub: React.FC<TagHubProps> = ({
                     <Button
                       key={tab.id}
                       onClick={() => onTabChange(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                         isActive
                           ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
                           : 'text-gray-400 hover:text-gray-300 bg-glass-bg hover:bg-glass-bg-active'
                       }`}
                     >
-                      <Icon size={16} />
-                      {tab.label}
-                      <span className="text-[10px] opacity-60 ml-1">({index + 1})</span>
+                      <Icon size={14} />
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="text-[9px] opacity-60">({index + 1})</span>
                     </Button>
                   );
                 })}
@@ -137,7 +125,7 @@ export const TagHub: React.FC<TagHubProps> = ({
               {activeTab === 'fusion' && <FusionTab onTagsUpdated={onTagsUpdated} />}
               {activeTab === 'settings' && <SettingsTab />}
             </div>
-          </GlassCard>
+          </motion.div>
         </>
       )}
     </AnimatePresence>

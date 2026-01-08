@@ -119,12 +119,26 @@ vi.mock('../src/shared/hooks', () => ({
     handleContextMove: vi.fn(),
     handleContextAddTag: vi.fn(),
   }),
+  useSidebarLogic: () => ({
+    isSidebarPinned: false,
+    setIsSidebarPinned: vi.fn(),
+    handleSidebarToggle: vi.fn(),
+    handleSidebarClose: vi.fn(),
+  }),
+  useAppHandlers: () => ({
+    handleDirectoryPicker: vi.fn(),
+    handleShareSelected: vi.fn(),
+    handleRunBatchAI: vi.fn(),
+    handleNext: vi.fn(),
+    handlePrev: vi.fn(),
+    toggleColorTags: vi.fn(),
+  }),
 }));
 
 describe('App Smoke Test', () => {
   it('renders without crashing', () => {
     render(<App />);
-    // Initial render might be empty or show loading, 
+    // Initial render might be empty or show loading,
     // but successful execution of render() confirms it doesn't crash.
     // We can also check for a known static element if available.
     // For now, simple crash test.

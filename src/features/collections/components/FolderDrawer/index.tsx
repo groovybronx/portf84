@@ -80,10 +80,9 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
     <Stack direction="vertical" spacing="none" className="h-full">
       {/* Header */}
       <FolderDrawerHeader
-        isPinned={isPinned}
-        onTogglePin={onTogglePin}
         totalItems={totalItems}
-        onAdd={onManageCollections}
+        onAdd={onCreateFolder}
+        onClose={onClose}
       />
 
       <Stack spacing="lg" className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -232,32 +231,16 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
     <AnimatePresence>
       {isVisible && (
         <>
-          {/* Backdrop - Only in floating drawer mode */}
-          {!isPinned && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={onClose}
-              className="fixed inset-0 bg-black/60 z-(--z-drawer-overlay) backdrop-blur-sm"
-            />
-          )}
-
-          {/* Sidebar / Drawer Component */}
-          <GlassCard
-            variant="panel"
-            initial={isPinned ? false : { x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className={`drawer-area flex flex-col shadow-2xl overflow-hidden ${
-              isPinned
-                ? 'relative h-full w-80 shrink-0 z-0'
-                : 'fixed top-0 left-0 bottom-0 w-80 z-(--z-drawer)'
-            }`}
+          {/* Side Panel - EXACTEMENT comme TagHub */}
+          <motion.div
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '-100%', opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed left-0 top-0 h-full w-80 bg-slate-950/95 backdrop-blur-xl border-r border-white/10 shadow-2xl z-(--z-modal) flex flex-col overflow-hidden"
           >
             {drawerBody}
-          </GlassCard>
+          </motion.div>
         </>
       )}
     </AnimatePresence>

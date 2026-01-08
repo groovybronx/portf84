@@ -164,7 +164,8 @@ export const ManageTab: React.FC = () => {
         <Flex align="center" justify="between">
           <Button
             onClick={handleSelectAll}
-            className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-2"
+            variant="ghost"
+            className="text-xs text-gray-400 hover:text-primary/80 flex items-center gap-2"
           >
             {selectedTagIds.size === tags.length ? <CheckSquare size={14} /> : <Square size={14} />}
             {selectedTagIds.size === tags.length

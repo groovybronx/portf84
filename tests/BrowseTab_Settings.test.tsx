@@ -40,7 +40,7 @@ describe('BrowseTab Settings Persistence', () => {
       viewMode: 'list',
       filterMode: 'manual',
     };
-    
+
     tagHubSettings.saveTagHubSettings(customSettings);
 
     render(<BrowseTab />);
@@ -53,12 +53,12 @@ describe('BrowseTab Settings Persistence', () => {
     // Verify the settings were loaded
     // The list view button should be active (has specific styling)
     const listButton = screen.getByLabelText('tags:listView');
-    expect(listButton).toHaveClass('bg-blue-500/20');
+    expect(listButton).toHaveClass('bg-primary'); // Correction des assertions de classes CSS
   });
 
   it('should save settings when viewMode changes', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
-    
+
     render(<BrowseTab />);
 
     await waitFor(() => {
@@ -74,13 +74,13 @@ describe('BrowseTab Settings Persistence', () => {
       expect(saveSpy).toHaveBeenCalled();
     }, { timeout: 1000 });
 
-    const savedSettings = saveSpy.mock.calls[0][0];
-    expect(savedSettings.viewMode).toBe('list');
+    const savedSettings = saveSpy.mock.calls[0]?.[0];
+    expect(savedSettings?.viewMode).toBe('list');
   });
 
   it('should save settings when filterMode changes', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
-    
+
     render(<BrowseTab />);
 
     await waitFor(() => {
@@ -96,13 +96,13 @@ describe('BrowseTab Settings Persistence', () => {
       expect(saveSpy).toHaveBeenCalled();
     }, { timeout: 1000 });
 
-    const savedSettings = saveSpy.mock.calls[0][0];
-    expect(savedSettings.filterMode).toBe('manual');
+    const savedSettings = saveSpy.mock.calls[0]?.[0];
+    expect(savedSettings?.filterMode).toBe('manual');
   });
 
   it('should debounce settings saves', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
-    
+
     render(<BrowseTab />);
 
     await waitFor(() => {
@@ -112,7 +112,7 @@ describe('BrowseTab Settings Persistence', () => {
     // Make multiple rapid changes
     const listButton = screen.getByLabelText('tags:listView');
     const gridButton = screen.getByLabelText('tags:gridView');
-    
+
     await userEvent.click(listButton);
     await userEvent.click(gridButton);
     await userEvent.click(listButton);
@@ -125,7 +125,7 @@ describe('BrowseTab Settings Persistence', () => {
 
   it('should cleanup timeout on unmount', async () => {
     const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-    
+
     const { unmount } = render(<BrowseTab />);
 
     await waitFor(() => {
@@ -147,10 +147,10 @@ describe('BrowseTab Settings Persistence', () => {
 
   it('should persist viewMode across remounts', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
-    
+
     // First mount - change to list view
     const { unmount } = render(<BrowseTab />);
-    
+
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
     });
@@ -166,13 +166,13 @@ describe('BrowseTab Settings Persistence', () => {
 
     // Second mount - should load list view
     render(<BrowseTab />);
-    
+
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
     });
 
     const listButtonAfterRemount = screen.getByLabelText('tags:listView');
-    expect(listButtonAfterRemount).toHaveClass('bg-blue-500/20');
+    expect(listButtonAfterRemount).toHaveClass('bg-primary');
   });
 
   it('should handle load errors gracefully', async () => {
@@ -186,7 +186,7 @@ describe('BrowseTab Settings Persistence', () => {
 
   it('should update settings object without mutating', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
-    
+
     render(<BrowseTab />);
 
     await waitFor(() => {
@@ -200,8 +200,8 @@ describe('BrowseTab Settings Persistence', () => {
       expect(saveSpy).toHaveBeenCalled();
     }, { timeout: 1000 });
 
-    const savedSettings = saveSpy.mock.calls[0][0];
-    
+    const savedSettings = saveSpy.mock.calls[0]?.[0];
+
     // Should have all properties from default settings plus the change
     expect(savedSettings).toHaveProperty('viewMode', 'list');
     expect(savedSettings).toHaveProperty('sortBy');

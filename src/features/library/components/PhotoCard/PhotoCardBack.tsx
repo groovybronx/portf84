@@ -6,7 +6,7 @@ import React, { useMemo } from "react";
 import { Button, Flex, Stack } from "../../../../shared/components/ui";
 import { useTranslation } from "react-i18next";
 import {
-	Maximize2,
+	RotateCcw,
 	Tag,
 	Sparkles,
 	HardDrive,
@@ -69,10 +69,11 @@ export const PhotoCardBack: React.FC<PhotoCardBackProps> = ({
 				</Flex>
 				<Button
 					onClick={onFlip}
-					className="p-1.5 -mr-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
+					variant="ghost"
+					className="p-1.5 -mr-1 text-gray-400 hover:text-primary/80 hover:bg-white/5 rounded-full transition-colors shrink-0"
 					title={t('closeInfo')}
 				>
-					<Maximize2 size={16} />
+					<RotateCcw size={16} />
 				</Button>
 			</Flex>
 

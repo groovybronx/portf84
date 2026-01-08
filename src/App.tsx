@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { AppLayout, MainLayout } from "./features/layout";
+import { AppOverlays, AppModals } from "./features/overlays";
 import { TopBar } from "./features/navigation";
 import { ViewRenderer } from "./features/library/components/ViewRenderer";
 import { ImageViewer, analyzeImage } from "./features/vision";
@@ -34,6 +36,8 @@ import {
   useKeyboardShortcuts,
   useModalState,
   useItemActions,
+  useAppHandlers,
+  useSidebarLogic,
 } from "./shared/hooks";
 import { storageService } from "./services/storageService";
 
@@ -157,7 +161,22 @@ const App: React.FC = () => {
     isShortcutsHelpOpen,
     setIsShortcutsHelpOpen,
   } = useModalState();
-  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
+
+  // --- Custom Hooks for Sidebar Logic ---
+  const {
+    isSidebarPinned,
+    setIsSidebarPinned,
+    handleSidebarToggle,
+    handleSidebarClose,
+  } = useSidebarLogic({
+    initialPinned: false,
+    onFolderDrawerOpen: () => setIsFolderDrawerOpen(true),
+    onFolderDrawerClose: () => {
+      setIsFolderDrawerOpen(false);
+      setIsSidebarPinned(false);
+    },
+  });
+
   const [showColorTags, setShowColorTags] = useState(true);
 
   // Context Menu
@@ -207,6 +226,34 @@ const App: React.FC = () => {
     activeCollection,
   });
 
+  // --- Custom Hooks for Handlers ---
+  const {
+    handleDirectoryPicker,
+    handleShareSelected,
+    handleRunBatchAI,
+    handleNext,
+    handlePrev,
+    toggleColorTags,
+  } = useAppHandlers({
+    t,
+    activeCollection,
+    setIsCollectionManagerOpen,
+    sourceFolders,
+    addSourceFolder,
+    loadFromPath,
+    processedItems,
+    addToQueue,
+    selectedItem,
+    setIsFolderDrawerOpen,
+    setIsSidebarPinned,
+    setIsMoveModalOpen,
+    setIsSettingsOpen,
+    setIsTagHubOpen,
+    setIsBatchTagPanelOpen,
+    showColorTags,
+    setShowColorTags,
+  });
+
   // Keyboard Shortcuts
   useKeyboardShortcuts({
     processedItems,
@@ -235,13 +282,6 @@ const App: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [setIsTagHubOpen]);
-
-  // Helper functions
-  const toggleColorTags = () => setShowColorTags(!showColorTags);
-  const handleShareSelected = async () => {
-    // Share logic placeholder
-    console.log("Share selected items:", selectedIds);
-  };
 
   const handleTopBarColorAction = (color: string | null) => {
     if (selectedIds.size > 0)
@@ -293,78 +333,6 @@ const App: React.FC = () => {
     }
   }, [folders, selectedItem]);
 
-  // ... (existing code)
-
-  const handleDirectoryPicker = async () => {
-    try {
-      if (!activeCollection) {
-        alert(t('library:selectProjectPrompt'));
-        setIsCollectionManagerOpen(true);
-        return;
-      }
-
-      const selected = await open({
-        directory: true,
-        multiple: true,
-        title: "Sélectionner des Dossiers Source",
-      });
-
-      if (selected) {
-        const paths = Array.isArray(selected) ? selected : [selected];
-
-        // Filter out existing source folders to prevent duplicates
-        const existingPaths = new Set(sourceFolders.map(f => f.path));
-        const newPaths = paths.filter(path => !existingPaths.has(path));
-
-        if (newPaths.length < paths.length) {
-          const skippedCount = paths.length - newPaths.length;
-          alert(t('library:foldersSkipped', { count: skippedCount }));
-        }
-
-        for (const path of newPaths) {
-            await addSourceFolder(path);
-            await loadFromPath(path);
-        }
-      }
-    } catch (e) {
-      console.log("Cancelled", e);
-    }
-  };
-
-  // Batch AI
-  const handleRunBatchAI = () => {
-    const itemsToProcess = processedItems.filter((item) => !item.aiDescription);
-    if (itemsToProcess.length === 0)
-      return alert(t('library:noUnanalyzedItems'));
-    if (confirm(t('library:startAiAnalysisConfirm', { count: itemsToProcess.length }))) {
-      addToQueue(itemsToProcess);
-    }
-  };
-
-  // Navigation
-  const handleNext = () => {
-    if (!selectedItem) return;
-    const idx = processedItems.findIndex((i) => i.id === selectedItem.id);
-    if (idx !== -1 && idx < processedItems.length - 1) {
-      const nextItem = processedItems[idx + 1];
-      if (nextItem) {
-        setSelectedItem(nextItem);
-        setFocusedId(nextItem.id); // Sync grid focus
-      }
-    }
-  };
-  const handlePrev = () => {
-    if (!selectedItem) return;
-    const idx = processedItems.findIndex((i) => i.id === selectedItem.id);
-    if (idx > 0) {
-      const prevItem = processedItems[idx - 1];
-      if (prevItem) {
-        setSelectedItem(prevItem);
-        setFocusedId(prevItem.id); // Sync grid focus
-      }
-    }
-  };
-
   const activeFolderName = activeFolderIds.has("all")
     ? "Library"
     : activeFolderIds.size === 1
@@ -411,19 +379,7 @@ const App: React.FC = () => {
         <div className="top-bar-area relative z-(--z-topbar)">
           <TopBar
             folderName={activeFolderName}
-            isSidebarPinned={isSidebarPinned}
-            onOpenFolders={() => {
-              // Priority toggle logic:
-              // 1. If pinned, unpin and hide.
-              // 2. If drawer open, close it.
-              // 3. Otherwise open drawer.
-              if (isSidebarPinned) {
-                setIsSidebarPinned(false);
-                setIsFolderDrawerOpen(false);
-              } else {
-                setIsFolderDrawerOpen(!isFolderDrawerOpen);
-              }
-            }}
+            onOpenFolders={handleSidebarToggle}
             onMoveSelected={() => setIsMoveModalOpen(true)}
             onShareSelected={handleShareSelected}
             onOpenSettings={() => setIsSettingsOpen(true)}
@@ -520,132 +476,58 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Context Menu */}
-      <AnimatePresence>
-        {contextMenu && (
-          <ContextMenu
-            x={contextMenu.x}
-            y={contextMenu.y}
-            item={contextMenu.item}
-            onClose={() => setContextMenu(null)}
-            onAnalyze={analyzeItem}
-            onDelete={
-              (id) =>
-                updateItem({
-                  ...contextMenu.item,
-                  folderId: "trash",
-                }) /* Pseudo delete */
-            }
-            onColorTag={(item, color) => {
-              // If item not in selection, it becomes the selection
-              if (!selectedIds.has(item.id)) {
-                clearSelection();
-                setSelectedIds(new Set([item.id]));
-              }
-              applyColorTagToSelection(color);
-            }}
-            onAddTags={handleContextAddTag}
-            onOpen={setSelectedItem}
-            onMove={handleContextMove}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Image Viewer */}
-      <AnimatePresence>
-        {selectedItem && (
-          <ErrorBoundary featureName="vision">
-            <ImageViewer
-              item={selectedItem}
-              onClose={() => setSelectedItem(null)}
-              onUpdateItem={updateItem}
-              onNext={handleNext}
-              onPrev={handlePrev}
-              showColorTags={true}
-              availableTags={availableTags}
-              allItems={currentItems}
-            />
-          </ErrorBoundary>
-        )}
-      </AnimatePresence>
-
-      {/* Collection Manager Modal */}
-      <CollectionManager
-        isOpen={isCollectionManagerOpen}
-        onClose={() => setIsCollectionManagerOpen(false)}
-        collections={collections}
-        activeCollection={activeCollection}
-        onCreateCollection={async (name) => {
-          await createCollection(name);
-          setIsCollectionManagerOpen(false);
-        }}
-        onSwitchCollection={async (id) => {
-          await switchCollection(id);
-          setIsCollectionManagerOpen(false);
-        }}
-        onDeleteCollection={deleteCollection}
+      {/* Overlays */}
+      <AppOverlays
+        contextMenu={contextMenu}
+        setContextMenu={setContextMenu}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+        updateItem={updateItem}
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        availableTags={availableTags}
+        currentItems={currentItems}
+        analyzeItem={analyzeItem}
+        handleContextAddTag={handleContextAddTag}
+        handleContextMove={handleContextMove}
+        applyColorTagToSelection={applyColorTagToSelection}
+        isDragSelecting={isDragSelecting}
+        dragBox={dragBox}
+        collectionsLoading={collectionsLoading}
       />
 
       {/* Modals */}
-      <CreateFolderModal
-        isOpen={isCreateFolderModalOpen}
-        onClose={() => setIsCreateFolderModalOpen(false)}
-        onCreate={createVirtualFolder}
-      />
-      <MoveToFolderModal
-        isOpen={isMoveModalOpen}
-        onClose={() => setIsMoveModalOpen(false)}
+      <AppModals
+        isCollectionManagerOpen={isCollectionManagerOpen}
+        setIsCollectionManagerOpen={setIsCollectionManagerOpen}
+        collections={collections}
+        activeCollection={activeCollection}
+        createCollection={createCollection}
+        switchCollection={switchCollection}
+        deleteCollection={deleteCollection}
+        isCreateFolderModalOpen={isCreateFolderModalOpen}
+        setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
+        createVirtualFolder={createVirtualFolder}
+        isMoveModalOpen={isMoveModalOpen}
+        setIsMoveModalOpen={setIsMoveModalOpen}
         folders={folders}
-        onMove={moveItemToFolder}
-        onCreateAndMove={createFolderAndMove}
-        selectedCount={selectedIds.size}
-      />
-      {/* AddTagModal - Simple Quick Add */}
-      <AddTagModal
-        isOpen={isAddTagModalOpen && !isBatchTagPanelOpen}
-        onClose={() => setIsAddTagModalOpen(false)}
-        selectedCount={selectedIds.size}
+        moveItemToFolder={moveItemToFolder}
+        createFolderAndMove={createFolderAndMove}
+        selectedIds={selectedIds}
+        isAddTagModalOpen={isAddTagModalOpen}
+        setIsAddTagModalOpen={setIsAddTagModalOpen}
         availableTags={availableTags}
-        onAddTag={(tag) => {
-          addTagsToSelection(tag);
-        }}
-      />
-
-      {/* BatchTagPanel - Advanced Multi-Tag Interface */}
-      <BatchTagPanel
-        isOpen={isBatchTagPanelOpen}
-        onClose={() => setIsBatchTagPanelOpen(false)}
-        selectedItems={batchSelectedItems}
-        availableTags={availableTags}
-        onApplyChanges={(changes: TagChanges) => {
-          // Apply batch changes
-          const updatedItems = batchSelectedItems.map((item) => {
-            const currentTags = new Set(item.manualTags || []);
-
-            // Remove tags
-            changes.remove.forEach((tag) => currentTags.delete(tag));
-
-            // Add tags
-            changes.add.forEach((tag) => currentTags.add(tag));
-
-            return {
-              ...item,
-              manualTags: Array.from(currentTags),
-            };
-          });
-
-          libraryUpdateItems(updatedItems);
-          clearSelection();
-          setIsBatchTagPanelOpen(false);
-        }}
-      />
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        addTagsToSelection={addTagsToSelection}
+        isBatchTagPanelOpen={isBatchTagPanelOpen}
+        setIsBatchTagPanelOpen={setIsBatchTagPanelOpen}
+        batchSelectedItems={batchSelectedItems}
+        libraryUpdateItems={libraryUpdateItems}
+        clearSelection={clearSelection}
+        isSettingsOpen={isSettingsOpen}
+        setIsSettingsOpen={setIsSettingsOpen}
         useCinematicCarousel={useCinematicCarousel}
-        onToggleCinematicCarousel={setCinematicCarousel}
+        setCinematicCarousel={setCinematicCarousel}
       />
-
 
       {/* Tag Hub */}
       <TagHub

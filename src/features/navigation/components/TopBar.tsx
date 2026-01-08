@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '../../../shared/components/Icon';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ViewMode } from '../../../shared/types';
 import { useLibrary } from '../../../shared/contexts/LibraryContext';
 import { useSelection } from '../../../shared/contexts/SelectionContext';
@@ -25,7 +25,6 @@ interface TopBarProps {
   onOpenBatchTagPanel: () => void;
   showColorTags: boolean;
   onToggleColorTags: () => void;
-  isSidebarPinned?: boolean;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -39,7 +38,6 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenBatchTagPanel,
   showColorTags,
   onToggleColorTags,
-  isSidebarPinned = false,
 }) => {
   const { t } = useTranslation(['navigation', 'common']);
   // Context consumption
@@ -92,12 +90,16 @@ export const TopBar: React.FC<TopBarProps> = ({
   };
 
   return (
-    <div
-      className={`fixed top-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center transition-all duration-300 ${
-        isSidebarPinned ? 'left-80' : 'left-0'
-      }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
+    <AnimatePresence>
+      {shouldShow && (
+        <motion.div
+          initial={{ y: '-100%', opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: '-100%', opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="fixed top-0 left-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center transition-all duration-300"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
         setIsHovered(false);
         setIsViewMenuOpen(false);
       }}
@@ -280,6 +282,8 @@ export const TopBar: React.FC<TopBarProps> = ({
           </Flex>
         </GlassCard>
       </motion.div>
-    </div>
+      </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

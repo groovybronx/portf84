@@ -2,7 +2,7 @@
 
 **System design and technical architecture for Lumina Portfolio v0.3.0-beta.1**
 
-**Last Update**: January 8, 2026
+**Last Update**: January 8, 2026 (Updated with App.tsx modularization)
 
 ---
 
@@ -84,6 +84,14 @@ src/
 │   │   │   └── Sidebar.tsx
 │   │   └── hooks/
 │   │       └── useNavigation.ts
+│   ├── layout/                # Layout components (NEW)
+│   │   ├── AppLayout.tsx      # Main application layout
+│   │   ├── MainLayout.tsx     # Content area layout
+│   │   └── index.ts           # Layout exports
+│   ├── overlays/              # Overlay and modal components (NEW)
+│   │   ├── AppOverlays.tsx    # Context menu, image viewer, drag selection
+│   │   ├── AppModals.tsx      # All modal dialogs
+│   │   └── index.ts           # Overlay exports
 │   ├── vision/                # AI analysis, image viewer
 │   │   ├── components/
 │   │   │   ├── ImageViewer.tsx
@@ -123,7 +131,10 @@ src/
 │   ├── hooks/                 # Custom hooks
 │   │   ├── useModalState.ts
 │   │   ├── useKeyboardShortcuts.ts
-│   │   └── useDebounce.ts
+│   │   ├── useDebounce.ts
+│   │   ├── useAppHandlers.ts    # Main event handlers (NEW)
+│   │   ├── useSidebarLogic.ts    # Sidebar state management (NEW)
+│   │   └── index.ts              # Hook exports
 │   ├── types/                 # Shared types
 │   │   ├── common.ts
 │   │   └── api.ts
@@ -145,7 +156,7 @@ src/
 │   │   ├── en.json
 │   │   └── fr.json
 │   └── index.ts
-├── App.tsx                    # Main app component
+├── App.tsx                    # Main app component (MODULARIZED)
 └── index.tsx                  # Entry point
 ```
 
@@ -1204,6 +1215,138 @@ interface AIModel {
 - **[API Reference](./API_REFERENCE.md)** - Complete API documentation
 - **[System Documentation](./SYSTEMS/)** - System-specific guides
 - **[User Guide](./USER_GUIDE.md)** - End-user documentation
+
+---
+
+---
+
+## 🏗️ **Modular Architecture (January 2026)**
+
+### App.tsx Modularization Overview
+
+In January 2026, we completed a major architectural refactoring to improve maintainability and testability by extracting the monolithic `App.tsx` component (682 lines) into specialized modules.
+
+### Architecture Changes
+
+#### Before Refactoring
+```
+App.tsx (682 lines)
+├── Layout logic (100+ lines)
+├── Event handlers (200+ lines)
+├── Overlay/modal management (200+ lines)
+├── State management (100+ lines)
+└── JSX structure (80+ lines)
+```
+
+#### After Refactoring
+```
+App.tsx (Clean structure)
+├── Layout components → features/layout/
+├── Event handlers → shared/hooks/
+├── Overlays/modals → features/overlays/
+└── Core logic → App.tsx (simplified)
+```
+
+### New Architectural Patterns
+
+#### 1. Layout Component Pattern
+```typescript
+// features/layout/AppLayout.tsx
+export const AppLayout: React.FC<AppLayoutProps> = ({
+  topBar, sidebar, mainContent, tagHub,
+  isFolderDrawerOpen, isSidebarPinned, isTagHubOpen
+}) => (
+  <div className="main-app bg-surface h-screen overflow-hidden flex flex-col">
+    <div className="top-bar-area">{topBar}</div>
+    <div className={`flex-1 flex flex-row ${dynamicPaddingClasses}`}>
+      {sidebar}
+      {mainContent}
+    </div>
+    {tagHub}
+  </div>
+);
+```
+
+#### 2. Hook-Based Logic Pattern
+```typescript
+// shared/hooks/useAppHandlers.ts
+export const useAppHandlers = (params) => ({
+  handleDirectoryPicker,
+  handleShareSelected,
+  handleRunBatchAI,
+  handleNext,
+  handlePrev,
+  toggleColorTags,
+});
+
+// shared/hooks/useSidebarLogic.ts
+export const useSidebarLogic = (params) => ({
+  isSidebarPinned,
+  setIsSidebarPinned,
+  handleSidebarToggle,
+  handleSidebarClose,
+});
+```
+
+#### 3. Overlay Container Pattern
+```typescript
+// features/overlays/AppOverlays.tsx
+export const AppOverlays: React.FC<AppOverlaysProps> = ({
+  contextMenu, selectedItem, analyzeItem, isDragSelecting
+}) => (
+  <>
+    <UnifiedProgress />
+    <ContextMenu {...contextMenuProps} />
+    <ImageViewer {...viewerProps} />
+  </>
+);
+```
+
+### Benefits Achieved
+
+#### 1. **Improved Maintainability**
+- **Single Responsibility**: Each component has one clear purpose
+- **Easier Debugging**: Smaller components are easier to troubleshoot
+- **Better Organization**: Related code is co-located
+
+#### 2. **Enhanced Testability**
+- **Focused Testing**: Each component can be tested independently
+- **Better Mocks**: Smaller, more targeted test mocks
+- **Higher Coverage**: Easier to achieve comprehensive test coverage (171/171 tests pass)
+
+#### 3. **Increased Reusability**
+- **Layout Components**: Can be reused across different app sections
+- **Custom Hooks**: Logic can be shared between components
+- **Overlay Components**: Standardized overlay patterns
+
+#### 4. **Better Developer Experience**
+- **Faster Development**: Easier to locate and modify code
+- **Clearer Structure**: New developers can understand architecture quickly
+- **Type Safety**: Better TypeScript support with focused interfaces
+
+### Performance Impact
+
+#### Positive Effects
+- **Reduced Bundle Size**: Better tree-shaking with smaller modules
+- **Improved Caching**: Smaller components cache better
+- **Faster Hot Reload**: Changes affect smaller code sections
+
+#### Considerations
+- **Additional Imports**: More import statements
+- **Component Props**: More prop drilling (managed with context)
+- **Build Complexity**: Slightly more complex build process
+
+### Migration Strategy
+
+The refactoring followed a **progressive migration approach**:
+
+1. **Phase 1**: Extract layout components (no breaking changes)
+2. **Phase 2**: Extract custom hooks (maintain API compatibility)
+3. **Phase 3**: Extract overlays/modals (preserve functionality)
+4. **Testing**: Update tests alongside code changes
+5. **Documentation**: Update architecture documentation
+
+This approach ensured **zero downtime** and **maintained backward compatibility** throughout the refactoring process.
 
 ---
 
