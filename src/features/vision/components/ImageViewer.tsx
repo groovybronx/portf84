@@ -260,17 +260,18 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                       />
                     )
                   )}
-                  <Flex
-                    as={Button}
-                    align="center"
-                    justify="center"
-                    onClick={() => onUpdateItem({ ...item, colorTag: undefined })}
-                    className={`w-6 h-6 rounded-full border border-white/20 text-xs text-gray-500 hover:text-white hover:border-white ${
-                      !item.colorTag ? 'opacity-100 cursor-default' : 'opacity-50'
-                    }`}
-                    title="Remove Tag"
-                  >
-                    <X size={12} />
+                  <Flex align="center" justify="center">
+                    <Button
+                      onClick={() => onUpdateItem({ ...item, colorTag: undefined })}
+                      className={`w-6 h-6 rounded-full border border-white/20 text-xs text-gray-500 hover:text-white hover:border-white ${
+                        !item.colorTag ? 'opacity-100 cursor-default' : 'opacity-50'
+                      }`}
+                      title="Remove Tag"
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <X size={12} />
+                    </Button>
                   </Flex>
                 </Flex>
               </div>

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { secureStorage } from '../../services/secureStorage';
 import { TabList, TabTrigger, Button, GlassCard, Stack } from './ui';
+import { STORAGE_KEYS } from '../constants';
 import { LanguageSelector } from './settings/LanguageSelector';
 import { ShortcutEditor } from './settings/ShortcutEditor';
 import { ThemeCustomizer } from './settings/ThemeCustomizer';
@@ -38,18 +39,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         // Load API Key
         try {
           const secureKey = await secureStorage.getApiKey();
-          if (secureKey) setApiKey(secureKey);
-          else {
-            // Fallback check
-            const storedKey = localStorage.getItem('gemini_api_key');
-            if (storedKey) setApiKey(storedKey);
+          if (secureKey) {
+            setApiKey(secureKey);
+          } else {
+            // Fallback check seulement si on n'est pas en mode Tauri
+            if (!secureStorage.isTauri()) {
+              const storedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
+              if (storedKey) setApiKey(storedKey);
+            }
           }
         } catch (e) {
           console.error('Failed to load secure key:', e);
+          // Fallback en cas d'erreur
+          const storedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
+          if (storedKey) setApiKey(storedKey);
         }
 
         // Load DB Path
-        const storedPath = localStorage.getItem('lumina_db_path');
+        const storedPath = localStorage.getItem(STORAGE_KEYS.DB_PATH);
         if (storedPath) setDbPath(storedPath);
         else setDbPath('');
 
@@ -77,15 +84,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const handleSave = async () => {
     if (apiKey.trim()) {
       await secureStorage.saveApiKey(apiKey.trim());
-      localStorage.removeItem('gemini_api_key');
+      // Nettoyer localStorage seulement si on est en mode Tauri (pas en dev)
+      if (secureStorage.isTauri()) {
+        localStorage.removeItem(STORAGE_KEYS.API_KEY);
+      }
     } else {
       await secureStorage.clearApiKey();
     }
 
     if (dbPath) {
-      localStorage.setItem('lumina_db_path', dbPath);
+      localStorage.setItem(STORAGE_KEYS.DB_PATH, dbPath);
     } else {
-      localStorage.removeItem('lumina_db_path');
+      localStorage.removeItem(STORAGE_KEYS.DB_PATH);
     }
 
     setIsSaved(true);
@@ -325,7 +335,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             </Button>
                             <Button
                               onClick={async () => {
-                                if (dbPath) localStorage.setItem('lumina_db_path', dbPath);
+                                if (dbPath) localStorage.setItem(STORAGE_KEYS.DB_PATH, dbPath);
                                 await relaunch();
                               }}
                               variant="primary"
