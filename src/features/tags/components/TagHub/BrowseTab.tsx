@@ -20,7 +20,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
   const [tags, setTags] = useState<TagWithUsage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Load persisted settings on mount
   const [settings, setSettings] = useState<TagHubSettings>(() => loadTagHubSettings());
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -131,8 +131,8 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
             aria-label={t('tags:gridView')}
             className={`p-2 rounded ${
               settings.viewMode === 'grid'
-                ? 'bg-blue-500/20 text-blue-300'
-                : 'text-gray-500 hover:text-gray-300'
+                ? 'bg-primary text-white'
+                : 'bg-blue-500/20 text-blue-300'
             }`}
           >
             <Grid size={16} />
@@ -142,8 +142,8 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
             aria-label={t('tags:listView')}
             className={`p-2 rounded ${
               settings.viewMode === 'list'
-                ? 'bg-blue-500/20 text-blue-300'
-                : 'text-gray-500 hover:text-gray-300'
+                ? 'bg-primary text-white'
+                : 'bg-blue-500/20 text-blue-300'
             }`}
           >
             <List size={16} />
