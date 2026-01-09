@@ -1,9 +1,6 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Icon, type IconAction, ALL_ICONS } from "../../Icon";
-import { Button } from "../Button";
-
-import { logger } from '../../../../../shared/utils/logger';
+import React from 'react';
+import { Icon, type IconAction, ALL_ICONS } from '../../Icon';
+import { Button } from '../Button';
 interface IconPickerProps {
   value: IconAction;
   onChange: (icon: IconAction) => void;
@@ -19,7 +16,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
   icons = ALL_ICONS,
   usedIcons = [],
   label,
-  className = "",
+  className = '',
 }) => {
   return (
     <div className={`space-y-2 ${className}`}>
@@ -40,10 +37,10 @@ export const IconPicker: React.FC<IconPickerProps> = ({
               size="icon-sm"
               className={`rounded-md transition-all ${
                 value === iconAction
-                  ? "bg-primary/20 ring-2 ring-primary scale-110"
+                  ? 'bg-primary/20 ring-2 ring-primary scale-110'
                   : isUsed
-                  ? "bg-glass-bg opacity-30 cursor-not-allowed"
-                  : "bg-glass-bg hover:bg-glass-bg-active opacity-60 hover:opacity-100"
+                  ? 'bg-glass-bg opacity-30 cursor-not-allowed'
+                  : 'bg-glass-bg hover:bg-glass-bg-active opacity-60 hover:opacity-100'
               }`}
               title={isUsed ? `${iconAction} (Already used)` : iconAction}
               type="button"
@@ -52,11 +49,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                 action={iconAction}
                 size={16}
                 className={
-                  value === iconAction
-                    ? "text-primary"
-                    : isUsed
-                    ? "text-white/30"
-                    : "text-white/70"
+                  value === iconAction ? 'text-primary' : isUsed ? 'text-white/30' : 'text-white/70'
                 }
               />
             </Button>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { storageService } from '../../services/storageService';
-import { verifyPermission } from '../utils';
 import { useProgress } from '../contexts/ProgressContext';
 
 import { logger } from '../utils/logger';

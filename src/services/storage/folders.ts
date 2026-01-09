@@ -62,12 +62,20 @@ export const getVirtualFolders = async (collectionId?: string): Promise<ParsedVi
       `[Storage] getVirtualFolders: Loaded ${rawFolders.length} virtual folders (all collections)`
     );
   }
-  return rawFolders.map((f) => ({
-    ...f,
-    items: [] as [],
-    isVirtual: f.isVirtual === 1,
-    sourceFolderId: f.sourceFolderId ?? undefined,
-  }));
+  return rawFolders.map((f) => {
+    const result: ParsedVirtualFolder = {
+      id: f.id,
+      collectionId: f.collectionId,
+      name: f.name,
+      createdAt: f.createdAt,
+      items: [] as [],
+      isVirtual: f.isVirtual === 1,
+    };
+    if (f.sourceFolderId !== null) {
+      result.sourceFolderId = f.sourceFolderId;
+    }
+    return result;
+  });
 };
 
 // ==================== SHADOW FOLDERS ====================
@@ -108,15 +116,18 @@ export const getShadowFolder = async (
   );
   if (results.length === 0 || !results[0]) return null;
   const f = results[0];
-  return {
+  const result: ParsedVirtualFolder = {
     id: f.id,
     collectionId: f.collectionId,
     name: f.name,
     createdAt: f.createdAt,
     items: [] as [],
     isVirtual: f.isVirtual === 1,
-    sourceFolderId: f.sourceFolderId ?? undefined,
   };
+  if (f.sourceFolderId !== null) {
+    result.sourceFolderId = f.sourceFolderId;
+  }
+  return result;
 };
 
 /**

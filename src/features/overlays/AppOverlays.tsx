@@ -4,8 +4,7 @@ import { ContextMenu, UnifiedProgress } from '../../shared/components';
 import { ImageViewer } from '../../features/vision';
 import { PortfolioItem } from '../../shared/types';
 
-import { logger } from '../../shared/utils/logger';
-interface AppOverlaysProps {
+export interface AppOverlaysProps {
   contextMenu: { x: number; y: number; item: PortfolioItem } | null;
   setContextMenu: (menu: { x: number; y: number; item: PortfolioItem } | null) => void;
   selectedItem: PortfolioItem | null;
@@ -40,8 +39,14 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
   applyColorTagToSelection,
   isDragSelecting,
   dragBox,
-  collectionsLoading,
 }) => {
+  const handleColorTag = React.useCallback(
+    (_item: PortfolioItem, color: string | undefined) => {
+      applyColorTagToSelection(color);
+    },
+    [applyColorTagToSelection]
+  );
+
   return (
     <>
       {/* Loading Overlay */}
@@ -69,7 +74,7 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
             item={contextMenu.item}
             onClose={() => setContextMenu(null)}
             onAnalyze={analyzeItem}
-            onDelete={(id) =>
+            onDelete={(_id) =>
               updateItem({
                 ...contextMenu.item,
                 folderId: 'trash',
@@ -78,7 +83,7 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
             onAddTags={handleContextAddTag}
             onOpen={setSelectedItem}
             onMove={handleContextMove}
-            onColorTag={() => {}}
+            onColorTag={handleColorTag}
           />
         )}
       </AnimatePresence>

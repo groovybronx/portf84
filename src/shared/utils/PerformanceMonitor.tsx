@@ -4,7 +4,7 @@ import { logger } from './logger';
 /**
  * Performance Monitor Component
  * Wrapper pour mesurer les performances des composants React dans Tauri
- * 
+ *
  * Usage:
  * <PerformanceMonitor id="FolderDrawer" enabled={true}>
  *   <FolderDrawer {...props} />
@@ -18,20 +18,23 @@ interface PerformanceMonitorProps {
   warnThreshold?: number; // en ms, par défaut 50ms
 }
 
-const performanceStats = new Map<string, {
-  mountCount: number;
-  updateCount: number;
-  totalDuration: number;
-  maxDuration: number;
-  avgDuration: number;
-}>();
+const performanceStats = new Map<
+  string,
+  {
+    mountCount: number;
+    updateCount: number;
+    totalDuration: number;
+    maxDuration: number;
+    avgDuration: number;
+  }
+>();
 
 const onRenderCallback: ProfilerOnRenderCallback = (
   id,
   phase,
   actualDuration,
   baseDuration,
-  startTime,
+  _startTime,
   commitTime
 ) => {
   const stats = performanceStats.get(id) || {
@@ -58,8 +61,9 @@ const onRenderCallback: ProfilerOnRenderCallback = (
   // Log avec couleur selon la durée
   const emoji = actualDuration > 50 ? '🔴' : actualDuration > 20 ? '🟡' : '🟢';
   logger.debug(
+    'performance',
     `${emoji} [${id}] ${phase} - ${actualDuration.toFixed(2)}ms` +
-    ` (avg: ${stats.avgDuration.toFixed(2)}ms, max: ${stats.maxDuration.toFixed(2)}ms)`
+      ` (avg: ${stats.avgDuration.toFixed(2)}ms, max: ${stats.maxDuration.toFixed(2)}ms)`
   );
 
   // Détails supplémentaires pour les renders lents
@@ -78,7 +82,6 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   id,
   enabled = import.meta.env.DEV,
   children,
-  warnThreshold = 50,
 }) => {
   if (!enabled) {
     return <>{children}</>;
@@ -96,18 +99,19 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
  */
 export const logPerformanceStats = () => {
   console.group('📊 Performance Statistics');
-  
+
   performanceStats.forEach((stats, id) => {
     const totalRenders = stats.mountCount + stats.updateCount;
     logger.debug(
-      `\n${id}:`,
-      `\n  Total renders: ${totalRenders} (${stats.mountCount} mounts, ${stats.updateCount} updates)`,
-      `\n  Average duration: ${stats.avgDuration.toFixed(2)}ms`,
-      `\n  Max duration: ${stats.maxDuration.toFixed(2)}ms`,
-      `\n  Total time: ${stats.totalDuration.toFixed(2)}ms`
+      'performance',
+      `\n${id}:` +
+        `\n  Total renders: ${totalRenders} (${stats.mountCount} mounts, ${stats.updateCount} updates)` +
+        `\n  Average duration: ${stats.avgDuration.toFixed(2)}ms` +
+        `\n  Max duration: ${stats.maxDuration.toFixed(2)}ms` +
+        `\n  Total time: ${stats.totalDuration.toFixed(2)}ms`
     );
   });
-  
+
   console.groupEnd();
 };
 
@@ -116,7 +120,7 @@ export const logPerformanceStats = () => {
  */
 export const resetPerformanceStats = () => {
   performanceStats.clear();
-  logger.debug('🔄 Performance stats reset');
+  logger.debug('performance', '🔄 Performance stats reset');
 };
 
 // Expose les fonctions globalement pour faciliter l'utilisation dans la console
@@ -127,24 +131,24 @@ if (import.meta.env.DEV) {
 
 /**
  * Hook pour mesurer les performances d'un hook ou d'une fonction
- * 
+ *
  * Usage:
  * const handleClick = usePerformanceMeasure('handleClick', () => {
  *   // ... code
  * });
  */
 export const usePerformanceMeasure = <T extends (...args: any[]) => any>(
-  label: string,
+  _label: string,
   fn: T
 ): T => {
   return ((...args: any[]) => {
     const start = performance.now();
     const result = fn(...args);
     const duration = performance.now() - start;
-    
+
     const emoji = duration > 100 ? '🔴' : duration > 50 ? '🟡' : '🟢';
-    logger.debug('app', '${emoji} [${label}] ${duration.toFixed(2)}ms');
-    
+    logger.debug('performance', `${emoji} Measurement took ${duration.toFixed(2)}ms`);
+
     return result;
   }) as T;
 };
@@ -152,19 +156,16 @@ export const usePerformanceMeasure = <T extends (...args: any[]) => any>(
 /**
  * Mesurer une opération asynchrone
  */
-export const measureAsync = async <T,>(
-  label: string,
-  fn: () => Promise<T>
-): Promise<T> => {
+export const measureAsync = async <T,>(_label: string, fn: () => Promise<T>): Promise<T> => {
   const start = performance.now();
   try {
     const result = await fn();
     const duration = performance.now() - start;
-    logger.debug('app', '⏱️ [${label}] ${duration.toFixed(2)}ms');
+    logger.debug('performance', `⏱️ Async operation took ${duration.toFixed(2)}ms`);
     return result;
   } catch (error) {
     const duration = performance.now() - start;
-    logger.error('app', '❌ [${label}] Failed after ${duration.toFixed(2)}ms', error);
+    logger.error('performance', `❌ Async operation failed after ${duration.toFixed(2)}ms`, error);
     throw error;
   }
 };

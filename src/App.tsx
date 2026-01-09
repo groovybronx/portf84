@@ -9,13 +9,14 @@
  * @refactor Janvier 2026 - Décomposition en composants modulaires
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppOverlays, AppModals } from './features/overlays';
+import { ModalHost } from '@/features/overlays';
 import { TopBar } from './features/navigation';
 import { ViewRenderer } from './features/library/components/ViewRenderer';
 import { FolderDrawer } from './features/collections';
-import { UnifiedProgress, ErrorBoundary } from './shared/components';
+import { AppShell } from './features/layout';
+import { ErrorBoundary } from './shared/components';
 import { TagHub } from './features/tags/components/TagHub';
 import { PortfolioItem } from './shared/types';
 import { AnimatePresence } from 'framer-motion';
@@ -31,6 +32,7 @@ import {
   useItemActions,
   useAppHandlers,
   useSidebarLogic,
+  OverlayKey,
 } from './shared/hooks';
 import { storageService } from './services/storageService';
 import { LoadingOverlay } from './shared/components/LoadingOverlay';
@@ -130,31 +132,41 @@ const App: React.FC = () => {
   // ÉTAT DES MODALES ET MENUS (Gestion de l'interface)
   // ========================================================================
   const {
-    isFolderDrawerOpen,
-    setIsFolderDrawerOpen,
-    isCreateFolderModalOpen,
-    setIsCreateFolderModalOpen,
-    isMoveModalOpen,
-    setIsMoveModalOpen,
-    isAddTagModalOpen,
-    setIsAddTagModalOpen,
-    isSettingsOpen,
-    setIsSettingsOpen,
-    isCollectionManagerOpen,
-    setIsCollectionManagerOpen,
-    isTagHubOpen,
-    setIsTagHubOpen,
+    state: overlayState,
+    openOverlay,
+    closeOverlay,
     tagHubActiveTab,
     setTagHubActiveTab,
-    isBatchTagPanelOpen,
-    setIsBatchTagPanelOpen,
   } = useModalState();
+
+  const setOverlay = useCallback(
+    (key: OverlayKey, open: boolean) => {
+      if (open) {
+        openOverlay(key);
+      } else {
+        closeOverlay(key);
+      }
+    },
+    [openOverlay, closeOverlay]
+  );
+
+  const isFolderDrawerOpen = overlayState.folderDrawer;
+  const isTagHubOpen = overlayState.tagHub;
+
+  const setIsFolderDrawerOpen = useCallback(
+    (open: boolean) => setOverlay('folderDrawer', open),
+    [setOverlay]
+  );
 
   // ========================================================================
   // LOGIQUE DE LA BARRE LATÉRALE (Sidebar)
   // ========================================================================
+  // État séparé pour la TopBar - indépendant de la sidebar
+  const [isTopBarPinned, setIsTopBarPinned] = useState(true);
+  const [isTopBarHovered, setIsTopBarHovered] = useState(false);
+
   const { isSidebarPinned, setIsSidebarPinned, handleSidebarToggle } = useSidebarLogic({
-    initialPinned: false,
+    initialPinned: true,
     onFolderDrawerOpen: () => setIsFolderDrawerOpen(true),
     onFolderDrawerClose: () => {
       setIsFolderDrawerOpen(false);
@@ -211,8 +223,7 @@ const App: React.FC = () => {
     setSelectedIds,
     createVirtualFolder,
     moveItemsToFolder,
-    setIsMoveModalOpen,
-    setIsAddTagModalOpen,
+    setOverlay,
     activeCollection,
   });
 
@@ -223,19 +234,13 @@ const App: React.FC = () => {
     useAppHandlers({
       t,
       activeCollection,
-      setIsCollectionManagerOpen,
       sourceFolders,
       addSourceFolder,
       loadFromPath,
       processedItems,
       addToQueue,
       selectedItem,
-      setIsFolderDrawerOpen,
-      setIsSidebarPinned,
-      setIsMoveModalOpen,
-      setIsSettingsOpen,
-      setIsTagHubOpen,
-      setIsBatchTagPanelOpen,
+      setOverlay,
       showColorTags,
       setShowColorTags,
     });
@@ -253,7 +258,7 @@ const App: React.FC = () => {
     onOpenBatchTagPanel: () => {
       // Ouvre uniquement si des éléments sont sélectionnés
       if (selectedIds.size > 0) {
-        setIsBatchTagPanelOpen(true);
+        setOverlay('batchTagPanel', true);
       }
     },
   });
@@ -265,13 +270,13 @@ const App: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key.toLowerCase() === 't') {
         e.preventDefault();
-        setIsTagHubOpen(true);
+        setOverlay('tagHub', true);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setIsTagHubOpen]);
+  }, [setOverlay]);
 
   // ========================================================================
   // EFFETS DE BORD - Synchronisation des données
@@ -324,170 +329,155 @@ const App: React.FC = () => {
   // CALCULS DÉRIVÉS
   // ========================================================================
 
-  // Nom du dossier actif pour l'affichage dans la TopBar
   const activeFolderName = activeFolderIds.has('all')
     ? 'Library'
     : activeFolderIds.size === 1
     ? folders.find((f) => f.id === Array.from(activeFolderIds)[0])?.name
     : 'Collection';
 
-  // ========================================================================
-  // RENDU JSX - Structure de l'interface utilisateur
-  // ========================================================================
+  const isSidebarExpanded = isFolderDrawerOpen || isSidebarPinned;
+
+  const sidebarNode = (
+    <ErrorBoundary featureName="collections">
+      <FolderDrawer
+        isOpen={isSidebarExpanded}
+        onClose={() => {
+          setIsFolderDrawerOpen(false);
+          setIsSidebarPinned(false);
+        }}
+        folders={folders}
+        activeFolderId={activeFolderIds}
+        onSelectFolder={toggleFolderSelection}
+        onImportFolder={handleDirectoryPicker}
+        onCreateFolder={() => setOverlay('createFolderModal', true)}
+        onDeleteFolder={deleteFolder}
+        activeCollection={activeCollection}
+        sourceFolders={sourceFolders}
+        collections={collections}
+        onSwitchCollection={switchCollection}
+        onManageCollections={() => setOverlay('collectionManager', true)}
+        onRemoveSourceFolder={async (path) => {
+          await removeSourceFolder(path);
+          clearLibrary();
+
+          if (activeCollection && sourceFolders.length > 0) {
+            const remainingFolders = sourceFolders.filter((sf) => sf.path !== path);
+            for (const folder of remainingFolders) {
+              await loadFromPath(folder.path);
+            }
+          }
+        }}
+        isPinned={isSidebarPinned}
+        onTogglePin={() => {
+          const newPinned = !isSidebarPinned;
+          setIsSidebarPinned(newPinned);
+          setIsFolderDrawerOpen(false);
+        }}
+        activeColorFilter={activeColorFilter}
+        onColorFilterChange={setActiveColorFilter}
+      />
+    </ErrorBoundary>
+  );
+
+  const topBarLayer = (
+    <ErrorBoundary featureName="navigation">
+      <div
+        className="absolute top-0 left-0 right-0 h-32 z-30 pointer-events-auto"
+        onMouseEnter={() => setIsTopBarHovered(true)}
+        onMouseLeave={() => setIsTopBarHovered(false)}
+      />
+
+      <div className="absolute top-0 left-0 right-0 z-40 pointer-events-none">
+        <TopBar
+          folderName={activeFolderName || ''}
+          onOpenFolders={handleSidebarToggle}
+          onMoveSelected={() => setOverlay('moveModal', true)}
+          onShareSelected={handleShareSelected}
+          onOpenSettings={() => setOverlay('settingsModal', true)}
+          onOpenTagHub={() => setOverlay('tagHub', true)}
+          onOpenBatchTagPanel={() => setOverlay('batchTagPanel', true)}
+          showColorTags={showColorTags}
+          onToggleColorTags={toggleColorTags}
+          isSidebarPinned={isTopBarPinned}
+          onToggleTopBarPin={() => setIsTopBarPinned(!isTopBarPinned)}
+          isExternalHovered={isTopBarHovered}
+        />
+      </div>
+    </ErrorBoundary>
+  );
+
+  const mainContentNode = (
+    <ErrorBoundary featureName="library">
+      <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full pt-24">
+        {currentItems.length === 0 ? (
+          <div className="flex items-center justify-center h-full min-h-[60vh]">
+            <p className="text-gray-500 text-center">
+              {!activeCollection ? t('library:openDrawerToCreate') : t('library:noItemsAddSource')}
+            </p>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            <ViewRenderer
+              viewMode={viewMode}
+              useCinematicCarousel={useCinematicCarousel}
+              currentItems={currentItems}
+              selectedItem={selectedItem}
+              focusedId={focusedId}
+              onSelect={setSelectedItem}
+              onHover={() => {}}
+              onContextMenu={(e, item) => {
+                e.preventDefault();
+                setContextMenu({ x: e.clientX, y: e.clientY, item });
+              }}
+              onTagClick={toggleTag}
+              onFocusChange={setFocusedId}
+              folders={folders}
+              collections={collections}
+            />
+          </AnimatePresence>
+        )}
+      </main>
+    </ErrorBoundary>
+  );
+
+  const tagHubPanel = (
+    <TagHub
+      isOpen={isTagHubOpen}
+      onClose={() => setOverlay('tagHub', false)}
+      activeTab={tagHubActiveTab}
+      onTabChange={setTagHubActiveTab}
+      onTagsUpdated={async () => {
+        logger.debug('app', '[App] Tags updated from Tag Hub, refreshing library...');
+        await refreshMetadata();
+      }}
+      onSelectTag={(tag) => {
+        toggleTag(tag);
+      }}
+    />
+  );
+
   return (
-    <div
-      className="main-app bg-surface h-screen overflow-hidden flex flex-col"
+    <AppShell
+      topBar={topBarLayer}
+      sidebar={sidebarNode}
+      mainContent={mainContentNode}
+      tagHub={tagHubPanel}
+      isSidebarExpanded={isSidebarExpanded}
+      isTagHubOpen={isTagHubOpen}
       onMouseDown={(e) => handleMouseDown(e, viewMode, processedItems)}
       onMouseMove={(e) => handleMouseMove(e, processedItems)}
       onMouseUp={handleMouseUp}
     >
-      {/* Overlay de chargement pendant le chargement des collections */}
       <LoadingOverlay isVisible={collectionsLoading} />
-
-      {/* Boîte de sélection par drag-and-drop */}
-      {isDragSelecting && dragBox && (
-        <div
-          className="fixed border-2 border-blue-500 bg-blue-500/30 z-(--z-controlbar) pointer-events-none"
-          style={{
-            left: dragBox.x,
-            top: dragBox.y,
-            width: dragBox.w,
-            height: dragBox.h,
-          }}
-        />
-      )}
-
-      {/* Input fichier caché pour l'import de dossiers */}
       <input
         type="file"
         ref={fileInputRef}
         className="hidden"
         multiple
-        {...({ webkitdirectory: '', directory: '' } as any)}
+        {...({ webkitdirectory: '', directory: '' } as Record<string, string>)}
         onChange={(e) => e.target.files && importFiles(e.target.files)}
       />
-
-      {/* Arrière-plan décoratif */}
-      <div className="fixed inset-0 pointer-events-none z-(--z-base) bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
-
-      {/* ========================================================================
-          ZONE PRINCIPALE : Barre latérale + Contenu
-          ======================================================================== */}
-      <div className="flex-1 flex flex-row overflow-hidden relative">
-        {/* --------------------------------------------------------------------
-            BARRE LATÉRALE (FolderDrawer) - Navigation des collections/dossiers
-            -------------------------------------------------------------------- */}
-        <ErrorBoundary featureName="collections">
-          <FolderDrawer
-            isOpen={isFolderDrawerOpen || isSidebarPinned}
-            onClose={() => {
-              setIsFolderDrawerOpen(false);
-              setIsSidebarPinned(false);
-            }}
-            folders={folders}
-            activeFolderId={activeFolderIds}
-            onSelectFolder={toggleFolderSelection}
-            onImportFolder={handleDirectoryPicker}
-            onCreateFolder={() => setIsCreateFolderModalOpen(true)}
-            onDeleteFolder={deleteFolder}
-            activeCollection={activeCollection}
-            sourceFolders={sourceFolders}
-            collections={collections}
-            onSwitchCollection={switchCollection}
-            onManageCollections={() => setIsCollectionManagerOpen(true)}
-            onRemoveSourceFolder={async (path) => {
-              await removeSourceFolder(path);
-              clearLibrary();
-
-              // Recharge les dossiers restants
-              if (activeCollection && sourceFolders.length > 0) {
-                const remainingFolders = sourceFolders.filter((sf) => sf.path !== path);
-                for (const folder of remainingFolders) {
-                  await loadFromPath(folder.path);
-                }
-              }
-            }}
-            isPinned={isSidebarPinned}
-            onTogglePin={() => {
-              const newPinned = !isSidebarPinned;
-              setIsSidebarPinned(newPinned);
-              // Quand on désépingle, cache tout pour une sortie propre
-              setIsFolderDrawerOpen(false);
-            }}
-            activeColorFilter={activeColorFilter}
-            onColorFilterChange={setActiveColorFilter}
-          />
-        </ErrorBoundary>
-
-        {/* --------------------------------------------------------------------
-            ZONE DE CONTENU PRINCIPALE (TopBar + Gallery)
-            -------------------------------------------------------------------- */}
-        <div
-          className={`flex-1 relative overflow-hidden flex flex-col h-full transition-all duration-300 ease-in-out ${
-            isFolderDrawerOpen || isSidebarPinned ? 'ml-80' : 'ml-0'
-          } ${isTagHubOpen ? 'mr-[min(20rem,20vw)]' : 'mr-0'}`}
-        >
-          {/* ========================================================================
-              BARRE SUPÉRIEURE (TopBar) - Toujours visible
-              ======================================================================== */}
-          <ErrorBoundary featureName="navigation">
-            <div className="top-bar-area relative z-(--z-topbar)">
-              <TopBar
-                folderName={activeFolderName || ''}
-                onOpenFolders={handleSidebarToggle}
-                onMoveSelected={() => setIsMoveModalOpen(true)}
-                onShareSelected={handleShareSelected}
-                onOpenSettings={() => setIsSettingsOpen(true)}
-                onOpenTagHub={() => setIsTagHubOpen(true)}
-                onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
-                showColorTags={showColorTags}
-                onToggleColorTags={toggleColorTags}
-              />
-            </div>
-          </ErrorBoundary>
-
-          <ErrorBoundary featureName="library">
-            <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full">
-              {currentItems.length === 0 ? (
-                // État vide - Aucun élément à afficher
-                <div className="flex items-center justify-center h-full min-h-[60vh]">
-                  <p className="text-gray-500 text-center">
-                    {!activeCollection
-                      ? t('library:openDrawerToCreate')
-                      : t('library:noItemsAddSource')}
-                  </p>
-                </div>
-              ) : (
-                // Vue principale avec animations
-                <AnimatePresence mode="wait">
-                  <ViewRenderer
-                    viewMode={viewMode}
-                    useCinematicCarousel={useCinematicCarousel}
-                    currentItems={currentItems}
-                    selectedItem={selectedItem}
-                    focusedId={focusedId}
-                    onSelect={setSelectedItem}
-                    onHover={() => {}}
-                    onContextMenu={(e, item) => {
-                      e.preventDefault();
-                      setContextMenu({ x: e.clientX, y: e.clientY, item });
-                    }}
-                    onTagClick={toggleTag}
-                    onFocusChange={setFocusedId}
-                    folders={folders}
-                    collections={collections}
-                  />
-                </AnimatePresence>
-              )}
-            </main>
-          </ErrorBoundary>
-        </div>
-      </div>
-
-      {/* ========================================================================
-          OVERLAYS FLOTTANTS (Menu contextuel, visionneuse, etc.)
-          ======================================================================== */}
-      <AppOverlays
+      <ModalHost
         contextMenu={contextMenu}
         setContextMenu={setContextMenu}
         selectedItem={selectedItem}
@@ -504,67 +494,26 @@ const App: React.FC = () => {
         isDragSelecting={isDragSelecting}
         dragBox={dragBox}
         collectionsLoading={collectionsLoading}
-      />
-
-      {/* ========================================================================
-          MODALES (Dialogues modals pour les actions)
-          ======================================================================== */}
-      <AppModals
-        isCollectionManagerOpen={isCollectionManagerOpen}
-        setIsCollectionManagerOpen={setIsCollectionManagerOpen}
+        overlayState={overlayState}
+        setOverlay={setOverlay}
         collections={collections}
         activeCollection={activeCollection}
         createCollection={createCollection}
         switchCollection={switchCollection}
         deleteCollection={deleteCollection}
-        isCreateFolderModalOpen={isCreateFolderModalOpen}
-        setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
         createVirtualFolder={createVirtualFolder}
-        isMoveModalOpen={isMoveModalOpen}
-        setIsMoveModalOpen={setIsMoveModalOpen}
         folders={folders}
         moveItemToFolder={moveItemToFolder}
         createFolderAndMove={createFolderAndMove}
         selectedIds={selectedIds}
-        isAddTagModalOpen={isAddTagModalOpen}
-        setIsAddTagModalOpen={setIsAddTagModalOpen}
-        availableTags={availableTags}
         addTagsToSelection={addTagsToSelection}
-        isBatchTagPanelOpen={isBatchTagPanelOpen}
-        setIsBatchTagPanelOpen={setIsBatchTagPanelOpen}
         batchSelectedItems={getBatchSelectedItems()}
         libraryUpdateItems={libraryUpdateItems}
         clearSelection={clearSelection}
-        isSettingsOpen={isSettingsOpen}
-        setIsSettingsOpen={setIsSettingsOpen}
         useCinematicCarousel={useCinematicCarousel}
         setCinematicCarousel={setCinematicCarousel}
       />
-
-      {/* ========================================================================
-          TAG HUB - Panneau de gestion des tags (droite de l'écran)
-          ======================================================================== */}
-      <TagHub
-        isOpen={isTagHubOpen}
-        onClose={() => setIsTagHubOpen(false)}
-        activeTab={tagHubActiveTab}
-        onTabChange={setTagHubActiveTab}
-        onTagsUpdated={async () => {
-          logger.debug('app', '[App] Tags updated from Tag Hub, refreshing library...');
-          await refreshMetadata();
-        }}
-        onSelectTag={(tag) => {
-          toggleTag(tag);
-          // Ne ferme pas le hub pour permettre la multi-sélection
-          // setIsTagHubOpen(false);
-        }}
-      />
-
-      {/* ========================================================================
-          INDICATEUR DE PROGRÈS GLOBAL (pour les opérations en arrière-plan)
-          ======================================================================== */}
-      <UnifiedProgress />
-    </div>
+    </AppShell>
   );
 };
 

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Search, Tag, X } from 'lucide-react';
 import { Button, GlassCard, Flex } from '../../../../shared/components/ui';
 
-import { logger } from '../../../../shared/utils/logger';
 interface SearchFieldProps {
   value: string;
   onChange: (term: string) => void;

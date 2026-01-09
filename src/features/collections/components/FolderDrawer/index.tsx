@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../../../../shared/components/Icon';
 import { useTheme } from '../../../../shared/contexts/ThemeContext';
-import { Button, Flex, Stack } from '../../../../shared/components/ui';
+import { Button, Flex, Stack, GlassCard } from '../../../../shared/components/ui';
 
 import { Folder as FolderType, Collection, SourceFolder } from '../../../../shared/types';
 
@@ -77,7 +77,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = (props) => {
   }, [collections, activeCollection]);
 
   const drawerBody = (
-    <Stack direction="vertical" spacing="none" className="h-full">
+    <Stack direction="vertical" spacing="none" className="h-full p-4">
       {/* Header */}
       <FolderDrawerHeader totalItems={totalItems} onAdd={onCreateFolder} onClose={onClose} />
 
@@ -229,16 +229,19 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = (props) => {
     <AnimatePresence>
       {isVisible && (
         <>
-          {/* Side Panel - EXACTEMENT comme TagHub */}
-          <motion.div
+          {/* Side Panel - Glassmorphism Style */}
+          <GlassCard
+            as={motion.div}
+            variant="panel"
+            padding="none"
+            className="fixed left-4 top-4 bottom-4 w-80 rounded-3xl shadow-2xl shadow-black/60 z-(--z-modal) flex flex-col overflow-hidden"
             initial={{ x: '-100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '-100%', opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed left-0 top-0 h-full w-80 bg-slate-950/95 backdrop-blur-xl border-r border-white/10 shadow-2xl z-(--z-modal) flex flex-col overflow-hidden"
           >
             {drawerBody}
-          </motion.div>
+          </GlassCard>
         </>
       )}
     </AnimatePresence>

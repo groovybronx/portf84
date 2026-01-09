@@ -18,7 +18,6 @@ import navigationFR from './locales/fr/navigation.json';
 import shortcutsEN from './locales/en/shortcuts.json';
 import shortcutsFR from './locales/fr/shortcuts.json';
 
-import { logger } from '../shared/utils/logger';
 // Configure i18next
 i18n
   .use(LanguageDetector) // Auto-detect user language
@@ -47,17 +46,17 @@ i18n
     fallbackLng: 'en', // Default language if detection fails
     defaultNS: 'common', // Default namespace
     ns: ['common', 'tags', 'settings', 'library', 'errors', 'navigation', 'shortcuts'],
-    
+
     interpolation: {
       escapeValue: false, // React already escapes values
     },
-    
+
     detection: {
       order: ['localStorage', 'navigator'], // Check localStorage first, then browser language
       caches: ['localStorage'], // Persist in localStorage
       lookupLocalStorage: 'lumina_language', // LocalStorage key
     },
-    
+
     react: {
       useSuspense: false, // Disable to avoid loading issues
     },

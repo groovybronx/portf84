@@ -1,7 +1,5 @@
-import React from "react";
-import { Icon as LucideIcon, type IconAction } from "../../Icon";
-
-import { logger } from '../../../../../shared/utils/logger';
+import React from 'react';
+import { Icon as LucideIcon, type IconAction } from '../../Icon';
 interface SettingRowProps {
   label: string;
   description?: string;
@@ -15,7 +13,7 @@ export const SettingRow: React.FC<SettingRowProps> = ({
   description,
   icon,
   children,
-  className = "",
+  className = '',
 }) => {
   return (
     <div className={`flex items-center justify-between ${className}`}>
@@ -27,9 +25,7 @@ export const SettingRow: React.FC<SettingRowProps> = ({
         )}
         <div>
           <div className="text-sm font-medium text-white">{label}</div>
-          {description && (
-            <div className="text-[10px] text-white/40">{description}</div>
-          )}
+          {description && <div className="text-[10px] text-white/40">{description}</div>}
         </div>
       </div>
       {children && <div className="shrink-0">{children}</div>}

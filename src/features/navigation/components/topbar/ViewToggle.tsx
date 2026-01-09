@@ -5,7 +5,6 @@ import { ChevronDown, LayoutGrid, Layers, LayoutList, LucideIcon } from 'lucide-
 import { ViewMode } from '../../../../shared/types';
 import { Button, GlassCard, Flex } from '../../../../shared/components/ui';
 
-import { logger } from '../../../../shared/utils/logger';
 interface ViewToggleProps {
   currentViewMode: ViewMode;
   onModeChange: (mode: ViewMode) => void;

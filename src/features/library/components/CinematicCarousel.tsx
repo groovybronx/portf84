@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Button, GlassCard } from "../../../shared/components/ui";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Button, GlassCard } from '../../../shared/components/ui';
+import { motion, AnimatePresence } from 'framer-motion';
 
-import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
-import { PortfolioItem } from "../../../shared/types";
+import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { PortfolioItem } from '../../../shared/types';
 
-import { logger } from '../../../shared/utils/logger';
 interface CinematicCarouselProps {
   items: PortfolioItem[];
   initialIndex: number;
@@ -17,7 +16,6 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
   items,
   initialIndex,
   onClose,
-  onItemClick,
 }) => {
   if (!items || items.length === 0) return null;
 
@@ -36,14 +34,14 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") goToNext();
-      if (e.key === "ArrowLeft") goToPrev();
-      if (e.key === "Escape") onClose();
-      if (e.key === "i" || e.key === "I") setShowInfo((prev) => !prev);
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === 'ArrowLeft') goToPrev();
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'i' || e.key === 'I') setShowInfo((prev) => !prev);
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToNext, goToPrev, onClose]);
 
   // Virtualization: Only render 7 images (current ± 3)
@@ -63,10 +61,8 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
     const translateX = offset * 500;
     const translateZ = offset === 0 ? 250 : -Math.abs(offset) * 200;
     const rotateY = offset * -25;
-    const scale =
-      offset === 0 ? 1.1 : Math.max(0.6, 0.9 - Math.abs(offset) * 0.1);
-    const opacity =
-      offset === 0 ? 1 : Math.max(0.5, 0.85 - Math.abs(offset) * 0.15);
+    const scale = offset === 0 ? 1.1 : Math.max(0.6, 0.9 - Math.abs(offset) * 0.1);
+    const opacity = offset === 0 ? 1 : Math.max(0.5, 0.85 - Math.abs(offset) * 0.15);
     const zIndex = 100 - Math.abs(offset) * 10;
 
     return {
@@ -97,8 +93,8 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
         onClick={() => setShowInfo(!showInfo)}
         className={`absolute top-6 left-6 z-300 p-3 rounded-full border transition-all hover:scale-110 shadow-lg ${
           showInfo
-            ? "bg-blue-500/30 border-blue-400/50 text-blue-200"
-            : "bg-white/20 hover:bg-white/30 border-white/30 text-white"
+            ? 'bg-blue-500/30 border-blue-400/50 text-blue-200'
+            : 'bg-white/20 hover:bg-white/30 border-white/30 text-white'
         }`}
         title="Toggle Info (I)"
       >
@@ -126,14 +122,14 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
       <div
         className="absolute inset-0 flex items-center justify-center overflow-visible"
         style={{
-          perspective: "1500px",
-          perspectiveOrigin: "50% 50%",
+          perspective: '1500px',
+          perspectiveOrigin: '50% 50%',
         }}
       >
         <div
           className="relative w-full h-full flex items-center justify-center"
           style={{
-            transformStyle: "preserve-3d",
+            transformStyle: 'preserve-3d',
           }}
         >
           {visibleItems.map(({ index, offset }) => {
@@ -145,12 +141,10 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
             return (
               <motion.div
                 key={`${item.id}-${offset}`}
-                className={`absolute ${
-                  isCurrent ? "cursor-default" : "cursor-pointer"
-                }`}
+                className={`absolute ${isCurrent ? 'cursor-default' : 'cursor-pointer'}`}
                 style={{
                   zIndex: style.zIndex,
-                  transformStyle: "preserve-3d",
+                  transformStyle: 'preserve-3d',
                 }}
                 initial={{
                   opacity: 0,
@@ -171,7 +165,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
                   scale: 0.5,
                 }}
                 transition={{
-                  type: "spring",
+                  type: 'spring',
                   stiffness: 150,
                   damping: 20,
                   mass: 0.8,
@@ -189,9 +183,9 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
                   className="max-w-[450px] max-h-[600px] object-contain rounded-xl shadow-2xl select-none"
                   style={{
                     filter: isCurrent
-                      ? "brightness(1) contrast(1.05)"
-                      : "brightness(0.65) contrast(0.95)",
-                    transition: "filter 0.3s ease",
+                      ? 'brightness(1) contrast(1.05)'
+                      : 'brightness(0.65) contrast(0.95)',
+                    transition: 'filter 0.3s ease',
                   }}
                   draggable={false}
                 />
@@ -211,13 +205,9 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
             className="absolute bottom-6 left-1/2 -translate-x-1/2 max-w-2xl w-full px-6"
           >
             <GlassCard variant="base" padding="lg" className="rounded-2xl space-y-3">
-              <h3 className="text-xl font-semibold text-white">
-                {currentItem.name}
-              </h3>
+              <h3 className="text-xl font-semibold text-white">{currentItem.name}</h3>
               {currentItem.aiDescription && (
-                <p className="text-gray-300 text-sm">
-                  {currentItem.aiDescription}
-                </p>
+                <p className="text-gray-300 text-sm">{currentItem.aiDescription}</p>
               )}
               {currentItem.aiTags && currentItem.aiTags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -245,7 +235,7 @@ export const CinematicCarousel: React.FC<CinematicCarouselProps> = ({
           <div
             key={idx}
             className={`h-1 rounded-full transition-all ${
-              idx === currentIndex % 20 ? "w-8 bg-white" : "w-1 bg-white/30"
+              idx === currentIndex % 20 ? 'w-8 bg-white' : 'w-1 bg-white/30'
             }`}
           />
         ))}

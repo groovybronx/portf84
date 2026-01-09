@@ -2,7 +2,7 @@
 
 **System design and technical architecture for Lumina Portfolio v0.3.0-beta.1**
 
-**Last Update**: January 8, 2026 (Updated with App.tsx modularization)
+**Last Update**: January 9, 2026 (Updated with TopBar hover fix and state separation)
 
 ---
 
@@ -12,17 +12,17 @@ Lumina Portfolio is built with a modern, feature-based architecture that priorit
 
 ### Technology Stack
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Frontend** | React 18.3.1 + TypeScript | UI Framework |
-| **Styling** | Tailwind CSS v4 | Design System |
-| **State** | React Context + useReducer | Global State |
-| **Animations** | Framer Motion v12 | UI Animations |
-| **Runtime** | Tauri v2 | Native Desktop App |
-| **Database** | SQLite (via plugin) | Local Storage |
-| **AI** | Google Gemini API | Image Analysis |
-| **Testing** | Vitest | Unit/Integration Tests |
-| **Build** | Vite | Fast Development |
+| Layer          | Technology                 | Purpose                |
+| -------------- | -------------------------- | ---------------------- |
+| **Frontend**   | React 18.3.1 + TypeScript  | UI Framework           |
+| **Styling**    | Tailwind CSS v4            | Design System          |
+| **State**      | React Context + useReducer | Global State           |
+| **Animations** | Framer Motion v12          | UI Animations          |
+| **Runtime**    | Tauri v2                   | Native Desktop App     |
+| **Database**   | SQLite (via plugin)        | Local Storage          |
+| **AI**         | Google Gemini API          | Image Analysis         |
+| **Testing**    | Vitest                     | Unit/Integration Tests |
+| **Build**      | Vite                       | Fast Development       |
 
 ---
 
@@ -173,6 +173,7 @@ User Action → Component → Hook/Service → Database/API → State Update →
 ### 2. Context-Based State Management
 
 #### Library Context
+
 ```typescript
 interface LibraryState {
   photos: Photo[];
@@ -190,6 +191,7 @@ interface LibraryAction {
 ```
 
 #### Settings Context
+
 ```typescript
 interface SettingsState {
   language: 'en' | 'fr';
@@ -202,21 +204,23 @@ interface SettingsState {
 ### 3. Service Layer Pattern
 
 #### Database Service
+
 ```typescript
 class PhotoService {
-  async getPhotos(filters?: FilterState): Promise<Photo[]>
-  async addPhoto(photo: CreatePhotoDto): Promise<Photo>
-  async updatePhoto(id: string, updates: UpdatePhotoDto): Promise<Photo>
-  async deletePhoto(id: string): Promise<void>
+  async getPhotos(filters?: FilterState): Promise<Photo[]>;
+  async addPhoto(photo: CreatePhotoDto): Promise<Photo>;
+  async updatePhoto(id: string, updates: UpdatePhotoDto): Promise<Photo>;
+  async deletePhoto(id: string): Promise<void>;
 }
 ```
 
 #### AI Service
+
 ```typescript
 class GeminiService {
-  async analyzeImage(imagePath: string): Promise<AnalysisResult>
-  async batchAnalyze(images: string[]): Promise<AnalysisResult[]>
-  async generateTags(analysis: AnalysisResult): Promise<string[]>
+  async analyzeImage(imagePath: string): Promise<AnalysisResult>;
+  async batchAnalyze(images: string[]): Promise<AnalysisResult[]>;
+  async generateTags(analysis: AnalysisResult): Promise<string[]>;
 }
 ```
 
@@ -227,6 +231,7 @@ class GeminiService {
 ### Schema Design
 
 #### Core Tables
+
 ```sql
 -- Photos table
 CREATE TABLE photos (
@@ -297,6 +302,7 @@ CREATE TABLE analysis_cache (
 ### Database Service Pattern
 
 #### Connection Management
+
 ```typescript
 class DatabaseService {
   private db: Database | null = null;
@@ -316,6 +322,7 @@ class DatabaseService {
 ```
 
 #### Repository Pattern
+
 ```typescript
 export class PhotoRepository {
   constructor(private db: DatabaseService) {}
@@ -326,10 +333,7 @@ export class PhotoRepository {
   }
 
   async findById(id: string): Promise<Photo | null> {
-    const result = await this.db.select<Photo[]>(
-      'SELECT * FROM photos WHERE id = ?',
-      [id]
-    );
+    const result = await this.db.select<Photo[]>('SELECT * FROM photos WHERE id = ?', [id]);
     return result[0] || null;
   }
 
@@ -379,6 +383,7 @@ App
 ### 2. Component Patterns
 
 #### Smart vs Dumb Components
+
 ```typescript
 // Smart Component (with logic)
 export const PhotoGrid: React.FC = () => {
@@ -390,7 +395,7 @@ export const PhotoGrid: React.FC = () => {
 
   return (
     <div className="photo-grid">
-      {photos.map(photo => (
+      {photos.map((photo) => (
         <PhotoCard
           key={photo.id}
           photo={photo}
@@ -414,7 +419,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
   photo,
   onSelect,
   onMultiSelect,
-  selected = false
+  selected = false,
 }) => {
   return (
     <motion.div
@@ -433,6 +438,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 ```
 
 #### Compound Components
+
 ```typescript
 // Modal compound component
 export const Modal: React.FC<ModalProps> & {
@@ -477,7 +483,7 @@ export const ModalFooter: React.FC<{ children: React.ReactNode }> = ({ children 
     <Button onClick={onClose}>Cancel</Button>
     <Button onClick={onSave}>Save</Button>
   </Modal.Footer>
-</Modal>
+</Modal>;
 ```
 
 ---
@@ -487,6 +493,7 @@ export const ModalFooter: React.FC<{ children: React.ReactNode }> = ({ children 
 ### 1. Service Layer Pattern
 
 #### Interface Definition
+
 ```typescript
 interface IPhotoService {
   getPhotos(filters?: FilterState): Promise<Photo[]>;
@@ -498,6 +505,7 @@ interface IPhotoService {
 ```
 
 #### Implementation
+
 ```typescript
 export class PhotoService implements IPhotoService {
   constructor(
@@ -540,6 +548,7 @@ export class PhotoService implements IPhotoService {
 ### 2. Dependency Injection
 
 #### Service Container
+
 ```typescript
 class ServiceContainer {
   private services = new Map<string, any>();
@@ -557,11 +566,15 @@ class ServiceContainer {
 
 // Initialize services
 const container = new ServiceContainer();
-container.register('photoService', () => new PhotoService(
-  container.get('photoRepository'),
-  container.get('geminiService'),
-  container.get('tagService')
-));
+container.register(
+  'photoService',
+  () =>
+    new PhotoService(
+      container.get('photoRepository'),
+      container.get('geminiService'),
+      container.get('tagService')
+    )
+);
 ```
 
 ---
@@ -571,6 +584,7 @@ container.register('photoService', () => new PhotoService(
 ### 1. Gemini Service Design
 
 #### Service Interface
+
 ```typescript
 interface GeminiService {
   analyzeImage(imagePath: string): Promise<ImageAnalysis>;
@@ -582,6 +596,7 @@ interface GeminiService {
 ```
 
 #### Implementation
+
 ```typescript
 export class GeminiServiceImpl implements GeminiService {
   private ai: GoogleGenerativeAI;
@@ -611,9 +626,9 @@ export class GeminiServiceImpl implements GeminiService {
       {
         inlineData: {
           data: imageData,
-          mimeType: 'image/jpeg'
-        }
-      }
+          mimeType: 'image/jpeg',
+        },
+      },
     ]);
 
     return this.parseAnalysisResponse(result.response.text());
@@ -625,14 +640,12 @@ export class GeminiServiceImpl implements GeminiService {
 
     for (let i = 0; i < imagePaths.length; i += batchSize) {
       const batch = imagePaths.slice(i, i + batchSize);
-      const batchResults = await Promise.all(
-        batch.map(path => this.analyzeImage(path))
-      );
+      const batchResults = await Promise.all(batch.map((path) => this.analyzeImage(path)));
       results.push(...batchResults);
 
       // Delay between batches to avoid rate limits
       if (i + batchSize < imagePaths.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
 
@@ -644,6 +657,7 @@ export class GeminiServiceImpl implements GeminiService {
 ### 2. Caching Strategy
 
 #### Analysis Cache
+
 ```typescript
 interface AnalysisCache {
   photoId: string;
@@ -674,7 +688,7 @@ class AnalysisCacheService {
       photoId,
       analysis,
       modelVersion: 'gemini-pro-vision',
-      createdAt: new Date()
+      createdAt: new Date(),
     });
   }
 }
@@ -687,6 +701,7 @@ class AnalysisCacheService {
 ### 1. Context Pattern
 
 #### Library Context
+
 ```typescript
 interface LibraryContextType {
   state: LibraryState;
@@ -705,28 +720,28 @@ const LibraryContext = createContext<LibraryContextType | null>(null);
 export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(libraryReducer, initialState);
 
-  const actions = useMemo(() => ({
-    setPhotos: (photos: Photo[]) => dispatch({ type: 'SET_PHOTOS', payload: photos }),
-    selectPhoto: (id: string) => dispatch({ type: 'SELECT_PHOTO', payload: id }),
-    selectMultiple: (ids: string[]) => dispatch({ type: 'SELECT_MULTIPLE', payload: ids }),
-    clearSelection: () => dispatch({ type: 'CLEAR_SELECTION' }),
-    setViewMode: (mode: ViewMode) => dispatch({ type: 'SET_VIEW_MODE', payload: mode }),
-    setFilters: (filters: FilterState) => dispatch({ type: 'SET_FILTERS', payload: filters })
-  }), []);
+  const actions = useMemo(
+    () => ({
+      setPhotos: (photos: Photo[]) => dispatch({ type: 'SET_PHOTOS', payload: photos }),
+      selectPhoto: (id: string) => dispatch({ type: 'SELECT_PHOTO', payload: id }),
+      selectMultiple: (ids: string[]) => dispatch({ type: 'SELECT_MULTIPLE', payload: ids }),
+      clearSelection: () => dispatch({ type: 'CLEAR_SELECTION' }),
+      setViewMode: (mode: ViewMode) => dispatch({ type: 'SET_VIEW_MODE', payload: mode }),
+      setFilters: (filters: FilterState) => dispatch({ type: 'SET_FILTERS', payload: filters }),
+    }),
+    []
+  );
 
   const value = { state, actions };
 
-  return (
-    <LibraryContext.Provider value={value}>
-      {children}
-    </LibraryContext.Provider>
-  );
+  return <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>;
 };
 ```
 
 ### 2. Performance Optimization
 
 #### Context Splitting
+
 ```typescript
 // Split large contexts to prevent unnecessary re-renders
 const LibraryDataContext = createContext<LibraryDataState | null>(null);
@@ -748,15 +763,19 @@ export const useLibraryActions = () => {
 ```
 
 #### Memoization
+
 ```typescript
 // Expensive calculations in context
 const filteredPhotos = useMemo(() => {
-  return state.photos.filter(photo => {
-    if (state.filters.search && !photo.filename.toLowerCase().includes(state.filters.search.toLowerCase())) {
+  return state.photos.filter((photo) => {
+    if (
+      state.filters.search &&
+      !photo.filename.toLowerCase().includes(state.filters.search.toLowerCase())
+    ) {
       return false;
     }
     if (state.filters.tags.length > 0) {
-      return state.filters.tags.every(tag => photo.tags.includes(tag));
+      return state.filters.tags.every((tag) => photo.tags.includes(tag));
     }
     return true;
   });
@@ -773,6 +792,7 @@ const debouncedSearch = useDebounce(state.filters.search, 300);
 ### 1. Tauri Configuration
 
 #### tauri.conf.json
+
 ```json
 {
   "build": {
@@ -804,6 +824,7 @@ const debouncedSearch = useDebounce(state.filters.search, 300);
 ### 2. Vite Configuration
 
 #### vite.config.ts
+
 ```typescript
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -816,8 +837,8 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
       '@features': resolve(__dirname, 'src/features'),
       '@shared': resolve(__dirname, 'src/shared'),
-      '@services': resolve(__dirname, 'src/services')
-    }
+      '@services': resolve(__dirname, 'src/services'),
+    },
   },
   build: {
     outDir: 'dist',
@@ -827,15 +848,15 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           ui: ['framer-motion', '@radix-ui/react-*'],
-          utils: ['date-fns', 'lodash-es']
-        }
-      }
-    }
+          utils: ['date-fns', 'lodash-es'],
+        },
+      },
+    },
   },
   server: {
     port: 1420,
-    strictPort: true
-  }
+    strictPort: true,
+  },
 });
 ```
 
@@ -871,6 +892,7 @@ tests/
 ### 2. Test Utilities
 
 #### Mock Services
+
 ```typescript
 // tests/mocks/photoService.mock.ts
 export const mockPhotoService = {
@@ -878,7 +900,7 @@ export const mockPhotoService = {
   addPhoto: vi.fn().mockResolvedValue(mockPhoto),
   updatePhoto: vi.fn().mockResolvedValue(mockPhoto),
   deletePhoto: vi.fn().mockResolvedValue(undefined),
-  analyzePhoto: vi.fn().mockResolvedValue(mockAnalysis)
+  analyzePhoto: vi.fn().mockResolvedValue(mockAnalysis),
 };
 
 // tests/setup.ts
@@ -888,19 +910,19 @@ import { mockPhotoService } from './mocks/photoService.mock';
 // Mock Tauri APIs
 vi.mock('@tauri-apps/plugin-fs', () => ({
   readDir: vi.fn(),
-  exists: vi.fn()
+  exists: vi.fn(),
 }));
 
 vi.mock('@tauri-apps/plugin-sql', () => ({
   load: vi.fn().mockResolvedValue({
     select: vi.fn(),
-    execute: vi.fn()
-  })
+    execute: vi.fn(),
+  }),
 }));
 
 // Provide mock services
 vi.mock('@/services/photoService', () => ({
-  PhotoService: vi.fn(() => mockPhotoService)
+  PhotoService: vi.fn(() => mockPhotoService),
 }));
 ```
 
@@ -911,6 +933,7 @@ vi.mock('@/services/photoService', () => ({
 ### 1. Rendering Optimization
 
 #### Virtualization
+
 ```typescript
 // Large list virtualization
 import { FixedSizeList as List } from 'react-window';
@@ -923,12 +946,7 @@ export const VirtualPhotoGrid: React.FC<{ photos: Photo[] }> = ({ photos }) => {
   );
 
   return (
-    <List
-      height={600}
-      itemCount={Math.ceil(photos.length / 4)}
-      itemSize={200}
-      width="100%"
-    >
+    <List height={600} itemCount={Math.ceil(photos.length / 4)} itemSize={200} width="100%">
       {Row}
     </List>
   );
@@ -936,6 +954,7 @@ export const VirtualPhotoGrid: React.FC<{ photos: Photo[] }> = ({ photos }) => {
 ```
 
 #### Image Optimization
+
 ```typescript
 // Progressive image loading
 export const ProgressiveImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
@@ -954,11 +973,7 @@ export const ProgressiveImage: React.FC<{ src: string; alt: string }> = ({ src, 
   return (
     <div className="progressive-image">
       {loading && <ImagePlaceholder />}
-      <img
-        src={imageSrc || placeholderSrc}
-        alt={alt}
-        style={{ opacity: loading ? 0.5 : 1 }}
-      />
+      <img src={imageSrc || placeholderSrc} alt={alt} style={{ opacity: loading ? 0.5 : 1 }} />
     </div>
   );
 };
@@ -967,6 +982,7 @@ export const ProgressiveImage: React.FC<{ src: string; alt: string }> = ({ src, 
 ### 2. Memory Management
 
 #### Image Cache
+
 ```typescript
 class ImageCache {
   private cache = new Map<string, HTMLImageElement>();
@@ -998,6 +1014,7 @@ class ImageCache {
 ### 1. API Key Management
 
 #### Secure Storage
+
 ```typescript
 export class SecureStorageService {
   async storeApiKey(key: string): Promise<void> {
@@ -1017,6 +1034,7 @@ export class SecureStorageService {
 ### 2. File System Security
 
 #### Path Validation
+
 ```typescript
 export function validateImagePath(path: string): boolean {
   // Normalize path
@@ -1035,6 +1053,7 @@ export function validateImagePath(path: string): boolean {
 ### 3. Content Security Policy
 
 #### CSP Configuration
+
 ```json
 {
   "security": {
@@ -1050,6 +1069,7 @@ export function validateImagePath(path: string): boolean {
 ### 1. Build Pipeline
 
 #### GitHub Actions
+
 ```yaml
 name: Build and Release
 on:
@@ -1090,6 +1110,7 @@ jobs:
 ### 2. Distribution Strategy
 
 #### Auto-Update
+
 ```typescript
 // tauri.conf.json
 {
@@ -1111,6 +1132,7 @@ jobs:
 ### 1. Error Tracking
 
 #### Sentry Integration
+
 ```typescript
 import * as Sentry from '@sentry/react';
 
@@ -1118,7 +1140,7 @@ export const initSentry = () => {
   Sentry.init({
     dsn: process.env.VITE_SENTRY_DSN,
     environment: import.meta.env.MODE,
-    tracesSampleRate: 1.0
+    tracesSampleRate: 1.0,
   });
 };
 
@@ -1130,6 +1152,7 @@ export const captureError = (error: Error, context?: any) => {
 ### 2. Performance Monitoring
 
 #### Metrics Collection
+
 ```typescript
 export class PerformanceMonitor {
   static measureRender<T>(name: string, fn: () => T): T {
@@ -1142,7 +1165,7 @@ export class PerformanceMonitor {
     // Send to analytics
     analytics.track('performance', {
       metric: name,
-      duration: end - start
+      duration: end - start,
     });
 
     return result;
@@ -1157,6 +1180,7 @@ export class PerformanceMonitor {
 ### 1. Scalability
 
 #### Plugin Architecture
+
 ```typescript
 interface Plugin {
   name: string;
@@ -1186,6 +1210,7 @@ class PluginManager {
 ### 2. Cloud Integration
 
 #### Sync Service
+
 ```typescript
 interface SyncService {
   syncPhotos(): Promise<void>;
@@ -1198,6 +1223,7 @@ interface SyncService {
 ### 3. Advanced AI Features
 
 #### Custom Models
+
 ```typescript
 interface AIModel {
   name: string;
@@ -1220,6 +1246,62 @@ interface AIModel {
 
 ---
 
+## 🎯 **TopBar Architecture (January 2026)**
+
+### Overview
+
+The TopBar is a floating navigation component that provides quick access to main application functions. It features intelligent hover detection, independent state management, and smooth animations.
+
+### Key Features
+
+- **Independent Pin State**: Separate from sidebar state for better UX
+- **Hover Detection**: 128px external hover zone for easy access
+- **Absolute Positioning**: Overlays content without layout shifts
+- **Responsive Design**: Adapts to different screen sizes
+
+### Architecture Pattern
+
+```typescript
+// State Separation
+const [isTopBarPinned, setIsTopBarPinned] = useState(true);
+const [isTopBarHovered, setIsTopBarHovered] = useState(false);
+
+// External Hover Zone
+<div
+  className="absolute top-0 left-0 right-0 h-32 z-30 pointer-events-auto"
+  onMouseEnter={() => setIsTopBarHovered(true)}
+  onMouseLeave={() => setIsTopBarHovered(false)}
+/>
+
+// TopBar Component
+<TopBar
+  isSidebarPinned={isTopBarPinned}
+  onToggleTopBarPin={() => setIsTopBarPinned(!isTopBarPinned)}
+  isExternalHovered={isTopBarHovered}
+/>
+```
+
+### Visibility Logic
+
+```typescript
+const shouldShow = isSidebarPinned || isExternalHovered || isHovered || isViewMenuOpen;
+```
+
+### Z-Index Hierarchy
+
+- **External Hover Zone**: `z-30` (below TopBar)
+- **TopBar Container**: `z-40` (above hover zone)
+- **Content Gallery**: `z-10` (below all)
+
+### Best Practices
+
+1. **State Independence**: Keep TopBar state separate from sidebar
+2. **Pointer Events**: Use external zone for hover detection
+3. **Accessibility**: Maintain 128px hover zone for easy access
+4. **Performance**: Use absolute positioning to avoid layout shifts
+
+---
+
 ## 🏗️ **Modular Architecture (January 2026)**
 
 ### App.tsx Modularization Overview
@@ -1229,6 +1311,7 @@ In January 2026, we completed a major architectural refactoring to improve maint
 ### Architecture Changes
 
 #### Before Refactoring
+
 ```
 App.tsx (682 lines)
 ├── Layout logic (100+ lines)
@@ -1239,6 +1322,7 @@ App.tsx (682 lines)
 ```
 
 #### After Refactoring
+
 ```
 App.tsx (Clean structure)
 ├── Layout components → features/layout/
@@ -1250,11 +1334,17 @@ App.tsx (Clean structure)
 ### New Architectural Patterns
 
 #### 1. Layout Component Pattern
+
 ```typescript
 // features/layout/AppLayout.tsx
 export const AppLayout: React.FC<AppLayoutProps> = ({
-  topBar, sidebar, mainContent, tagHub,
-  isFolderDrawerOpen, isSidebarPinned, isTagHubOpen
+  topBar,
+  sidebar,
+  mainContent,
+  tagHub,
+  isFolderDrawerOpen,
+  isSidebarPinned,
+  isTagHubOpen,
 }) => (
   <div className="main-app bg-surface h-screen overflow-hidden flex flex-col">
     <div className="top-bar-area">{topBar}</div>
@@ -1268,6 +1358,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 ```
 
 #### 2. Hook-Based Logic Pattern
+
 ```typescript
 // shared/hooks/useAppHandlers.ts
 export const useAppHandlers = (params) => ({
@@ -1289,10 +1380,14 @@ export const useSidebarLogic = (params) => ({
 ```
 
 #### 3. Overlay Container Pattern
+
 ```typescript
 // features/overlays/AppOverlays.tsx
 export const AppOverlays: React.FC<AppOverlaysProps> = ({
-  contextMenu, selectedItem, analyzeItem, isDragSelecting
+  contextMenu,
+  selectedItem,
+  analyzeItem,
+  isDragSelecting,
 }) => (
   <>
     <UnifiedProgress />
@@ -1305,21 +1400,25 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
 ### Benefits Achieved
 
 #### 1. **Improved Maintainability**
+
 - **Single Responsibility**: Each component has one clear purpose
 - **Easier Debugging**: Smaller components are easier to troubleshoot
 - **Better Organization**: Related code is co-located
 
 #### 2. **Enhanced Testability**
+
 - **Focused Testing**: Each component can be tested independently
 - **Better Mocks**: Smaller, more targeted test mocks
 - **Higher Coverage**: Easier to achieve comprehensive test coverage (171/171 tests pass)
 
 #### 3. **Increased Reusability**
+
 - **Layout Components**: Can be reused across different app sections
 - **Custom Hooks**: Logic can be shared between components
 - **Overlay Components**: Standardized overlay patterns
 
 #### 4. **Better Developer Experience**
+
 - **Faster Development**: Easier to locate and modify code
 - **Clearer Structure**: New developers can understand architecture quickly
 - **Type Safety**: Better TypeScript support with focused interfaces
@@ -1327,11 +1426,13 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
 ### Performance Impact
 
 #### Positive Effects
+
 - **Reduced Bundle Size**: Better tree-shaking with smaller modules
 - **Improved Caching**: Smaller components cache better
 - **Faster Hot Reload**: Changes affect smaller code sections
 
 #### Considerations
+
 - **Additional Imports**: More import statements
 - **Component Props**: More prop drilling (managed with context)
 - **Build Complexity**: Slightly more complex build process

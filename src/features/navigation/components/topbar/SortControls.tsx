@@ -4,7 +4,6 @@ import { ArrowUpDown } from 'lucide-react';
 import { SortOption, SortDirection } from '../../../../shared/types';
 import { Button, Flex, GlassCard } from '../../../../shared/components/ui';
 
-import { logger } from '../../../../shared/utils/logger';
 interface SortControlsProps {
   sortOption: SortOption;
   sortDirection: SortDirection;

@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { GlassCard } from '../GlassCard';
 import { Button } from '../Button';
-
-import { logger } from '../../../../../shared/utils/logger';
 interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;

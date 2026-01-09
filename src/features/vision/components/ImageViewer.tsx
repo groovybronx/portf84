@@ -39,8 +39,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   onNext,
   onPrev,
   showColorTags = false,
-  availableTags,
-  allItems = [],
+  availableTags: _availableTags,
+  allItems: _allItems = [],
 }) => {
   const { analyzing, thinkingText, error, analyze, reset } = useVision(onUpdateItem);
   const [deepAnalysis, setDeepAnalysis] = useState(false);
@@ -94,7 +94,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
         files: [item.file],
       });
     } catch (error) {
-      logger.error('Error sharing:', error);
+      logger.error('app', 'Error sharing:', error);
     }
   };
 
@@ -109,7 +109,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
         ...item,
         width: img.naturalWidth,
         height: img.naturalHeight,
-      });
+      } as PortfolioItem);
     }
   };
 
@@ -245,12 +245,15 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                     (c, i) => (
                       <Button
                         key={c}
-                        onClick={() =>
-                          onUpdateItem({
-                            ...item,
-                            colorTag: item.colorTag === c ? undefined : c,
-                          })
-                        }
+                        onClick={() => {
+                          const updatedItem = { ...item };
+                          if (item.colorTag === c) {
+                            delete updatedItem.colorTag;
+                          } else {
+                            updatedItem.colorTag = c;
+                          }
+                          onUpdateItem(updatedItem as PortfolioItem);
+                        }}
                         className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-110 ${
                           item.colorTag === c
                             ? 'border-white scale-110 ring-2 ring-white/20'
@@ -263,7 +266,11 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                   )}
                   <Flex align="center" justify="center">
                     <Button
-                      onClick={() => onUpdateItem({ ...item, colorTag: undefined })}
+                      onClick={() => {
+                        const updatedItem = { ...item };
+                        delete updatedItem.colorTag;
+                        onUpdateItem(updatedItem as PortfolioItem);
+                      }}
                       className={`w-6 h-6 rounded-full border border-white/20 text-xs text-gray-500 hover:text-white hover:border-white ${
                         !item.colorTag ? 'opacity-100 cursor-default' : 'opacity-50'
                       }`}
@@ -316,7 +323,10 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                         onClick={handleAnalyze}
                         className="w-full py-3 rounded-lg bg-linear-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium shadow-lg shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group"
                       >
-                        <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
+                        <Sparkles
+                          size={16}
+                          className="group-hover:rotate-12 transition-transform"
+                        />
                         Generate Description
                       </Button>
                       <Flex align="center" gap="sm" justify="center" className="mt-2">

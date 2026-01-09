@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Icon } from '../../../../shared/components/Icon';
 import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
-import { logger } from '../../../../shared/utils/logger';
 interface FolderDrawerHeaderProps {
   totalItems?: number;
   onAdd?: () => void;
