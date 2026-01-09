@@ -416,7 +416,14 @@ jobs:
         with:
           tagName: 'v${{ needs.semantic-release.outputs.version }}'
           releaseName: 'Lumina Portfolio v${{ needs.semantic-release.outputs.version }}'
-          releaseBody: ${{ needs.semantic-release.outputs.release_notes }}
+          releaseBody: |
+            ## Release v${{ needs.semantic-release.outputs.version }}
+
+            ### 🚀 Nouveautés
+            Release notes générées automatiquement.
+
+            ### 📦 Installation
+            Téléchargez la version correspondante à votre système ci-dessous.
           releaseDraft: false
           prerelease: ${{ needs.semantic-release.outputs.is_prerelease }}
           includeDebug: false
