@@ -2,12 +2,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings as SettingsIcon, Save } from 'lucide-react';
 import { Button, Flex, Stack, GlassCard } from '@/shared/components/ui';
-import { logger } from '../../../../shared/utils/logger';
 import {
   loadTagSettings,
   saveTagSettings,
   resetTagSettings,
-  DEFAULT_TAG_SETTINGS,
   type TagSettings,
 } from '@/shared/utils/tagSettings';
 

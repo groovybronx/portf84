@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { XCircle, Eye, EyeOff } from 'lucide-react';
 import { COLOR_PALETTE } from '../../../../shared/types';
 import { Button, Flex, GlassCard } from '../../../../shared/components/ui';
-
-import { logger } from '../../../../shared/utils/logger';
 interface ColorPickerProps {
   activeColorFilter: string | null;
   onColorAction: (color: string | null) => void;

@@ -4,7 +4,6 @@ import { Tag, X, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button, GlassCard, Flex, Stack } from '../../../shared/components/ui';
 
-import { logger } from '../../../shared/utils/logger';
 interface AddTagModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -127,7 +126,12 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
                     <Button variant="ghost" onClick={onClose}>
                       {t('common:cancel')}
                     </Button>
-                    <Button type="submit" disabled={!tag.trim()} icon={<Plus size={16} />} iconPosition="left">
+                    <Button
+                      type="submit"
+                      disabled={!tag.trim()}
+                      icon={<Plus size={16} />}
+                      iconPosition="left"
+                    >
                       {t('tags:addTag')}
                     </Button>
                   </Flex>

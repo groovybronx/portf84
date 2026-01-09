@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Plus, Tag as TagIcon } from 'lucide-react';
 import { Button, Stack, Flex } from '@/shared/components/ui';
 import { useTranslation } from 'react-i18next';
 
-import { logger } from '../../../../shared/utils/logger';
 // Constants
 const SUGGESTION_BLUR_DELAY = 200; // Allow click events on suggestions before blur hides dropdown
 

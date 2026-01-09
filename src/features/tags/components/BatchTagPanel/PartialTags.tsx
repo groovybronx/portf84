@@ -3,7 +3,6 @@ import { Plus, Minus } from 'lucide-react';
 import { Button, Flex, Stack } from '@/shared/components/ui';
 import { useTranslation } from 'react-i18next';
 
-import { logger } from '../../../../shared/utils/logger';
 interface PartialTag {
   name: string;
   count: number;

@@ -4,7 +4,7 @@
  */
 import { nanoid } from 'nanoid';
 import { getDB } from './db';
-import type { DBTag, DBItemTag, ParsedTag, TagType, TagNode } from '../../shared/types/database';
+import type { DBTag, ParsedTag, TagType, TagNode } from '../../shared/types/database';
 import { invalidateAnalysisCache } from '../tagAnalysisCache';
 
 import { logger } from '../../shared/utils/logger';

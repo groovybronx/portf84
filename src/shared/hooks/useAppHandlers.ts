@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { open } from '@tauri-apps/plugin-dialog';
 import { PortfolioItem } from '../types';
+import { OverlayKey } from './useModalState';
 
 import { logger } from '../utils/logger';
 interface AppHandlers {
@@ -15,19 +16,13 @@ interface AppHandlers {
 interface UseAppHandlersParams {
   t: any;
   activeCollection: any;
-  setIsCollectionManagerOpen: (value: boolean) => void;
   sourceFolders: any[];
   addSourceFolder: (path: string) => Promise<void>;
   loadFromPath: (path: string) => Promise<void>;
   processedItems: PortfolioItem[];
   addToQueue: (items: PortfolioItem[]) => void;
   selectedItem: PortfolioItem | null;
-  setIsFolderDrawerOpen: (value: boolean) => void;
-  setIsSidebarPinned: (value: boolean) => void;
-  setIsMoveModalOpen: (value: boolean) => void;
-  setIsSettingsOpen: (value: boolean) => void;
-  setIsTagHubOpen: (value: boolean) => void;
-  setIsBatchTagPanelOpen: (value: boolean) => void;
+  setOverlay: (key: OverlayKey, open: boolean) => void;
   showColorTags: boolean;
   setShowColorTags: (value: boolean) => void;
 }
@@ -36,13 +31,13 @@ export const useAppHandlers = (params: UseAppHandlersParams): AppHandlers => {
   const {
     t,
     activeCollection,
-    setIsCollectionManagerOpen,
     sourceFolders,
     addSourceFolder,
     loadFromPath,
     processedItems,
     addToQueue,
     selectedItem,
+    setOverlay,
     showColorTags,
     setShowColorTags,
   } = params;
@@ -51,7 +46,7 @@ export const useAppHandlers = (params: UseAppHandlersParams): AppHandlers => {
     try {
       if (!activeCollection) {
         alert(t('library:selectProjectPrompt'));
-        setIsCollectionManagerOpen(true);
+        setOverlay('collectionManager', true);
         return;
       }
 
@@ -81,14 +76,7 @@ export const useAppHandlers = (params: UseAppHandlersParams): AppHandlers => {
     } catch (e) {
       logger.debug('app', 'Cancelled', e);
     }
-  }, [
-    t,
-    activeCollection,
-    setIsCollectionManagerOpen,
-    sourceFolders,
-    addSourceFolder,
-    loadFromPath,
-  ]);
+  }, [t, activeCollection, setOverlay, sourceFolders, addSourceFolder, loadFromPath]);
 
   const handleShareSelected = useCallback(async () => {
     // Implementation for sharing selected items
