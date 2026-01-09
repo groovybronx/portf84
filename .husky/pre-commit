@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+
+# Run tests
+npm test
+
+# Run type check
+npm run type-check
+
+# Check commit message format
+npm run commitlint -- $1
