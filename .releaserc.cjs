@@ -22,6 +22,7 @@ module.exports = {
       {
         assets: ['CHANGELOG.md', 'package.json', 'src-tauri/Cargo.toml'],
         message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
+        gitCommitOptions: ['--no-verify'],
       },
     ],
   ],
