@@ -7,6 +7,7 @@ import { logger } from '../../../../shared/utils/logger';
 import {
   loadTagHubSettings,
   saveTagHubSettings,
+  DEFAULT_TAGHUB_SETTINGS,
   type TagHubSettings,
   type FilterMode,
 } from '@/shared/utils/tagHubSettings';
@@ -22,8 +23,18 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Load persisted settings on mount
-  const [settings, setSettings] = useState<TagHubSettings>(() => loadTagHubSettings());
+  const [settings, setSettings] = useState<TagHubSettings>(DEFAULT_TAGHUB_SETTINGS);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Load settings from storage on mount
+  useEffect(() => {
+    try {
+      const loadedSettings = loadTagHubSettings();
+      setSettings(loadedSettings);
+    } catch (error) {
+      logger.error('app', 'Failed to load TagHub settings', error);
+    }
+  }, []);
 
   // Debounced save function
   const debouncedSave = useCallback((newSettings: TagHubSettings) => {
