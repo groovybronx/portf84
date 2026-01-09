@@ -13,6 +13,7 @@ export interface UseKeyboardShortcutsProps {
   onSelectAll?: () => void;
   onDelete?: () => void;
   onClearSelection?: () => void;
+  selectedItem?: PortfolioItem | null; // Add this to detect fullscreen mode
 }
 
 /**
@@ -37,6 +38,7 @@ export const useKeyboardShortcuts = ({
   onSelectAll,
   onDelete,
   onClearSelection,
+  selectedItem,
 }: UseKeyboardShortcutsProps) => {
   const { shortcuts } = useLocalShortcuts();
 
@@ -44,6 +46,17 @@ export const useKeyboardShortcuts = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore keyboard shortcuts when typing in inputs
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      // Disable global navigation when an item is selected (fullscreen mode)
+      // Let ImageViewer handle its own keyboard navigation
+      if (selectedItem) {
+        // Only allow Escape key to exit fullscreen when selectedItem is present
+        if (e.key === 'Escape' && onClearSelection) {
+          e.preventDefault();
+          onClearSelection();
+        }
+        return;
+      }
 
       // 1. Navigation & Opening
       const isNavUp = shortcuts.NAV_UP.includes(e.key);
@@ -158,5 +171,6 @@ export const useKeyboardShortcuts = ({
     onDelete,
     onClearSelection,
     shortcuts,
+    selectedItem, // Add selectedItem to dependencies
   ]);
 };

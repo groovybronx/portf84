@@ -3,7 +3,7 @@
  * Front face of the card showing the image and overlay info
  */
 import React from 'react';
-import { Button } from '../../../../shared/components/ui';
+import { Button, Skeleton } from '../../../../shared/components/ui';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Info } from 'lucide-react';
@@ -45,7 +45,7 @@ export const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
       }}
     >
       {/* Skeleton Loader */}
-      {!isLoaded && <div className="absolute inset-0 bg-white/5 animate-pulse z-0" />}
+      {!isLoaded && <Skeleton variant="card" className="absolute inset-0 z-0" />}
 
       {/* Image */}
       <motion.img
