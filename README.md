@@ -4,6 +4,10 @@
 
 **Galerie Photo Intelligente • Application Desktop Native**
 
+![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
+![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)
+![Tailwind](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwindcss)
+![Gemini](https://img.shields.io/badge/Gemini-AI-4285F4?logo=google)
 ![Version](https://img.shields.io/badge/version-1.0.0-green)
 
 </div>
@@ -49,6 +53,10 @@
 
 ---
 
+---
+
+## 🎯 Idéal Pour
+
 - **Photographes** : Organisez et cataloguez vos shootings
 - **Créateurs** : Gérez vos assets visuels et inspirations
 - **Familles** : Classifiez et retrouvez facilement vos souvenirs
@@ -84,56 +92,11 @@
 
 ---
 
-## 📦 Installation
+## � Disponible
 
-### Prérequis
-
-- [Node.js](https://nodejs.org/) (LTS)
-- [Rust](https://rustup.rs/) (stable)
-- macOS 10.15+ / Windows 10+ / Linux
-
-### Développement
-
-```bash
-# Cloner le repo
-git clone https://github.com/your-username/lumina-portfolio.git
-cd lumina-portfolio
-
-# Installer les dépendances
-npm install
-
-# Lancer en mode dev (Frontend + Tauri)
-npm run tauri:dev
-```
-
-### Build Production
-
-```bash
-# Générer l'app native (.dmg / .exe / .AppImage)
-npm run tauri:build
-```
-
----
-
-## ⚙️ Configuration
-
-### Clé API Gemini
-
-**Option 1** : Via l'interface
-
-- Ouvrir l'application
-- Cliquer sur ⚙️ (Paramètres)
-- Entrer votre clé API
-
-**Option 2** : Via fichier `.env.local`
-
-```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-```
-
----
-
-## 🗂️ Structure du Projet
+- **macOS** : macOS 10.15 et supérieur
+- **Windows** : Windows 10 et supérieur
+- **Linux** : Ubuntu 20.04 et supérieur
 
 ```
 lumina-portfolio/
@@ -162,6 +125,8 @@ lumina-portfolio/
 │   └── tauri.conf.json # Configuration Tauri
 └── tests/              # Tests automatisés (171/171 ✅)
 ```
+
+> > > > > > > 48308f6 (docs: update README and fix slack-notifier workflow)
 
 ---
 
@@ -240,6 +205,8 @@ BREAKING CHANGE: remove deprecated API     # → Version majeure (1.0.0 → 2.0.
 
 ---
 
+---
+
 ## 📄 License
 
 MIT © 2026
@@ -256,6 +223,4 @@ Ce projet est développé avec passion. Retrouvez le code source et contribuez s
 
 **Made with ❤️ pour les amoureux de la photo**
 
-# </div>
-
-MIT © 2026
+</div>
