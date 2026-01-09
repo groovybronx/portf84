@@ -1,7 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState } from 'react';
 
-import { logger } from '../utils/logger';
-export type TagHubTab = "browse" | "manage" | "fusion" | "settings";
+export type TagHubTab = 'browse' | 'manage' | 'fusion' | 'settings';
 
 export interface ModalState {
   // States
@@ -51,8 +50,7 @@ export const useModalState = (): ModalState => {
   const [isTagHubOpen, setIsTagHubOpen] = useState(false);
   const [isBatchTagPanelOpen, setIsBatchTagPanelOpen] = useState(false);
   const [isShortcutsHelpOpen, setIsShortcutsHelpOpen] = useState(false);
-  const [tagHubActiveTab, setTagHubActiveTab] = useState<TagHubTab>("browse");
-
+  const [tagHubActiveTab, setTagHubActiveTab] = useState<TagHubTab>('browse');
 
   return {
     // States

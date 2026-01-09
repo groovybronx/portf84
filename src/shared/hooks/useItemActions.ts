@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import { PortfolioItem } from "../types";
-import { analyzeImage } from "../../features/vision";
+import { useCallback } from 'react';
+import { PortfolioItem } from '../types';
+import { analyzeImage } from '../../features/vision';
 
 import { logger } from '../utils/logger';
 export interface UseItemActionsProps {
@@ -15,11 +15,7 @@ export interface UseItemActionsProps {
   clearSelection: () => void;
   setSelectedIds: (ids: Set<string>) => void;
   createVirtualFolder: (name: string) => string;
-  moveItemsToFolder: (
-    itemIds: Set<string>,
-    folderId: string,
-    items: PortfolioItem[]
-  ) => void;
+  moveItemsToFolder: (itemIds: Set<string>, folderId: string, items: PortfolioItem[]) => void;
   setIsMoveModalOpen: (open: boolean) => void;
   setIsAddTagModalOpen: (open: boolean) => void;
   activeCollection: { id: string; name: string } | null;
@@ -100,16 +96,19 @@ export const useItemActions = ({
         if (item) itemsToUpdate = [item];
       }
 
-      updateItems(itemsToUpdate.map((item) => ({ ...item, colorTag: color })));
+      updateItems(
+        itemsToUpdate.map((item) => {
+          const updatedItem = { ...item };
+          if (color) {
+            updatedItem.colorTag = color;
+          } else {
+            delete updatedItem.colorTag;
+          }
+          return updatedItem;
+        })
+      );
     },
-    [
-      selectionMode,
-      selectedIds,
-      selectedItem,
-      focusedId,
-      currentItems,
-      updateItems,
-    ]
+    [selectionMode, selectedIds, selectedItem, focusedId, currentItems, updateItems]
   );
 
   // Analyze item with AI
@@ -125,13 +124,13 @@ export const useItemActions = ({
         });
       } catch (e: any) {
         logger.error('app', 'Error', e);
-        if (e.name === "ApiKeyError") {
+        if (e.name === 'ApiKeyError') {
           alert(e.message);
           // TODO: Open Settings Modal automatically
-        } else if (e.name === "NetworkError") {
-          alert("Connection failed. Please check your internet.");
+        } else if (e.name === 'NetworkError') {
+          alert('Connection failed. Please check your internet.');
         } else {
-          alert(`Analysis failed: ${e.message || "Unknown error"}`);
+          alert(`Analysis failed: ${e.message || 'Unknown error'}`);
         }
       }
     },
@@ -145,13 +144,7 @@ export const useItemActions = ({
       clearSelection();
       setIsMoveModalOpen(false);
     },
-    [
-      selectedIds,
-      currentItems,
-      moveItemsToFolder,
-      clearSelection,
-      setIsMoveModalOpen,
-    ]
+    [selectedIds, currentItems, moveItemsToFolder, clearSelection, setIsMoveModalOpen]
   );
 
   // Create folder and move items

@@ -5,7 +5,6 @@ import { CheckCircle2, AlertCircle, Loader2, X } from 'lucide-react';
 import { Button } from './ui/Button';
 import { GlassCard } from './ui/GlassCard';
 
-import { logger } from '../utils/logger';
 export const UnifiedProgress: React.FC = () => {
   const { tasks, removeTask } = useProgress();
 

@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Icon, type IconAction } from "../../Icon";
-import { IconPicker } from "./IconPicker";
-import { Button } from "../Button";
-
-import { logger } from '../../../../../shared/utils/logger';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Icon, type IconAction } from '../../Icon';
+import { IconPicker } from './IconPicker';
+import { Button } from '../Button';
 interface ColorPickerProps {
   value: string;
   onChange: (color: string) => void;
@@ -41,8 +39,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               size="icon-sm"
               className={`rounded-md shrink-0 transition-transform ${
                 value === color.value
-                  ? "ring-2 ring-white scale-110 z-10"
-                  : "opacity-60 hover:opacity-100 hover:scale-105"
+                  ? 'ring-2 ring-white scale-110 z-10'
+                  : 'opacity-60 hover:opacity-100 hover:scale-105'
               }`}
               style={{ backgroundColor: color.value }}
               title={color.name}
@@ -58,9 +56,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             variant="ghost"
             size="icon"
             className={`rounded-lg shadow-inner border border-white/10 transition-all shrink-0 ml-2 ${
-              showIconPicker
-                ? "ring-2 ring-white/30 scale-105"
-                : "hover:scale-105"
+              showIconPicker ? 'ring-2 ring-white/30 scale-105' : 'hover:scale-105'
             }`}
             style={{ backgroundColor: value }}
             title="Change Icon"
@@ -76,7 +72,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         {showIconPicker && icon && onIconChange && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="overflow-hidden"

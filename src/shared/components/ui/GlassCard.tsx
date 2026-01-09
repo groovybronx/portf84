@@ -2,7 +2,6 @@ import React from 'react';
 import { cn } from './Button';
 import { motion, HTMLMotionProps } from 'framer-motion';
 
-import { logger } from '../../utils/logger';
 /**
  * GlassCard - Polymorphic glassmorphism card component
  *

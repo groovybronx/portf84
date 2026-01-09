@@ -43,12 +43,6 @@ export const useAppHandlers = (params: UseAppHandlersParams): AppHandlers => {
     processedItems,
     addToQueue,
     selectedItem,
-    setIsFolderDrawerOpen,
-    setIsSidebarPinned,
-    setIsMoveModalOpen,
-    setIsSettingsOpen,
-    setIsTagHubOpen,
-    setIsBatchTagPanelOpen,
     showColorTags,
     setShowColorTags,
   } = params;

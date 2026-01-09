@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Icon, type IconAction } from './Icon';
+import { Icon } from './Icon';
 import { open } from '@tauri-apps/plugin-dialog';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +50,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             }
           }
         } catch (e) {
-          logger.error('Failed to load secure key:', e);
+          logger.error('storage', 'Failed to load secure key:', e);
           // Fallback en cas d'erreur
           const storedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
           if (storedKey) setApiKey(storedKey);
@@ -78,7 +78,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         setDbPath(selected);
       }
     } catch (err) {
-      logger.error('Failed to pick directory:', err);
+      logger.error('storage', 'Failed to pick directory:', err);
     }
   };
 

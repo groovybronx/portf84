@@ -14,7 +14,6 @@ import { BatchActions } from './topbar/BatchActions';
 import { ColorPicker } from './topbar/ColorPicker';
 import { ViewToggle } from './topbar/ViewToggle';
 
-import { logger } from '../../../shared/utils/logger';
 interface TopBarProps {
   folderName?: string;
   onOpenFolders: () => void;
@@ -74,7 +73,6 @@ export const TopBar: React.FC<TopBarProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const shouldShow = isPinned || isHovered || isViewMenuOpen;
-  const isSelectionSupported = viewMode !== ViewMode.CAROUSEL;
   const selectedCount = selectedIds.size;
 
   // Grid Size Slider Logic (Inverted)

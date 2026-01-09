@@ -1,7 +1,7 @@
 // Re-export all split context modules for backward compatibility
-export { LibraryProvider } from "./LibraryContext.provider";
-export { useLibraryState } from "./LibraryContext.state";
-export { useLibraryActions } from "./LibraryContext.actions";
+export { LibraryProvider } from './LibraryContext.provider';
+export { useLibraryState } from './LibraryContext.state';
+export { useLibraryActions } from './LibraryContext.actions';
 
 // Export types
 export type {
@@ -10,13 +10,11 @@ export type {
   LibraryContextType,
   LibraryContextState,
   LibraryContextActions,
-} from "./LibraryContext.types";
+} from './LibraryContext.types';
 
 // Import hooks for legacy wrapper
-import { useLibraryState } from "./LibraryContext.state";
-import { useLibraryActions } from "./LibraryContext.actions";
-
-import { logger } from '../utils/logger';
+import { useLibraryState } from './LibraryContext.state';
+import { useLibraryActions } from './LibraryContext.actions';
 // Legacy hook (Wrapper) - combines state and actions
 export const useLibrary = () => {
   const state = useLibraryState();

@@ -1,41 +1,28 @@
-import React, {
-  useReducer,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
-import {
-  Folder,
-  PortfolioItem,
-  ViewMode,
-  SortOption,
-  SortDirection,
-} from "../types";
-import { useCollections } from "./CollectionsContext";
-import { storageService } from "../../services/storageService";
-import { libraryLoader } from "../../services/libraryLoader";
-import { libraryReducer } from "./LibraryContext.reducer";
-import { LibraryStateContext } from "./LibraryContext.state";
-import { LibraryDispatchContext } from "./LibraryContext.actions";
-import type { LibraryState, LibraryContextState, LibraryContextActions } from "./LibraryContext.types";
+import React, { useReducer, useCallback, useEffect, useMemo } from 'react';
+import { Folder, PortfolioItem, ViewMode, SortOption, SortDirection } from '../types';
+import { useCollections } from './CollectionsContext';
+import { storageService } from '../../services/storageService';
+import { libraryLoader } from '../../services/libraryLoader';
+import { libraryReducer } from './LibraryContext.reducer';
+import { LibraryStateContext } from './LibraryContext.state';
+import { LibraryDispatchContext } from './LibraryContext.actions';
+import type { LibraryContextState, LibraryContextActions } from './LibraryContext.types';
 
 import { logger } from '../utils/logger';
 // Provider component
-export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { activeCollection } = useCollections();
 
   const [state, dispatch] = useReducer(libraryReducer, {
     folders: [],
-    activeFolderIds: new Set(["all"]),
+    activeFolderIds: new Set(['all']),
     viewMode: ViewMode.GRID,
     gridColumns: 4,
-    searchTerm: "",
+    searchTerm: '',
     activeTags: new Set<string>(),
     activeColorFilter: null,
-    sortOption: "date",
-    sortDirection: "desc",
+    sortOption: 'date',
+    sortDirection: 'desc',
     autoAnalyzeEnabled: false,
     useCinematicCarousel: false,
   });
@@ -43,8 +30,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   // Clear library when collection changes to null
   useEffect(() => {
     if (!activeCollection) {
-      logger.debug("[LibraryContext] No active collection, clearing state");
-      dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
+      logger.debug('app', '[LibraryContext] No active collection, clearing state');
+      dispatch({ type: 'CLEAR_LIBRARY', payload: undefined });
     }
   }, [activeCollection]);
 
@@ -54,11 +41,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!activeCollection) return;
 
       logger.debug(
+        'app',
         `[LibraryContext] Loading virtual folders for collection ${activeCollection.id}`
       );
-      const storedVirtual = await storageService.getVirtualFolders(
-        activeCollection.id
-      );
+      const storedVirtual = await storageService.getVirtualFolders(activeCollection.id);
 
       // IMPORTANT: Only load user-created virtual collections (not shadow folders)
       // Shadow folders (with sourceFolderId) are loaded by loadFromPath
@@ -66,9 +52,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (userCollections.length > 0) {
         logger.debug(
+          'app',
           `[LibraryContext] Found ${userCollections.length} user-created virtual collections to restore`
         );
-        dispatch({ type: "SET_FOLDERS", payload: userCollections });
+        dispatch({ type: 'SET_FOLDERS', payload: userCollections });
       }
     };
 
@@ -82,12 +69,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Computed: Filter items by active folders
   const filteredByFolder = useMemo(() => {
-    if (state.activeFolderIds.has("all")) return allItems;
+    if (state.activeFolderIds.has('all')) return allItems;
 
     // Get items from selected folders
-    const selectedFolders = state.folders.filter((f) =>
-      state.activeFolderIds.has(f.id)
-    );
+    const selectedFolders = state.folders.filter((f) => state.activeFolderIds.has(f.id));
 
     // Collect item IDs that are in the selected folders
     const itemsInSelectedFolders = new Set<string>();
@@ -100,8 +85,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     // Filter items: either by virtualFolderId OR by being in folder's items array
     return allItems.filter(
       (item) =>
-        (item.virtualFolderId &&
-          state.activeFolderIds.has(item.virtualFolderId)) ||
+        (item.virtualFolderId && state.activeFolderIds.has(item.virtualFolderId)) ||
         (item.folderId && state.activeFolderIds.has(item.folderId)) ||
         itemsInSelectedFolders.has(item.id)
     );
@@ -126,33 +110,28 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     // Tag filter (AND logic - item must have ALL active tags)
     if (state.activeTags.size > 0) {
       filtered = filtered.filter((item) => {
-        const itemTags = new Set([
-            ...(item.aiTags || []),
-            ...(item.manualTags || [])
-        ]);
+        const itemTags = new Set([...(item.aiTags || []), ...(item.manualTags || [])]);
         // Check if every active tag is present in itemTags
-        return Array.from(state.activeTags).every(tag => itemTags.has(tag));
+        return Array.from(state.activeTags).every((tag) => itemTags.has(tag));
       });
     }
 
     // Color filter
     if (state.activeColorFilter) {
-      filtered = filtered.filter(
-        (item) => item.colorTag === state.activeColorFilter
-      );
+      filtered = filtered.filter((item) => item.colorTag === state.activeColorFilter);
     }
 
     // Sort
     filtered = [...filtered].sort((a, b) => {
       let comparison = 0;
-      if (state.sortOption === "date") {
+      if (state.sortOption === 'date') {
         comparison = b.lastModified - a.lastModified;
-      } else if (state.sortOption === "name") {
+      } else if (state.sortOption === 'name') {
         comparison = a.name.localeCompare(b.name);
-      } else if (state.sortOption === "size") {
+      } else if (state.sortOption === 'size') {
         comparison = b.size - a.size;
       }
-      return state.sortDirection === "asc" ? -comparison : comparison;
+      return state.sortDirection === 'asc' ? -comparison : comparison;
     });
 
     return filtered;
@@ -179,29 +158,26 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   const loadFromPath = useCallback(
     async (path: string) => {
       if (!activeCollection) {
-        logger.warn("[LibraryContext] No active collection, skipping load");
+        logger.warn('app', '[LibraryContext] No active collection, skipping load');
         return;
       }
 
-      const storedVirtual = await storageService.getVirtualFolders(
+      const storedVirtual = await storageService.getVirtualFolders(activeCollection.id);
+      const { foldersToAdd, virtualFoldersMap } = await libraryLoader.loadAndMerge(
+        path,
+        storedVirtual,
         activeCollection.id
       );
-      const { foldersToAdd, virtualFoldersMap } =
-        await libraryLoader.loadAndMerge(
-          path,
-          storedVirtual,
-          activeCollection.id
-        );
 
       dispatch({
-        type: "MERGE_FOLDERS",
+        type: 'MERGE_FOLDERS',
         payload: { foldersToAdd, virtualFoldersMap },
       });
 
       // Removed manual state calculation that caused race condition
 
       if (foldersToAdd.length > 0 || virtualFoldersMap.size > 0) {
-        dispatch({ type: "SET_ACTIVE_FOLDER_IDS", payload: new Set(["all"]) });
+        dispatch({ type: 'SET_ACTIVE_FOLDER_IDS', payload: new Set(['all']) });
       }
 
       await storageService.addDirectoryHandle(path, false);
@@ -209,14 +185,39 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     [activeCollection]
   );
 
-  const importFiles = useCallback((fileList: FileList) => {
-    // Implementation from useLibrary hook
-    // Simplified for now - can be expanded
-    logger.debug("[LibraryContext] importFiles not yet implemented");
-  }, []);
+  const importFiles = useCallback(
+    (fileList: FileList) => {
+      // Implementation from useLibrary hook
+      // TODO: Implement file import functionality
+      logger.debug('app', '[LibraryContext] Importing files', { count: fileList.length });
+
+      // Convert FileList to array and process each file
+      const files = Array.from(fileList);
+      const newItems: PortfolioItem[] = files.map((file, index) => {
+        const newItem: PortfolioItem = {
+          id: `import-${Date.now()}-${index}`,
+          url: URL.createObjectURL(file),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          lastModified: file.lastModified,
+          file,
+        };
+        // Only add collectionId if it exists
+        if (activeCollection?.id) {
+          newItem.collectionId = activeCollection.id;
+        }
+        return newItem;
+      });
+
+      // TODO: Add items to current folder or create new folder
+      logger.debug('app', '[LibraryContext] Files processed', { items: newItems.length });
+    },
+    [activeCollection]
+  );
 
   const updateItems = useCallback((updatedItems: PortfolioItem[]) => {
-    dispatch({ type: "BATCH_UPDATE_ITEMS", payload: updatedItems });
+    dispatch({ type: 'BATCH_UPDATE_ITEMS', payload: updatedItems });
     updatedItems.forEach((item) => {
       storageService.saveMetadata(item, item.path || item.name);
     });
@@ -237,9 +238,9 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
         items: [],
         createdAt: Date.now(),
         isVirtual: true,
-        collectionId: activeCollection?.id || "unknown",
+        collectionId: activeCollection?.id || 'unknown',
       };
-      dispatch({ type: "ADD_FOLDER", payload: newFolder });
+      dispatch({ type: 'ADD_FOLDER', payload: newFolder });
       storageService.saveVirtualFolder(newFolder);
       return newFolder.id;
     },
@@ -247,25 +248,21 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const deleteFolder = useCallback((id: string) => {
-    dispatch({ type: "REMOVE_FOLDER", payload: id });
-    dispatch({ type: "TOGGLE_FOLDER", payload: id }); // Remove from active if present
+    dispatch({ type: 'REMOVE_FOLDER', payload: id });
+    dispatch({ type: 'TOGGLE_FOLDER', payload: id }); // Remove from active if present
     storageService.deleteVirtualFolder(id);
   }, []);
 
   const removeFolderByPath = useCallback((path: string) => {
-    dispatch({ type: "REMOVE_FOLDER_BY_PATH", payload: path });
+    dispatch({ type: 'REMOVE_FOLDER_BY_PATH', payload: path });
   }, []);
 
   const toggleFolderSelection = useCallback((id: string) => {
-    dispatch({ type: "TOGGLE_FOLDER", payload: id });
+    dispatch({ type: 'TOGGLE_FOLDER', payload: id });
   }, []);
 
   const moveItemsToFolder = useCallback(
-    (
-      itemIds: Set<string>,
-      targetFolderId: string,
-      allItemsFlat: PortfolioItem[]
-    ) => {
+    (itemIds: Set<string>, targetFolderId: string, allItemsFlat: PortfolioItem[]) => {
       if (itemIds.size === 0) return;
       const itemsToMove = allItemsFlat.filter((i) => itemIds.has(i.id));
 
@@ -282,98 +279,107 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
           items: folder.items.filter((i) => !itemIds.has(i.id)),
         };
       });
-      dispatch({ type: "SET_FOLDERS", payload: updatedFolders });
+      dispatch({ type: 'SET_FOLDERS', payload: updatedFolders });
 
       itemsToMove.forEach((item) => {
         const updatedItem = { ...item, folderId: targetFolderId };
-        storageService.saveMetadata(
-          updatedItem,
-          updatedItem.path || updatedItem.name
-        );
+        storageService.saveMetadata(updatedItem, updatedItem.path || updatedItem.name);
       });
     },
     [state.folders]
   );
 
   const clearLibrary = useCallback(() => {
-    logger.debug("[LibraryContext] Clearing library state");
-    dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
+    logger.debug('app', '[LibraryContext] Clearing library state');
+    dispatch({ type: 'CLEAR_LIBRARY', payload: undefined });
   }, []);
 
   // Actions - View
   const setViewMode = useCallback((mode: ViewMode) => {
-    dispatch({ type: "SET_VIEW_MODE", payload: mode });
+    dispatch({ type: 'SET_VIEW_MODE', payload: mode });
   }, []);
 
   const setGridColumns = useCallback((columns: number) => {
-    dispatch({ type: "SET_GRID_COLUMNS", payload: columns });
+    dispatch({ type: 'SET_GRID_COLUMNS', payload: columns });
   }, []);
 
   const setSearchTerm = useCallback((term: string) => {
-    dispatch({ type: "SET_SEARCH_TERM", payload: term });
+    dispatch({ type: 'SET_SEARCH_TERM', payload: term });
   }, []);
 
   const setActiveTags = useCallback((tags: Set<string>) => {
-    dispatch({ type: "SET_ACTIVE_TAGS", payload: tags });
+    dispatch({ type: 'SET_ACTIVE_TAGS', payload: tags });
   }, []);
 
   const toggleTag = useCallback((tag: string) => {
-    dispatch({ type: "TOGGLE_TAG", payload: tag });
+    dispatch({ type: 'TOGGLE_TAG', payload: tag });
   }, []);
 
   const clearTags = useCallback(() => {
-    dispatch({ type: "CLEAR_TAGS", payload: undefined });
+    dispatch({ type: 'CLEAR_TAGS', payload: undefined });
   }, []);
 
   const setActiveColorFilter = useCallback((color: string | null) => {
-    dispatch({ type: "SET_ACTIVE_COLOR_FILTER", payload: color });
+    dispatch({ type: 'SET_ACTIVE_COLOR_FILTER', payload: color });
   }, []);
 
   const setSortOption = useCallback((option: SortOption) => {
-    dispatch({ type: "SET_SORT_OPTION", payload: option });
+    dispatch({ type: 'SET_SORT_OPTION', payload: option });
   }, []);
 
   const setSortDirection = useCallback((direction: SortDirection) => {
-    dispatch({ type: "SET_SORT_DIRECTION", payload: direction });
+    dispatch({ type: 'SET_SORT_DIRECTION', payload: direction });
   }, []);
 
   const setAutoAnalyze = useCallback((enabled: boolean) => {
-    dispatch({ type: "SET_AUTO_ANALYZE", payload: enabled });
+    dispatch({ type: 'SET_AUTO_ANALYZE', payload: enabled });
   }, []);
 
   const setCinematicCarousel = useCallback((enabled: boolean) => {
-    dispatch({ type: "SET_CINEMATIC_CAROUSEL", payload: enabled });
+    dispatch({ type: 'SET_CINEMATIC_CAROUSEL', payload: enabled });
   }, []);
 
   const refreshMetadata = useCallback(async () => {
     if (!activeCollection) return;
 
     // Collect all paths from all current folders
-    const allPaths = state.folders.flatMap(f => f.items.map(i => i.path || i.name));
+    const allPaths = state.folders.flatMap((f) => f.items.map((i) => i.path || i.name));
     if (allPaths.length === 0) return;
 
-    logger.debug('app', '[LibraryContext] Refreshing metadata for ${allPaths.length} items...');
+    logger.debug('app', `[LibraryContext] Refreshing metadata for ${allPaths.length} items...`);
     const metaMap = await storageService.getMetadataBatch(allPaths, activeCollection.id);
 
-    const updatedFolders = state.folders.map(folder => ({
+    const updatedFolders = state.folders.map((folder) => ({
       ...folder,
-      items: folder.items.map(item => {
+      items: folder.items.map((item) => {
         const meta = metaMap.get(item.path || item.name);
         if (meta) {
-          return {
+          const updatedItem: PortfolioItem = {
             ...item,
-            aiDescription: meta.aiDescription || undefined,
-            aiTags: meta.aiTags,
-            aiTagsDetailed: meta.aiTagsDetailed,
-            colorTag: meta.colorTag || undefined,
-            manualTags: meta.manualTags,
           };
+          // Only assign properties if they exist and are not null
+          if (meta.aiDescription !== null && meta.aiDescription !== undefined) {
+            updatedItem.aiDescription = meta.aiDescription;
+          }
+          if (meta.aiTags !== undefined) {
+            updatedItem.aiTags = meta.aiTags;
+          }
+          if (meta.aiTagsDetailed !== undefined) {
+            updatedItem.aiTagsDetailed = meta.aiTagsDetailed;
+          }
+          if (meta.colorTag !== null && meta.colorTag !== undefined) {
+            updatedItem.colorTag = meta.colorTag;
+          }
+          if (meta.manualTags !== undefined) {
+            updatedItem.manualTags = meta.manualTags;
+          }
+          return updatedItem;
         }
         return item;
-      })
+      }),
     }));
 
-    dispatch({ type: "SET_FOLDERS", payload: updatedFolders });
+    dispatch({ type: 'SET_FOLDERS', payload: updatedFolders });
   }, [state.folders, activeCollection]);
 
   // --- 1. State Value (Memoized separately) ---
@@ -442,10 +448,6 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   return React.createElement(
     LibraryStateContext.Provider,
     { value: stateValue },
-    React.createElement(
-      LibraryDispatchContext.Provider,
-      { value: dispatchValue },
-      children
-    )
+    React.createElement(LibraryDispatchContext.Provider, { value: dispatchValue }, children)
   );
 };

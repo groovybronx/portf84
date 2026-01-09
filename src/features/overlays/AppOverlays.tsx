@@ -4,7 +4,6 @@ import { ContextMenu, UnifiedProgress } from '../../shared/components';
 import { ImageViewer } from '../../features/vision';
 import { PortfolioItem } from '../../shared/types';
 
-import { logger } from '../../shared/utils/logger';
 interface AppOverlaysProps {
   contextMenu: { x: number; y: number; item: PortfolioItem } | null;
   setContextMenu: (menu: { x: number; y: number; item: PortfolioItem } | null) => void;
@@ -37,10 +36,9 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
   analyzeItem,
   handleContextAddTag,
   handleContextMove,
-  applyColorTagToSelection,
+
   isDragSelecting,
   dragBox,
-  collectionsLoading,
 }) => {
   return (
     <>
@@ -69,7 +67,7 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
             item={contextMenu.item}
             onClose={() => setContextMenu(null)}
             onAnalyze={analyzeItem}
-            onDelete={(id) =>
+            onDelete={(_id) =>
               updateItem({
                 ...contextMenu.item,
                 folderId: 'trash',
