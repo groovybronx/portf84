@@ -1,8 +1,8 @@
-name: 'Slack Notifications'
+name: "Slack Notifications"
 
 on:
   workflow_run:
-    workflows: ['Enhanced Semantic Release']
+    workflows: ["Enhanced Semantic Release"]
     types:
       - completed
   release:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   notify-slack:
-    name: 'Send Slack Notifications'
+    name: "Send Slack Notifications"
     runs-on: ubuntu-latest
     if: always()
 
@@ -107,7 +107,7 @@ jobs:
           # Uncomment when Slack is configured
           # curl -X POST -H 'Content-type: application/json' \
           #   --data @slack_release.json \
-          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+          #   "${{ secrets.SLACK_WEBHOOK_URL }}"
 
       - name: Send workflow completion notification
         if: github.event_name == 'workflow_run'
@@ -190,7 +190,7 @@ jobs:
           # Uncomment when Slack is configured
           # curl -X POST -H 'Content-type: application/json' \
           #   --data @slack_workflow.json \
-          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+          #   "${{ secrets.SLACK_WEBHOOK_URL }}"
 
       - name: Send deployment notification
         if: github.event_name == 'release' && github.event.release.prerelease == 'false'
@@ -252,4 +252,4 @@ jobs:
           # Uncomment when Slack is configured
           # curl -X POST -H 'Content-type: application/json' \
           #   --data @slack_deploy.json \
-          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+          #   "${{ secrets.SLACK_WEBHOOK_URL }}"

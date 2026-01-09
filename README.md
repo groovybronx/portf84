@@ -12,16 +12,42 @@
 
 ## 🚀 Fonctionnalités Principales
 
-- **📁 Gestion Hybride** : Organisez vos photos dans des dossiers physiques ET des collections virtuelles
-- **🤖 Analyse AI** : Tags et descriptions automatiques générés par l'intelligence artificielle Gemini
-- **🎨 Color Tags** : Organisation ultra-rapide par codes couleur (1-6)
-- **🔍 Recherche Intelligente** : Trouvez n'importe quelle photo avec la recherche floue et autosuggestion
-- **⚡ Performance Optimale** : Navigation fluide avec infinite scroll et chargement progressif
-- **💾 100% Offline** : Base de données SQLite intégrée, fonctionne sans connexion internet
+- **📁 Gestion Hybride** : Dossiers physiques + Collections virtuelles avec shadow folders
+- **🤖 Analyse AI Avancée** : Tags et descriptions automatiques via Gemini avec batch processing
+- **🎨 Color Tags** : Organisation rapide par couleur (1-6) avec regroupement intelligent
+- **🔍 Smart Search** : Recherche floue avec autosuggestion et filtres avancés
+- **⚡ Performance Optimisée** : Infinite scroll, lazy loading, virtualisation, code splitting
+- **💾 Local-First Robuste** : SQLite embarqué avec transactions, fonctionne offline
+- **🎯 Interface Modulaire** : Architecture feature-based avec composants réutilisables
+- **🌐 Internationalisation** : Support multilingue (Français, Anglais) avec i18next
+- **🎨 Design System Cohérent** : Glassmorphism, animations Framer Motion, Tailwind v4
+- **🔧 Déploiement Multi-Plateforme** : macOS, Windows, Linux via Tauri v2
 
 ---
 
-## 🎯 Idéal Pour
+## 🏗️ Architecture Technique
+
+### **Feature-Based Architecture**
+
+- **Séparation claire** : Code organisé par domaine métier (features/collections, features/tags, etc.)
+- **Composants modulaires** : App.tsx refactorisé (682 → 50 lignes) avec AppLayout, AppOverlays
+- **Réutilisabilité** : Hooks personnalisés et composants partagés dans shared/
+
+### **Performance & UX**
+
+- **Virtualisation** : @tanstack/react-virtual pour les grilles de photos infinies
+- **Lazy Loading** : Code splitting automatique et chargement différé
+- **Context Splitting** : Séparation state/dispatch pour optimiser les re-renders
+- **Animations fluides** : Framer Motion avec glassmorphism design
+
+### **Qualité & Tests**
+
+- **171/171 tests** : Couverture complète avec Vitest + React Testing Library
+- **TypeScript strict** : Sécurité de types maximale
+- **ESLint + Prettier** : Code consistent et maintenable
+- **CI/CD robuste** : Workflows GitHub Actions avec releases automatiques
+
+---
 
 - **Photographes** : Organisez et cataloguez vos shootings
 - **Créateurs** : Gérez vos assets visuels et inspirations
@@ -58,11 +84,84 @@
 
 ---
 
-## � Disponible
+## 📦 Installation
 
-- **macOS** : macOS 10.15 et supérieur
-- **Windows** : Windows 10 et supérieur
-- **Linux** : Ubuntu 20.04 et supérieur
+### Prérequis
+
+- [Node.js](https://nodejs.org/) (LTS)
+- [Rust](https://rustup.rs/) (stable)
+- macOS 10.15+ / Windows 10+ / Linux
+
+### Développement
+
+```bash
+# Cloner le repo
+git clone https://github.com/your-username/lumina-portfolio.git
+cd lumina-portfolio
+
+# Installer les dépendances
+npm install
+
+# Lancer en mode dev (Frontend + Tauri)
+npm run tauri:dev
+```
+
+### Build Production
+
+```bash
+# Générer l'app native (.dmg / .exe / .AppImage)
+npm run tauri:build
+```
+
+---
+
+## ⚙️ Configuration
+
+### Clé API Gemini
+
+**Option 1** : Via l'interface
+
+- Ouvrir l'application
+- Cliquer sur ⚙️ (Paramètres)
+- Entrer votre clé API
+
+**Option 2** : Via fichier `.env.local`
+
+```env
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+---
+
+## 🗂️ Structure du Projet
+
+```
+lumina-portfolio/
+├── src/
+│   ├── features/        # Architecture orientée fonctionnalités
+│   │   ├── collections/ # Gestion des collections virtuelles
+│   │   ├── layout/      # Layouts principaux (AppLayout, MainLayout)
+│   │   ├── library/     # Gestion de la bibliothèque photo
+│   │   ├── navigation/  # Navigation et TopBar
+│   │   ├── overlays/    # Modals et overlays (AppOverlays, AppModals)
+│   │   ├── tags/        # Système de tags et TagHub
+│   │   └── vision/      # IA et analyse d'images
+│   ├── shared/          # Code partagé et réutilisable
+│   │   ├── components/  # Composants UI partagés
+│   │   ├── constants/   # Constantes et configurations
+│   │   ├── contexts/    # Contextes React globaux
+│   │   ├── hooks/       # Hooks personnalisés
+│   │   ├── theme/       # Thème et styles
+│   │   ├── types/       # Types TypeScript
+│   │   └── utils/       # Utilitaires et helpers
+│   ├── services/        # Services métier (API, stockage)
+│   ├── i18n/           # Internationalisation
+│   └── App.tsx         # Point d'entrée principal (modulaire)
+├── src-tauri/          # Backend Rust Tauri
+│   ├── capabilities/   # Permissions et capacités
+│   └── tauri.conf.json # Configuration Tauri
+└── tests/              # Tests automatisés (171/171 ✅)
+```
 
 ---
 
@@ -90,6 +189,46 @@
 - `Espace` : Mode plein écran
 - `Échap` : Fermer les modales
 
+### 📝 Types de Commits
+
+```bash
+feat(library): add drag-and-drop support     # → Version mineure (1.0.0 → 1.1.0)
+fix(ui): resolve sidebar toggle issue       # → Version de patch (1.0.0 → 1.0.1)
+BREAKING CHANGE: remove deprecated API     # → Version majeure (1.0.0 → 2.0.0)
+```
+
+### 🎯 Déclenchement
+
+- **Branche `main`** : Release stable automatique ✅
+- **Branche `develop`** : Pré-release beta automatique
+- **Manuel** : Choix du type de version via GitHub UI
+
+### 📦 Résultats
+
+- Version mise à jour dans `package.json` et `Cargo.toml`
+- Tag Git créé (`v1.2.3`)
+- Release GitHub avec assets multi-plateformes
+- CHANGELOG généré automatiquement
+
+### ⚙️ Configuration Technique
+
+- **Fichier de configuration** : `.releaserc.cjs` (racine du projet)
+- **Branches configurées** : `main`, `develop` (beta), `release/*` (rc)
+- **Plugins actifs** : commit-analyzer, release-notes, changelog, npm, github
+- **Tests requis** : 171 tests passent avant toute release
+
+### 🔧 Maintenance Récents (v1.0.0 - Janvier 2026)
+
+- ✅ **Refactorisation majeure App.tsx** : Réduction de 682 à ~50 lignes avec architecture modulaire (AppLayout, AppOverlays, hooks personnalisés)
+- ✅ **Migration composants Button** : Standardisation complète vers design system (Phases 1-3)
+- ✅ **Amélioration architecture** : Passage à feature-based architecture avec séparation claire des responsabilités
+- ✅ **Optimisation performance** : Context splitting, memoization, lazy loading amélioré
+- ✅ **Correction CI/CD** : Résolution avertissements React act(), configuration ES modules, hooks Git adaptés
+- ✅ **Tests complets** : 171/171 tests passant avec couverture améliorée
+- ✅ **Documentation étendue** : Guides techniques complets, analyse qualité/marché 2026
+
+**Documentation complète** : [📖 Guide Semantic Release](./docs/SEMANTIC_RELEASE_GUIDE.md)
+
 ---
 
 ## � Tips & Astuces
@@ -103,7 +242,7 @@
 
 ## 📄 License
 
-MIT © 2025 - **Libre et Open Source**
+MIT © 2026
 
 ---
 
@@ -117,4 +256,6 @@ Ce projet est développé avec passion. Retrouvez le code source et contribuez s
 
 **Made with ❤️ pour les amoureux de la photo**
 
-</div>
+# </div>
+
+MIT © 2026
