@@ -33,14 +33,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       </ErrorBoundary>
 
       {/* App Layout: Sidebar + Main Content */}
-      <div
-        className={`flex-1 flex flex-row overflow-hidden relative transition-all duration-300 ${
-          isFolderDrawerOpen || isSidebarPinned ? 'pl-80' : ''
-        } ${isTagHubOpen ? 'pr-[min(20rem,20vw)]' : ''}`}
-      >
+      <div className="flex-1 flex flex-row overflow-hidden relative">
         {sidebar}
-        {mainContent}
-        {children}
+        <div
+          className={`flex-1 overflow-hidden relative transition-all duration-300 ease-in-out ${
+            isFolderDrawerOpen || isSidebarPinned ? 'ml-80' : 'ml-0'
+          } ${isTagHubOpen ? 'mr-[min(20rem,20vw)]' : 'mr-0'}`}
+        >
+          {mainContent}
+          {children}
+        </div>
       </div>
 
       {/* TagHub */}

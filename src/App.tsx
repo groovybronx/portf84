@@ -371,25 +371,6 @@ const App: React.FC = () => {
       <div className="fixed inset-0 pointer-events-none z-(--z-base) bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
 
       {/* ========================================================================
-          BARRE SUPÉRIEURE (TopBar) - Toujours visible
-          ======================================================================== */}
-      <ErrorBoundary featureName="navigation">
-        <div className="top-bar-area relative z-(--z-topbar)">
-          <TopBar
-            folderName={activeFolderName || ''}
-            onOpenFolders={handleSidebarToggle}
-            onMoveSelected={() => setIsMoveModalOpen(true)}
-            onShareSelected={handleShareSelected}
-            onOpenSettings={() => setIsSettingsOpen(true)}
-            onOpenTagHub={() => setIsTagHubOpen(true)}
-            onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
-            showColorTags={showColorTags}
-            onToggleColorTags={toggleColorTags}
-          />
-        </div>
-      </ErrorBoundary>
-
-      {/* ========================================================================
           ZONE PRINCIPALE : Barre latérale + Contenu
           ======================================================================== */}
       <div className="flex-1 flex flex-row overflow-hidden relative">
@@ -439,9 +420,32 @@ const App: React.FC = () => {
         </ErrorBoundary>
 
         {/* --------------------------------------------------------------------
-            ZONE DE CONTENU PRINCIPALE (Library View)
+            ZONE DE CONTENU PRINCIPALE (TopBar + Gallery)
             -------------------------------------------------------------------- */}
-        <div className="flex-1 relative overflow-hidden flex flex-col h-full">
+        <div
+          className={`flex-1 relative overflow-hidden flex flex-col h-full transition-all duration-300 ease-in-out ${
+            isFolderDrawerOpen || isSidebarPinned ? 'ml-80' : 'ml-0'
+          } ${isTagHubOpen ? 'mr-[min(20rem,20vw)]' : 'mr-0'}`}
+        >
+          {/* ========================================================================
+              BARRE SUPÉRIEURE (TopBar) - Toujours visible
+              ======================================================================== */}
+          <ErrorBoundary featureName="navigation">
+            <div className="top-bar-area relative z-(--z-topbar)">
+              <TopBar
+                folderName={activeFolderName || ''}
+                onOpenFolders={handleSidebarToggle}
+                onMoveSelected={() => setIsMoveModalOpen(true)}
+                onShareSelected={handleShareSelected}
+                onOpenSettings={() => setIsSettingsOpen(true)}
+                onOpenTagHub={() => setIsTagHubOpen(true)}
+                onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
+                showColorTags={showColorTags}
+                onToggleColorTags={toggleColorTags}
+              />
+            </div>
+          </ErrorBoundary>
+
           <ErrorBoundary featureName="library">
             <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full">
               {currentItems.length === 0 ? (

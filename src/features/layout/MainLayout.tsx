@@ -15,7 +15,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, folderDrawer }
       {folderDrawer && <ErrorBoundary featureName="collections">{folderDrawer}</ErrorBoundary>}
 
       {/* Main Content Area */}
-      <div className="flex-1 relative overflow-hidden flex flex-col h-full">{children}</div>
+      <div className="flex-1 relative overflow-hidden flex flex-col h-full transition-all duration-300">
+        {children}
+      </div>
     </>
   );
 };

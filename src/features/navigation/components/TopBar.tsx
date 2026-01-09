@@ -98,7 +98,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: '-100%', opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed top-0 left-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center transition-all duration-300"
+          className="flex top-0 left-0 right-0 z-(--z-topbar) h-24 flex flex-col items-center transition-all duration-300"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => {
             setIsHovered(false);
@@ -111,10 +111,10 @@ export const TopBar: React.FC<TopBarProps> = ({
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="w-full flex justify-center p-4 pointer-events-none"
           >
-            <GlassCard className="rounded-2xl shadow-xl p-2 sm:p-3 max-w-[95vw] pointer-events-auto">
+            <GlassCard className="rounded-2xl shadow-xl p-2 sm:p-3 max-w-[70vw] pointer-events-auto">
               <Flex align="center">
                 {/* --- LEFT SECTION --- */}
-                <Flex align="center" gap="sm" className="shrink-0">
+                <Flex align="center" gap="xs" className="shrink-0">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -170,7 +170,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 {/* --- MIDDLE SECTION (Search, Colors, Slider) --- */}
                 <Flex
                   align="center"
-                  gap="md"
+                  gap="sm"
                   className="flex-1 overflow-x-auto no-scrollbar px-1 min-w-0"
                 >
                   <SearchField
@@ -225,7 +225,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 </Flex>
 
                 {/* --- ACTIONS SECTION (Tags, Sort, Select) --- */}
-                <Flex align="center" gap="sm" className="shrink-0 ml-2">
+                <Flex align="center" gap="xs" className="shrink-0 ml-2">
                   <BatchActions
                     selectionMode={selectionMode}
                     selectedCount={selectedCount}
@@ -236,7 +236,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                   />
 
                   {!selectionMode && (
-                    <Flex align="center" gap="sm">
+                    <Flex align="center" gap="xs">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -254,20 +254,6 @@ export const TopBar: React.FC<TopBarProps> = ({
                           setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
                         }
                       />
-                      {isSelectionSupported && (
-                        <>
-                          <div className="w-px h-6 bg-glass-border/10 mx-1 hidden sm:block" />
-                          <Button
-                            variant="ghost"
-                            onClick={handleToggleSelectionMode}
-                            className="gap-2 border border-glass-border-light"
-                          >
-                            <span className="text-sm font-medium hidden sm:inline">
-                              {t('navigation:select')}
-                            </span>
-                          </Button>
-                        </>
-                      )}
                     </Flex>
                   )}
                 </Flex>
@@ -275,8 +261,8 @@ export const TopBar: React.FC<TopBarProps> = ({
                 {/* --- RIGHT SECTION (View Toggle) --- */}
                 <Flex
                   align="center"
-                  gap="sm"
-                  className="shrink-0 pl-2 ml-2 border-l border-glass-border/10 relative z-50"
+                  gap="xs"
+                  className="shrink-0 pl-1 ml-1 border-l border-glass-border/10 relative z-50"
                 >
                   <ViewToggle
                     currentViewMode={viewMode}
