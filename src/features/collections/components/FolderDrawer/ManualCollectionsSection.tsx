@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
-import { Icon } from "../../../../shared/components/Icon";
-import { Button } from "../../../../shared/components/ui";
-import { Folder as FolderType, Collection } from "../../../../shared/types";
-import { FolderItem } from "./FolderItem";
-import { useTheme } from "../../../../shared/contexts/ThemeContext";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Icon } from '../../../../shared/components/Icon';
+import { Button, Flex, Stack } from '../../../../shared/components/ui';
+import { Folder as FolderType, Collection } from '../../../../shared/types';
+import { FolderItem } from './FolderItem';
+import { useTheme } from '../../../../shared/contexts/ThemeContext';
 
 interface ManualCollectionsSectionProps {
   folders: FolderType[];
@@ -26,7 +26,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
   activeCollection,
   onColorFilterChange,
 }) => {
-  const { t } = useTranslation("library");
+  const { t } = useTranslation('library');
   const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -42,25 +42,31 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
 
   return (
     <div>
-      <button
+      <Flex
+        align="center"
+        justify="between"
         onClick={toggleSection}
-        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        className={`group relative w-full mb-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer ${
           isExpanded
-            ? "bg-tertiary/10 border-tertiary/20 shadow-lg shadow-tertiary/20" 
-            : "hover:bg-tertiary/5 border-transparent"
+            ? 'bg-tertiary/10 border-tertiary/20 shadow-lg shadow-tertiary/20'
+            : 'hover:bg-tertiary/5 border-transparent'
         }`}
       >
-        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-tertiary">
+        <Flex
+          align="center"
+          gap="sm"
+          className="text-xs uppercase font-bold tracking-wider text-tertiary"
+        >
           <Icon action={settings.tertiaryIcon} size={14} className="text-tertiary" />
           <span>{t('collections')}</span>
-        </p>
-        <div className="flex items-center gap-2">
-          {selectedCount > 0 && !activeFolderId.has("all") && (
+        </Flex>
+        <Flex align="center" gap="sm">
+          {selectedCount > 0 && !activeFolderId.has('all') && (
             <span className="text-tertiary text-[10px] bg-tertiary/10 px-2 py-0.5 rounded-full">
               {t('selectedCount', { count: selectedCount })}
             </span>
           )}
-          
+
           <Button
             variant="ghost"
             size="icon"
@@ -75,21 +81,20 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
             <Icon action="add" size={14} />
           </Button>
 
-          <Icon action="next"
+          <Icon
+            action="next"
             size={14}
-            className={`transition-transform duration-300 text-secondary ${
-              isExpanded ? "rotate-90" : "opacity-50"
+            className={`transition-transform duration-300 text-tertiary ${
+              isExpanded ? 'rotate-90' : 'opacity-50'
             }`}
           />
-        </div>
-
-
-      </button>
+        </Flex>
+      </Flex>
       <AnimatePresence>
         {isExpanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
@@ -98,7 +103,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
                 {t('noCollectionsCreated')}
               </p>
             ) : (
-              <div className="space-y-1 pl-2">
+              <Stack spacing="xs" className="pl-2">
                 {folders.map((folder) => (
                   <FolderItem
                     key={folder.id}
@@ -111,7 +116,7 @@ export const ManualCollectionsSection: React.FC<ManualCollectionsSectionProps> =
                     iconBgClass="bg-tertiary/10"
                   />
                 ))}
-              </div>
+              </Stack>
             )}
           </motion.div>
         )}

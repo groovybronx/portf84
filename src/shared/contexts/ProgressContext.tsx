@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-
 export interface ProgressTask {
   id: string;
   label: string;
@@ -11,7 +10,10 @@ export interface ProgressTask {
 interface ProgressContextType {
   tasks: ProgressTask[];
   addTask: (task: Omit<ProgressTask, 'progress' | 'status'>) => void;
-  updateTask: (id: string, updates: Partial<Pick<ProgressTask, 'progress' | 'status' | 'message'>>) => void;
+  updateTask: (
+    id: string,
+    updates: Partial<Pick<ProgressTask, 'progress' | 'status' | 'message'>>
+  ) => void;
   removeTask: (id: string) => void;
 }
 
@@ -21,17 +23,18 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [tasks, setTasks] = useState<ProgressTask[]>([]);
 
   const addTask = useCallback((task: Omit<ProgressTask, 'progress' | 'status'>) => {
-    setTasks(prev => [...prev, { ...task, progress: 0, status: 'active' }]);
+    setTasks((prev) => [...prev, { ...task, progress: 0, status: 'active' }]);
   }, []);
 
-  const updateTask = useCallback((id: string, updates: Partial<Pick<ProgressTask, 'progress' | 'status' | 'message'>>) => {
-    setTasks(prev => prev.map(task => 
-      task.id === id ? { ...task, ...updates } : task
-    ));
-  }, []);
+  const updateTask = useCallback(
+    (id: string, updates: Partial<Pick<ProgressTask, 'progress' | 'status' | 'message'>>) => {
+      setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, ...updates } : task)));
+    },
+    []
+  );
 
   const removeTask = useCallback((id: string) => {
-    setTasks(prev => prev.filter(task => task.id !== id));
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   }, []);
 
   return (

@@ -140,6 +140,7 @@ export interface DBTag {
   normalizedName: string;
   type: TagType;
   confidence: number | null;
+  parentId: string | null;
   createdAt: number;
 }
 
@@ -149,6 +150,13 @@ export interface ParsedTag {
   name: string;
   type: TagType;
   confidence?: number;
+  parentId?: string;
+}
+
+/** Hierarchical tag node for tree display */
+export interface TagNode extends ParsedTag {
+  children: TagNode[];
+  count?: number;
 }
 
 /** Raw item-tag relation from database */
@@ -163,8 +171,10 @@ export interface DBTagMerge {
   id: string;
   targetTagId: string;
   sourceTagId: string;
+  sourceTagName: string | null;
   mergedAt: number;
   mergedBy: string | null;
+  itemIdsJson?: string | null;
 }
 
 /** Raw tag alias from database */

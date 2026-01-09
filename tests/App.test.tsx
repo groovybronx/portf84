@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import App from '../src/App';
 import React from 'react';
 
+import { logger } from './shared/utils/logger';
 // Mock dependencies
 vi.mock('../src/features/vision', () => ({
   ImageViewer: () => <div data-testid="image-viewer">ImageViewer</div>,
@@ -40,17 +41,17 @@ vi.mock('../src/shared/contexts/LibraryContext', () => ({
     processedItems: [],
     sourceFolders: [],
     availableTags: [],
-    searchTerm: "",
+    searchTerm: '',
     setSearchTerm: vi.fn(),
-    sortOption: "date",
+    sortOption: 'date',
     setSortOption: vi.fn(),
-    sortDirection: "desc",
+    sortDirection: 'desc',
     setSortDirection: vi.fn(),
     selectedTag: null,
     setSelectedTag: vi.fn(),
     activeColorFilter: null,
     setActiveColorFilter: vi.fn(),
-    viewMode: "grid",
+    viewMode: 'grid',
     setViewMode: vi.fn(),
     gridColumns: 4,
     setGridColumns: vi.fn(),
@@ -86,7 +87,7 @@ vi.mock('@tauri-apps/plugin-fs', () => ({
 }));
 
 vi.mock('@tauri-apps/api/core', () => ({
-    invoke: vi.fn(),
+  invoke: vi.fn(),
 }));
 
 vi.mock('../src/shared/hooks', () => ({
@@ -97,18 +98,25 @@ vi.mock('../src/shared/hooks', () => ({
   }),
   useKeyboardShortcuts: vi.fn(),
   useModalState: () => ({
-    isFolderDrawerOpen: false,
-    setIsFolderDrawerOpen: vi.fn(),
-    isCreateFolderModalOpen: false,
-    setIsCreateFolderModalOpen: vi.fn(),
-    isMoveModalOpen: false,
-    setIsMoveModalOpen: vi.fn(),
-    isAddTagModalOpen: false,
-    setIsAddTagModalOpen: vi.fn(),
-    isSettingsOpen: false,
-    setIsSettingsOpen: vi.fn(),
-    isCollectionManagerOpen: false,
-    setIsCollectionManagerOpen: vi.fn(),
+    state: {
+      folderDrawer: false,
+      createFolderModal: false,
+      moveModal: false,
+      addTagModal: false,
+      settingsModal: false,
+      collectionManager: false,
+      smartCollectionBuilder: false,
+      tagHub: false,
+      batchTagPanel: false,
+      shortcutsHelp: false,
+    },
+    openOverlay: vi.fn(),
+    closeOverlay: vi.fn(),
+    toggleOverlay: vi.fn(),
+    isOpen: vi.fn(),
+    closeAll: vi.fn(),
+    tagHubActiveTab: 'browse',
+    setTagHubActiveTab: vi.fn(),
   }),
   useItemActions: () => ({
     addTagsToSelection: vi.fn(),
@@ -119,12 +127,26 @@ vi.mock('../src/shared/hooks', () => ({
     handleContextMove: vi.fn(),
     handleContextAddTag: vi.fn(),
   }),
+  useSidebarLogic: () => ({
+    isSidebarPinned: false,
+    setIsSidebarPinned: vi.fn(),
+    handleSidebarToggle: vi.fn(),
+    handleSidebarClose: vi.fn(),
+  }),
+  useAppHandlers: () => ({
+    handleDirectoryPicker: vi.fn(),
+    handleShareSelected: vi.fn(),
+    handleRunBatchAI: vi.fn(),
+    handleNext: vi.fn(),
+    handlePrev: vi.fn(),
+    toggleColorTags: vi.fn(),
+  }),
 }));
 
 describe('App Smoke Test', () => {
   it('renders without crashing', () => {
     render(<App />);
-    // Initial render might be empty or show loading, 
+    // Initial render might be empty or show loading,
     // but successful execution of render() confirms it doesn't crash.
     // We can also check for a known static element if available.
     // For now, simple crash test.

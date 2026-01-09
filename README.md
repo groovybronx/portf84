@@ -5,9 +5,10 @@
 **Galerie Photo Intelligente • Application Desktop Native**
 
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)
 ![Tailwind](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwindcss)
 ![Gemini](https://img.shields.io/badge/Gemini-AI-4285F4?logo=google)
+![Version](https://img.shields.io/badge/version-0.3.0--beta.1-green)
 
 </div>
 
@@ -60,11 +61,13 @@ npm run tauri:build
 ### Clé API Gemini
 
 **Option 1** : Via l'interface
+
 - Ouvrir l'application
 - Cliquer sur ⚙️ (Paramètres)
 - Entrer votre clé API
 
 **Option 2** : Via fichier `.env.local`
+
 ```env
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
@@ -75,14 +78,17 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 ```
 lumina-portfolio/
-├── components/          # Composants React
-├── hooks/               # Hooks custom (useLibrary, useBatchAI, etc.)
-├── services/            # Services (Gemini, Storage, Loader)
-├── tests/               # Tests Vitest
+├── src/
+│   ├── components/      # Composants React
+│   ├── hooks/           # Hooks custom (useLibrary, useBatchAI, etc.)
+│   ├── services/        # Services (Gemini, Storage, Loader)
+│   ├── features/        # Feature modules
+│   └── shared/          # Code partagé
 ├── docs/                # Documentation technique
-└── src-tauri/           # Backend Rust Tauri
-    ├── capabilities/    # Permissions ACL
-    └── tauri.conf.json  # Configuration Tauri
+├── src-tauri/           # Backend Rust Tauri
+│   ├── capabilities/    # Permissions ACL
+│   └── tauri.conf.json  # Configuration Tauri
+└── tests/               # Tests Vitest
 ```
 
 ---
@@ -96,14 +102,53 @@ npm run test
 
 ---
 
+## 🔧 Dépannage
+
+### Erreur Build Tauri : `undefined is not an object (evaluating '$.Activity')`
+
+**Symptôme :** L'application plante au démarrage en production avec une erreur React dans le bundle vendor.
+
+**Cause :** React 19.x est incompatible avec Framer Motion 12.x. React 19 introduit une nouvelle API `Activity` qui cause des erreurs de bundling avec Framer Motion.
+
+**Solution Implémentée :** Le projet utilise maintenant React 18.3.1 (dernière version stable React 18) pour assurer la compatibilité avec Framer Motion.
+
+Si vous rencontrez toujours l'erreur :
+
+1. Vérifiez que toutes les dépendances sont à jour : `npm install`
+2. Supprimez `node_modules` et le cache : `rm -rf node_modules dist && npm install`
+3. Assurez-vous que `react` et `react-dom` sont en version **18.3.1**
+4. Vérifiez que `@types/react` et `@types/react-dom` sont installés
+
+**Note :** Ne mettez pas à jour vers React 19 tant que Framer Motion n'est pas officiellement compatible. Suivez [l'issue GitHub #2668](https://github.com/motiondivision/motion/issues/2668) pour les mises à jour.
+
+---
+
 ## 📚 Documentation
 
-Voir le dossier [`docs/`](./docs/) pour la documentation technique complète :
+### 📖 Guides Principaux
 
-- [Architecture](./docs/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
-- [Composants](./docs/features/COMPONENTS.md) - UI/UX détaillé
-- [AI Service](./docs/architecture/AI_SERVICE.md) - Intégration Gemini
-- [Interactions](./docs/features/INTERACTIONS.md) - Raccourcis clavier
+- [📋 Release Notes v0.3.0-beta.1](./docs/RELEASE_NOTES_v0.3.0-beta.1.md) - **Nouveautés de cette version**
+- [🏗️ Architecture](./docs/guides/architecture/ARCHITECTURE.md) - Stack, SQLite, déploiement
+- [🎨 Composants](./docs/guides/features/COMPONENTS.md) - UI/UX détaillé
+- [🎨 Design System](./docs/guides/features/DESIGN_SYSTEM.md) - Système de design complet
+- [🤖 AI Service](./docs/guides/architecture/AI_SERVICE.md) - Intégration Gemini
+- [⌨️ Interactions](./docs/guides/features/INTERACTIONS.md) - Raccourcis clavier
+- [🏷️ TagHub Guide](./docs/TAG_HUB_USER_GUIDE.md) - Guide utilisateur système de tags
+- [🌐 i18n Guide](./docs/guides/features/I18N_GUIDE.md) - Internationalisation
+
+### Gestion Git & GitHub
+
+- [🚀 Quick Start](./docs/getting-started/QUICK_START.md) - Guide rapide en 10 minutes
+- [Résumé Configuration GitHub](./docs/workflows/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
+- [Stratégie de Branches](./docs/guides/architecture/GIT_WORKFLOW.md) - Workflow Git et gestion des branches
+- [Configuration GitHub](./docs/workflows/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
+- [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
+
+### 💼 Analyse Commerciale & Qualité
+
+- [📊 Analyse Qualitative & Étude de Marché 2026](./docs/ANALYSE_QUALITATIVE_ET_MARCHE_2026.md) - **Analyse complète (87 pages)** - Qualité technique, analyse concurrentielle, projections financières
+- [📋 Synthèse Exécutive Commercialisation](./docs/SYNTHESE_EXECUTIVE_COMMERCIALISATION.md) - **Résumé (1 page)** - Verdict GO/NO-GO, roadmap de lancement 6 semaines
+- [📊 Project Health Report](./docs/PROJECT_HEALTH_REPORT.md) - Score de santé 87/100, métriques de code, couverture de tests
 
 ### Gestion Git & GitHub
 - [🚀 Quick Start](./docs/QUICK_START.md) - Guide rapide en 10 minutes
@@ -124,6 +169,24 @@ Ce projet inclut une configuration complète pour GitHub Copilot avec des règle
 - **[Exemples](/.github/copilot/EXAMPLES.md)** - Exemples de code avec Copilot
 
 Consultez [`.github/copilot/README.md`](/.github/copilot/README.md) pour plus d'informations sur l'utilisation de ces règles.
+
+#### 🔧 Maintenance de la Configuration
+
+Un script de maintenance est disponible pour valider et maintenir la configuration GitHub :
+
+```bash
+# Valider la configuration
+./scripts/maintain-github-config.sh
+
+# Mode interactif avec corrections
+./scripts/maintain-github-config.sh --fix
+```
+
+**Documentation :**
+
+- [Guide de Maintenance](/.github/MAINTENANCE_GUIDE.md) - Procédures complètes
+- [Référence Rapide](/.github/QUICK_REFERENCE.md) - Commandes essentielles
+- [Agents Copilot](/.github/agents/README.md) - Agents experts par domaine
 
 ---
 

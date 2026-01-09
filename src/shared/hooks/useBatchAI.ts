@@ -4,6 +4,7 @@ import { PortfolioItem } from "../types";
 import { analyzeImage } from "../../features/vision";
 import { useProgress } from "../contexts/ProgressContext";
 
+import { logger } from '../utils/logger';
 export const useBatchAI = (updateItem: (item: PortfolioItem) => void) => {
   const [aiQueue, setAiQueue] = useState<PortfolioItem[]>([]);
   const [isBatchProcessing, setIsBatchProcessing] = useState(false);
@@ -39,7 +40,7 @@ export const useBatchAI = (updateItem: (item: PortfolioItem) => void) => {
           aiTagsDetailed: result.tagsDetailed,
         });
       } catch (e) {
-        console.error(`Failed to analyze ${item.name}`, e);
+        logger.error('app', 'Failed to analyze ${item.name}', e);
       } finally {
         // Remove processed item from queue
         setAiQueue((prev) => {

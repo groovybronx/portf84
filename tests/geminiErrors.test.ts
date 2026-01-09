@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GeminiError, ApiKeyError, NetworkError } from '../src/features/vision/services/geminiService';
 
+import { logger } from './shared/utils/logger';
 // Mock i18next before it is used
 vi.mock('i18next', () => ({
   default: {

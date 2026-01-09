@@ -6,6 +6,7 @@
  * @example
  * ```ts
  * import { STORAGE_KEYS, SUPPORTED_IMAGE_EXTENSIONS, getSpringTransition } from '@/shared/constants';
+import { logger } from '../utils/logger';
  * ```
  */
 

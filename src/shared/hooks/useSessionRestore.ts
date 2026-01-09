@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { storageService } from "../../services/storageService";
-import { verifyPermission } from "../utils";
-import { useProgress } from "../contexts/ProgressContext";
+import { useState, useEffect } from 'react';
+import { storageService } from '../../services/storageService';
+import { useProgress } from '../contexts/ProgressContext';
 
+import { logger } from '../utils/logger';
 export const useSessionRestore = (
   loadPath: (path: string) => Promise<void>,
   setFoldersRaw: (folders: any[]) => void // Optional callback for optimistic updates
@@ -16,16 +16,16 @@ export const useSessionRestore = (
         const storedItems = await storageService.getDirectoryHandles();
         if (storedItems.length > 0) setHasStoredSession(true);
       } catch (e) {
-        console.error("Storage check failed", e);
+        logger.error('app', 'Storage check failed', e);
       }
     };
     checkStorage();
   }, []);
 
   const restoreSession = async () => {
-    const taskId = "restore-library";
+    const taskId = 'restore-library';
     try {
-      addTask({ id: taskId, label: "Restoring Library" });
+      addTask({ id: taskId, label: 'Restoring Library' });
 
       const storedItems = await storageService.getDirectoryHandles();
       if (storedItems.length === 0) {
@@ -36,9 +36,7 @@ export const useSessionRestore = (
       let loadedCount = 0;
 
       // Sort: Roots first
-      storedItems.sort((a, b) =>
-        a.isRoot === b.isRoot ? 0 : a.isRoot ? -1 : 1
-      );
+      storedItems.sort((a, b) => (a.isRoot === b.isRoot ? 0 : a.isRoot ? -1 : 1));
 
       const vFolders = await storageService.getVirtualFolders();
       setFoldersRaw(vFolders);
@@ -58,12 +56,12 @@ export const useSessionRestore = (
       }
 
       if (loadedCount === 0 && storedItems.some((i) => !i.isRoot)) {
-        console.warn("No folders loaded during session restore");
+        logger.warn('app', 'No folders loaded during session restore');
       }
     } catch (e) {
-      console.error("Restore failed", e);
+      logger.error('app', 'Restore failed', e);
     } finally {
-      updateTask(taskId, { status: "completed", progress: 100 });
+      updateTask(taskId, { status: 'completed', progress: 100 });
       setTimeout(() => removeTask(taskId), 3000);
     }
   };

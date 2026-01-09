@@ -1,7 +1,9 @@
-import { useCallback } from "react";
-import { PortfolioItem } from "../types";
-import { analyzeImage } from "../../features/vision";
+import { useCallback } from 'react';
+import { PortfolioItem } from '../types';
+import { OverlayKey } from './useModalState';
+import { analyzeImage } from '../../features/vision';
 
+import { logger } from '../utils/logger';
 export interface UseItemActionsProps {
   currentItems: PortfolioItem[];
   selectedIds: Set<string>;
@@ -14,13 +16,8 @@ export interface UseItemActionsProps {
   clearSelection: () => void;
   setSelectedIds: (ids: Set<string>) => void;
   createVirtualFolder: (name: string) => string;
-  moveItemsToFolder: (
-    itemIds: Set<string>,
-    folderId: string,
-    items: PortfolioItem[]
-  ) => void;
-  setIsMoveModalOpen: (open: boolean) => void;
-  setIsAddTagModalOpen: (open: boolean) => void;
+  moveItemsToFolder: (itemIds: Set<string>, folderId: string, items: PortfolioItem[]) => void;
+  setOverlay: (key: OverlayKey, open: boolean) => void;
   activeCollection: { id: string; name: string } | null;
 }
 
@@ -51,8 +48,7 @@ export const useItemActions = ({
   setSelectedIds,
   createVirtualFolder,
   moveItemsToFolder,
-  setIsMoveModalOpen,
-  setIsAddTagModalOpen,
+  setOverlay,
   activeCollection,
 }: UseItemActionsProps): ItemActions => {
   // Tagging Logic
@@ -99,16 +95,19 @@ export const useItemActions = ({
         if (item) itemsToUpdate = [item];
       }
 
-      updateItems(itemsToUpdate.map((item) => ({ ...item, colorTag: color })));
+      updateItems(
+        itemsToUpdate.map((item) => {
+          const updatedItem = { ...item };
+          if (color) {
+            updatedItem.colorTag = color;
+          } else {
+            delete updatedItem.colorTag;
+          }
+          return updatedItem;
+        })
+      );
     },
-    [
-      selectionMode,
-      selectedIds,
-      selectedItem,
-      focusedId,
-      currentItems,
-      updateItems,
-    ]
+    [selectionMode, selectedIds, selectedItem, focusedId, currentItems, updateItems]
   );
 
   // Analyze item with AI
@@ -123,14 +122,14 @@ export const useItemActions = ({
           aiTagsDetailed: res.tagsDetailed,
         });
       } catch (e: any) {
-        console.error(e);
-        if (e.name === "ApiKeyError") {
+        logger.error('app', 'Error', e);
+        if (e.name === 'ApiKeyError') {
           alert(e.message);
           // TODO: Open Settings Modal automatically
-        } else if (e.name === "NetworkError") {
-          alert("Connection failed. Please check your internet.");
+        } else if (e.name === 'NetworkError') {
+          alert('Connection failed. Please check your internet.');
         } else {
-          alert(`Analysis failed: ${e.message || "Unknown error"}`);
+          alert(`Analysis failed: ${e.message || 'Unknown error'}`);
         }
       }
     },
@@ -142,15 +141,9 @@ export const useItemActions = ({
     (targetId: string) => {
       moveItemsToFolder(selectedIds, targetId, currentItems);
       clearSelection();
-      setIsMoveModalOpen(false);
+      setOverlay('moveModal', false);
     },
-    [
-      selectedIds,
-      currentItems,
-      moveItemsToFolder,
-      clearSelection,
-      setIsMoveModalOpen,
-    ]
+    [selectedIds, currentItems, moveItemsToFolder, clearSelection, setOverlay]
   );
 
   // Create folder and move items
@@ -160,7 +153,7 @@ export const useItemActions = ({
       const newId = createVirtualFolder(name);
       moveItemsToFolder(selectedIds, newId, currentItems);
       clearSelection();
-      setIsMoveModalOpen(false);
+      setOverlay('moveModal', false);
     },
     [
       activeCollection,
@@ -169,7 +162,7 @@ export const useItemActions = ({
       currentItems,
       moveItemsToFolder,
       clearSelection,
-      setIsMoveModalOpen,
+      setOverlay,
     ]
   );
 
@@ -180,9 +173,9 @@ export const useItemActions = ({
         clearSelection();
         setSelectedIds(new Set([item.id]));
       }
-      setIsMoveModalOpen(true);
+      setOverlay('moveModal', true);
     },
-    [selectedIds, clearSelection, setSelectedIds, setIsMoveModalOpen]
+    [selectedIds, clearSelection, setSelectedIds, setOverlay]
   );
 
   // Context menu add tag handler
@@ -192,9 +185,9 @@ export const useItemActions = ({
         clearSelection();
         setSelectedIds(new Set([item.id]));
       }
-      setIsAddTagModalOpen(true);
+      setOverlay('addTagModal', true);
     },
-    [selectedIds, clearSelection, setSelectedIds, setIsAddTagModalOpen]
+    [selectedIds, clearSelection, setSelectedIds, setOverlay]
   );
 
   return {

@@ -1,30 +1,34 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
-import { Icon } from "../../../../shared/components/Icon";
-import { Button } from "../../../../shared/components/ui";
-import { Folder as FolderType, Collection } from "../../../../shared/types";
-import { FolderItem } from "./FolderItem";
-import { useTheme } from "../../../../shared/contexts/ThemeContext";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Icon } from '../../../../shared/components/Icon';
+import { Button, Flex, Stack } from '../../../../shared/components/ui';
+import { Folder as FolderType, Collection, SourceFolder } from '../../../../shared/types';
+import { FolderItem } from './FolderItem';
+import { useTheme } from '../../../../shared/contexts/ThemeContext';
 
 interface ShadowFoldersSectionProps {
   folders: FolderType[];
+  sourceFolders: SourceFolder[];
   activeFolderId: Set<string>;
   onSelectFolder: (id: string) => void;
   onImportFolder: () => void;
+  onRemoveFolder?: (path: string) => void;
   activeCollection: Collection | null;
   onColorFilterChange?: (color: string | null) => void;
 }
 
 export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
   folders,
+  sourceFolders,
   activeFolderId,
   onSelectFolder,
   onImportFolder,
+  onRemoveFolder,
   activeCollection,
   onColorFilterChange,
 }) => {
-  const { t } = useTranslation("library");
+  const { t } = useTranslation('library');
   const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -37,28 +41,35 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
 
   return (
     <div>
-      <button
+      <Flex
+        align="center"
+        justify="between"
         onClick={toggleSection}
-        className={`group relative w-full flex items-center justify-between mb-2 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        className={`group relative w-full mb-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer ${
           isExpanded
-            ? "bg-quaternary/10 border-quaternary/20 shadow-lg shadow-quaternary/20"
-            : "hover:bg-quaternary/5 border-transparent"
+            ? 'bg-quaternary/10 border-quaternary/20 shadow-lg shadow-quaternary/20'
+            : 'hover:bg-quaternary/5 border-transparent'
         }`}
       >
-        <p className="text-xs uppercase font-bold tracking-wider flex items-center gap-2 text-quaternary">
+        <Flex
+          align="center"
+          gap="sm"
+          className="text-xs uppercase font-bold tracking-wider text-quaternary"
+        >
           <Icon action={settings.quaternaryIcon} size={14} className="text-quaternary" />
           <span>{t('workFolders')}</span>
-        </p>
+        </Flex>
+        <Flex align="center" gap="sm">
           <span
             className={`text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
               isExpanded
-                ? "bg-quaternary/20 text-quaternary"
-                : "bg-quaternary/10 text-quaternary/70"
+                ? 'bg-quaternary/20 text-quaternary'
+                : 'bg-quaternary/10 text-quaternary/70'
             }`}
           >
             {folders.length}
           </span>
-          
+
           <Button
             variant="ghost"
             size="icon"
@@ -73,42 +84,52 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
             <Icon action="add" size={14} />
           </Button>
 
-          <Icon action="next"
+          <Icon
+            action="next"
             size={14}
             className={`transition-transform duration-300 text-quaternary ${
-              isExpanded ? "rotate-90" : "opacity-50"
+              isExpanded ? 'rotate-90' : 'opacity-50'
             }`}
           />
-
-      </button>
-
+        </Flex>
+      </Flex>
 
       <AnimatePresence>
         {isExpanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
             {folders.length === 0 ? (
-              <p className="text-xs text-gray-600 text-center py-3 italic">
-                {t('noWorkFolders')}
-              </p>
+              <p className="text-xs text-gray-600 text-center py-3 italic">{t('noWorkFolders')}</p>
             ) : (
-              <div className="space-y-1 pl-2">
+              <Stack spacing="xs" className="pl-2">
                 {folders.map((folder) => (
                   <FolderItem
                     key={folder.id}
                     folder={folder}
                     isActive={activeFolderId.has(folder.id)}
                     onSelect={handleSelect}
+                    {...(onRemoveFolder
+                      ? {
+                          onDelete: (_id: string) => {
+                            const sourceFolder = sourceFolders.find(
+                              (sf) => sf.id === folder.sourceFolderId
+                            );
+                            if (sourceFolder?.path) {
+                              onRemoveFolder(sourceFolder.path);
+                            }
+                          },
+                        }
+                      : {})}
                     iconAction="hard_drive"
                     iconColorClass="text-quaternary"
                     iconBgClass="bg-quaternary/10"
                   />
                 ))}
-              </div>
+              </Stack>
             )}
           </motion.div>
         )}

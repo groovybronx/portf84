@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Tag, X, Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tag, X, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Button, GlassCard, Flex, Stack } from '../../../shared/components/ui';
 
 interface AddTagModalProps {
   isOpen: boolean;
@@ -18,14 +19,13 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
   selectedCount,
   availableTags,
 }) => {
-  const { t } = useTranslation(["tags", "common"]);
-  const [tag, setTag] = useState("");
+  const { t } = useTranslation(['tags', 'common']);
+  const [tag, setTag] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
-      setTag("");
+      setTag('');
       setShowSuggestions(false);
     }
   }, [isOpen]);
@@ -55,91 +55,90 @@ export const AddTagModal: React.FC<AddTagModalProps> = ({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-sm glass-surface rounded-2xl shadow-2xl p-6 border border-glass-border"
+          <GlassCard
+            variant="overlay"
+            padding="lg"
+            border
+            className="relative w-full max-w-sm rounded-2xl shadow-2xl"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
-                  <Tag size={20} />
-                </div>
-                <h2 className="text-xl font-bold text-white">{t('tags:addTagTitle')}</h2>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-400 mb-4">
-              {t('tags:addingTagTo', { count: selectedCount })}.
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={tag}
-                  onChange={(e) => {
-                    setTag(e.target.value);
-                    setShowSuggestions(true);
-                  }}
-                  onFocus={() => setShowSuggestions(true)}
-                  onBlur={() =>
-                    setTimeout(() => setShowSuggestions(false), 200)
-                  }
-                  placeholder={t('tags:enterTagName')}
-                  className="w-full bg-black/40 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
-                  autoFocus
-                />
-
-                {/* Suggestions Dropdown */}
-                {showSuggestions && tag && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-20 overflow-hidden">
-                    {suggestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
-                        onMouseDown={() =>
-                          handleSubmit(
-                            { preventDefault: () => {} } as React.FormEvent,
-                            suggestion
-                          )
-                        }
-                      >
-                        <Tag size={12} className="text-gray-500" />
-                        {suggestion}
-                      </button>
-                    ))}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            >
+              <Flex align="center" justify="between" className="mb-4">
+                <Flex align="center" gap="sm">
+                  <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
+                    <Tag size={20} />
                   </div>
-                )}
-              </div>
+                  <h2 className="text-xl font-bold text-white">{t('tags:addTagTitle')}</h2>
+                </Flex>
+                <Button variant="close" size="icon" onClick={onClose}>
+                  <X size={20} />
+                </Button>
+              </Flex>
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
-                >
-                  {t('common:cancel')}
-                </button>
-                <button
-                  type="submit"
-                  disabled={!tag.trim()}
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
-                >
-                  <Plus size={16} />
-                  {t('tags:addTag')}
-                </button>
-              </div>
-            </form>
-          </motion.div>
+              <p className="text-sm text-gray-400 mb-4">
+                {t('tags:addingTagTo', { count: selectedCount })}.
+              </p>
+
+              <form onSubmit={handleSubmit}>
+                <Stack spacing="md">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={tag}
+                      onChange={(e) => {
+                        setTag(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                      placeholder={t('tags:enterTagName')}
+                      className="w-full bg-black/40 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                      autoFocus
+                    />
+
+                    {/* Suggestions Dropdown */}
+                    {showSuggestions && tag && suggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-glass-border rounded-lg shadow-xl z-20 overflow-hidden">
+                        {suggestions.map((suggestion) => (
+                          <Button
+                            key={suggestion}
+                            variant="ghost"
+                            className="w-full justify-start gap-2 rounded-none"
+                            onMouseDown={() =>
+                              handleSubmit(
+                                { preventDefault: () => {} } as React.FormEvent,
+                                suggestion
+                              )
+                            }
+                          >
+                            <Tag size={12} className="text-gray-500" />
+                            {suggestion}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <Flex align="center" justify="end" gap="md" className="pt-2">
+                    <Button variant="ghost" onClick={onClose}>
+                      {t('common:cancel')}
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={!tag.trim()}
+                      icon={<Plus size={16} />}
+                      iconPosition="left"
+                    >
+                      {t('tags:addTag')}
+                    </Button>
+                  </Flex>
+                </Stack>
+              </form>
+            </motion.div>
+          </GlassCard>
         </div>
       )}
     </AnimatePresence>

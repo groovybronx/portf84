@@ -1,0 +1,44 @@
+name: GitHub Config Check
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '.github/**'
+  pull_request:
+    paths:
+      - '.github/**'
+  workflow_dispatch:
+
+jobs:
+  validate-config:
+    name: Validate GitHub Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      
+      - name: Run configuration validation
+        id: validation
+        run: |
+          chmod +x scripts/maintain-github-config.sh
+          bash scripts/maintain-github-config.sh --check
+      
+      - name: Report results
+        if: always()
+        run: |
+          if [ "${{ steps.validation.outcome }}" == "success" ]; then
+            echo "✅ GitHub configuration validation passed"
+          else
+            echo "❌ GitHub configuration validation failed"
+            echo "Run 'bash scripts/maintain-github-config.sh' locally for details"
+            exit 1
+          fi

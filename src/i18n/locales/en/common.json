@@ -13,11 +13,16 @@
   "yes": "Yes",
   "no": "No",
   "back": "Back",
+  "previous": "Previous",
   "next": "Next",
   "ok": "OK",
   "error": "Error",
   "success": "Success",
   "warning": "Warning",
   "info": "Info",
-  "none": "None"
+  "none": "None",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "closeModal": "Close modal",
+  "toCancel": "to cancel"
 }

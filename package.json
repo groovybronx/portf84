@@ -1,7 +1,7 @@
 {
   "name": "lumina-portfolio",
   "private": true,
-  "version": "0.1.0-beta.1",
+  "version": "0.3.0-beta.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,12 @@
     "tauri:build": "tauri build",
     "tauri:info": "tauri info",
     "tauri:icon": "tauri icon",
-    "test": "vitest run"
+    "test": "vitest run",
+    "type-check": "tsc --noEmit",
+    "rag:build": "python3 scripts/rag/build_doc_index.py",
+    "rag:search": "python3 scripts/rag/search_documentation.py",
+    "rag:test": "python3 scripts/rag/test_rag_system.py",
+    "check:links": "node scripts/validate-doc-links.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.34.0",
@@ -31,8 +36,8 @@
     "i18next-browser-languagedetector": "^8.2.0",
     "lucide-react": "^0.562.0",
     "nanoid": "^5.1.6",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-i18next": "^16.5.0",
     "tailwind-merge": "^3.4.0"
   },
@@ -42,12 +47,21 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.14.0",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/coverage-v8": "^4.0.16",
+    "axios": "^1.7.2",
+    "chalk": "^5.3.0",
     "concurrently": "^9.2.1",
+    "glob": "^10.4.1",
     "jsdom": "^27.3.0",
+    "remark": "^15.0.1",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.8.2",
+    "unist-util-visit": "^5.0.0",
     "vite": "^6.2.0",
     "vitest": "^4.0.16"
   }

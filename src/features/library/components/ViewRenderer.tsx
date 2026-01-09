@@ -1,9 +1,9 @@
-import React from "react";
-import { PhotoGrid } from "./PhotoGrid";
-import { PhotoCarousel } from "./PhotoCarousel";
-import { CinematicCarousel } from "./CinematicCarousel";
-import { PhotoList } from "./PhotoList";
-import { PortfolioItem, ViewMode, Folder, Collection } from "../../../shared/types";
+import React from 'react';
+import { PhotoGrid } from './PhotoGrid';
+import { PhotoCarousel } from './PhotoCarousel';
+import { CinematicCarousel } from './CinematicCarousel';
+import { PhotoList } from './PhotoList';
+import { PortfolioItem, ViewMode, Folder, Collection } from '../../../shared/types';
 
 export interface ViewRendererProps {
   viewMode: ViewMode;
@@ -48,8 +48,8 @@ export const ViewRenderer: React.FC<ViewRendererProps> = ({
           onTagClick={onTagClick}
           focusedId={focusedId}
           onFocusChange={onFocusChange}
-          folders={folders}
-          collections={collections}
+          {...(folders && { folders })}
+          {...(collections && { collections })}
         />
       );
 
@@ -60,9 +60,7 @@ export const ViewRenderer: React.FC<ViewRendererProps> = ({
           <CinematicCarousel
             items={currentItems}
             initialIndex={
-              selectedItem
-                ? currentItems.findIndex((item) => item.id === selectedItem.id)
-                : 0
+              selectedItem ? currentItems.findIndex((item) => item.id === selectedItem.id) : 0
             }
             onClose={() => onSelect(null as any)}
             onItemClick={onSelect}
@@ -70,12 +68,7 @@ export const ViewRenderer: React.FC<ViewRendererProps> = ({
         );
       }
       // Default PhotoCarousel
-      return (
-        <PhotoCarousel
-          onSelect={onSelect}
-          onFocusedItem={(i) => onFocusChange(i.id)}
-        />
-      );
+      return <PhotoCarousel onSelect={onSelect} onFocusedItem={(i) => onFocusChange(i.id)} />;
 
     case ViewMode.LIST:
       return (

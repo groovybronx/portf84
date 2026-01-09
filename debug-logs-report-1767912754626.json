@@ -1,0 +1,885 @@
+{
+  "timestamp": "2026-01-08T22:52:34.625Z",
+  "mode": "dry-run",
+  "stats": {
+    "filesScanned": 165,
+    "filesWithLogs": 35,
+    "totalLogs": 164,
+    "logsByType": {
+      "console\\.lo\\s*\\": 104,
+      "console\\.error\\s*\\": 47,
+      "console\\.warn\\s*\\": 11,
+      "console\\.roup\\s*\\": 1,
+      "console\\.roupEnd\\s*\\": 1
+    },
+    "fixedFiles": 0
+  },
+  "filesWithLogs": [
+    {
+      "path": "./tests/fileHelpers.test.ts",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 70,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/App.tsx",
+      "logCount": 5,
+      "logs": [
+        {
+          "line": 284,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 290,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 294,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 315,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 547,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/vision/components/ImageViewer.tsx",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 96,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/vision/hooks/useVision.ts",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 46,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/vision/services/geminiService.ts",
+      "logCount": 4,
+      "logs": [
+        {
+          "line": 105,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 164,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 206,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 319,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/tags/components/TagMergeHistory.tsx",
+      "logCount": 2,
+      "logs": [
+        {
+          "line": 53,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 94,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/tags/components/TagHub/ManageTab.tsx",
+      "logCount": 3,
+      "logs": [
+        {
+          "line": 30,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 68,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 93,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/tags/components/TagHub/FusionTab.tsx",
+      "logCount": 6,
+      "logs": [
+        {
+          "line": 33,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 81,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 94,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 115,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 120,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 129,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/tags/components/TagHub/BrowseTab.tsx",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 67,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/features/collections/components/CollectionManager.tsx",
+      "logCount": 2,
+      "logs": [
+        {
+          "line": 40,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 49,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/contexts/LibraryContext.provider.ts",
+      "logCount": 7,
+      "logs": [
+        {
+          "line": 45,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 55,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 67,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 181,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 214,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 298,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 354,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/contexts/ThemeContext.tsx",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 57,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/utils/tagSettings.ts",
+      "logCount": 4,
+      "logs": [
+        {
+          "line": 61,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 77,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 79,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 102,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/utils/fileHelpers.ts",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 47,
+          "type": "console\\.warn\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/utils/PerformanceMonitor.tsx",
+      "logCount": 9,
+      "logs": [
+        {
+          "line": 59,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 66,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 97,
+          "type": "console\\.roup\\s*\\"
+        },
+        {
+          "line": 101,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 110,
+          "type": "console\\.roupEnd\\s*\\"
+        },
+        {
+          "line": 118,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 145,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 162,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 166,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/utils/tagHubSettings.ts",
+      "logCount": 7,
+      "logs": [
+        {
+          "line": 52,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 76,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 82,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 98,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 100,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 104,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 122,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/components/Icon.tsx",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 219,
+          "type": "console\\.warn\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/components/SettingsModal.tsx",
+      "logCount": 2,
+      "logs": [
+        {
+          "line": 52,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 80,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/components/ErrorBoundary.tsx",
+      "logCount": 3,
+      "logs": [
+        {
+          "line": 18,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 39,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 90,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/hooks/useLocalShortcuts.ts",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 46,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/hooks/useSessionRestore.ts",
+      "logCount": 3,
+      "logs": [
+        {
+          "line": 19,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 61,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 64,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/hooks/useItemActions.ts",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 126,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/hooks/useAppHandlers.ts",
+      "logCount": 2,
+      "logs": [
+        {
+          "line": 87,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 93,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/shared/hooks/useBatchAI.ts",
+      "logCount": 1,
+      "logs": [
+        {
+          "line": 42,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/scripts/repro_analyze.ts",
+      "logCount": 9,
+      "logs": [
+        {
+          "line": 61,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 62,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 84,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 85,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 86,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 87,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 90,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 102,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 103,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/secureStorage.ts",
+      "logCount": 4,
+      "logs": [
+        {
+          "line": 38,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 42,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 60,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 78,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/storage/folders.ts",
+      "logCount": 17,
+      "logs": [
+        {
+          "line": 55,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 62,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 94,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 143,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 157,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 172,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 180,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 193,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 202,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 207,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 214,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 218,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 235,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 249,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 261,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 316,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 349,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/storage/collections.ts",
+      "logCount": 3,
+      "logs": [
+        {
+          "line": 26,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 74,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 89,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/storage/metadata.ts",
+      "logCount": 10,
+      "logs": [
+        {
+          "line": 20,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 40,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 62,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 64,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 68,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 90,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 95,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 116,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 209,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 218,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/storage/handles.ts",
+      "logCount": 3,
+      "logs": [
+        {
+          "line": 17,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 23,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 25,
+          "type": "console\\.error\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/storage/db.ts",
+      "logCount": 18,
+      "logs": [
+        {
+          "line": 22,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 38,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 44,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 50,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 136,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 184,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 206,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 216,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 220,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 223,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 244,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 261,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 280,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 289,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 291,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 295,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 309,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 313,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/storage/tags.ts",
+      "logCount": 17,
+      "logs": [
+        {
+          "line": 56,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 147,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 186,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 296,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 300,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 335,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 366,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 372,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 375,
+          "type": "console\\.error\\s*\\"
+        },
+        {
+          "line": 413,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 431,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 464,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 486,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 539,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 585,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 626,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 638,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/libraryLoader.ts",
+      "logCount": 8,
+      "logs": [
+        {
+          "line": 21,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 25,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 35,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 42,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 61,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 65,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 177,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 192,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/tagAnalysisService.ts",
+      "logCount": 4,
+      "logs": [
+        {
+          "line": 129,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 133,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 137,
+          "type": "console\\.warn\\s*\\"
+        },
+        {
+          "line": 199,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    },
+    {
+      "path": "./src/services/tagAnalysisCache.ts",
+      "logCount": 2,
+      "logs": [
+        {
+          "line": 48,
+          "type": "console\\.lo\\s*\\"
+        },
+        {
+          "line": 79,
+          "type": "console\\.lo\\s*\\"
+        }
+      ]
+    }
+  ]
+}

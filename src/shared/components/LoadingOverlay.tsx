@@ -1,6 +1,6 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { LoadingSpinner } from "./ui";
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { LoadingSpinner } from './ui';
 
 interface LoadingOverlayProps {
   isVisible: boolean;
@@ -9,7 +9,7 @@ interface LoadingOverlayProps {
 
 export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   isVisible,
-  message = "Initialisation de portf84...",
+  message = 'Initialisation de portf84...',
 }) => {
   return (
     <AnimatePresence>
@@ -17,7 +17,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
           className="fixed inset-0 z-(--z-overlay) bg-background flex flex-col items-center justify-center space-y-6"
         >
           <div className="relative">

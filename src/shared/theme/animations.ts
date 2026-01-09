@@ -2,34 +2,33 @@
  * Centralized Animation Variants for Framer Motion
  * Use these throughout the app to ensure consistent animations
  */
-import type { Variants, Transition } from "framer-motion";
-
+import type { Variants, Transition } from 'framer-motion';
 // ==================== TRANSITIONS ====================
 
 /** Standard spring transition */
 export const springTransition: Transition = {
-  type: "spring",
+  type: 'spring',
   stiffness: 200,
   damping: 20,
 };
 
 /** Smooth tween transition */
 export const smoothTransition: Transition = {
-  type: "tween",
+  type: 'tween',
   duration: 0.3,
   ease: [0.4, 0, 0.2, 1], // ease-out-cubic
 };
 
 /** Fast transition for micro-interactions */
 export const fastTransition: Transition = {
-  type: "tween",
+  type: 'tween',
   duration: 0.15,
-  ease: "easeOut",
+  ease: 'easeOut',
 };
 
 /** Slow transition for dramatic effects */
 export const slowTransition: Transition = {
-  type: "tween",
+  type: 'tween',
   duration: 0.5,
   ease: [0.4, 0, 0.2, 1],
 };
@@ -107,13 +106,13 @@ export const flipVariants: Variants = {
 };
 
 export const flip3DContainerStyle = {
-  transformStyle: "preserve-3d" as const,
+  transformStyle: 'preserve-3d' as const,
   perspective: 1000,
 };
 
 export const flipFaceStyle = {
-  backfaceVisibility: "hidden" as const,
-  position: "absolute" as const,
+  backfaceVisibility: 'hidden' as const,
+  position: 'absolute' as const,
   inset: 0,
 };
 
@@ -149,7 +148,7 @@ export const menuVariants: Variants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.15, ease: "easeOut" },
+    transition: { duration: 0.15, ease: 'easeOut' },
   },
   exit: {
     opacity: 0,
@@ -200,7 +199,7 @@ export const carouselImageVariants: Variants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: "tween",
+      type: 'tween',
       duration: 0.5,
       ease: [0.4, 0, 0.2, 1],
     },
@@ -210,7 +209,7 @@ export const carouselImageVariants: Variants = {
     opacity: 0,
     scale: 0.9,
     transition: {
-      type: "tween",
+      type: 'tween',
       duration: 0.3,
     },
   }),
