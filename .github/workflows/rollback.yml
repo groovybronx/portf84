@@ -1,26 +1,26 @@
-name: "Release Rollback"
+name: 'Release Rollback'
 
 on:
   workflow_dispatch:
     inputs:
       rollback_to_tag:
-        description: "Tag vers lequel faire le rollback (ex: v1.2.3)"
+        description: 'Tag vers lequel faire le rollback (ex: v1.2.3)'
         required: true
         type: string
       create_release:
-        description: "Créer une release pour le rollback"
+        description: 'Créer une release pour le rollback'
         required: false
         default: true
         type: boolean
       notify_slack:
-        description: "Notifier le rollback sur Slack"
+        description: 'Notifier le rollback sur Slack'
         required: false
         default: true
         type: boolean
 
 jobs:
   rollback:
-    name: "Rollback Release"
+    name: 'Rollback Release'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -126,10 +126,10 @@ jobs:
           echo "📦 Creating rollback release..."
 
           # Get rollback impact data
-          COMMIT_COUNT="${{ steps.analyze.outputs.commit_count }}"
-          FEATURES_LOST="${{ steps.analyze.outputs.features_lost }}"
-          FIXES_LOST="${{ steps.analyze.outputs.fixes_lost }}"
-          BREAKING_REVERTED="${{ steps.analyze.outputs.breaking_reverted }}"
+          COMMIT_COUNT="${{ steps.analyze.outputs.commit_count || '0' }}"
+          FEATURES_LOST="${{ steps.analyze.outputs.features_lost || '0' }}"
+          FIXES_LOST="${{ steps.analyze.outputs.fixes_lost || '0' }}"
+          BREAKING_REVERTED="${{ steps.analyze.outputs.breaking_reverted || '0' }}"
 
           # Create release body
           cat > rollback_release_body.md << EOF
@@ -200,9 +200,9 @@ jobs:
 
           ### ⚠️ Impact
 
-          - **Commits annulés:** "${{ steps.analyze.outputs.commit_count }}"
-          - **Fonctionnalités perdues:** "${{ steps.analyze.outputs.features_lost }}"
-          - **Corrections perdues:** "${{ steps.analyze.outputs.fixes_lost }}"
+          - **Commits annulés:** "${{ steps.analyze.outputs.commit_count || '0' }}"
+          - **Fonctionnalités perdues:** "${{ steps.analyze.outputs.features_lost || '0' }}"
+          - **Corrections perdues:** "${{ steps.analyze.outputs.fixes_lost || '0' }}"
 
           ### 🎯 Actions
 
@@ -254,12 +254,12 @@ jobs:
                   },
                   {
                     "title": "Commits Annulés",
-                    "value": "${{ steps.analyze.outputs.commit_count }}",
+                    "value": "${{ steps.analyze.outputs.commit_count || '0' }}",
                     "short": true
                   },
                   {
                     "title": "Fonctionnalités Perdues",
-                    "value": "${{ steps.analyze.outputs.features_lost }}",
+                    "value": "${{ steps.analyze.outputs.features_lost || '0' }}",
                     "short": true
                   }
                 ],
@@ -299,10 +299,10 @@ jobs:
           echo "**Status:** Success" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 Impact Analysis:" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commits rolled back:** \"${{ steps.analyze.outputs.commit_count }}\"" >> $GITHUB_STEP_SUMMARY
-          echo "- **Features lost:** \"${{ steps.analyze.outputs.features_lost }}\"" >> $GITHUB_STEP_SUMMARY
-          echo "- **Fixes lost:** \"${{ steps.analyze.outputs.fixes_lost }}\"" >> $GITHUB_STEP_SUMMARY
-          echo "- **Breaking changes reverted:** \"${{ steps.analyze.outputs.breaking_reverted }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commits rolled back:** \"${{ steps.analyze.outputs.commit_count || '0' }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Features lost:** \"${{ steps.analyze.outputs.features_lost || '0' }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fixes lost:** \"${{ steps.analyze.outputs.fixes_lost || '0' }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Breaking changes reverted:** \"${{ steps.analyze.outputs.breaking_reverted || '0' }}\"" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### ✅ Actions Completed:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Rollback branch created" >> $GITHUB_STEP_SUMMARY
