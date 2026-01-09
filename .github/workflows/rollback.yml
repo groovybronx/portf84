@@ -79,6 +79,7 @@ jobs:
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
       - name: Analyze rollback impact
+        id: analyze
         run: |
           ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
           CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD")
@@ -126,10 +127,16 @@ jobs:
           echo "📦 Creating rollback release..."
 
           # Get rollback impact data
-          COMMIT_COUNT="${{ steps.analyze.outputs.commit_count || '0' }}"
-          FEATURES_LOST="${{ steps.analyze.outputs.features_lost || '0' }}"
-          FIXES_LOST="${{ steps.analyze.outputs.fixes_lost || '0' }}"
-          BREAKING_REVERTED="${{ steps.analyze.outputs.breaking_reverted || '0' }}"
+          COMMIT_COUNT="${{ steps.analyze.outputs.commit_count }}"
+          FEATURES_LOST="${{ steps.analyze.outputs.features_lost }}"
+          FIXES_LOST="${{ steps.analyze.outputs.fixes_lost }}"
+          BREAKING_REVERTED="${{ steps.analyze.outputs.breaking_reverted }}"
+
+          # Set defaults if values are empty using shell parameter expansion
+          COMMIT_COUNT="${COMMIT_COUNT:-0}"
+          FEATURES_LOST="${FEATURES_LOST:-0}"
+          FIXES_LOST="${FIXES_LOST:-0}"
+          BREAKING_REVERTED="${BREAKING_REVERTED:-0}"
 
           # Create release body
           cat > rollback_release_body.md << EOF
@@ -200,9 +207,9 @@ jobs:
 
           ### ⚠️ Impact
 
-          - **Commits annulés:** "${{ steps.analyze.outputs.commit_count || '0' }}"
-          - **Fonctionnalités perdues:** "${{ steps.analyze.outputs.features_lost || '0' }}"
-          - **Corrections perdues:** "${{ steps.analyze.outputs.fixes_lost || '0' }}"
+          - **Commits annulés:** "${{ steps.analyze.outputs.commit_count }}"
+          - **Fonctionnalités perdues:** "${{ steps.analyze.outputs.features_lost }}"
+          - **Corrections perdues:** "${{ steps.analyze.outputs.fixes_lost }}"
 
           ### 🎯 Actions
 
@@ -254,12 +261,12 @@ jobs:
                   },
                   {
                     "title": "Commits Annulés",
-                    "value": "${{ steps.analyze.outputs.commit_count || '0' }}",
+                    "value": "${{ steps.analyze.outputs.commit_count }}",
                     "short": true
                   },
                   {
                     "title": "Fonctionnalités Perdues",
-                    "value": "${{ steps.analyze.outputs.features_lost || '0' }}",
+                    "value": "${{ steps.analyze.outputs.features_lost }}",
                     "short": true
                   }
                 ],
@@ -299,10 +306,10 @@ jobs:
           echo "**Status:** Success" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 Impact Analysis:" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commits rolled back:** \"${{ steps.analyze.outputs.commit_count || '0' }}\"" >> $GITHUB_STEP_SUMMARY
-          echo "- **Features lost:** \"${{ steps.analyze.outputs.features_lost || '0' }}\"" >> $GITHUB_STEP_SUMMARY
-          echo "- **Fixes lost:** \"${{ steps.analyze.outputs.fixes_lost || '0' }}\"" >> $GITHUB_STEP_SUMMARY
-          echo "- **Breaking changes reverted:** \"${{ steps.analyze.outputs.breaking_reverted || '0' }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commits rolled back:** \"${{ steps.analyze.outputs.commit_count }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Features lost:** \"${{ steps.analyze.outputs.features_lost }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fixes lost:** \"${{ steps.analyze.outputs.fixes_lost }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Breaking changes reverted:** \"${{ steps.analyze.outputs.breaking_reverted }}\"" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### ✅ Actions Completed:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Rollback branch created" >> $GITHUB_STEP_SUMMARY

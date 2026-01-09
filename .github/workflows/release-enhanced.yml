@@ -40,6 +40,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       is_prerelease: ${{ steps.version.outputs.is_prerelease }}
       release_tag: ${{ steps.version.outputs.release_tag }}
+      release_notes: ${{ steps.release-notes.outputs.release_notes }}
       rollback_enabled: ${{ github.event.inputs.enable_rollback || 'false' }}
 
     steps:
