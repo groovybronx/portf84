@@ -86,7 +86,7 @@ const PhotoCardComponent: React.FC<PhotoCardProps> = ({
           duration: 0.5,
           ease: [0.4, 0, 0.2, 1],
         }}
-        style={{ transformStyle: 'preserve-3d' }}
+        style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
         className={`relative w-full transition-all duration-300 rounded-xl ${
           isSelected
             ? 'border-[3px] border-white shadow-xl z-10'

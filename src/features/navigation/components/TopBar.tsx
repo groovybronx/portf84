@@ -114,12 +114,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               setIsViewMenuOpen(false);
             }}
           >
-            <motion.div
-              initial={{ y: -100, opacity: 0 }}
-              animate={{ y: shouldShow ? 0 : -100, opacity: shouldShow ? 1 : 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="w-full flex justify-center p-4 pointer-events-none"
-            >
+            <div className="w-full flex justify-center p-4 pointer-events-none">
               <GlassCard className="rounded-2xl shadow-xl p-2 sm:p-3 max-w-[70vw] pointer-events-auto">
                 <Flex align="center">
                   {/* --- LEFT SECTION --- */}
@@ -284,7 +279,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                   </Flex>
                 </Flex>
               </GlassCard>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

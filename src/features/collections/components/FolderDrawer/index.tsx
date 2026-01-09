@@ -89,11 +89,11 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = (props) => {
         {sortedCollections.map((collection) => {
           const isActive = activeCollection?.id === collection.id;
           // Smoother "bouncy" spring for the rotation effect
-          // stiff: 200 (softer), damp: 20 (bouncy/overshoot)
+          // stiff: 180 (softer), damp: 25 (less bouncy)
           const springTransition = {
             type: 'spring' as const,
-            stiffness: 200,
-            damping: 20,
+            stiffness: 180,
+            damping: 25,
             mass: 1,
           };
 

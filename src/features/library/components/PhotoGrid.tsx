@@ -52,7 +52,7 @@ const VirtualColumn = ({
       }
       return 300 + GAP; // Fallback
     },
-    overscan: 5,
+    overscan: 3,
   });
 
   // Ref to track previous column width to prevent duplicate updates
@@ -102,6 +102,7 @@ const VirtualColumn = ({
               width: '100%',
               height: `${virtualRow.size - GAP}px`, // Subtract GAP for visual separation
               transform: `translateY(${virtualRow.start}px)`,
+              willChange: 'transform',
             }}
           >
             <PhotoCard

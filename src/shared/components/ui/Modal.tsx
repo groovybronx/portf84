@@ -25,13 +25,24 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   // Prevent scrolling when modal is open
   React.useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+    const originalOverflow = document.body.style.overflow;
+
+    try {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = originalOverflow || 'unset';
+      }
+    } catch (error) {
+      console.warn('Modal scroll lock failed:', error);
     }
+
     return () => {
-      document.body.style.overflow = 'unset';
+      try {
+        document.body.style.overflow = originalOverflow || 'unset';
+      } catch (error) {
+        console.warn('Modal scroll cleanup failed:', error);
+      }
     };
   }, [isOpen]);
 

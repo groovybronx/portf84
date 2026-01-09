@@ -256,11 +256,25 @@ const App: React.FC = () => {
     applyColorTagToSelection,
     gridColumns,
     onOpenBatchTagPanel: () => {
-      // Ouvre uniquement si des éléments sont sélectionnés
-      if (selectedIds.size > 0) {
-        setOverlay('batchTagPanel', true);
-      }
+      setOverlay('batchTagPanel', true);
     },
+    onOpenHelp: () => {
+      setOverlay('shortcutsHelp', true);
+    },
+    onSelectAll: () => {
+      // Select all items
+      const allIds = new Set(processedItems.map((item) => item.id));
+      setSelectedIds(allIds);
+    },
+    onDelete: () => {
+      // TODO: Implement delete confirmation modal
+      console.log('Delete functionality not yet implemented');
+    },
+    onClearSelection: () => {
+      setSelectedItem(null);
+      clearSelection();
+    },
+    selectedItem, // Pass selectedItem to detect fullscreen mode
   });
 
   // ========================================================================

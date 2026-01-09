@@ -87,7 +87,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.1 }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
       style={{ top: adjustedY, left: adjustedX }}
       onMouseDown={(e) => e.stopPropagation()}
       onContextMenu={(e) => e.preventDefault()}

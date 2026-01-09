@@ -3,6 +3,7 @@ export * from './GlassCard';
 export * from './Input';
 export * from './Modal';
 export * from './LoadingSpinner';
+export * from './Skeleton';
 
 // Overlay Components
 export { Drawer } from './overlay/Drawer';

@@ -60,16 +60,27 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   // Handle Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent global shortcuts from interfering
+      e.stopPropagation();
+
       if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        e.stopPropagation();
         onNext();
       } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        e.stopPropagation();
         onPrev();
       } else if (e.key === 'Escape' || e.key === ' ') {
+        e.preventDefault();
+        e.stopPropagation();
         onClose();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    // Use capture phase to ensure this runs before global handlers
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [onNext, onPrev, onClose]);
 
   const handleAnalyze = () => {
@@ -147,21 +158,24 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
         </Button>
 
         <div className="relative z-(--z-grid-item) w-full h-full flex items-center justify-center">
-          <motion.img
-            key={item.id} // Ensure framer motion detects the image change for animation
-            layoutId={`card-${item.id}`}
-            src={item.url}
-            alt={item.name}
-            className="w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm"
-            onClick={(e) => e.stopPropagation()}
-            onLoad={handleImageLoad}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            style={
-              showColorTags && item.colorTag ? { borderBottom: `4px solid ${item.colorTag}` } : {}
-            }
-          />
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={item.id} // Ensure framer motion detects the image change for animation
+              layoutId={`card-${item.id}`}
+              src={item.url}
+              alt={item.name}
+              className="w-auto h-auto max-w-full max-h-[calc(100vh-6rem)] object-contain shadow-2xl rounded-sm"
+              onClick={(e) => e.stopPropagation()}
+              onLoad={handleImageLoad}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              style={
+                showColorTags && item.colorTag ? { borderBottom: `4px solid ${item.colorTag}` } : {}
+              }
+            />
+          </AnimatePresence>
           {showColorTags && item.colorTag && (
             <div
               className="absolute top-4 left-4 w-4 h-4 rounded-full shadow-md border border-glass-border"
