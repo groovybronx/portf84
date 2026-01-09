@@ -53,16 +53,18 @@ describe('BatchTagPanel', () => {
   const mockOnClose = vi.fn();
   const mockOnApplyChanges = vi.fn();
 
-  it('should render when open', () => {
-    render(
-      <BatchTagPanel
-        isOpen={true}
-        onClose={mockOnClose}
-        selectedItems={mockSelectedItems}
-        availableTags={mockAvailableTags}
-        onApplyChanges={mockOnApplyChanges}
-      />
-    );
+  it('should render when open', async () => {
+    await act(async () => {
+      render(
+        <BatchTagPanel
+          isOpen={true}
+          onClose={mockOnClose}
+          selectedItems={mockSelectedItems}
+          availableTags={mockAvailableTags}
+          onApplyChanges={mockOnApplyChanges}
+        />
+      );
+    });
     expect(screen.getByText('tags:batchTagging')).toBeInTheDocument();
   });
 
@@ -79,40 +81,41 @@ describe('BatchTagPanel', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('should display common tags', () => {
-    render(
-      <BatchTagPanel
-        isOpen={true}
-        onClose={mockOnClose}
-        selectedItems={mockSelectedItems}
-        availableTags={mockAvailableTags}
-        onApplyChanges={mockOnApplyChanges}
-      />
-    );
+  it('should display common tags', async () => {
+    await act(async () => {
+      render(
+        <BatchTagPanel
+          isOpen={true}
+          onClose={mockOnClose}
+          selectedItems={mockSelectedItems}
+          availableTags={mockAvailableTags}
+          onApplyChanges={mockOnApplyChanges}
+        />
+      );
+    });
     // 'tag2' is in both items, so it's a common tag
     expect(screen.getByText('tag2')).toBeInTheDocument();
   });
 
-  it('should call onClose when close button clicked', () => {
-    render(
-      <BatchTagPanel
-        isOpen={true}
-        onClose={mockOnClose}
-        selectedItems={mockSelectedItems}
-        availableTags={mockAvailableTags}
-        onApplyChanges={mockOnApplyChanges}
-      />
-    );
-    const closeButton = screen.getByRole('button', { name: /close/i }); // Assuming aria-label or text
-    // If not found by role, try finding by icon or similar.
-    // Usually standard modal has a close X.
-    // Let's assume there's a button calling onClose.
-    // If exact selector fails, we might need to look at the component code.
-    // For now, let's try getting by a generic close-like identifier or just skip precise selector if unsure.
-    // Or we can rely on standard "common:close" logic if it uses the same as TagHub.
-    act(() => {
+  it('should call onClose when close button clicked', async () => {
+    await act(async () => {
+      render(
+        <BatchTagPanel
+          isOpen={true}
+          onClose={mockOnClose}
+          selectedItems={mockSelectedItems}
+          availableTags={mockAvailableTags}
+          onApplyChanges={mockOnApplyChanges}
+        />
+      );
+    });
+
+    const closeButton = screen.getByRole('button', { name: /close/i });
+
+    await act(async () => {
       fireEvent.click(closeButton);
     });
+
     expect(mockOnClose).toHaveBeenCalled();
   });
 
