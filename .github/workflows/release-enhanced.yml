@@ -1,4 +1,4 @@
-name: 'Enhanced Semantic Release'
+name: "Enhanced Semantic Release"
 
 on:
   push:
@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       version_type:
-        description: 'Type de version à créer'
+        description: "Type de version à créer"
         required: true
-        default: 'patch'
+        default: "patch"
         type: choice
         options:
           - patch
@@ -18,7 +18,7 @@ on:
           - major
           - prerelease
       prerelease_tag:
-        description: 'Tag pour pré-release (ex: beta, rc)'
+        description: "Tag pour pré-release (ex: beta, rc)"
         required: false
         type: string
       enable_rollback:
@@ -29,7 +29,7 @@ on:
 
 jobs:
   semantic-release:
-    name: 'Enhanced Semantic Version Release'
+    name: "Enhanced Semantic Version Release"
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -52,8 +52,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'npm'
+          node-version: "lts/*"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -247,8 +247,8 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: 'v${{ steps.version.outputs.version }}'
-          name: 'Lumina Portfolio v${{ steps.version.outputs.version }}'
+          tag_name: "v${{ steps.version.outputs.version }}"
+          name: "Lumina Portfolio v${{ steps.version.outputs.version }}"
           body: ${{ steps.release-notes.outputs.release_notes }}
           draft: false
           prerelease: ${{ steps.version.outputs.is_prerelease }}
@@ -365,22 +365,22 @@ jobs:
           fi
 
   build-matrix:
-    name: 'Build for ${{ matrix.platform }}'
+    name: "Build for ${{ matrix.platform }}"
     needs: semantic-release
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-latest'
-            os: 'macos-latest'
-            arch: 'universal'
-          - platform: 'ubuntu-latest'
-            os: 'ubuntu-latest'
-            arch: 'x86_64'
-          - platform: 'windows-latest'
-            os: 'windows-latest'
-            arch: 'x86_64'
+          - platform: "macos-latest"
+            os: "macos-latest"
+            arch: "universal"
+          - platform: "ubuntu-latest"
+            os: "ubuntu-latest"
+            arch: "x86_64"
+          - platform: "windows-latest"
+            os: "windows-latest"
+            arch: "x86_64"
 
     steps:
       - name: Checkout code
@@ -389,8 +389,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'npm'
+          node-version: "lts/*"
+          cache: "npm"
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -414,16 +414,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: 'v${{ needs.semantic-release.outputs.version }}'
-          releaseName: 'Lumina Portfolio v${{ needs.semantic-release.outputs.version }}'
-          releaseBody: ${{ needs.semantic-release.outputs.release_notes }}
+          tagName: "v${{ needs.semantic-release.outputs.version }}"
+          releaseName: "Lumina Portfolio v${{ needs.semantic-release.outputs.version }}"
+          releaseBody: "${{ needs.semantic-release.outputs.release_notes }}"
           releaseDraft: false
           prerelease: ${{ needs.semantic-release.outputs.is_prerelease }}
           includeDebug: false
           includeRelease: true
 
   post-release-validation:
-    name: 'Post-Release Validation'
+    name: "Post-Release Validation"
     needs: [semantic-release, build-matrix]
     runs-on: ubuntu-latest
     if: needs.semantic-release.outputs.is_prerelease == 'false'
@@ -498,7 +498,7 @@ jobs:
           git push origin main
 
   notify-complete:
-    name: 'Release Complete Notification'
+    name: "Release Complete Notification"
     needs: [semantic-release, build-matrix, post-release-validation]
     runs-on: ubuntu-latest
     if: always()

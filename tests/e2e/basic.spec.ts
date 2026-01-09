@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-describe("Lumina Portfolio - Basic E2E Tests", () => {
+test.describe("Lumina Portfolio - Basic E2E Tests", () => {
 	test.beforeEach(async ({ page }) => {
 		// Wait for the app to load
 		await page.goto("http://localhost:1420");
