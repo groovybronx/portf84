@@ -153,8 +153,12 @@ const App: React.FC = () => {
   // ========================================================================
   // LOGIQUE DE LA BARRE LATÉRALE (Sidebar)
   // ========================================================================
+  // État séparé pour la TopBar - indépendant de la sidebar
+  const [isTopBarPinned, setIsTopBarPinned] = useState(true);
+  const [isTopBarHovered, setIsTopBarHovered] = useState(false);
+
   const { isSidebarPinned, setIsSidebarPinned, handleSidebarToggle } = useSidebarLogic({
-    initialPinned: false,
+    initialPinned: true,
     onFolderDrawerOpen: () => setIsFolderDrawerOpen(true),
     onFolderDrawerClose: () => {
       setIsFolderDrawerOpen(false);
@@ -428,10 +432,17 @@ const App: React.FC = () => {
           } ${isTagHubOpen ? 'mr-[min(20rem,20vw)]' : 'mr-0'}`}
         >
           {/* ========================================================================
-              BARRE SUPÉRIEURE (TopBar) - Toujours visible
+              BARRE SUPÉRIEURE (TopBar) - Positionnée en absolu au-dessus de la galerie
               ======================================================================== */}
           <ErrorBoundary featureName="navigation">
-            <div className="top-bar-area relative z-(--z-topbar)">
+            {/* Zone de survol indépendante pour la TopBar */}
+            <div
+              className="absolute top-0 left-0 right-0 h-32 z-30 pointer-events-auto"
+              onMouseEnter={() => setIsTopBarHovered(true)}
+              onMouseLeave={() => setIsTopBarHovered(false)}
+            />
+
+            <div className="absolute top-0 left-0 right-0 z-40 pointer-events-none">
               <TopBar
                 folderName={activeFolderName || ''}
                 onOpenFolders={handleSidebarToggle}
@@ -442,12 +453,15 @@ const App: React.FC = () => {
                 onOpenBatchTagPanel={() => setIsBatchTagPanelOpen(true)}
                 showColorTags={showColorTags}
                 onToggleColorTags={toggleColorTags}
+                isSidebarPinned={isTopBarPinned}
+                onToggleTopBarPin={() => setIsTopBarPinned(!isTopBarPinned)}
+                isExternalHovered={isTopBarHovered}
               />
             </div>
           </ErrorBoundary>
 
           <ErrorBoundary featureName="library">
-            <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full">
+            <main className="flex-1 relative z-(--z-grid-item) overflow-y-auto custom-scrollbar h-full pt-24">
               {currentItems.length === 0 ? (
                 // État vide - Aucun élément à afficher
                 <div className="flex items-center justify-center h-full min-h-[60vh]">
