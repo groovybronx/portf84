@@ -72,7 +72,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   const isFiltered = activeTags.size > 0 || !!searchTerm || !!activeColorFilter;
   const filteredCount = processedItems.length;
 
-  const { selectionMode, setSelectionMode, selectedIds, clearSelection } = useSelection();
+  const { selectionMode, selectedIds } = useSelection();
 
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -86,11 +86,6 @@ export const TopBar: React.FC<TopBarProps> = ({
       MAX_COLS = 8,
       SUM = MIN_COLS + MAX_COLS;
     setGridColumns(SUM - Number(e.target.value));
-  };
-
-  const handleToggleSelectionMode = () => {
-    if (selectionMode) clearSelection();
-    else setSelectionMode(!selectionMode);
   };
 
   return (
@@ -247,7 +242,6 @@ export const TopBar: React.FC<TopBarProps> = ({
                       selectedCount={selectedCount}
                       onMoveSelected={onMoveSelected}
                       onShareSelected={onShareSelected}
-                      onToggleSelectionMode={handleToggleSelectionMode}
                       onOpenBatchTagPanel={onOpenBatchTagPanel}
                     />
 

@@ -1,92 +1,81 @@
-import React from "react";
-import { SettingsModal } from "../../shared/components";
+import React from 'react';
+import { SettingsModal } from '../../shared/components';
 import {
   CollectionManager,
   CreateFolderModal,
   MoveToFolderModal,
-} from "../../features/collections";
-import { AddTagModal, BatchTagPanel, TagChanges } from "../../features/tags";
-import { PortfolioItem } from "../../shared/types";
+} from '../../features/collections';
+import { AddTagModal, BatchTagPanel, TagChanges } from '../../features/tags';
+import { PortfolioItem } from '../../shared/types';
+import { OverlayKey } from '@/shared/hooks/useModalState';
 
-import { logger } from '../../shared/utils/logger';
-interface AppModalsProps {
-  isCollectionManagerOpen: boolean;
-  setIsCollectionManagerOpen: (open: boolean) => void;
+export interface AppModalsProps {
+  overlayState: Record<OverlayKey, boolean>;
+  setOverlay: (key: OverlayKey, open: boolean) => void;
   collections: any[];
   activeCollection: any;
   createCollection: (name: string) => Promise<void>;
   switchCollection: (id: string) => Promise<void>;
   deleteCollection: (id: string) => Promise<void>;
-  isCreateFolderModalOpen: boolean;
-  setIsCreateFolderModalOpen: (open: boolean) => void;
   createVirtualFolder: (name: string) => string;
-  isMoveModalOpen: boolean;
-  setIsMoveModalOpen: (open: boolean) => void;
   folders: any[];
   moveItemToFolder: (targetId: string) => void;
   createFolderAndMove: (name: string) => void;
   selectedIds: Set<string>;
-  isAddTagModalOpen: boolean;
-  setIsAddTagModalOpen: (open: boolean) => void;
   availableTags: string[];
   addTagsToSelection: (tag: string) => void;
-  isBatchTagPanelOpen: boolean;
-  setIsBatchTagPanelOpen: (open: boolean) => void;
   batchSelectedItems: PortfolioItem[];
   libraryUpdateItems: (items: PortfolioItem[]) => void;
   clearSelection: () => void;
-  isSettingsOpen: boolean;
-  setIsSettingsOpen: (open: boolean) => void;
   useCinematicCarousel: boolean;
   setCinematicCarousel: (value: boolean) => void;
 }
 
 export const AppModals: React.FC<AppModalsProps> = ({
-  isCollectionManagerOpen,
-  setIsCollectionManagerOpen,
+  overlayState,
+  setOverlay,
   collections,
   activeCollection,
   createCollection,
   switchCollection,
   deleteCollection,
-  isCreateFolderModalOpen,
-  setIsCreateFolderModalOpen,
   createVirtualFolder,
-  isMoveModalOpen,
-  setIsMoveModalOpen,
   folders,
   moveItemToFolder,
   createFolderAndMove,
   selectedIds,
-  isAddTagModalOpen,
-  setIsAddTagModalOpen,
   availableTags,
   addTagsToSelection,
-  isBatchTagPanelOpen,
-  setIsBatchTagPanelOpen,
   batchSelectedItems,
   libraryUpdateItems,
   clearSelection,
-  isSettingsOpen,
-  setIsSettingsOpen,
   useCinematicCarousel,
   setCinematicCarousel,
 }) => {
+  const closeOverlay = (key: OverlayKey) => setOverlay(key, false);
+
+  const isCollectionManagerOpen = overlayState.collectionManager;
+  const isCreateFolderModalOpen = overlayState.createFolderModal;
+  const isMoveModalOpen = overlayState.moveModal;
+  const isAddTagModalOpen = overlayState.addTagModal;
+  const isBatchTagPanelOpen = overlayState.batchTagPanel;
+  const isSettingsOpen = overlayState.settingsModal;
+
   return (
     <>
       {/* Collection Manager Modal */}
       <CollectionManager
         isOpen={isCollectionManagerOpen}
-        onClose={() => setIsCollectionManagerOpen(false)}
+        onClose={() => closeOverlay('collectionManager')}
         collections={collections}
         activeCollection={activeCollection}
         onCreateCollection={async (name) => {
           await createCollection(name);
-          setIsCollectionManagerOpen(false);
+          closeOverlay('collectionManager');
         }}
         onSwitchCollection={async (id) => {
           await switchCollection(id);
-          setIsCollectionManagerOpen(false);
+          closeOverlay('collectionManager');
         }}
         onDeleteCollection={deleteCollection}
       />
@@ -94,12 +83,12 @@ export const AppModals: React.FC<AppModalsProps> = ({
       {/* Modals */}
       <CreateFolderModal
         isOpen={isCreateFolderModalOpen}
-        onClose={() => setIsCreateFolderModalOpen(false)}
+        onClose={() => closeOverlay('createFolderModal')}
         onCreate={createVirtualFolder}
       />
       <MoveToFolderModal
         isOpen={isMoveModalOpen}
-        onClose={() => setIsMoveModalOpen(false)}
+        onClose={() => closeOverlay('moveModal')}
         folders={folders}
         onMove={moveItemToFolder}
         onCreateAndMove={createFolderAndMove}
@@ -108,7 +97,7 @@ export const AppModals: React.FC<AppModalsProps> = ({
       {/* AddTagModal - Simple Quick Add */}
       <AddTagModal
         isOpen={isAddTagModalOpen && !isBatchTagPanelOpen}
-        onClose={() => setIsAddTagModalOpen(false)}
+        onClose={() => closeOverlay('addTagModal')}
         selectedCount={selectedIds.size}
         availableTags={availableTags}
         onAddTag={(tag) => {
@@ -119,7 +108,7 @@ export const AppModals: React.FC<AppModalsProps> = ({
       {/* BatchTagPanel - Advanced Multi-Tag Interface */}
       <BatchTagPanel
         isOpen={isBatchTagPanelOpen}
-        onClose={() => setIsBatchTagPanelOpen(false)}
+        onClose={() => closeOverlay('batchTagPanel')}
         selectedItems={batchSelectedItems}
         availableTags={availableTags}
         onApplyChanges={(changes: TagChanges) => {
@@ -141,12 +130,12 @@ export const AppModals: React.FC<AppModalsProps> = ({
 
           libraryUpdateItems(updatedItems);
           clearSelection();
-          setIsBatchTagPanelOpen(false);
+          closeOverlay('batchTagPanel');
         }}
       />
       <SettingsModal
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onClose={() => closeOverlay('settingsModal')}
         useCinematicCarousel={useCinematicCarousel}
         onToggleCinematicCarousel={setCinematicCarousel}
       />

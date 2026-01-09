@@ -1,7 +1,5 @@
 import React from 'react';
 import { cn } from '../Button';
-
-import { logger } from '../../../../../shared/utils/logger';
 interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   cols?: 1 | 2 | 3 | 4 | 5 | 6 | 12 | 'auto';
   gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
