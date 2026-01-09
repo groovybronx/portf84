@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Tag as TagIcon, Search, Settings, Merge } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button, Flex } from '@/shared/components/ui';
+import { Button, Flex, GlassCard } from '@/shared/components/ui';
 import { TagHubTab } from '@/shared/hooks/useModalState';
 import { BrowseTab } from './BrowseTab';
 import { ManageTab } from './ManageTab';
@@ -65,13 +65,16 @@ export const TagHub: React.FC<TagHubProps> = ({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Side Panel - No backdrop blur */}
-          <motion.div
+          {/* Side Panel - Glassmorphism Style */}
+          <GlassCard
+            as={motion.div}
+            variant="panel"
+            padding="none"
+            className="fixed right-4 top-4 bottom-4 w-[min(20rem,20vw)] rounded-3xl shadow-2xl shadow-black/60 z-(--z-modal) flex flex-col overflow-hidden"
             initial={{ x: '100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed right-0 top-0 h-full w-[min(20rem,20vw)] bg-slate-950/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-(--z-modal) flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="p-4 border-b border-white/10 shrink-0">
@@ -95,7 +98,7 @@ export const TagHub: React.FC<TagHubProps> = ({
               </Flex>
 
               {/* Tab Navigation */}
-              <Flex gap="xs" className="mt-4 flex-wrap">
+              <Flex gap="xs" className="mt-4 flex-wrap p-4">
                 {tabs.map((tab, index) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -127,7 +130,7 @@ export const TagHub: React.FC<TagHubProps> = ({
               )}
               {activeTab === 'settings' && <SettingsTab />}
             </div>
-          </motion.div>
+          </GlassCard>
         </>
       )}
     </AnimatePresence>
