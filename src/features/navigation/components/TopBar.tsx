@@ -69,7 +69,7 @@ export const TopBar: React.FC<TopBarProps> = ({
     processedItems,
   } = useLibrary();
 
-  const isFiltered = activeTags.size > 0 || !!searchTerm || !!activeColorFilter;
+  const isFiltered = (activeTags?.size ?? 0) > 0 || !!searchTerm || !!activeColorFilter;
   const filteredCount = processedItems.length;
 
   const { selectionMode, selectedIds } = useSelection();

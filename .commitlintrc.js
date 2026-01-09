@@ -1,4 +1,4 @@
-module.exports = {
+const configuration = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -49,3 +49,5 @@ module.exports = {
     'footer-max-line-length': [2, 'always', 100],
   },
 };
+
+module.exports = configuration;
