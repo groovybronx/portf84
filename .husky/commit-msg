@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Skip commitlint for semantic-release commits
+if grep -q "\[skip ci\]" "$1"; then
+  exit 0
+fi
+
 npx --no -- commitlint --edit $1
