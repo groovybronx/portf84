@@ -1,0 +1,329 @@
+name: 'Semantic Release'
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Type de version à créer'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+      prerelease_tag:
+        description: 'Tag pour pré-release (ex: beta, rc)'
+        required: false
+        type: string
+
+jobs:
+  semantic-release:
+    name: 'Semantic Version Release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+      release_tag: ${{ steps.version.outputs.release_tag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Determine next version
+        id: version
+        run: |
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+
+          # Check if we're on main branch
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            IS_MAIN=true
+          else
+            IS_MAIN=false
+          fi
+
+          # Determine version type based on conventional commits or manual input
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION_TYPE="${{ github.event.inputs.version_type }}"
+            PRERELEASE_TAG="${{ github.event.inputs.prerelease_tag }}"
+          else
+            # Analyze commit messages for conventional commits
+            VERSION_TYPE=$(git log --oneline $(git describe --tags --abbrev=0)..HEAD | \
+              grep -E "feat|fix|perf|refactor|BREAKING CHANGE" | \
+              head -1 | \
+              sed -E 's/.*(feat|fix|perf|refactor|BREAKING CHANGE).*/\1/' || echo "patch")
+
+            # Map conventional commits to semantic versioning
+            case $VERSION_TYPE in
+              "BREAKING CHANGE") VERSION_TYPE="major" ;;
+              "feat") VERSION_TYPE="minor" ;;
+              "fix"|"perf"|"refactor") VERSION_TYPE="patch" ;;
+              *) VERSION_TYPE="patch" ;;
+            esac
+
+            # For develop branch, use prerelease
+            if [[ "$IS_MAIN" == "false" ]]; then
+              VERSION_TYPE="prerelease"
+              PRERELEASE_TAG="beta"
+            fi
+          fi
+
+          echo "Version type: $VERSION_TYPE"
+
+          # Calculate next version
+          if [[ "$VERSION_TYPE" == "prerelease" ]]; then
+            PRERELEASE_TAG="${PRERELEASE_TAG:-beta}"
+            # Remove existing prerelease part and increment
+            BASE_VERSION=$(echo "$CURRENT_VERSION" | sed -E 's/-[^-]*$//')
+            LAST_PRERELEASE=$(echo "$CURRENT_VERSION" | grep -oE '\-[0-9]+$ | sed 's/^-//' || echo "0")
+            NEXT_PRERELEASE=$((LAST_PRERELEASE + 1))
+            NEXT_VERSION="${BASE_VERSION}-${PRERELEASE_TAG}.${NEXT_PRERELEASE}"
+            IS_PRERELEASE=true
+          else
+            # Remove prerelease part for stable releases
+            BASE_VERSION=$(echo "$CURRENT_VERSION" | sed -E 's/-[^-]*$//')
+
+            # Parse semantic version
+            MAJOR=$(echo "$BASE_VERSION" | cut -d. -f1)
+            MINOR=$(echo "$BASE_VERSION" | cut -d. -f2)
+            PATCH=$(echo "$BASE_VERSION" | cut -d. -f3)
+
+            case $VERSION_TYPE in
+              "major")
+                MAJOR=$((MAJOR + 1))
+                MINOR=0
+                PATCH=0
+                ;;
+              "minor")
+                MINOR=$((MINOR + 1))
+                PATCH=0
+                ;;
+              "patch")
+                PATCH=$((PATCH + 1))
+                ;;
+            esac
+
+            NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+            IS_PRERELEASE=false
+          fi
+
+          echo "Next version: $NEXT_VERSION"
+          echo "version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+          echo "release_tag=${PRERELEASE_TAG:-}" >> $GITHUB_OUTPUT
+
+      - name: Update version in package.json
+        run: |
+          npm version ${{ steps.version.outputs.version }} --no-git-tag-version
+
+      - name: Update version in Cargo.toml
+        run: |
+          # Parse version for Cargo (remove prerelease for Rust)
+          CARGO_VERSION=$(echo "${{ steps.version.outputs.version }}" | sed -E 's/-[^-]*$//')
+          sed -i.bak "s/^version = .*/version = \"$CARGO_VERSION\"/" src-tauri/Cargo.toml
+          rm src-tauri/Cargo.toml.bak
+
+      - name: Commit version changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json src-tauri/Cargo.toml
+          git commit -m "chore(release): bump version to ${{ steps.version.outputs.version }}"
+
+      - name: Create Git tag
+        run: |
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Release ${{ steps.version.outputs.version }}"
+
+      - name: Push changes and tags
+        run: |
+          git push origin ${{ github.ref_name }}
+          git push origin "v${{ steps.version.outputs.version }}"
+
+      - name: Build application
+        run: |
+          npm run build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: 'v${{ steps.version.outputs.version }}'
+          name: 'Lumina Portfolio v${{ steps.version.outputs.version }}'
+          body: |
+            ## Release v${{ steps.version.outputs.version }}
+
+            ### 🚀 Nouveautés
+            <!-- Ajouter les nouvelles fonctionnalités ici -->
+
+            ### 🐛 Corrections
+            <!-- Ajouter les corrections de bugs ici -->
+
+            ### 🔧 Améliorations
+            <!-- Ajouter les améliorations ici -->
+
+            ### 📦 Installation
+            Téléchargez la version correspondante à votre système ci-dessous.
+
+            ---
+
+            **Version automatique générée par Semantic Release**
+          draft: false
+          prerelease: ${{ steps.version.outputs.is_prerelease }}
+          generate_release_notes: true
+          files: |
+            dist/**
+            src-tauri/target/release/bundle/**/*
+
+  build-matrix:
+    name: 'Build for ${{ matrix.platform }}'
+    needs: semantic-release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            os: 'macos-latest'
+            arch: 'universal'
+          - platform: 'ubuntu-latest'
+            os: 'ubuntu-latest'
+            arch: 'x86_64'
+          - platform: 'windows-latest'
+            os: 'windows-latest'
+            arch: 'x86_64'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Tauri application
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: 'v${{ needs.semantic-release.outputs.version }}'
+          releaseName: 'Lumina Portfolio v${{ needs.semantic-release.outputs.version }}'
+          releaseBody: |
+            ## Release v${{ needs.semantic-release.outputs.version }}
+
+            ### 📦 Fichiers pour ${{ matrix.platform }}
+
+            Téléchargez le fichier correspondant à votre système:
+            - **macOS**: `.dmg` pour Silicon et Intel
+            - **Linux**: `.AppImage` ou `.deb`
+            - **Windows**: `.msi` pour installation
+          releaseDraft: false
+          prerelease: ${{ needs.semantic-release.outputs.is_prerelease }}
+          includeDebug: false
+          includeRelease: true
+
+  update-docs:
+    name: 'Update Documentation'
+    needs: semantic-release
+    runs-on: ubuntu-latest
+    if: needs.semantic-release.outputs.is_prerelease == 'false'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Update CHANGELOG
+        run: |
+          # Create or update CHANGELOG.md
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+
+          The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+          and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+          EOF
+
+          # Add new version entry
+          echo -e "\n## [${{ needs.semantic-release.outputs.version }}] - $(date +%Y-%m-%d)" >> CHANGELOG.md
+          echo -e "\n### Added" >> CHANGELOG.md
+          echo -e "\n### Changed" >> CHANGELOG.md
+          echo -e "\n### Fixed" >> CHANGELOG.md
+          echo -e "\n### Deprecated" >> CHANGELOG.md
+          echo -e "\n### Removed" >> CHANGELOG.md
+          echo -e "\n### Security" >> CHANGELOG.md
+
+      - name: Commit documentation changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git diff --staged --quiet || git commit -m "docs: update changelog for v${{ needs.semantic-release.outputs.version }}"
+          git push origin ${{ github.ref_name }}
+
+  notify:
+    name: 'Notify Release'
+    needs: [semantic-release, build-matrix]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Release Summary
+        run: |
+          echo "## 🎉 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** v${{ needs.semantic-release.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Type:** ${{ needs.semantic-release.outputs.is_prerelease == 'true' && 'Prerelease' || 'Stable' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ needs.build-matrix.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Assets" >> $GITHUB_STEP_SUMMARY
+          echo "Les fichiers d'installation sont disponibles dans la [release](https://github.com/${{ github.repository }}/releases/tag/v${{ needs.semantic-release.outputs.version }})." >> $GITHUB_STEP_SUMMARY

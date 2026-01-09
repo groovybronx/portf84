@@ -102,6 +102,43 @@ npm run test
 
 ---
 
+## 🚀 Workflow de Release Automatisé
+
+Ce projet utilise un système de **version sémantique automatique** avec GitHub Actions.
+
+### 🔄 Comment ça marche ?
+
+1. **Commits Conventionnels** : Utilisez les [Conventional Commits](https://www.conventionalcommits.org/) pour décrire vos changements
+2. **Analyse Automatique** : Le workflow analyse les commits et détermine le type de version
+3. **Release Automatique** : Version incrémentée, tag Git, build multi-plateformes, release GitHub
+
+### 📝 Types de Commits
+
+```bash
+feat(library): add drag-and-drop support     # → Version mineure (0.3.0 → 0.4.0)
+fix(ui): resolve sidebar toggle issue       # → Version de patch (0.3.0 → 0.3.1)
+BREAKING CHANGE: remove deprecated API     # → Version majeure (0.3.0 → 1.0.0)
+```
+
+### 🎯 Déclenchement
+
+- **Branche `main`** : Release stable automatique
+- **Branche `develop`** : Pré-release beta automatique
+- **Manuel** : Choix du type de version via GitHub UI
+
+### 📦 Résultats
+
+- Version mise à jour dans `package.json` et `Cargo.toml`
+- Tag Git créé (`v1.2.3`)
+- Release GitHub avec assets multi-plateformes
+- CHANGELOG généré automatiquement
+
+**Documentation complète** : [📖 Guide Semantic Release](./docs/SEMANTIC_RELEASE_GUIDE.md)
+
+---
+
+> > > > > > > develop
+
 ## 🔧 Dépannage
 
 ### Erreur Build Tauri : `undefined is not an object (evaluating '$.Activity')`
@@ -148,14 +185,31 @@ Si vous rencontrez toujours l'erreur :
 
 - [📊 Analyse Qualitative & Étude de Marché 2026](./docs/ANALYSE_QUALITATIVE_ET_MARCHE_2026.md) - **Analyse complète (87 pages)** - Qualité technique, analyse concurrentielle, projections financières
 - [📋 Synthèse Exécutive Commercialisation](./docs/SYNTHESE_EXECUTIVE_COMMERCIALISATION.md) - **Résumé (1 page)** - Verdict GO/NO-GO, roadmap de lancement 6 semaines
+- # [📊 Project Health Report](./docs/PROJECT_HEALTH_REPORT.md) - Score de santé 87/100, métriques de code, couverture de tests
+  > > > > > > > develop
+
+### Gestion Git & GitHub
+
+- [🚀 Quick Start](./docs/getting-started/QUICK_START.md) - Guide rapide en 10 minutes
+- [Résumé Configuration GitHub](./docs/workflows/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
+- [Stratégie de Branches](./docs/guides/architecture/GIT_WORKFLOW.md) - Workflow Git et gestion des branches
+- [Configuration GitHub](./docs/workflows/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
+- [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
+
+### 💼 Analyse Commerciale & Qualité
+
+- [📊 Analyse Qualitative & Étude de Marché 2026](./docs/ANALYSE_QUALITATIVE_ET_MARCHE_2026.md) - **Analyse complète (87 pages)** - Qualité technique, analyse concurrentielle, projections financières
+- [📋 Synthèse Exécutive Commercialisation](./docs/SYNTHESE_EXECUTIVE_COMMERCIALISATION.md) - **Résumé (1 page)** - Verdict GO/NO-GO, roadmap de lancement 6 semaines
 - [📊 Project Health Report](./docs/PROJECT_HEALTH_REPORT.md) - Score de santé 87/100, métriques de code, couverture de tests
 
 ### Gestion Git & GitHub
+
 - [🚀 Quick Start](./docs/QUICK_START.md) - Guide rapide en 10 minutes
 - [Résumé Configuration GitHub](./docs/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
 - [Stratégie de Branches](./docs/BRANCH_STRATEGY.md) - Workflow Git et gestion des branches
 - [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
 - [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
+
 ### 🤖 GitHub Copilot Configuration
 
 Ce projet inclut une configuration complète pour GitHub Copilot avec des règles personnalisées qui aident à générer du code conforme aux conventions du projet :
