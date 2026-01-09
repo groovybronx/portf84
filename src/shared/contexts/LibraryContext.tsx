@@ -16,6 +16,7 @@ export type {
 import { useLibraryState } from "./LibraryContext.state";
 import { useLibraryActions } from "./LibraryContext.actions";
 
+import { logger } from '../utils/logger';
 // Legacy hook (Wrapper) - combines state and actions
 export const useLibrary = () => {
   const state = useLibraryState();

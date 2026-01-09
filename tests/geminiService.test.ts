@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { analyzeImage } from "../src/features/vision/services/geminiService";
 
+import { logger } from './shared/utils/logger';
 // Hoist the mock function so it can be used in vi.mock
 const { mockGenerateContent } = vi.hoisted(() => {
 	return { mockGenerateContent: vi.fn() };

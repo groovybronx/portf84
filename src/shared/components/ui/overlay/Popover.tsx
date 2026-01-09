@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassCard } from '../GlassCard';
 
+import { logger } from '../../../../../shared/utils/logger';
 interface PopoverProps {
   trigger: React.ReactNode;
   content: React.ReactNode;

@@ -5,6 +5,7 @@
 
 import { PortfolioItem } from "../shared/types";
 
+import { logger } from '../shared/utils/logger';
 // Constants
 const MIN_KEYWORD_LENGTH = 3; // Minimum length for extracted keywords
 const BATCH_SUGGESTION_THRESHOLD_PERCENTAGE = 0.3; // 30% of items must have tag

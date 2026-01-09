@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 	src?: string;
 	alt?: string;

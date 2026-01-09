@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Share2, FolderInput, Tags } from "lucide-react";
 import { Button, Flex, GlassCard } from "../../../../shared/components/ui";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface BatchActionsProps {
 	selectionMode: boolean;
 	selectedCount: number;

@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { Button, cn } from "./Button";
 import { createPortal } from "react-dom";
 
+import { logger } from '../../utils/logger';
 interface ModalProps {
 	isOpen: boolean;
 	onClose: () => void;

@@ -1,5 +1,6 @@
 import { BaseDirectory, writeTextFile, readTextFile, exists, mkdir } from '@tauri-apps/plugin-fs';
 
+import { logger } from '../shared/utils/logger';
 const SECRETS_FILE = 'secrets.json';
 
 interface Secrets {
@@ -35,11 +36,11 @@ export const secureStorage = {
         await writeTextFile(SECRETS_FILE, JSON.stringify(secrets, null, 2), { baseDir: BaseDirectory.AppConfig });
       } else {
         // Fallback for dev mode in browser
-        console.warn("Using localStorage for API key (Browser Mode).");
+        logger.warn("Using localStorage for API key (Browser Mode).");
         localStorage.setItem("gemini_api_key", apiKey);
       }
     } catch (error) {
-       console.error("Failed to save API key securely:", error);
+       logger.error("Failed to save API key securely:", error);
        throw error;
     }
   },
@@ -57,7 +58,7 @@ export const secureStorage = {
         return localStorage.getItem("gemini_api_key");
       }
     } catch (error) {
-      console.error("Failed to retrieve API key:", error);
+      logger.error("Failed to retrieve API key:", error);
       return null;
     }
   },
@@ -75,7 +76,7 @@ export const secureStorage = {
         localStorage.removeItem("gemini_api_key");
       }
     } catch (error) {
-      console.error("Failed to clear API key:", error);
+      logger.error("Failed to clear API key:", error);
     }
   }
 };

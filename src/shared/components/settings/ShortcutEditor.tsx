@@ -5,6 +5,7 @@ import { Icon } from '../Icon';
 import { useLocalShortcuts, ShortcutMap } from '../../hooks/useLocalShortcuts';
 import { KEYBOARD_SHORTCUTS, ShortcutCategory } from '../../constants/shortcuts';
 
+import { logger } from '../../utils/logger';
 // Helper for Shortcuts to clean up main component
 const ShortcutRow = ({
   label,

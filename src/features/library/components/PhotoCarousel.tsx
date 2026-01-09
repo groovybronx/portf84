@@ -8,6 +8,7 @@ import { PortfolioItem } from "../../../shared/types";
 import { useLibrary } from "../../../shared/contexts/LibraryContext";
 import { LoadingSpinner } from "../../../shared/components/ui/LoadingSpinner";
 
+import { logger } from '../../../shared/utils/logger';
 interface PhotoCarouselProps {
 	onSelect: (item: PortfolioItem) => void;
 	onFocusedItem?: (item: PortfolioItem) => void;

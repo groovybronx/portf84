@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Icon } from '../../../../shared/components/Icon';
 import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
+import { logger } from '../../../../shared/utils/logger';
 interface FolderDrawerHeaderProps {
   totalItems?: number;
   onAdd?: () => void;
@@ -49,11 +50,7 @@ export const FolderDrawerHeader: React.FC<FolderDrawerHeaderProps> = ({
             className="rounded-full text-text-secondary hover:text-text-primary hover:bg-glass-bg-accent transition-all duration-300"
             title="Close"
           >
-            <Icon
-              action="close"
-              size={18}
-              className="transition-transform duration-300"
-            />
+            <Icon action="close" size={18} className="transition-transform duration-300" />
           </Button>
         )}
       </Flex>

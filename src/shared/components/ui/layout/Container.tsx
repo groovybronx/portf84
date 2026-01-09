@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 	maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
 	centered?: boolean;

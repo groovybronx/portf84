@@ -4,6 +4,7 @@ import { Button, Stack, ColorPicker, GlassCard } from '../ui';
 import { Icon, ALL_ICONS } from '../Icon';
 import { useTheme } from '../../contexts/ThemeContext';
 
+import { logger } from '../../utils/logger';
 // Wrapper for Settings Row
 const FormRow = ({
   label,

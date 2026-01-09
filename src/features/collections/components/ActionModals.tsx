@@ -161,7 +161,11 @@ export const MoveToFolderModal: React.FC<MoveToFolderModalProps> = ({
             onClick={() => setIsCreating(true)}
             className="w-full justify-start gap-4 p-3 rounded-xl border border-dashed border-glass-border/20 hover:border-purple-500/50 hover:bg-purple-500/10 text-gray-300 hover:text-white h-auto"
           >
-            <GlassCard variant="accent" padding="sm" className="w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors">
+            <GlassCard
+              variant="accent"
+              padding="sm"
+              className="w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors"
+            >
               <Plus size={20} />
             </GlassCard>
             <Stack spacing="none" className="flex-1">

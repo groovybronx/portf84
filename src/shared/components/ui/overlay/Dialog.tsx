@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GlassCard } from '../GlassCard';
 import { Button } from '../Button';
 
+import { logger } from '../../../../../shared/utils/logger';
 interface DialogProps {
   isOpen: boolean;
   onClose: () => void;

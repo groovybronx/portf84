@@ -1,5 +1,6 @@
 import React from "react";
 
+import { logger } from '../../utils/logger';
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;

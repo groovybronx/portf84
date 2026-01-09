@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { PortfolioItem, AiTagDetailed } from "../../../shared/types";
 import { analyzeImageStream } from "../services/geminiService";
 
+import { logger } from '../../../shared/utils/logger';
 interface UseVisionReturn {
 	analyzing: boolean;
 	thinkingText: string;
@@ -43,7 +44,7 @@ export const useVision = (
 					aiTagsDetailed: result.tagsDetailed,
 				});
 			} catch (e: any) {
-				console.error("Vision Analysis Failed:", e);
+				logger.error("Vision Analysis Failed:", e);
 				setError(e.message || "AI Analysis unavailable. Check API Key.");
 			} finally {
 				setAnalyzing(false);

@@ -1,5 +1,5 @@
-import React from "react";
-import { ErrorBoundary } from "../../shared/components";
+import React from 'react';
+import { ErrorBoundary } from '../../shared/components';
 
 interface AppLayoutProps {
   topBar: React.ReactNode;
@@ -20,7 +20,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   isFolderDrawerOpen,
   isSidebarPinned,
   isTagHubOpen,
-  children
+  children,
 }) => {
   return (
     <div className="main-app bg-surface h-screen overflow-hidden flex flex-col">
@@ -29,17 +29,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       {/* TopBar - Always visible */}
       <ErrorBoundary featureName="navigation">
-        <div className="top-bar-area relative z-(--z-topbar)">
-          {topBar}
-        </div>
+        <div className="top-bar-area relative z-(--z-topbar)">{topBar}</div>
       </ErrorBoundary>
 
       {/* App Layout: Sidebar + Main Content */}
-      <div className={`flex-1 flex flex-row overflow-hidden relative transition-all duration-300 ${
-        (isFolderDrawerOpen || isSidebarPinned) ? 'pl-80' : ''
-      } ${
-        isTagHubOpen ? 'pr-[min(20rem,20vw)]' : ''
-      }`}>
+      <div
+        className={`flex-1 flex flex-row overflow-hidden relative transition-all duration-300 ${
+          isFolderDrawerOpen || isSidebarPinned ? 'pl-80' : ''
+        } ${isTagHubOpen ? 'pr-[min(20rem,20vw)]' : ''}`}
+      >
         {sidebar}
         {mainContent}
         {children}

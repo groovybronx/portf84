@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { logger } from '../../../../../shared/utils/logger';
 interface TooltipProps {
   content: React.ReactNode;
   children: React.ReactNode;

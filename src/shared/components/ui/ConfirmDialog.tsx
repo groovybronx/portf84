@@ -4,6 +4,7 @@ import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from './Button';
 
+import { logger } from '../../utils/logger';
 interface ConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;

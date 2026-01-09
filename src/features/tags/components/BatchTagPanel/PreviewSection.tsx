@@ -2,6 +2,7 @@ import React from 'react';
 import { Flex, Stack } from '@/shared/components/ui';
 import { useTranslation } from 'react-i18next';
 
+import { logger } from '../../../../shared/utils/logger';
 interface PreviewChange {
   type: 'add' | 'remove';
   tag: string;

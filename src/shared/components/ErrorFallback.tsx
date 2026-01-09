@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "./ui/Button";
 import { GlassCard } from "./ui/GlassCard";
 
+import { logger } from '../utils/logger';
 interface ErrorFallbackProps {
 	error: Error | null;
 	featureName?: string;

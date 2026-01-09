@@ -19,6 +19,7 @@ import { LibraryStateContext } from "./LibraryContext.state";
 import { LibraryDispatchContext } from "./LibraryContext.actions";
 import type { LibraryState, LibraryContextState, LibraryContextActions } from "./LibraryContext.types";
 
+import { logger } from '../utils/logger';
 // Provider component
 export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -42,7 +43,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   // Clear library when collection changes to null
   useEffect(() => {
     if (!activeCollection) {
-      console.log("[LibraryContext] No active collection, clearing state");
+      logger.debug("[LibraryContext] No active collection, clearing state");
       dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
     }
   }, [activeCollection]);
@@ -52,7 +53,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     const loadVirtualFolders = async () => {
       if (!activeCollection) return;
 
-      console.log(
+      logger.debug(
         `[LibraryContext] Loading virtual folders for collection ${activeCollection.id}`
       );
       const storedVirtual = await storageService.getVirtualFolders(
@@ -64,7 +65,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
       const userCollections = storedVirtual.filter((vf) => !vf.sourceFolderId);
 
       if (userCollections.length > 0) {
-        console.log(
+        logger.debug(
           `[LibraryContext] Found ${userCollections.length} user-created virtual collections to restore`
         );
         dispatch({ type: "SET_FOLDERS", payload: userCollections });
@@ -178,7 +179,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   const loadFromPath = useCallback(
     async (path: string) => {
       if (!activeCollection) {
-        console.warn("[LibraryContext] No active collection, skipping load");
+        logger.warn("[LibraryContext] No active collection, skipping load");
         return;
       }
 
@@ -211,7 +212,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   const importFiles = useCallback((fileList: FileList) => {
     // Implementation from useLibrary hook
     // Simplified for now - can be expanded
-    console.log("[LibraryContext] importFiles not yet implemented");
+    logger.debug("[LibraryContext] importFiles not yet implemented");
   }, []);
 
   const updateItems = useCallback((updatedItems: PortfolioItem[]) => {
@@ -295,7 +296,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const clearLibrary = useCallback(() => {
-    console.log("[LibraryContext] Clearing library state");
+    logger.debug("[LibraryContext] Clearing library state");
     dispatch({ type: "CLEAR_LIBRARY", payload: undefined });
   }, []);
 
@@ -351,7 +352,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({
     const allPaths = state.folders.flatMap(f => f.items.map(i => i.path || i.name));
     if (allPaths.length === 0) return;
 
-    console.log(`[LibraryContext] Refreshing metadata for ${allPaths.length} items...`);
+    logger.debug('app', '[LibraryContext] Refreshing metadata for ${allPaths.length} items...');
     const metaMap = await storageService.getMetadataBatch(allPaths, activeCollection.id);
 
     const updatedFolders = state.folders.map(folder => ({

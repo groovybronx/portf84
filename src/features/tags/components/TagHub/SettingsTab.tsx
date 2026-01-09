@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings as SettingsIcon, Save } from 'lucide-react';
 import { Button, Flex, Stack, GlassCard } from '@/shared/components/ui';
+import { logger } from '../../../../shared/utils/logger';
 import {
   loadTagSettings,
   saveTagSettings,
@@ -66,110 +67,108 @@ export const SettingsTab: React.FC = () => {
           <h3 className="text-lg font-semibold text-white">{t('tags:similarityDetection')}</h3>
         </Flex>
 
-        <GlassCard
-          variant="accent"
-          padding="md"
-          border
-        >
+        <GlassCard variant="accent" padding="md" border>
           <Stack spacing="lg">
-          {/* Preset Selection */}
-          <div>
-            <label className="text-sm text-gray-400 block mb-2">{t('tags:preset')}</label>
-            <Flex gap="sm">
-              {['strict', 'balanced', 'aggressive'].map((preset) => (
-                <Button
-                  key={preset}
-                  onClick={() => handlePresetChange(preset as 'strict' | 'balanced' | 'aggressive')}
-                  className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    settings.similarityPreset === preset
-                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
-                      : 'text-gray-400 hover:bg-glass-bg-active bg-glass-bg'
-                  }`}
-                >
-                  {t(`tags:${preset}` as any)}
-                </Button>
-              ))}
-            </Flex>
-          </div>
+            {/* Preset Selection */}
+            <div>
+              <label className="text-sm text-gray-400 block mb-2">{t('tags:preset')}</label>
+              <Flex gap="sm">
+                {['strict', 'balanced', 'aggressive'].map((preset) => (
+                  <Button
+                    key={preset}
+                    onClick={() =>
+                      handlePresetChange(preset as 'strict' | 'balanced' | 'aggressive')
+                    }
+                    className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      settings.similarityPreset === preset
+                        ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
+                        : 'text-gray-400 hover:bg-glass-bg-active bg-glass-bg'
+                    }`}
+                  >
+                    {t(`tags:${preset}` as any)}
+                  </Button>
+                ))}
+              </Flex>
+            </div>
 
-          {/* Levenshtein Threshold */}
-          <div>
-            <Flex justify="between" className="mb-2">
-              <label className="text-sm text-gray-400">{t('tags:levenshteinThreshold')}</label>
-              <span className="text-sm text-white font-medium">
-                {settings.levenshteinThreshold}
-              </span>
-            </Flex>
-            <input
-              type="range"
-              min="1"
-              max="3"
-              value={settings.levenshteinThreshold}
-              onChange={(e) =>
-                updateSettings({ ...settings, levenshteinThreshold: Number(e.target.value) })
-              }
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 mt-1">{t('tags:levenshteinHelp')}</p>
-          </div>
+            {/* Levenshtein Threshold */}
+            <div>
+              <Flex justify="between" className="mb-2">
+                <label className="text-sm text-gray-400">{t('tags:levenshteinThreshold')}</label>
+                <span className="text-sm text-white font-medium">
+                  {settings.levenshteinThreshold}
+                </span>
+              </Flex>
+              <input
+                type="range"
+                min="1"
+                max="3"
+                value={settings.levenshteinThreshold}
+                onChange={(e) =>
+                  updateSettings({ ...settings, levenshteinThreshold: Number(e.target.value) })
+                }
+                className="w-full"
+              />
+              <p className="text-xs text-gray-500 mt-1">{t('tags:levenshteinHelp')}</p>
+            </div>
 
-          {/* Jaccard Threshold */}
-          <div>
-            <Flex justify="between" className="mb-2">
-              <label className="text-sm text-gray-400">{t('tags:jaccardThreshold')}</label>
-              <span className="text-sm text-white font-medium">{settings.jaccardThreshold}%</span>
-            </Flex>
-            <input
-              type="range"
-              min="60"
-              max="95"
-              value={settings.jaccardThreshold}
-              onChange={(e) =>
-                updateSettings({ ...settings, jaccardThreshold: Number(e.target.value) })
-              }
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 mt-1">{t('tags:jaccardHelp')}</p>
-          </div>
+            {/* Jaccard Threshold */}
+            <div>
+              <Flex justify="between" className="mb-2">
+                <label className="text-sm text-gray-400">{t('tags:jaccardThreshold')}</label>
+                <span className="text-sm text-white font-medium">{settings.jaccardThreshold}%</span>
+              </Flex>
+              <input
+                type="range"
+                min="60"
+                max="95"
+                value={settings.jaccardThreshold}
+                onChange={(e) =>
+                  updateSettings({ ...settings, jaccardThreshold: Number(e.target.value) })
+                }
+                className="w-full"
+              />
+              <p className="text-xs text-gray-500 mt-1">{t('tags:jaccardHelp')}</p>
+            </div>
 
-          {/* Min Usage Count */}
-          <div>
-            <Flex justify="between" className="mb-2">
-              <label className="text-sm text-gray-400">{t('tags:minUsageCount')}</label>
-              <span className="text-sm text-white font-medium">{settings.minUsageCount}</span>
-            </Flex>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              value={settings.minUsageCount}
-              onChange={(e) =>
-                updateSettings({ ...settings, minUsageCount: Number(e.target.value) })
-              }
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 mt-1">{t('tags:minUsageHelp')}</p>
-          </div>
+            {/* Min Usage Count */}
+            <div>
+              <Flex justify="between" className="mb-2">
+                <label className="text-sm text-gray-400">{t('tags:minUsageCount')}</label>
+                <span className="text-sm text-white font-medium">{settings.minUsageCount}</span>
+              </Flex>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={settings.minUsageCount}
+                onChange={(e) =>
+                  updateSettings({ ...settings, minUsageCount: Number(e.target.value) })
+                }
+                className="w-full"
+              />
+              <p className="text-xs text-gray-500 mt-1">{t('tags:minUsageHelp')}</p>
+            </div>
 
-          {/* Semantic Similarity Toggle */}
-          <Flex align="center" justify="between" className="pt-2 border-t border-white/10">
-            <span className="text-sm text-gray-400">{t('tags:enableSemanticSimilarity')}</span>
-            <Button
-              onClick={() =>
-                updateSettings({
-                  ...settings,
-                  enableSemanticSimilarity: !settings.enableSemanticSimilarity,
-                })
-              }
-              className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-                settings.enableSemanticSimilarity
-                  ? 'bg-green-500/20 text-green-300 border border-green-500/50'
-                  : 'text-gray-500 border border-white/10 bg-glass-bg'
-              }`}
-            >
-              {settings.enableSemanticSimilarity ? t('common:enabled') : t('common:disabled')}
-            </Button>
-          </Flex>
+            {/* Semantic Similarity Toggle */}
+            <Flex align="center" justify="between" className="pt-2 border-t border-white/10">
+              <span className="text-sm text-gray-400">{t('tags:enableSemanticSimilarity')}</span>
+              <Button
+                onClick={() =>
+                  updateSettings({
+                    ...settings,
+                    enableSemanticSimilarity: !settings.enableSemanticSimilarity,
+                  })
+                }
+                className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
+                  settings.enableSemanticSimilarity
+                    ? 'bg-green-500/20 text-green-300 border border-green-500/50'
+                    : 'text-gray-500 border border-white/10 bg-glass-bg'
+                }`}
+              >
+                {settings.enableSemanticSimilarity ? t('common:enabled') : t('common:disabled')}
+              </Button>
+            </Flex>
           </Stack>
         </GlassCard>
       </Stack>
@@ -178,46 +177,42 @@ export const SettingsTab: React.FC = () => {
       <Stack spacing="md">
         <h3 className="text-lg font-semibold text-white">{t('tags:preferences')}</h3>
 
-        <GlassCard
-          variant="accent"
-          padding="md"
-          border
-        >
+        <GlassCard variant="accent" padding="md" border>
           <Stack spacing="sm">
-          {[
-            {
-              key: 'showAITagsSeparately' as keyof TagSettings,
-              label: t('tags:showAITagsSeparately'),
-            },
-            {
-              key: 'suggestAliasesWhileTyping' as keyof TagSettings,
-              label: t('tags:suggestAliasesWhileTyping'),
-            },
-            {
-              key: 'autoMergeObviousDuplicates' as keyof TagSettings,
-              label: t('tags:autoMergeObviousDuplicates'),
-            },
-            {
-              key: 'confirmBeforeMerge' as keyof TagSettings,
-              label: t('tags:confirmBeforeMerge'),
-            },
-          ].map(({ key, label }) => (
-            <Flex key={key} align="center" justify="between" className="py-2">
-              <span className="text-sm text-gray-400">{label}</span>
-              <Button
-                onClick={() => updateSettings({ ...settings, [key]: !settings[key] })}
-                className={`w-12 h-6 rounded-full transition-all relative ${
-                  settings[key] ? 'bg-blue-500' : 'bg-gray-600'
-                }`}
-              >
-                <div
-                  className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all ${
-                    settings[key] ? 'left-6' : 'left-0.5'
+            {[
+              {
+                key: 'showAITagsSeparately' as keyof TagSettings,
+                label: t('tags:showAITagsSeparately'),
+              },
+              {
+                key: 'suggestAliasesWhileTyping' as keyof TagSettings,
+                label: t('tags:suggestAliasesWhileTyping'),
+              },
+              {
+                key: 'autoMergeObviousDuplicates' as keyof TagSettings,
+                label: t('tags:autoMergeObviousDuplicates'),
+              },
+              {
+                key: 'confirmBeforeMerge' as keyof TagSettings,
+                label: t('tags:confirmBeforeMerge'),
+              },
+            ].map(({ key, label }) => (
+              <Flex key={key} align="center" justify="between" className="py-2">
+                <span className="text-sm text-gray-400">{label}</span>
+                <Button
+                  onClick={() => updateSettings({ ...settings, [key]: !settings[key] })}
+                  className={`w-12 h-6 rounded-full transition-all relative ${
+                    settings[key] ? 'bg-blue-500' : 'bg-gray-600'
                   }`}
-                />
-              </Button>
-            </Flex>
-          ))}
+                >
+                  <div
+                    className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all ${
+                      settings[key] ? 'left-6' : 'left-0.5'
+                    }`}
+                  />
+                </Button>
+              </Flex>
+            ))}
           </Stack>
         </GlassCard>
       </Stack>

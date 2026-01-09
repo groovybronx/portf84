@@ -1,5 +1,6 @@
 import { Profiler, ProfilerOnRenderCallback } from 'react';
 
+import { logger } from './logger';
 /**
  * Performance Monitor Component
  * Wrapper pour mesurer les performances des composants React dans Tauri
@@ -56,7 +57,7 @@ const onRenderCallback: ProfilerOnRenderCallback = (
 
   // Log avec couleur selon la durée
   const emoji = actualDuration > 50 ? '🔴' : actualDuration > 20 ? '🟡' : '🟢';
-  console.log(
+  logger.debug(
     `${emoji} [${id}] ${phase} - ${actualDuration.toFixed(2)}ms` +
     ` (avg: ${stats.avgDuration.toFixed(2)}ms, max: ${stats.maxDuration.toFixed(2)}ms)`
   );
@@ -98,7 +99,7 @@ export const logPerformanceStats = () => {
   
   performanceStats.forEach((stats, id) => {
     const totalRenders = stats.mountCount + stats.updateCount;
-    console.log(
+    logger.debug(
       `\n${id}:`,
       `\n  Total renders: ${totalRenders} (${stats.mountCount} mounts, ${stats.updateCount} updates)`,
       `\n  Average duration: ${stats.avgDuration.toFixed(2)}ms`,
@@ -115,7 +116,7 @@ export const logPerformanceStats = () => {
  */
 export const resetPerformanceStats = () => {
   performanceStats.clear();
-  console.log('🔄 Performance stats reset');
+  logger.debug('🔄 Performance stats reset');
 };
 
 // Expose les fonctions globalement pour faciliter l'utilisation dans la console
@@ -142,7 +143,7 @@ export const usePerformanceMeasure = <T extends (...args: any[]) => any>(
     const duration = performance.now() - start;
     
     const emoji = duration > 100 ? '🔴' : duration > 50 ? '🟡' : '🟢';
-    console.log(`${emoji} [${label}] ${duration.toFixed(2)}ms`);
+    logger.debug('app', '${emoji} [${label}] ${duration.toFixed(2)}ms');
     
     return result;
   }) as T;
@@ -159,11 +160,11 @@ export const measureAsync = async <T,>(
   try {
     const result = await fn();
     const duration = performance.now() - start;
-    console.log(`⏱️ [${label}] ${duration.toFixed(2)}ms`);
+    logger.debug('app', '⏱️ [${label}] ${duration.toFixed(2)}ms');
     return result;
   } catch (error) {
     const duration = performance.now() - start;
-    console.error(`❌ [${label}] Failed after ${duration.toFixed(2)}ms`, error);
+    logger.error('app', '❌ [${label}] Failed after ${duration.toFixed(2)}ms', error);
     throw error;
   }
 };

@@ -1,6 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { mergeTags, undoMerge, getUndoableMerges } from '../src/services/storage/tags';
 
+import { logger } from './shared/utils/logger';
 // Mock database
 const mockExecute = vi.fn();
 const mockSelect = vi.fn();

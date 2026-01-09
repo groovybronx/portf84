@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, History, ChevronLeft, ChevronRight, RefreshCw, RotateCcw } from 'lucide-react';
 import { getAllTags, undoMerge, getUndoableMerges } from '../../../services/storage/tags';
-import { getDB } from '../../../services/storage/db';
 import { useTranslation } from 'react-i18next';
 import { DBTagMerge, ParsedTag } from '../../../shared/types/database';
 import { Button, GlassCard, Flex, Stack, Grid } from '../../../shared/components/ui';
 
+import { logger } from '../../../shared/utils/logger';
 interface TagMergeHistoryProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,7 +50,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
 
       setHistory(enrichedHistory);
     } catch (e) {
-      console.error('Failed to load merge history', e);
+      logger.error('app', 'Failed to load merge history', e);
       setError(t('tags:errorLoadingHistory'));
     } finally {
       setLoading(false);
@@ -91,7 +91,7 @@ export const TagMergeHistory: React.FC<TagMergeHistoryProps> = ({ isOpen, onClos
         await undoMerge(entry.id);
         await loadHistory();
       } catch (e) {
-        console.error('Undo failed', e);
+        logger.error('app', 'Undo failed', e);
         alert(t('tags:undoFailed'));
       }
     }

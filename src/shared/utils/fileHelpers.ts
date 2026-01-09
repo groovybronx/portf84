@@ -4,6 +4,7 @@ import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { join } from "@tauri-apps/api/path";
 import { isImageFile, IMAGE_MIME_TYPES } from "../constants";
 
+import { logger } from './logger';
 // Recursive function to walk directory path using Tauri FS
 export async function scanDirectory(
 	basePath: string,
@@ -44,7 +45,7 @@ export async function scanDirectory(
 					height = dims.height;
 					fileSize = dims.size || fileSize;
 				} catch (e) {
-					console.warn(`Failed to get dimensions for ${entry.name}`, e);
+					logger.warn('app', 'Failed to get dimensions for ${entry.name}', e);
 				}
 
 				const ext = entry.name.split(".").pop()?.toLowerCase() as keyof typeof IMAGE_MIME_TYPES;

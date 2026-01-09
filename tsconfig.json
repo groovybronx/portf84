@@ -21,7 +21,18 @@
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true
   },
-  "exclude": ["node_modules", "dist", "src-tauri/target", "src-tauri/gen"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src-tauri/target",
+    "src-tauri/gen",
+    "tests",
+    "scripts",
+    "vite.config.ts"
+  ]
 }

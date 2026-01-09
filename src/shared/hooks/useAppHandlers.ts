@@ -1,7 +1,8 @@
-import { useCallback } from "react";
-import { open } from "@tauri-apps/plugin-dialog";
-import { PortfolioItem } from "../types";
+import { useCallback } from 'react';
+import { open } from '@tauri-apps/plugin-dialog';
+import { PortfolioItem } from '../types';
 
+import { logger } from '../utils/logger';
 interface AppHandlers {
   handleDirectoryPicker: () => Promise<void>;
   handleShareSelected: () => Promise<void>;
@@ -63,7 +64,7 @@ export const useAppHandlers = (params: UseAppHandlersParams): AppHandlers => {
       const selected = await open({
         directory: true,
         multiple: true,
-        title: "Sélectionner des Dossiers Source",
+        title: 'Sélectionner des Dossiers Source',
       });
 
       if (selected) {
@@ -84,19 +85,25 @@ export const useAppHandlers = (params: UseAppHandlersParams): AppHandlers => {
         }
       }
     } catch (e) {
-      console.log("Cancelled", e);
+      logger.debug('app', 'Cancelled', e);
     }
-  }, [t, activeCollection, setIsCollectionManagerOpen, sourceFolders, addSourceFolder, loadFromPath]);
+  }, [
+    t,
+    activeCollection,
+    setIsCollectionManagerOpen,
+    sourceFolders,
+    addSourceFolder,
+    loadFromPath,
+  ]);
 
   const handleShareSelected = useCallback(async () => {
     // Implementation for sharing selected items
-    console.log("Share selected items");
+    logger.debug('app', 'Share selected items');
   }, []);
 
   const handleRunBatchAI = useCallback(() => {
     const itemsToProcess = processedItems.filter((item) => !item.aiDescription);
-    if (itemsToProcess.length === 0)
-      return alert(t('library:noUnanalyzedItems'));
+    if (itemsToProcess.length === 0) return alert(t('library:noUnanalyzedItems'));
     if (confirm(t('library:startAiAnalysisConfirm', { count: itemsToProcess.length }))) {
       addToQueue(itemsToProcess);
     }

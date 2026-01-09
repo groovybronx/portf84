@@ -18,6 +18,7 @@ import navigationFR from './locales/fr/navigation.json';
 import shortcutsEN from './locales/en/shortcuts.json';
 import shortcutsFR from './locales/fr/shortcuts.json';
 
+import { logger } from '../shared/utils/logger';
 // Configure i18next
 i18n
   .use(LanguageDetector) // Auto-detect user language

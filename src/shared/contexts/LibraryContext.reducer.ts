@@ -4,6 +4,7 @@ import {
 } from "../types";
 import type { LibraryState, LibraryAction } from "./LibraryContext.types";
 
+import { logger } from '../utils/logger';
 // Reducer function for library state management
 function libraryReducer(
   state: LibraryState,

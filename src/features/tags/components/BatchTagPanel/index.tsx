@@ -12,6 +12,7 @@ import { PreviewSection } from './PreviewSection';
 import { getMostUsedTags } from '@/services/storage/tags';
 import { ParsedTag } from '@/shared/types/database';
 
+import { logger } from '../../../../shared/utils/logger';
 interface BatchTagPanelProps {
   isOpen: boolean;
   onClose: () => void;

@@ -11,6 +11,7 @@ vi.mock('../src/services/storage/db', () => ({
 }));
 
 import { getDB } from '../src/services/storage/db';
+import { logger } from './shared/utils/logger';
 import {
     getOrCreateTag,
     addTagToItem,

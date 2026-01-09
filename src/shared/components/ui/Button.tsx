@@ -1,6 +1,7 @@
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { logger } from '../../utils/logger';
 export { cn } from "../../utils/cn";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

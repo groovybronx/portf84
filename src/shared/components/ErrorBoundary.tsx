@@ -1,6 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "./ui";
 
+import { logger } from '../utils/logger';
 interface ErrorLog {
 	error: Error;
 	errorInfo?: ErrorInfo;
@@ -36,7 +37,7 @@ function logError(log: ErrorLog): void {
 		const trimmed = stored.slice(0, MAX_STORED_ERRORS);
 		localStorage.setItem(ERROR_STORAGE_KEY, JSON.stringify(trimmed));
 	} catch (storageError) {
-		console.error("Failed to log error:", storageError);
+		logger.error("Failed to log error:", storageError);
 	}
 }
 
@@ -87,7 +88,7 @@ export class ErrorBoundary extends Component<Props, State> {
 		// Custom error handler
 		onError?.(error, errorInfo);
 
-		console.error(`Error in ${featureName || "App"}:`, error, errorInfo);
+		logger.error('app', 'Error in ${featureName || "App"}:', error, errorInfo);
 	}
 
 	handleReset = () => {

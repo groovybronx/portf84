@@ -19,6 +19,7 @@ vi.mock("@tauri-apps/api/path", () => ({
 import { readDir, stat } from "@tauri-apps/plugin-fs";
 import { invoke } from "@tauri-apps/api/core";
 
+import { logger } from './shared/utils/logger';
 describe("fileHelpers", () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
@@ -67,7 +68,7 @@ describe("fileHelpers", () => {
 			// root -> root.jpg, subfolder/
 			// subfolder -> nested.jpg
 			(readDir as Mock).mockImplementation(async (path: string) => {
-				console.log("Mock readDir called for:", path);
+				logger.debug("Mock readDir called for:", path);
 				if (path === "root") {
 					return [
 						{ name: "root.jpg", isFile: true, isDirectory: false },

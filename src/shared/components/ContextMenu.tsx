@@ -16,6 +16,7 @@ import { PortfolioItem, COLOR_PALETTE } from "../types";
 import { getColorName } from "../../services/storage/folders";
 import { Button } from "./ui/Button";
 
+import { logger } from '../utils/logger';
 interface ContextMenuProps {
 	x: number;
 	y: number;

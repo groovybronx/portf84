@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import App from '../src/App';
 import React from 'react';
 
+import { logger } from './shared/utils/logger';
 // Mock dependencies
 vi.mock('../src/features/vision', () => ({
   ImageViewer: () => <div data-testid="image-viewer">ImageViewer</div>,

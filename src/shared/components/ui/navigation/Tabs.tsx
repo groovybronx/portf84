@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "../../../utils/cn";
 import { Button } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface TabsProps {
   value: string;
   onValueChange: (value: string) => void;

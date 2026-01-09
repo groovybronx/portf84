@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Palette, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 import { Folder as FolderType, COLOR_PALETTE } from '../../../../shared/types';
 import { getColorName } from '../../../../services/storage/folders';
-import { useTheme } from '../../../../shared/contexts/ThemeContext';
 import { Button, Flex, Stack, GlassCard } from '../../../../shared/components/ui';
 
 interface ColorFiltersSectionProps {
@@ -21,7 +20,6 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
   onSelectFolder,
 }) => {
   const { t } = useTranslation('library');
-  const { settings } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleSection = () => setIsExpanded(!isExpanded);
@@ -59,7 +57,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
             className="overflow-hidden"
           >
             <Stack spacing="xs" className="pl-2">
-              {Object.entries(COLOR_PALETTE).map(([key, hex]) => {
+              {Object.entries(COLOR_PALETTE).map(([, hex]) => {
                 const colorName = getColorName(hex);
                 // Count items with this color (unique items across all folders)
                 const uniqueItems = new Set();
@@ -88,9 +86,7 @@ export const ColorFiltersSection: React.FC<ColorFiltersSectionProps> = ({
                       }
                     }}
                     className={`w-full group relative cursor-pointer transition-all text-sm h-auto ${
-                      isActive
-                        ? 'text-white'
-                        : 'text-gray-400 hover:text-white'
+                      isActive ? 'text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <Flex align="center" gap="md" className="w-full">

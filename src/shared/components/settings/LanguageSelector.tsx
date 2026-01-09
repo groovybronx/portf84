@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Stack } from '../ui';
 import { Icon } from '../Icon';
 
+import { logger } from '../../utils/logger';
 export const LanguageSelector: React.FC = () => {
   const { t, i18n } = useTranslation(['settings']);
 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import type { LibraryContextActions } from "./LibraryContext.types";
 
+import { logger } from '../utils/logger';
 // Actions context
 const LibraryDispatchContext = createContext<LibraryContextActions | undefined>(
   undefined

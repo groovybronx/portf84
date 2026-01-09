@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "../Button";
 import { GlassCard } from "../GlassCard";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface CardProps extends Omit<React.ComponentProps<typeof GlassCard>, "variant" | "padding"> {
 	variant?: "default" | "interactive";
 	padding?: "none" | "sm" | "md" | "lg";

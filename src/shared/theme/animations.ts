@@ -4,6 +4,7 @@
  */
 import type { Variants, Transition } from "framer-motion";
 
+import { logger } from '../utils/logger';
 // ==================== TRANSITIONS ====================
 
 /** Standard spring transition */

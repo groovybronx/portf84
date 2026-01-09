@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../../../../shared/components/Icon';
 import { useTheme } from '../../../../shared/contexts/ThemeContext';
-import { Button, GlassCard, Flex, Stack } from '../../../../shared/components/ui';
+import { Button, Flex, Stack } from '../../../../shared/components/ui';
 
 import { Folder as FolderType, Collection, SourceFolder } from '../../../../shared/types';
 
@@ -36,26 +36,26 @@ interface FolderDrawerProps {
   // Smart Collections
 }
 
-export const FolderDrawer: React.FC<FolderDrawerProps> = ({
-  isOpen,
-  onClose,
-  folders,
-  activeFolderId,
-  onSelectFolder,
-  onImportFolder,
-  onCreateFolder,
-  onDeleteFolder,
-  activeCollection,
-  sourceFolders,
-  collections = [],
-  onSwitchCollection,
-  onManageCollections,
-  onRemoveSourceFolder,
-  isPinned = false,
-  onTogglePin,
-  activeColorFilter,
-  onColorFilterChange,
-}) => {
+export const FolderDrawer: React.FC<FolderDrawerProps> = (props) => {
+  const {
+    isOpen,
+    onClose,
+    folders,
+    activeFolderId,
+    onSelectFolder,
+    onImportFolder,
+    onCreateFolder,
+    onDeleteFolder,
+    activeCollection,
+    sourceFolders,
+    collections = [],
+    onSwitchCollection,
+    onManageCollections,
+    onRemoveSourceFolder,
+    isPinned = false,
+    activeColorFilter,
+    onColorFilterChange,
+  } = props;
   const { t } = useTranslation(['library', 'navigation']);
   const { settings } = useTheme();
   const totalItems = folders.reduce((acc, f) => acc + f.items.length, 0);
@@ -79,11 +79,7 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
   const drawerBody = (
     <Stack direction="vertical" spacing="none" className="h-full">
       {/* Header */}
-      <FolderDrawerHeader
-        totalItems={totalItems}
-        onAdd={onCreateFolder}
-        onClose={onClose}
-      />
+      <FolderDrawerHeader totalItems={totalItems} onAdd={onCreateFolder} onClose={onClose} />
 
       <Stack spacing="lg" className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
         <div className="px-1 text-xs font-bold text-quinary uppercase tracking-wider mb-2">
@@ -164,9 +160,11 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                           activeFolderId={activeFolderId}
                           onSelectFolder={onSelectFolder}
                           onImportFolder={onImportFolder}
-                          onRemoveFolder={onRemoveSourceFolder}
+                          {...(onRemoveSourceFolder
+                            ? { onRemoveFolder: onRemoveSourceFolder }
+                            : {})}
                           activeCollection={activeCollection}
-                          onColorFilterChange={onColorFilterChange}
+                          {...(onColorFilterChange ? { onColorFilterChange } : {})}
                         />
 
                         {/* MANUAL COLLECTIONS SECTION */}
@@ -177,14 +175,14 @@ export const FolderDrawer: React.FC<FolderDrawerProps> = ({
                           onCreateFolder={onCreateFolder}
                           onDeleteFolder={onDeleteFolder}
                           activeCollection={activeCollection}
-                          onColorFilterChange={onColorFilterChange}
+                          {...(onColorFilterChange ? { onColorFilterChange } : {})}
                         />
 
                         {/* COLOR TAGS SECTION */}
                         <ColorFiltersSection
                           folders={folders}
-                          activeColorFilter={activeColorFilter}
-                          onColorFilterChange={onColorFilterChange}
+                          activeColorFilter={activeColorFilter ?? null}
+                          {...(onColorFilterChange ? { onColorFilterChange } : {})}
                           onSelectFolder={onSelectFolder}
                         />
                       </Stack>

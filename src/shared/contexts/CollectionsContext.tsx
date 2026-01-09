@@ -8,6 +8,7 @@ import React, {
 import { Collection, SourceFolder } from "../types";
 import { storageService } from "../../services/storageService";
 
+import { logger } from '../utils/logger';
 // Types
 interface CollectionsState {
   collections: Collection[];

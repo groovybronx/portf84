@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { logger } from './shared/utils/logger';
 import {
   loadTagHubSettings,
   saveTagHubSettings,

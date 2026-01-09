@@ -5,6 +5,7 @@ import { X, Plus, Trash2, Folder, CheckCircle2, AlertCircle } from 'lucide-react
 import { Collection } from '../../../shared/types';
 import { Button, GlassCard, Flex, Stack } from '../../../shared/components/ui';
 
+import { logger } from '../../../shared/utils/logger';
 interface CollectionManagerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,7 +38,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
       setNewCollectionName('');
       setIsCreating(false);
     } catch (error) {
-      console.error('Failed to create collection:', error);
+      logger.error('ui', 'Failed to create collection', error);
     }
   };
 
@@ -46,7 +47,7 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
       await onDeleteCollection(id);
       setDeleteConfirm(null);
     } catch (error) {
-      console.error('Failed to delete collection:', error);
+      logger.error('ui', 'Failed to delete collection', error);
     }
   };
 
@@ -205,15 +206,15 @@ export const CollectionManager: React.FC<CollectionManagerProps> = ({
                   exit={{ opacity: 0, height: 0 }}
                 >
                   <Stack spacing="sm">
-                      <input
-                        type="text"
-                        value={newCollectionName}
-                        onChange={(e) => setNewCollectionName(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-                        placeholder={t('library:projectNamePlaceholder')}
-                        className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
-                        autoFocus
-                      />
+                    <input
+                      type="text"
+                      value={newCollectionName}
+                      onChange={(e) => setNewCollectionName(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+                      placeholder={t('library:projectNamePlaceholder')}
+                      className="w-full px-4 py-2 bg-glass-bg-accent border border-glass-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                      autoFocus
+                    />
                     <Flex gap="sm">
                       <Button
                         onClick={handleCreate}

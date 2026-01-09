@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useVision } from '../hooks/useVision';
 
+import { logger } from '../../../shared/utils/logger';
 interface ImageViewerProps {
   item: PortfolioItem;
   onClose: () => void;
@@ -93,7 +94,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
         files: [item.file],
       });
     } catch (error) {
-      console.error('Error sharing:', error);
+      logger.error('Error sharing:', error);
     }
   };
 

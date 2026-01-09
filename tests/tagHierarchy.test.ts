@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getOrCreateTag, setTagParent, getTagTree, getAllTags } from '../src/services/storage/tags';
 import { getDB } from '../src/services/storage/db';
 
+import { logger } from './shared/utils/logger';
 // Mock DB
 vi.mock('../src/services/storage/db', () => ({
   getDB: vi.fn()

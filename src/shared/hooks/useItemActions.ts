@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { PortfolioItem } from "../types";
 import { analyzeImage } from "../../features/vision";
 
+import { logger } from '../utils/logger';
 export interface UseItemActionsProps {
   currentItems: PortfolioItem[];
   selectedIds: Set<string>;
@@ -123,7 +124,7 @@ export const useItemActions = ({
           aiTagsDetailed: res.tagsDetailed,
         });
       } catch (e: any) {
-        console.error(e);
+        logger.error('app', 'Error', e);
         if (e.name === "ApiKeyError") {
           alert(e.message);
           // TODO: Open Settings Modal automatically

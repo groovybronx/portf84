@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 
+import { logger } from '../utils/logger';
 export type TagHubTab = "browse" | "manage" | "fusion" | "settings";
 
 export interface ModalState {

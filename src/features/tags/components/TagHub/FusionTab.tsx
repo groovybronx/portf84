@@ -6,6 +6,8 @@ import { analyzeTagRedundancy, TagGroup } from '@/services/tagAnalysisService';
 import { mergeTags, ignoreTagMatch } from '@/services/storage/tags';
 import { TagMergeHistory } from '../TagMergeHistory';
 
+import { logger } from '@/shared/utils/logger';
+
 interface FusionTabProps {
   onTagsUpdated?: () => void;
 }
@@ -30,7 +32,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
       const redundant = await analyzeTagRedundancy();
       setGroups(redundant);
     } catch (e) {
-      console.error('Failed to analyze tags', e);
+      logger.error('ui', 'Failed to analyze tags', e);
     } finally {
       setLoading(false);
     }
@@ -78,7 +80,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
 
       if (onTagsUpdated) onTagsUpdated();
     } catch (e) {
-      console.error('Merge failed', e);
+      logger.error('ui', 'Merge failed', e);
     } finally {
       setMergingId(null);
     }
@@ -91,7 +93,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
       }
       setGroups((prev) => prev.filter((g) => g.target.id !== group.target.id));
     } catch (e) {
-      console.error('Ignore failed', e);
+      logger.error('ui', 'Ignore failed', e);
     }
   };
 
@@ -112,12 +114,13 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
           await mergeTags(group.target.id, sourceIds, 'auto');
           successCount++;
         } catch (e) {
-          console.error(`Failed to merge group for ${group.target.name}:`, e);
+          logger.error('app', `Failed to merge group for ${group.target.name}`, e);
           failCount++;
         }
       }
 
-      console.log(
+      logger.debug(
+        'ui',
         `[FusionTab] Batch merge complete: ${successCount} succeeded, ${failCount} failed`
       );
 
@@ -126,7 +129,7 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
 
       if (onTagsUpdated) onTagsUpdated();
     } catch (e) {
-      console.error('Batch merge failed', e);
+      logger.error('ui', 'Batch merge failed', e);
       // Refresh to show remaining groups
       await loadAnalysis();
     } finally {
@@ -225,71 +228,71 @@ export const FusionTab: React.FC<FusionTabProps> = ({ onTagsUpdated }) => {
                   className="group-hover:border-glass-border transition-colors"
                 >
                   <Flex align="center" justify="between" gap="md">
-                  <Flex align="center" gap="lg" className="flex-1">
-                    <Stack spacing="xs" className="w-fit">
+                    <Flex align="center" gap="lg" className="flex-1">
+                      <Stack spacing="xs" className="w-fit">
+                        <Button
+                          onClick={() => toggleMergeDirection(group)}
+                          className="px-3 py-1.5 rounded-full bg-green-500/20 text-green-100 text-sm font-semibold border-2 border-green-500/50 hover:border-green-500/70 transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-lg shadow-green-500/20"
+                          title={t('tags:tagToKeep', { tagName: effectiveTarget.name })}
+                        >
+                          <Flex align="center" gap="sm">
+                            <span className="text-green-400 text-lg">✓</span>
+                            <span>{effectiveTarget.name}</span>
+                          </Flex>
+                        </Button>
+                        <span className="text-[10px] text-green-400/80 font-bold uppercase tracking-wider text-center">
+                          {t('tags:kept')}
+                        </span>
+                      </Stack>
+
                       <Button
                         onClick={() => toggleMergeDirection(group)}
-                        className="px-3 py-1.5 rounded-full bg-green-500/20 text-green-100 text-sm font-semibold border-2 border-green-500/50 hover:border-green-500/70 transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-lg shadow-green-500/20"
-                        title={t('tags:tagToKeep', { tagName: effectiveTarget.name })}
+                        className="text-white/30 hover:text-white/70 transition-all cursor-pointer hover:scale-110 active:scale-90"
+                        title={t('tags:clickToInvert')}
                       >
-                        <Flex align="center" gap="sm">
-                          <span className="text-green-400 text-lg">✓</span>
-                          <span>{effectiveTarget.name}</span>
-                        </Flex>
+                        <ArrowLeftRight className="w-4 h-4" />
                       </Button>
-                      <span className="text-[10px] text-green-400/80 font-bold uppercase tracking-wider text-center">
-                        {t('tags:kept')}
-                      </span>
+
+                      <Stack spacing="xs" className="flex-1">
+                        <Flex wrap="wrap" gap="sm">
+                          {effectiveCandidates.map((cand) => (
+                            <span
+                              key={cand.id}
+                              className="px-2 py-1 rounded bg-red-500/10 text-red-300/80 text-xs border border-red-500/30 line-through decoration-red-400"
+                            >
+                              <Flex align="center" gap="xs">
+                                <span className="text-red-400 font-bold">×</span>
+                                <span>{cand.name}</span>
+                              </Flex>
+                            </span>
+                          ))}
+                        </Flex>
+                        <span className="text-[10px] text-red-400/60 font-bold uppercase tracking-wider">
+                          {t('tags:deleted', { count: effectiveCandidates.length })}
+                        </span>
+                      </Stack>
+                    </Flex>
+
+                    <Stack spacing="sm" className="shrink-0">
+                      <Button
+                        onClick={() => handleMerge(group)}
+                        disabled={mergingId === effectiveTarget.id || mergingAll}
+                        className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
+                      >
+                        {mergingId === effectiveTarget.id ? (
+                          <RefreshCw className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Merge className="w-3 h-3" />
+                        )}
+                        {t('tags:merge')}
+                      </Button>
+                      <Button
+                        onClick={() => handleIgnore(group)}
+                        className="px-4 py-1.5 text-[10px] text-white/40 hover:text-white/70 hover:bg-white/5 border border-white/10 rounded-lg transition-all"
+                      >
+                        {t('tags:ignoreMatch')}
+                      </Button>
                     </Stack>
-
-                    <Button
-                      onClick={() => toggleMergeDirection(group)}
-                      className="text-white/30 hover:text-white/70 transition-all cursor-pointer hover:scale-110 active:scale-90"
-                      title={t('tags:clickToInvert')}
-                    >
-                      <ArrowLeftRight className="w-4 h-4" />
-                    </Button>
-
-                    <Stack spacing="xs" className="flex-1">
-                      <Flex wrap="wrap" gap="sm">
-                        {effectiveCandidates.map((cand) => (
-                          <span
-                            key={cand.id}
-                            className="px-2 py-1 rounded bg-red-500/10 text-red-300/80 text-xs border border-red-500/30 line-through decoration-red-400"
-                          >
-                            <Flex align="center" gap="xs">
-                              <span className="text-red-400 font-bold">×</span>
-                              <span>{cand.name}</span>
-                            </Flex>
-                          </span>
-                        ))}
-                      </Flex>
-                      <span className="text-[10px] text-red-400/60 font-bold uppercase tracking-wider">
-                        {t('tags:deleted', { count: effectiveCandidates.length })}
-                      </span>
-                    </Stack>
-                  </Flex>
-
-                  <Stack spacing="sm" className="shrink-0">
-                    <Button
-                      onClick={() => handleMerge(group)}
-                      disabled={mergingId === effectiveTarget.id || mergingAll}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-95"
-                    >
-                      {mergingId === effectiveTarget.id ? (
-                        <RefreshCw className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Merge className="w-3 h-3" />
-                      )}
-                      {t('tags:merge')}
-                    </Button>
-                    <Button
-                      onClick={() => handleIgnore(group)}
-                      className="px-4 py-1.5 text-[10px] text-white/40 hover:text-white/70 hover:bg-white/5 border border-white/10 rounded-lg transition-all"
-                    >
-                      {t('tags:ignoreMatch')}
-                    </Button>
-                  </Stack>
                   </Flex>
                 </GlassCard>
               );

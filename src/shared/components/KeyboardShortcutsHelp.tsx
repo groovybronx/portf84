@@ -5,6 +5,7 @@ import { X, Keyboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { KEYBOARD_SHORTCUTS, ShortcutCategory } from '../constants/shortcuts';
 
+import { logger } from '../utils/logger';
 interface KeyboardShortcutsHelpProps {
   isOpen: boolean;
   onClose: () => void;

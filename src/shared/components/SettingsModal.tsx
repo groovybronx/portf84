@@ -12,6 +12,7 @@ import { LanguageSelector } from './settings/LanguageSelector';
 import { ShortcutEditor } from './settings/ShortcutEditor';
 import { ThemeCustomizer } from './settings/ThemeCustomizer';
 
+import { logger } from '../utils/logger';
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -49,7 +50,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             }
           }
         } catch (e) {
-          console.error('Failed to load secure key:', e);
+          logger.error('Failed to load secure key:', e);
           // Fallback en cas d'erreur
           const storedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
           if (storedKey) setApiKey(storedKey);
@@ -77,7 +78,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         setDbPath(selected);
       }
     } catch (err) {
-      console.error('Failed to pick directory:', err);
+      logger.error('Failed to pick directory:', err);
     }
   };
 

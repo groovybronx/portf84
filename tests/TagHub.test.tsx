@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TagHub } from '../src/features/tags/components/TagHub';
+import { logger } from './shared/utils/logger';
 import '@testing-library/jest-dom';
 
 // Mock i18n

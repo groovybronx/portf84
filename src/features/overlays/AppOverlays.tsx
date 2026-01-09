@@ -1,10 +1,10 @@
-import React from "react";
-import { AnimatePresence } from "framer-motion";
-import { ContextMenu, UnifiedProgress } from "../../shared/components";
-import { ImageViewer, analyzeImage } from "../../features/vision";
-import { PortfolioItem } from "../../shared/types";
-import { TagChanges } from "../../features/tags";
+import React from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { ContextMenu, UnifiedProgress } from '../../shared/components';
+import { ImageViewer } from '../../features/vision';
+import { PortfolioItem } from '../../shared/types';
 
+import { logger } from '../../shared/utils/logger';
 interface AppOverlaysProps {
   contextMenu: { x: number; y: number; item: PortfolioItem } | null;
   setContextMenu: (menu: { x: number; y: number; item: PortfolioItem } | null) => void;
@@ -72,7 +72,7 @@ export const AppOverlays: React.FC<AppOverlaysProps> = ({
             onDelete={(id) =>
               updateItem({
                 ...contextMenu.item,
-                folderId: "trash",
+                folderId: 'trash',
               })
             }
             onAddTags={handleContextAddTag}

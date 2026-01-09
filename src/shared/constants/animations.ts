@@ -1,6 +1,7 @@
 import { Transition } from "framer-motion";
 import { STORAGE_KEYS } from "./storage";
 
+import { logger } from '../utils/logger';
 /**
  * Presets d'animation configurables
  * 

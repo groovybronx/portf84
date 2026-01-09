@@ -4,6 +4,7 @@ import { useItemActions } from "../src/shared/hooks/useItemActions";
 import { PortfolioItem } from "../src/shared/types";
 import * as visionModule from "../src/features/vision/services/geminiService";
 
+import { logger } from './shared/utils/logger';
 // Mock the analyzeImage function
 vi.mock("../src/features/vision/services/geminiService", () => ({
 	analyzeImage: vi.fn(),

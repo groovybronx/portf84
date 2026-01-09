@@ -9,6 +9,7 @@ import { SelectionProvider } from "./shared/contexts/SelectionContext";
 import { ThemeProvider } from "./shared/contexts/ThemeContext";
 import { ErrorBoundary } from "./shared/components/ErrorBoundary";
 
+import { logger } from './shared/utils/logger';
 // Initialize i18n
 import "./i18n";
 

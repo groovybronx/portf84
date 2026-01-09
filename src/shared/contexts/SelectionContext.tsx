@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { PortfolioItem, ViewMode } from "../types";
 
+import { logger } from '../utils/logger';
 // Types
 interface SelectionState {
 	selectionMode: boolean;

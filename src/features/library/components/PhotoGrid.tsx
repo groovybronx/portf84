@@ -5,6 +5,7 @@ import { PhotoCard } from './PhotoCard';
 import { useLibrary } from '../../../shared/contexts/LibraryContext';
 import { useSelection } from '../../../shared/contexts/SelectionContext';
 
+import { logger } from '../../../shared/utils/logger';
 interface PhotoGridProps {
   onSelect: (item: PortfolioItem) => void;
   onHover?: (item: PortfolioItem | null) => void;

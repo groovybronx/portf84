@@ -2,6 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingSpinner } from "./ui";
 
+import { logger } from '../utils/logger';
 interface LoadingOverlayProps {
   isVisible: boolean;
   message?: string;

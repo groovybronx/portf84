@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { PortfolioItem } from "../../../shared/types";
 
+import { logger } from '../../../shared/utils/logger';
 interface CinematicCarouselProps {
   items: PortfolioItem[];
   initialIndex: number;

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
+import { logger } from '../utils/logger';
 export interface ProgressTask {
   id: string;
   label: string;

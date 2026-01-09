@@ -3,6 +3,8 @@
  * Stores user preferences in localStorage with versioning
  */
 
+import { logger } from './logger';
+
 export interface TagSettings {
   // Thresholds
   levenshteinThreshold: number;
@@ -58,7 +60,7 @@ export const loadTagSettings = (): TagSettings => {
 
     return parsed;
   } catch (error) {
-    console.error('[TagSettings] Failed to load:', error);
+    logger.error('app', '[TagSettings] Failed to load:', error);
     return DEFAULT_TAG_SETTINGS;
   }
 };
@@ -74,13 +76,13 @@ export const saveTagSettings = (settings: TagSettings): void => {
       lastUpdated: Date.now(),
     };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(toSave));
-    console.log('[TagSettings] Saved successfully');
+    logger.debug('app', '[TagSettings] Saved successfully');
   } catch (error) {
-    console.error('[TagSettings] Failed to save:', error);
+    logger.error('app', '[TagSettings] Failed to save:', error);
     // Handle quota exceeded
     if (error instanceof Error && error.name === 'QuotaExceededError') {
-        // Simple alert or handling. In a real app maybe a toast.
-        // Alert is native, good enough for now as per plan.
+      // Simple alert or handling. In a real app maybe a toast.
+      // Alert is native, good enough for now as per plan.
       alert('Storage quota exceeded. Please clear some browser data.');
     }
   }
@@ -99,8 +101,11 @@ export const resetTagSettings = (): TagSettings => {
  * Migrate settings from old version
  */
 const migrateSettings = (old: Partial<TagSettings>): TagSettings => {
-  console.log('[TagSettings] Migrating from version', old.version, 'to', CURRENT_VERSION);
-  
+  logger.debug('app', '[TagSettings] Migrating from version', {
+    from: old.version,
+    to: CURRENT_VERSION,
+  });
+
   // Add migration logic here as versions evolve
   // Example:
   // if (old.version === 0) {

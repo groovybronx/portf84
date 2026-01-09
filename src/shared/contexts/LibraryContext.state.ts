@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import type { LibraryContextState } from "./LibraryContext.types";
 
+import { logger } from '../utils/logger';
 // State context
 const LibraryStateContext = createContext<LibraryContextState | undefined>(
   undefined

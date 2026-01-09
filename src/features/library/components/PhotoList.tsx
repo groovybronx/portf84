@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useLibrary } from "../../../shared/contexts/LibraryContext";
 import { useSelection } from "../../../shared/contexts/SelectionContext";
 
+import { logger } from '../../../shared/utils/logger';
 interface PhotoListProps {
 	onSelect: (item: PortfolioItem) => void;
 	onHover?: (item: PortfolioItem | null) => void;

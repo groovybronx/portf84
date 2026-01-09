@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon as LucideIcon, type IconAction } from "../../Icon";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface SettingRowProps {
   label: string;
   description?: string;

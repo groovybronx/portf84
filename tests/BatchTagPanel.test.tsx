@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BatchTagPanel } from '../src/features/tags';
 import { PortfolioItem } from '../src/shared/types';
+import { logger } from './shared/utils/logger';
 import '@testing-library/jest-dom';
 
 // Mock i18n

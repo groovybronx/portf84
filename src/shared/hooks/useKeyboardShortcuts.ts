@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { PortfolioItem, COLOR_PALETTE } from "../types";
 import { useLocalShortcuts } from "./useLocalShortcuts";
 
+import { logger } from '../utils/logger';
 export interface UseKeyboardShortcutsProps {
   processedItems: PortfolioItem[];
   focusedId: string | null;

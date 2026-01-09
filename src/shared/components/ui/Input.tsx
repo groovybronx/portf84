@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "./Button";
 import { Search } from "lucide-react";
 
+import { logger } from '../../utils/logger';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	leftIcon?: React.ReactNode;
 	rightIcon?: React.ReactNode;

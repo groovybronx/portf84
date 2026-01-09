@@ -112,18 +112,18 @@ export const ShadowFoldersSection: React.FC<ShadowFoldersSectionProps> = ({
                     folder={folder}
                     isActive={activeFolderId.has(folder.id)}
                     onSelect={handleSelect}
-                    onDelete={
-                      onRemoveFolder
-                        ? () => {
+                    {...(onRemoveFolder
+                      ? {
+                          onDelete: (_id: string) => {
                             const sourceFolder = sourceFolders.find(
                               (sf) => sf.id === folder.sourceFolderId
                             );
                             if (sourceFolder?.path) {
                               onRemoveFolder(sourceFolder.path);
                             }
-                          }
-                        : undefined
-                    }
+                          },
+                        }
+                      : {})}
                     iconAction="hard_drive"
                     iconColorClass="text-quaternary"
                     iconBgClass="bg-quaternary/10"

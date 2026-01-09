@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 
+import { logger } from '../utils/logger';
 interface SidebarLogic {
   isSidebarPinned: boolean;
   setIsSidebarPinned: (value: boolean) => void;

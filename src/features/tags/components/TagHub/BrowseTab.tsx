@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Search, Grid, List, Tag as TagIcon, Sparkles } from 'lucide-react';
 import { Button, Flex, Stack, Grid as LayoutGrid, GlassCard } from '@/shared/components/ui';
 import { getTagsWithUsageStats, TagWithUsage } from '@/services/storage/tags';
+import { logger } from '../../../../shared/utils/logger';
 import {
-	loadTagHubSettings,
-	saveTagHubSettings,
-	type TagHubSettings,
-	type ViewMode,
-	type FilterMode,
+  loadTagHubSettings,
+  saveTagHubSettings,
+  type TagHubSettings,
+  type FilterMode,
 } from '@/shared/utils/tagHubSettings';
 
 interface BrowseTabProps {
@@ -34,16 +34,16 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
   }, []);
 
   // Update a single setting
-  const updateSetting = useCallback(<K extends keyof TagHubSettings>(
-    key: K,
-    value: TagHubSettings[K]
-  ) => {
-    setSettings(prev => {
-      const newSettings = { ...prev, [key]: value };
-      debouncedSave(newSettings);
-      return newSettings;
-    });
-  }, [debouncedSave]);
+  const updateSetting = useCallback(
+    <K extends keyof TagHubSettings>(key: K, value: TagHubSettings[K]) => {
+      setSettings((prev) => {
+        const newSettings = { ...prev, [key]: value };
+        debouncedSave(newSettings);
+        return newSettings;
+      });
+    },
+    [debouncedSave]
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -64,7 +64,7 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
       const allTags = await getTagsWithUsageStats();
       setTags(allTags);
     } catch (error) {
-      console.error('Failed to load tags:', error);
+      logger.error('ui', 'Failed to load tags', error);
     } finally {
       setLoading(false);
     }
@@ -126,28 +126,28 @@ export const BrowseTab: React.FC<BrowseTabProps> = ({ onSelectTag }) => {
         {/* View Mode Toggle */}
         <GlassCard variant="accent" padding="sm" className="shrink-0">
           <Flex gap="xs">
-          <Button
-            onClick={() => updateSetting('viewMode', 'grid')}
-            aria-label={t('tags:gridView')}
-            className={`p-2 rounded ${
-              settings.viewMode === 'grid'
-                ? 'bg-primary text-white'
-                : 'bg-blue-500/20 text-blue-300'
-            }`}
-          >
-            <Grid size={16} />
-          </Button>
-          <Button
-            onClick={() => updateSetting('viewMode', 'list')}
-            aria-label={t('tags:listView')}
-            className={`p-2 rounded ${
-              settings.viewMode === 'list'
-                ? 'bg-primary text-white'
-                : 'bg-blue-500/20 text-blue-300'
-            }`}
-          >
-            <List size={16} />
-          </Button>
+            <Button
+              onClick={() => updateSetting('viewMode', 'grid')}
+              aria-label={t('tags:gridView')}
+              className={`p-2 rounded ${
+                settings.viewMode === 'grid'
+                  ? 'bg-primary text-white'
+                  : 'bg-blue-500/20 text-blue-300'
+              }`}
+            >
+              <Grid size={16} />
+            </Button>
+            <Button
+              onClick={() => updateSetting('viewMode', 'list')}
+              aria-label={t('tags:listView')}
+              className={`p-2 rounded ${
+                settings.viewMode === 'list'
+                  ? 'bg-primary text-white'
+                  : 'bg-blue-500/20 text-blue-300'
+              }`}
+            >
+              <List size={16} />
+            </Button>
           </Flex>
         </GlassCard>
       </Flex>

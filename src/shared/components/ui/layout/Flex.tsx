@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
 	direction?: "row" | "col" | "row-reverse" | "col-reverse";
 	wrap?: "wrap" | "nowrap" | "wrap-reverse";

@@ -4,6 +4,7 @@ import { Tag, X, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button, GlassCard, Flex, Stack } from '../../../shared/components/ui';
 
+import { logger } from '../../../shared/utils/logger';
 interface AddTagModalProps {
   isOpen: boolean;
   onClose: () => void;

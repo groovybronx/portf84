@@ -3,6 +3,7 @@ import { renderHook } from "@testing-library/react";
 import { useKeyboardShortcuts } from "../src/shared/hooks/useKeyboardShortcuts";
 import { PortfolioItem, COLOR_PALETTE } from "../src/shared/types";
 
+import { logger } from './shared/utils/logger';
 describe("useKeyboardShortcuts", () => {
 	let mockSetFocusedId: (id: string) => void;
 	let mockSetSelectedItem: (item: PortfolioItem) => void;

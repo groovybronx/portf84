@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FolderOpen, Sparkles } from "lucide-react";
 import { GlassCard } from "./ui";
 
+import { logger } from '../utils/logger';
 interface EmptyStateProps {
 	title?: string;
 	description?: string;

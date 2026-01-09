@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import type { IconAction } from "../components/Icon";
 import { STORAGE_KEYS } from "../constants/storage";
 
+import { logger } from '../utils/logger';
 interface ThemeSettings {
   glassBg: string;
   glassBorder: string;
@@ -54,7 +55,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         return { ...defaultSettings, ...JSON.parse(saved) };
       } catch (e) {
-        console.error("Failed to parse theme settings", e);
+        logger.error("Failed to parse theme settings", e);
       }
     }
     return defaultSettings;

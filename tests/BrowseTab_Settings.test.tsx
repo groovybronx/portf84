@@ -5,6 +5,7 @@ import { BrowseTab } from '../src/features/tags/components/TagHub/BrowseTab';
 import * as tagHubSettings from '../src/shared/utils/tagHubSettings';
 import * as tagsStorage from '../src/services/storage/tags';
 
+import { logger } from './shared/utils/logger';
 // Mock the storage module
 vi.mock('../src/services/storage/tags', () => ({
   getTagsWithUsageStats: vi.fn(),

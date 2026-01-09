@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Button, Flex, Stack } from '@/shared/components/ui';
 import { useTranslation } from 'react-i18next';
 
+import { logger } from '../../../../shared/utils/logger';
 interface CommonTagsProps {
   tags: string[];
   onRemove: (tag: string) => void;

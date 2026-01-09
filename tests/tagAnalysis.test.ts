@@ -15,6 +15,7 @@ vi.mock('../src/services/storage/tags', () => ({
 
 import { getAllTags } from '../src/services/storage/tags';
 
+import { logger } from './shared/utils/logger';
 describe('Tag Analysis - Redundancy Detection', () => {
     beforeEach(() => {
         vi.clearAllMocks();

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Icon, type IconAction, ALL_ICONS } from "../../Icon";
 import { Button } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface IconPickerProps {
   value: IconAction;
   onChange: (icon: IconAction) => void;

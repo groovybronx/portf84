@@ -49,6 +49,7 @@ export class NetworkError extends GeminiError {
 
 import { secureStorage } from "../../../services/secureStorage";
 
+import { logger } from '../../../shared/utils/logger';
 const getApiKey = async (): Promise<string> => {
 	// First try secure storage (App Data DB/File)
 	const secureKey = await secureStorage.getApiKey();
@@ -102,7 +103,7 @@ export const analyzeImage = async (
 				const file = new File([blob], item.name, { type: item.type });
 				base64Data = await processFileToBase64(file);
 			} catch (err) {
-				console.error("Failed to fetch image from URL:", err);
+				logger.error("Failed to fetch image from URL:", err);
 				throw new Error(i18next.t('errors:failedToLoadImage'));
 			}
 		}
@@ -161,7 +162,7 @@ export const analyzeImage = async (
 			tagsDetailed,
 		};
 	} catch (error: any) {
-		console.error("Gemini Analysis Error:", error);
+		logger.error("Gemini Analysis Error:", error);
 		if (error instanceof GeminiError) throw error;
 		
 		if (error.message?.includes("API key")) {
@@ -203,7 +204,7 @@ export const analyzeImageStream = async (
 				const file = new File([blob], item.name, { type: item.type });
 				base64Data = await processFileToBase64(file);
 			} catch (err) {
-				console.error("Failed to fetch image from URL:", err);
+				logger.error("Failed to fetch image from URL:", err);
 				throw new Error(i18next.t('errors:failedToLoadImage'));
 			}
 		}
@@ -316,7 +317,7 @@ export const analyzeImageStream = async (
 			tagsDetailed,
 		};
 	} catch (error: any) {
-		console.error("Gemini Stream Error:", error);
+		logger.error("Gemini Stream Error:", error);
 		if (error instanceof GeminiError) throw error;
 
 		if (error.message?.includes("API key")) {

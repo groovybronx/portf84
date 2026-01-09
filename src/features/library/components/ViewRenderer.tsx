@@ -5,6 +5,7 @@ import { CinematicCarousel } from "./CinematicCarousel";
 import { PhotoList } from "./PhotoList";
 import { PortfolioItem, ViewMode, Folder, Collection } from "../../../shared/types";
 
+import { logger } from '../../../shared/utils/logger';
 export interface ViewRendererProps {
   viewMode: ViewMode;
   useCinematicCarousel: boolean;

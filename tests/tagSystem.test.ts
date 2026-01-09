@@ -5,6 +5,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 
+import { logger } from './shared/utils/logger';
 // Constants
 const LARGE_DATASET_THRESHOLD = 5000;
 

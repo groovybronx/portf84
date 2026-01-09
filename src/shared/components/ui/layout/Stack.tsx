@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
 	direction?: "vertical" | "horizontal";
 	spacing?: "none" | "xs" | "sm" | "md" | "lg" | "xl";

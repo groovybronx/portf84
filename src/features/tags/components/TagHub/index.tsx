@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Tag as TagIcon, Search, Settings, Merge } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button, GlassCard, Flex } from '@/shared/components/ui';
+import { Button, Flex } from '@/shared/components/ui';
 import { TagHubTab } from '@/shared/hooks/useModalState';
 import { BrowseTab } from './BrowseTab';
 import { ManageTab } from './ManageTab';
@@ -120,9 +120,11 @@ export const TagHub: React.FC<TagHubProps> = ({
 
             {/* Tab Content */}
             <div className="flex-1 overflow-y-auto">
-              {activeTab === 'browse' && <BrowseTab onSelectTag={onSelectTag} />}
+              {activeTab === 'browse' && <BrowseTab {...(onSelectTag ? { onSelectTag } : {})} />}
               {activeTab === 'manage' && <ManageTab />}
-              {activeTab === 'fusion' && <FusionTab onTagsUpdated={onTagsUpdated} />}
+              {activeTab === 'fusion' && (
+                <FusionTab {...(onTagsUpdated ? { onTagsUpdated } : {})} />
+              )}
               {activeTab === 'settings' && <SettingsTab />}
             </div>
           </motion.div>

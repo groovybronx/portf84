@@ -8,6 +8,7 @@ import {
 import { AddTagModal, BatchTagPanel, TagChanges } from "../../features/tags";
 import { PortfolioItem } from "../../shared/types";
 
+import { logger } from '../../shared/utils/logger';
 interface AppModalsProps {
   isCollectionManagerOpen: boolean;
   setIsCollectionManagerOpen: (open: boolean) => void;

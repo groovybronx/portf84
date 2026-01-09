@@ -5,13 +5,14 @@ import { Button, ConfirmDialog, Flex, Stack, GlassCard } from '@/shared/componen
 import { getAllTags, deleteTag, mergeTags } from '@/services/storage/tags';
 import { ParsedTag } from '@/shared/types/database';
 
+import { logger } from '@/shared/utils/logger';
 export const ManageTab: React.FC = () => {
   // ... existing hooks
   const { t } = useTranslation(['tags', 'common']);
   const [tags, setTags] = useState<ParsedTag[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
-  const [showStats, setShowStats] = useState(true);
+  const [showStats] = useState(true);
 
   // Dialog states
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -27,7 +28,7 @@ export const ManageTab: React.FC = () => {
       const allTags = await getAllTags();
       setTags(allTags);
     } catch (error) {
-      console.error('Failed to load tags:', error);
+      logger.error('ui', 'Failed to load tags', error);
     } finally {
       setLoading(false);
     }
@@ -65,7 +66,7 @@ export const ManageTab: React.FC = () => {
       setSelectedTagIds(new Set());
       await loadTags();
     } catch (error) {
-      console.error('Failed to delete tags:', error);
+      logger.error('ui', 'Failed to delete tags', error);
     }
   };
 
@@ -90,7 +91,7 @@ export const ManageTab: React.FC = () => {
       setSelectedTagIds(new Set());
       await loadTags();
     } catch (error) {
-      console.error('Failed to merge tags:', error);
+      logger.error('ui', 'Failed to merge tags', error);
     }
   };
 
@@ -245,46 +246,42 @@ export const ManageTab: React.FC = () => {
             </h3>
           </Flex>
 
-          <GlassCard
-            variant="accent"
-            padding="md"
-            border
-          >
+          <GlassCard variant="accent" padding="md" border>
             <Stack spacing="md">
-            <Stack spacing="xs">
-              <div className="text-xs text-gray-500 uppercase tracking-wider">
-                {t('tags:totalTags')}
-              </div>
-              <div className="text-2xl font-bold text-white">{tags.length}</div>
-            </Stack>
+              <Stack spacing="xs">
+                <div className="text-xs text-gray-500 uppercase tracking-wider">
+                  {t('tags:totalTags')}
+                </div>
+                <div className="text-2xl font-bold text-white">{tags.length}</div>
+              </Stack>
 
-            <div className="h-px bg-white/10" />
+              <div className="h-px bg-white/10" />
 
-            <Stack spacing="xs">
-              <div className="text-xs text-gray-500 uppercase tracking-wider">
-                {t('tags:manualTags')}
-              </div>
-              <div className="text-xl font-bold text-blue-300">{manualTags.length}</div>
-            </Stack>
+              <Stack spacing="xs">
+                <div className="text-xs text-gray-500 uppercase tracking-wider">
+                  {t('tags:manualTags')}
+                </div>
+                <div className="text-xl font-bold text-blue-300">{manualTags.length}</div>
+              </Stack>
 
-            <Stack spacing="xs">
-              <div className="text-xs text-gray-500 uppercase tracking-wider">
-                {t('tags:aiTags')}
-              </div>
-              <div className="text-xl font-bold text-purple-300">{aiTags.length}</div>
-            </Stack>
+              <Stack spacing="xs">
+                <div className="text-xs text-gray-500 uppercase tracking-wider">
+                  {t('tags:aiTags')}
+                </div>
+                <div className="text-xl font-bold text-purple-300">{aiTags.length}</div>
+              </Stack>
 
-            {selectedTagIds.size > 0 && (
-              <>
-                <div className="h-px bg-white/10" />
-                <Stack spacing="xs">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">
-                    {t('tags:selected')}
-                  </div>
-                  <div className="text-xl font-bold text-green-300">{selectedTagIds.size}</div>
-                </Stack>
-              </>
-            )}
+              {selectedTagIds.size > 0 && (
+                <>
+                  <div className="h-px bg-white/10" />
+                  <Stack spacing="xs">
+                    <div className="text-xs text-gray-500 uppercase tracking-wider">
+                      {t('tags:selected')}
+                    </div>
+                    <div className="text-xl font-bold text-green-300">{selectedTagIds.size}</div>
+                  </Stack>
+                </>
+              )}
             </Stack>
           </GlassCard>
 

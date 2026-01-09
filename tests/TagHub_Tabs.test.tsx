@@ -138,6 +138,7 @@ describe('ManageTab', () => {
 import { FusionTab } from '../src/features/tags/components/TagHub/FusionTab';
 import * as analysisService from '../src/services/tagAnalysisService';
 
+import { logger } from './shared/utils/logger';
 describe('FusionTab', () => {
     const mockGroups = [
         {

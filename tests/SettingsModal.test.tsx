@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { SettingsModal } from '../src/shared/components/SettingsModal';
 import { KEYBOARD_SHORTCUTS, ShortcutCategory } from '../src/shared/constants/shortcuts';
+import { logger } from './shared/utils/logger';
 import '@testing-library/jest-dom';
 
 // Mock dependencies

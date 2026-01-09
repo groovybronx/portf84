@@ -1,11 +1,12 @@
-import React from "react";
-import { 
-  Settings, 
-  Layers, 
-  Folder, 
-  Trash2, 
-  Plus, 
-  Pin, 
+import React from 'react';
+import { logger } from '../utils/logger';
+import {
+  Settings,
+  Layers,
+  Folder,
+  Trash2,
+  Plus,
+  Pin,
   PinOff,
   Search,
   Grid,
@@ -66,77 +67,77 @@ import {
   Crown,
   Award,
   Globe,
-  LucideProps
-} from "lucide-react";
+  LucideProps,
+} from 'lucide-react';
 
 // 1. Semantic Action Names
-export type IconAction = 
-  | "settings" 
-  | "library" 
-  | "folder" 
-  | "delete" 
-  | "add"
-  | "pin"
-  | "unpin"
-  | "search"
-  | "grid"
-  | "maximize"
-  | "prev"
-  | "next"
-  | "more"
-  | "check"
-  | "close"
-  | "alert"
-  | "info"
-  | "edit"
-  | "share"
-  | "download"
-  | "upload"
-  | "refresh"
-  | "smart_tags"
-  | "chevron_down"
-  | "check_circle"
-  | "circle"
-  | "box"
-  | "hard_drive"
-  | "folder_heart"
-  | "save"
-  | "key"
-  | "external_link"
-  | "keyboard"
-  | "layout_grid"
-  | "database"
-  | "reset"
-  | "palette"
+export type IconAction =
+  | 'settings'
+  | 'library'
+  | 'folder'
+  | 'delete'
+  | 'add'
+  | 'pin'
+  | 'unpin'
+  | 'search'
+  | 'grid'
+  | 'maximize'
+  | 'prev'
+  | 'next'
+  | 'more'
+  | 'check'
+  | 'close'
+  | 'alert'
+  | 'info'
+  | 'edit'
+  | 'share'
+  | 'download'
+  | 'upload'
+  | 'refresh'
+  | 'smart_tags'
+  | 'chevron_down'
+  | 'check_circle'
+  | 'circle'
+  | 'box'
+  | 'hard_drive'
+  | 'folder_heart'
+  | 'save'
+  | 'key'
+  | 'external_link'
+  | 'keyboard'
+  | 'layout_grid'
+  | 'database'
+  | 'reset'
+  | 'palette'
   // NEW: Extended icons
-  | "briefcase"
-  | "package"
-  | "archive"
-  | "inbox"
-  | "book_open"
-  | "folder_open"
-  | "folder_closed"
-  | "file_box"
-  | "files"
-  | "heart"
-  | "star"
-  | "bookmark"
-  | "tag"
-  | "tags"
-  | "image"
-  | "camera"
-  | "film"
-  | "video"
-  | "sparkles"
-  | "zap"
-  | "flame"
-  | "trophy"
-  | "target"
-  | "rocket"
-  | "flag"
-  | "crown"
-  | "award"
-  | "globe";
+  | 'briefcase'
+  | 'package'
+  | 'archive'
+  | 'inbox'
+  | 'book_open'
+  | 'folder_open'
+  | 'folder_closed'
+  | 'file_box'
+  | 'files'
+  | 'heart'
+  | 'star'
+  | 'bookmark'
+  | 'tag'
+  | 'tags'
+  | 'image'
+  | 'camera'
+  | 'film'
+  | 'video'
+  | 'sparkles'
+  | 'zap'
+  | 'flame'
+  | 'trophy'
+  | 'target'
+  | 'rocket'
+  | 'flag'
+  | 'crown'
+  | 'award'
+  | 'globe';
 
 // 2. Mapping Registry
 const iconMap: Record<IconAction, React.FC<LucideProps>> = {
@@ -214,9 +215,9 @@ interface IconProps extends LucideProps {
 
 export const Icon: React.FC<IconProps> = ({ action, className, ...props }) => {
   const IconComponent = iconMap[action];
-  
+
   if (!IconComponent) {
-    console.warn(`Icon action "${action}" not found in registry.`);
+    logger.warn('ui', `Icon action "${action}" not found in registry.`);
     return null;
   }
 
@@ -224,26 +225,55 @@ export const Icon: React.FC<IconProps> = ({ action, className, ...props }) => {
   // const { iconStyle } = useTheme();
 
   return (
-    <IconComponent 
-      className={className} 
+    <IconComponent
+      className={className}
       strokeWidth={props.strokeWidth || 2} // Default consistent stroke
-      {...props} 
+      {...props}
     />
   );
 };
 // 3. Icon Sets
 export const ALL_ICONS: IconAction[] = [
   // Projects/Business
-  "box", "briefcase", "package", "archive", "inbox", "book_open",
-  "trophy", "star", "target", "rocket", "flag", "crown", "award",
+  'box',
+  'briefcase',
+  'package',
+  'archive',
+  'inbox',
+  'book_open',
+  'trophy',
+  'star',
+  'target',
+  'rocket',
+  'flag',
+  'crown',
+  'award',
   // Folders/Storage
-  "hard_drive", "folder", "folder_open", "folder_closed", "file_box", "files", "database",
+  'hard_drive',
+  'folder',
+  'folder_open',
+  'folder_closed',
+  'file_box',
+  'files',
+  'database',
   // Collections/Favorites
-  "folder_heart", "heart", "bookmark", "tag", "tags", "library",
+  'folder_heart',
+  'heart',
+  'bookmark',
+  'tag',
+  'tags',
+  'library',
   // Visual/Media
-  "palette", "image", "camera", "film", "video",
+  'palette',
+  'image',
+  'camera',
+  'film',
+  'video',
   // Effects
-  "sparkles", "zap", "flame",
+  'sparkles',
+  'zap',
+  'flame',
   // UI
-  "grid", "layout_grid"
+  'grid',
+  'layout_grid',
 ];

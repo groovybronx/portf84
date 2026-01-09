@@ -4,6 +4,7 @@ import { Icon, type IconAction } from "../../Icon";
 import { IconPicker } from "./IconPicker";
 import { Button } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface ColorPickerProps {
   value: string;
   onChange: (color: string) => void;

@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../Button";
 
+import { logger } from '../../../../../shared/utils/logger';
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 	variant?: "default" | "primary" | "secondary" | "success" | "warning" | "danger";
 	size?: "sm" | "md" | "lg";
