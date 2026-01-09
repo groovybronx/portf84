@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom/vitest';
 import { BrowseTab } from '../src/features/tags/components/TagHub/BrowseTab';
 import * as tagHubSettings from '../src/shared/utils/tagHubSettings';
 import * as tagsStorage from '../src/services/storage/tags';
@@ -71,9 +72,12 @@ describe('BrowseTab Settings Persistence', () => {
     await userEvent.click(listButton);
 
     // Wait for debounced save (500ms)
-    await waitFor(() => {
-      expect(saveSpy).toHaveBeenCalled();
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        expect(saveSpy).toHaveBeenCalled();
+      },
+      { timeout: 1000 }
+    );
 
     const savedSettings = saveSpy.mock.calls[0]?.[0];
     expect(savedSettings?.viewMode).toBe('list');
@@ -93,9 +97,12 @@ describe('BrowseTab Settings Persistence', () => {
     await userEvent.click(manualButton);
 
     // Wait for debounced save (500ms)
-    await waitFor(() => {
-      expect(saveSpy).toHaveBeenCalled();
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        expect(saveSpy).toHaveBeenCalled();
+      },
+      { timeout: 1000 }
+    );
 
     const savedSettings = saveSpy.mock.calls[0]?.[0];
     expect(savedSettings?.filterMode).toBe('manual');
@@ -119,9 +126,12 @@ describe('BrowseTab Settings Persistence', () => {
     await userEvent.click(listButton);
 
     // Should only save once after debounce period
-    await waitFor(() => {
-      expect(saveSpy).toHaveBeenCalledTimes(1);
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        expect(saveSpy).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 1000 }
+    );
   });
 
   it('should cleanup timeout on unmount', async () => {
@@ -159,9 +169,12 @@ describe('BrowseTab Settings Persistence', () => {
     const listButton = screen.getByLabelText('tags:listView');
     await userEvent.click(listButton);
 
-    await waitFor(() => {
-      expect(saveSpy).toHaveBeenCalled();
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        expect(saveSpy).toHaveBeenCalled();
+      },
+      { timeout: 1000 }
+    );
 
     unmount();
 
@@ -197,9 +210,12 @@ describe('BrowseTab Settings Persistence', () => {
     const listButton = screen.getByLabelText('tags:listView');
     await userEvent.click(listButton);
 
-    await waitFor(() => {
-      expect(saveSpy).toHaveBeenCalled();
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        expect(saveSpy).toHaveBeenCalled();
+      },
+      { timeout: 1000 }
+    );
 
     const savedSettings = saveSpy.mock.calls[0]?.[0];
 
