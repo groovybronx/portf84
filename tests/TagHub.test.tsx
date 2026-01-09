@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { TagHub } from '../src/features/tags/components/TagHub';
 import { logger } from './shared/utils/logger';
 import '@testing-library/jest-dom';
@@ -29,79 +29,93 @@ vi.mock('../src/services/tagAnalysisService', () => ({
 }));
 
 describe('TagHub', () => {
-  it('should render Tag Hub when open', () => {
+  it('should render Tag Hub when open', async () => {
     const mockOnClose = vi.fn();
     const mockOnTabChange = vi.fn();
 
-    render(
-      <TagHub
-        isOpen={true}
-        onClose={mockOnClose}
-        activeTab="browse"
-        onTabChange={mockOnTabChange}
-      />
-    );
+    await act(async () => {
+      render(
+        <TagHub
+          isOpen={true}
+          onClose={mockOnClose}
+          activeTab="browse"
+          onTabChange={mockOnTabChange}
+        />
+      );
+    });
 
     // Check that Tag Hub title is rendered
     expect(screen.getByText('tags:tagHub')).toBeInTheDocument();
   });
 
-  it('should switch tabs when clicked', () => {
+  it('should switch tabs when clicked', async () => {
     const mockOnClose = vi.fn();
     const mockOnTabChange = vi.fn();
 
-    render(
-      <TagHub
-        isOpen={true}
-        onClose={mockOnClose}
-        activeTab="browse"
-        onTabChange={mockOnTabChange}
-      />
-    );
+    await act(async () => {
+      render(
+        <TagHub
+          isOpen={true}
+          onClose={mockOnClose}
+          activeTab="browse"
+          onTabChange={mockOnTabChange}
+        />
+      );
+    });
 
     // Click on Manage tab (second tab button)
     const tabs = screen.getAllByRole('button');
     const manageTab = tabs.find((tab) => tab.textContent?.includes('tags:manage'));
 
     if (manageTab) {
-      fireEvent.click(manageTab);
+      await act(async () => {
+        fireEvent.click(manageTab);
+      });
       expect(mockOnTabChange).toHaveBeenCalledWith('manage');
     }
   });
 
-  it('should close when close button is clicked', () => {
+  it('should close when close button is clicked', async () => {
     const mockOnClose = vi.fn();
     const mockOnTabChange = vi.fn();
 
-    render(
-      <TagHub
-        isOpen={true}
-        onClose={mockOnClose}
-        activeTab="browse"
-        onTabChange={mockOnTabChange}
-      />
-    );
+    await act(async () => {
+      render(
+        <TagHub
+          isOpen={true}
+          onClose={mockOnClose}
+          activeTab="browse"
+          onTabChange={mockOnTabChange}
+        />
+      );
+    });
 
     // Find and click close button by its accessible label
     const closeButton = screen.getByLabelText('common:close');
-    fireEvent.click(closeButton);
+    await act(async () => {
+      fireEvent.click(closeButton);
+    });
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it('should not render when closed', () => {
+  it('should not render when closed', async () => {
     const mockOnClose = vi.fn();
     const mockOnTabChange = vi.fn();
 
-    const { container } = render(
-      <TagHub
-        isOpen={false}
-        onClose={mockOnClose}
-        activeTab="browse"
-        onTabChange={mockOnTabChange}
-      />
-    );
+    let container: HTMLElement;
+    await act(async () => {
+      const result = render(
+        <TagHub
+          isOpen={false}
+          onClose={mockOnClose}
+          activeTab="browse"
+          onTabChange={mockOnTabChange}
+        />
+      );
+      container = result.container;
+    });
 
     // When closed, the component should render nothing
-    expect(container.firstChild).toBeNull();
+    expect(container!.firstChild).toBeNull();
   });
 });

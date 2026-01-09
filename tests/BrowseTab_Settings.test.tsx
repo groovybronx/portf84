@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { BrowseTab } from '../src/features/tags/components/TagHub/BrowseTab';
@@ -45,7 +45,9 @@ describe('BrowseTab Settings Persistence', () => {
 
     tagHubSettings.saveTagHubSettings(customSettings);
 
-    render(<BrowseTab />);
+    await act(async () => {
+      render(<BrowseTab />);
+    });
 
     // Wait for component to render
     await waitFor(() => {
@@ -61,7 +63,9 @@ describe('BrowseTab Settings Persistence', () => {
   it('should save settings when viewMode changes', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
 
-    render(<BrowseTab />);
+    await act(async () => {
+      render(<BrowseTab />);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
@@ -69,7 +73,9 @@ describe('BrowseTab Settings Persistence', () => {
 
     // Click the list view button
     const listButton = screen.getByLabelText('tags:listView');
-    await userEvent.click(listButton);
+    await act(async () => {
+      await userEvent.click(listButton);
+    });
 
     // Wait for debounced save (500ms)
     await waitFor(
@@ -86,7 +92,9 @@ describe('BrowseTab Settings Persistence', () => {
   it('should save settings when filterMode changes', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
 
-    render(<BrowseTab />);
+    await act(async () => {
+      render(<BrowseTab />);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
@@ -94,7 +102,9 @@ describe('BrowseTab Settings Persistence', () => {
 
     // Click the manual tags filter button - use getByRole to be more specific
     const manualButton = screen.getByRole('button', { name: 'tags:manualTags' });
-    await userEvent.click(manualButton);
+    await act(async () => {
+      await userEvent.click(manualButton);
+    });
 
     // Wait for debounced save (500ms)
     await waitFor(
@@ -111,7 +121,9 @@ describe('BrowseTab Settings Persistence', () => {
   it('should debounce settings saves', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
 
-    render(<BrowseTab />);
+    await act(async () => {
+      render(<BrowseTab />);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
@@ -121,9 +133,11 @@ describe('BrowseTab Settings Persistence', () => {
     const listButton = screen.getByLabelText('tags:listView');
     const gridButton = screen.getByLabelText('tags:gridView');
 
-    await userEvent.click(listButton);
-    await userEvent.click(gridButton);
-    await userEvent.click(listButton);
+    await act(async () => {
+      await userEvent.click(listButton);
+      await userEvent.click(gridButton);
+      await userEvent.click(listButton);
+    });
 
     // Should only save once after debounce period
     await waitFor(
@@ -137,7 +151,11 @@ describe('BrowseTab Settings Persistence', () => {
   it('should cleanup timeout on unmount', async () => {
     const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
 
-    const { unmount } = render(<BrowseTab />);
+    let unmount: () => void;
+    await act(async () => {
+      const result = render(<BrowseTab />);
+      unmount = result.unmount;
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
@@ -145,10 +163,14 @@ describe('BrowseTab Settings Persistence', () => {
 
     // Make a change to create a timeout
     const listButton = screen.getByLabelText('tags:listView');
-    await userEvent.click(listButton);
+    await act(async () => {
+      await userEvent.click(listButton);
+    });
 
     // Unmount before timeout fires
-    unmount();
+    await act(async () => {
+      unmount();
+    });
 
     // Verify clearTimeout was called
     await waitFor(() => {
@@ -160,14 +182,20 @@ describe('BrowseTab Settings Persistence', () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
 
     // First mount - change to list view
-    const { unmount } = render(<BrowseTab />);
+    let unmount: () => void;
+    await act(async () => {
+      const result = render(<BrowseTab />);
+      unmount = result.unmount;
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
     });
 
     const listButton = screen.getByLabelText('tags:listView');
-    await userEvent.click(listButton);
+    await act(async () => {
+      await userEvent.click(listButton);
+    });
 
     await waitFor(
       () => {
@@ -176,10 +204,14 @@ describe('BrowseTab Settings Persistence', () => {
       { timeout: 1000 }
     );
 
-    unmount();
+    await act(async () => {
+      unmount();
+    });
 
     // Second mount - should load list view
-    render(<BrowseTab />);
+    await act(async () => {
+      render(<BrowseTab />);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
@@ -195,20 +227,26 @@ describe('BrowseTab Settings Persistence', () => {
     });
 
     // Should not crash, fall back to defaults
-    expect(() => render(<BrowseTab />)).not.toThrow();
+    await act(async () => {
+      expect(() => render(<BrowseTab />)).not.toThrow();
+    });
   });
 
   it('should update settings object without mutating', async () => {
     const saveSpy = vi.spyOn(tagHubSettings, 'saveTagHubSettings');
 
-    render(<BrowseTab />);
+    await act(async () => {
+      render(<BrowseTab />);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('common:loading')).not.toBeInTheDocument();
     });
 
     const listButton = screen.getByLabelText('tags:listView');
-    await userEvent.click(listButton);
+    await act(async () => {
+      await userEvent.click(listButton);
+    });
 
     await waitFor(
       () => {
