@@ -8,7 +8,7 @@ Ce fichier suit l'évolution du projet Lumina Portfolio.
 
 ## 🎯 État Actuel du Projet
 
-**Session en cours** : Stabilisation Build & Compatibilité React 18
+**Session en cours** : Finalisation Implémentation Multilangage (i18n)
 
 **Progression** :
 

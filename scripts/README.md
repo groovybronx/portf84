@@ -41,6 +41,11 @@ Identifies and deletes old or merged branches from the remote repository.
 Creates a new release branch from `develop` with proper versioning.
 
 **What it does:**
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > origin/main
 
 - Reads current version from package.json
 - Suggests next version number
@@ -50,12 +55,22 @@ Creates a new release branch from `develop` with proper versioning.
 - Provides next steps guidance
 
 **Usage:**
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > origin/main
 
 ```bash
 ./scripts/create-release-branch.sh
 ```
 
 **Example flow:**
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > origin/main
 
 ```
 📦 Current version: 0.1.0-beta.1
@@ -71,6 +86,11 @@ Continue? (yes/no): yes
 ```
 
 **Next steps after running:**
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > origin/main
 
 1. Update CHANGELOG.md with release notes
 2. Test the release thoroughly
@@ -80,6 +100,8 @@ Continue? (yes/no): yes
 6. Tag the release
 
 ---
+
+<<<<<<< HEAD
 
 ### 🔧 `maintain-github-config.sh`
 
@@ -157,24 +179,42 @@ Validates and maintains GitHub configuration files in the `.github` directory.
 
 All scripts require:
 
+=======
+
+## Prerequisites
+
+All scripts require:
+
+> > > > > > > origin/main
+
 - Git installed and configured
 - Bash shell (Linux/macOS/WSL on Windows)
 - Proper permissions to push to the remote repository
 - Node.js (for version parsing in create-release-branch.sh)
+  <<<<<<< HEAD
 - `jq` command-line JSON processor (for maintain-github-config.sh)
   - Install on Ubuntu/Debian: `sudo apt-get install jq`
   - Install on macOS: `brew install jq`
-  - Install on Windows: `choco install jq` or download from [stedolan.github.io/jq](https://stedolan.github.io/jq/)
+  - # Install on Windows: `choco install jq` or download from [stedolan.github.io/jq](https://stedolan.github.io/jq/)
+    > > > > > > > origin/main
 
 ## Branch Management Strategy
 
 For a complete overview of the branch management strategy, see:
+<<<<<<< HEAD
 
-- [Branch Strategy Documentation](../docs/workflows/BRANCH_STRATEGY.md)
+- # [Branch Strategy Documentation](../docs/workflows/BRANCH_STRATEGY.md)
+- [Branch Strategy Documentation](../docs/BRANCH_STRATEGY.md)
+  > > > > > > > origin/main
 
 ## Contributing
 
 When adding new scripts:
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > origin/main
 
 1. Follow the same structure and style
 2. Include colored output for better UX
@@ -186,6 +226,11 @@ When adding new scripts:
 ## Maintenance
 
 These scripts should be reviewed and updated when:
+<<<<<<< HEAD
+
+=======
+
+> > > > > > > origin/main
 
 - Branch naming conventions change
 - New types of automated branches are created

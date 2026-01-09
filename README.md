@@ -150,6 +150,12 @@ Si vous rencontrez toujours l'erreur :
 - [📋 Synthèse Exécutive Commercialisation](./docs/SYNTHESE_EXECUTIVE_COMMERCIALISATION.md) - **Résumé (1 page)** - Verdict GO/NO-GO, roadmap de lancement 6 semaines
 - [📊 Project Health Report](./docs/PROJECT_HEALTH_REPORT.md) - Score de santé 87/100, métriques de code, couverture de tests
 
+### Gestion Git & GitHub
+- [🚀 Quick Start](./docs/QUICK_START.md) - Guide rapide en 10 minutes
+- [Résumé Configuration GitHub](./docs/GITHUB_SETUP_SUMMARY.md) - Vue d'ensemble complète
+- [Stratégie de Branches](./docs/BRANCH_STRATEGY.md) - Workflow Git et gestion des branches
+- [Configuration GitHub](./docs/CONFIGURATION_GITHUB_FR.md) - Guide de configuration du dépôt
+- [Scripts Utilitaires](./scripts/README.md) - Scripts de gestion des branches
 ### 🤖 GitHub Copilot Configuration
 
 Ce projet inclut une configuration complète pour GitHub Copilot avec des règles personnalisées qui aident à générer du code conforme aux conventions du projet :
