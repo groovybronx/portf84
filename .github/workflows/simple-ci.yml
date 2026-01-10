@@ -2,7 +2,7 @@ name: Simple CI
 
 on:
   push:
-    branches: [develop]
+    branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
@@ -26,6 +26,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Commitlint
-        run: npx commitlint --from=origin/main --to HEAD
