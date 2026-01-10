@@ -1,4 +1,4 @@
-// Configuration pour Semantic Release (CommonJS)
+// Configuration for Semantic Release (CommonJS)
 module.exports = {
 	branches: [
 		"main",
@@ -23,16 +23,16 @@ module.exports = {
 		[
 			"@semantic-release/github",
 			{
-				// Configuration pour GitHub releases
+				// Configuration for GitHub releases
 				successComment:
 					"🎉 This ${issue.pull_request ? 'PR is included' : 'release has been published'} in version ${nextRelease.version} :tada:",
 				failComment:
 					"❌ The ${issue.pull_request ? 'PR' : 'release'} has failed. Please check the logs and fix the errors.",
-				assignees: ["${{ github.event.sender.login }}"],
+				// Remove dynamic assignees to avoid GitHub Actions syntax issues
 				draftRelease: true,
 			},
 		],
 	],
-	repositoryUrl: "https://github.com/${{ github.repository }}.git",
+	// Remove explicit repositoryUrl to let semantic-release infer from git context
 	tagFormat: "v${version}",
 };
