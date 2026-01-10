@@ -1,0 +1,12 @@
+name: Test Basic Actions
+
+on:
+  push:
+    branches: [test-workflow-pr-checks]
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World
+        run: echo "GitHub Actions is working!"
