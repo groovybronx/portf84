@@ -165,7 +165,70 @@ lumina-portfolio/
 
 ---
 
-## 🚀 Installation Simple
+## � Documentation
+
+Lumina Portfolio dispose d'une documentation complète et moderne, organisée pour chaque type d'utilisateur.
+
+### 🚀 **Démarrage Rapide**
+
+- **[📖 Installation](./docs/getting-started/installation.md)** - Guide d'installation complet
+- **[⚡ Tour rapide](./docs/getting-started/quick-tour.md)** - Découverte en 5 minutes
+- **[🎯 Premiers pas](./docs/getting-started/first-steps.md)** - Utilisation de base
+
+### 👤 **Guide Utilisateur**
+
+- **[🖥️ Interface](./docs/user-guide/interface.md)** - Navigation et fonctionnalités
+- **[⚡ Fonctionnalités](./docs/user-guide/features.md)** - Guide complet des features
+- **[⌨️ Raccourcis clavier](./docs/user-guide/keyboard-shortcuts.md)** - Raccourcis et productivité
+- **[🔧 Dépannage](./docs/user-guide/troubleshooting.md)** - Problèmes courants et solutions
+
+### 🛠️ **Documentation Développeur**
+
+- **[⚙️ Installation dev](./docs/developer/setup.md)** - Environnement de développement
+- **[🏗️ Architecture](./docs/developer/architecture.md)** - Structure système et patterns
+- **[🔌 API Reference](./docs/developer/api.md)** - Services et hooks
+- **[🧪 Tests](./docs/developer/testing.md)** - Stratégie de testing
+- **[🤝 Contribuer](./docs/developer/contributing.md)** - Guidelines de contribution
+
+#### **UI/UX Design**
+
+- **[🎨 Design System](./docs/developer/ui-ux/design-system.md)** - Composants et tokens
+- **[🧩 Composants](./docs/developer/ui-ux/components.md)** - Bibliothèque UI
+- **[📐 Patterns](./docs/developer/ui-ux/patterns.md)** - Patterns d'interface
+- **[♿ Accessibilité](./docs/developer/ui-ux/accessibility.md)** - A11y et inclusive design
+- **[✨ Animations](./docs/developer/ui-ux/animations.md)** - Framer Motion et interactions
+- **[📱 Responsive](./docs/developer/ui-ux/responsive.md)** - Design multi-écrans
+
+#### **Base de Données**
+
+- **[🗄️ Schema](./docs/developer/database/schema.md)** - Structure et relations
+- **[🔄 Migrations](./docs/developer/database/migrations.md)** - Évolutions du schema
+- **[⚡ Queries](./docs/developer/database/queries.md)** - Requêtes et performance
+- **[🚀 Performance](./docs/developer/database/performance.md)** - Optimisations
+- **[💾 Backup](./docs/developer/database/backup-restore.md)** - Sauvegarde et restauration
+- **[🐛 Debugging](./docs/developer/database/debugging.md)** - Débogage et monitoring
+
+#### **Intelligence Artificielle**
+
+- **[🤖 Service Gemini](./docs/developer/ai-integration/gemini-service.md)** - Integration IA
+- **[📦 Batch Processing](./docs/developer/ai-integration/batch-processing.md)** - Traitement par lots
+- **[🏷️ Tag Analysis](./docs/developer/ai-integration/tag-analysis.md)** - Analyse de tags
+
+### 🔧 **Documentation Technique**
+
+- **[💾 Storage Service](./docs/technical/storage-service.md)** - Architecture de stockage
+- **[⚡ Performance](./docs/technical/performance.md)** - Optimisations globales
+- **[🚀 Déploiement](./docs/technical/deployment.md)** - Build et distribution
+
+### 📋 **Références**
+
+- **[📝 Changelog](./docs/reference/changelog.md)** - Historique des versions
+- **[❓ FAQ](./docs/reference/faq.md)** - Questions fréquentes
+- **[📖 Glossaire](./docs/reference/glossary.md)** - Termes techniques
+
+---
+
+## � Installation Simple
 
 1. Téléchargez la dernière version depuis [GitHub Releases](https://github.com/groovybronx/portf84/releases)
 2. Installez l'application comme n'importe quel logiciel
@@ -225,9 +288,11 @@ BREAKING CHANGE: remove deprecated API     # → Version majeure (1.0.0 → 2.0.
 - ✅ **Optimisation performance** : Context splitting, memoization, lazy loading amélioré
 - ✅ **Correction CI/CD** : Résolution avertissements React act(), configuration ES modules, hooks Git adaptés
 - ✅ **Tests complets** : 171/171 tests passant avec couverture améliorée
-- ✅ **Documentation étendue** : Guides techniques complets, analyse qualité/marché 2026
+- ✅ **Documentation complète** : Refonte from scratch avec 25+ documents techniques, guides utilisateur et références
+- ✅ **Changelog automatisé** : Configuration Semantic Release pour génération automatique
+- ✅ **Nettoyage legacy** : Suppression de 96 fichiers obsolètes, structure moderne et maintenable
 
-**Documentation complète** : [📖 Guide Semantic Release](./docs/SEMANTIC_RELEASE_GUIDE.md)
+**📚 Documentation complète** : [📖 Documentation](./docs/README.md) | **🤝 Contribuer** : [GitHub](https://github.com/groovybronx/portf84)
 
 ---
 
