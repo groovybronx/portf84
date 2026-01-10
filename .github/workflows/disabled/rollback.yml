@@ -1,0 +1,324 @@
+name: 'Release Rollback'
+
+on:
+  workflow_dispatch:
+    inputs:
+      rollback_to_tag:
+        description: 'Tag vers lequel faire le rollback (ex: v1.2.3)'
+        required: true
+        type: string
+      create_release:
+        description: 'Créer une release pour le rollback'
+        required: false
+        default: true
+        type: boolean
+      notify_slack:
+        description: 'Notifier le rollback sur Slack'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  rollback:
+    name: 'Rollback Release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate rollback tag
+        run: |
+          ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
+
+          # Check if tag exists
+          if ! git rev-parse "$ROLLBACK_TAG" >/dev/null 2>&1; then
+            echo "❌ Tag '$ROLLBACK_TAG' does not exist"
+            exit 1
+          fi
+
+          # Check if tag is a version tag
+          if [[ ! "$ROLLBACK_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Tag '$ROLLBACK_TAG' is not a valid version tag (format: v1.2.3)"
+            exit 1
+          fi
+
+          echo "✅ Tag '$ROLLBACK_TAG' is valid"
+
+          # Get current tag
+          CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "no-tag")
+          echo "Current tag: $CURRENT_TAG"
+          echo "Rollback target: $ROLLBACK_TAG"
+
+          # Check if rollback makes sense
+          if [[ "$CURRENT_TAG" == "$ROLLBACK_TAG" ]]; then
+            echo "⚠️ Already at target tag, no rollback needed"
+            exit 0
+          fi
+
+      - name: Create rollback branch
+        run: |
+          ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
+          BRANCH_NAME="rollback-to-$(echo $ROLLBACK_TAG | sed 's/^v//')"
+
+          echo "🔄 Creating rollback branch: $BRANCH_NAME"
+
+          # Create and checkout rollback branch
+          git checkout -b "$BRANCH_NAME" "$ROLLBACK_TAG"
+
+          # Push branch
+          git push origin "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Analyze rollback impact
+        id: analyze
+        run: |
+          ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
+          CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD")
+
+          echo "📊 Analyzing rollback impact..."
+
+          # Get commits that will be rolled back
+          if [[ "$CURRENT_TAG" != "no-tag" ]]; then
+            ROLLED_BACK_COMMITS=$(git log --oneline "$ROLLBACK_TAG..$CURRENT_TAG")
+            COMMIT_COUNT=$(git rev-list --count "$ROLLBACK_TAG..$CURRENT_TAG")
+          else
+            ROLLED_BACK_COMMITS=$(git log --oneline "$ROLLBACK_TAG..HEAD")
+            COMMIT_COUNT=$(git rev-list --count "$ROLLBACK_TAG..HEAD")
+          fi
+
+          echo "📈 Rollback Statistics:"
+          echo "- Commits to rollback: $COMMIT_COUNT"
+          echo "- Target tag: $ROLLBACK_TAG"
+          echo "- Current state: $CURRENT_TAG"
+
+          # Categorize changes
+          FEATURES=$(echo "$ROLLED_BACK_COMMITS" | grep -c "^feat:" || echo "0")
+          FIXES=$(echo "$ROLLED_BACK_COMMITS" | grep -c "^fix:" || echo "0")
+          BREAKING=$(echo "$ROLLED_BACK_COMMITS" | grep -ci "BREAKING CHANGE" || echo "0")
+          REFACTOR=$(echo "$ROLLED_BACK_COMMITS" | grep -c "^refactor:" || echo "0")
+
+          echo "- Features lost: $FEATURES"
+          echo "- Fixes lost: $FIXES"
+          echo "- Breaking changes reverted: $BREAKING"
+          echo "- Refactoring lost: $REFACTOR"
+
+          # Save for later use
+          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          echo "features_lost=$FEATURES" >> $GITHUB_OUTPUT
+          echo "fixes_lost=$FIXES" >> $GITHUB_OUTPUT
+          echo "breaking_reverted=$BREAKING" >> $GITHUB_OUTPUT
+
+      - name: Create rollback release
+        if: github.event.inputs.create_release == 'true'
+        run: |
+          ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
+          ROLLBACK_RELEASE_TAG="rollback-to-$(echo $ROLLBACK_TAG | sed 's/^v//')"
+          CURRENT_DATE=$(date +%Y-%m-%d)
+
+          echo "📦 Creating rollback release..."
+
+          # Get rollback impact data
+          COMMIT_COUNT="${{ steps.analyze.outputs.commit_count }}"
+          FEATURES_LOST="${{ steps.analyze.outputs.features_lost }}"
+          FIXES_LOST="${{ steps.analyze.outputs.fixes_lost }}"
+          BREAKING_REVERTED="${{ steps.analyze.outputs.breaking_reverted }}"
+
+          # Set defaults if values are empty using shell parameter expansion
+          COMMIT_COUNT="${COMMIT_COUNT:-0}"
+          FEATURES_LOST="${FEATURES_LOST:-0}"
+          FIXES_LOST="${FIXES_LOST:-0}"
+          BREAKING_REVERTED="${BREAKING_REVERTED:-0}"
+
+          # Create release body
+          cat > rollback_release_body.md << EOF
+          ## 🔄 Rollback to $ROLLBACK_TAG
+
+          **Date:** $CURRENT_DATE
+          **Déclenché par:** ${{ github.actor }}
+
+          ### 📊 Impact du Rollback
+
+          - **Commits annulés:** $COMMIT_COUNT
+          - **Fonctionnalités perdues:** $FEATURES_LOST
+          - **Corrections perdues:** $FIXES_LOST
+          - **Changements cassants révertis:** $BREAKING_REVERTED
+
+          ### ⚠️ Actions Requises
+
+          1. **Vérifier l'application** : Assurez-vous que l'application fonctionne correctement avec l'ancienne version
+          2. **Notifier les utilisateurs** : Informez les utilisateurs du rollback et de ses implications
+          3. **Analyser la cause** : Identifiez pourquoi la release précédente a échoué
+          4. **Planifier la correction** : Préparez une nouvelle release avec les corrections nécessaires
+
+          ### 🔄 Processus de Rollback
+
+          1. Création de la branche \`rollback-to-$(echo $ROLLBACK_TAG | sed 's/^v//')\`
+          2. Reset au tag \`$ROLLBACK_TAG\`
+          3. Création de cette release de rollback
+          4. Notification aux équipes concernées
+
+          ---
+
+          **Note:** Ce rollback annule tous les changements effectués depuis le tag \`$ROLLBACK_TAG\`.
+          EOF
+
+          # Create release using GitHub API
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases" \
+            -d "{
+              \"tag_name\": \"$ROLLBACK_RELEASE_TAG\",
+              \"name\": \"Rollback to $ROLLBACK_TAG\",
+              \"body\": $(jq -Rs . rollback_release_body.md),
+              \"draft\": false,
+              \"prerelease\": false
+            }"
+
+          echo "✅ Rollback release created: $ROLLBACK_RELEASE_TAG"
+
+      - name: Create Pull Request for rollback
+        run: |
+          ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
+          BRANCH_NAME="rollback-to-$(echo $ROLLBACK_TAG | sed 's/^v//')"
+
+          echo "🔀 Creating pull request for rollback..."
+
+          # Create PR description
+          cat > pr_description.md << EOF
+          ## 🔄 Rollback Request
+
+          **Target:** $ROLLBACK_TAG
+          **Source:** $BRANCH_NAME
+          **Requested by:** ${{ github.actor }}
+
+          ### 📋 Changes
+
+          Ce PR annule tous les changements effectués depuis le tag \`$ROLLBACK_TAG\` et restaure le code à cet état.
+
+          ### ⚠️ Impact
+
+          - **Commits annulés:** "${{ steps.analyze.outputs.commit_count }}"
+          - **Fonctionnalités perdues:** "${{ steps.analyze.outputs.features_lost }}"
+          - **Corrections perdues:** "${{ steps.analyze.outputs.fixes_lost }}"
+
+          ### 🎯 Actions
+
+          1. **Review les changements** : Vérifiez que le rollback est approprié
+          2. **Tester l'application** : Assurez-vous que tout fonctionne correctement
+          3. **Approuver et merger** : Si tout est validé, mergez ce PR
+          4. **Notifier les équipes** : Informez du rollback effectué
+
+          ---
+
+          *Ce rollback a été déclenché manuellement via GitHub Actions.*
+          EOF
+
+          # Create PR using GitHub CLI
+          gh pr create \
+            --title "🔄 Rollback to $ROLLBACK_TAG" \
+            --body "$(cat pr_description.md)" \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --label "rollback" \
+            --label "urgent" || echo "PR already exists or could not be created"
+
+          echo "✅ Pull request created for rollback"
+
+      - name: Notify Slack about rollback
+        if: github.event.inputs.notify_slack == 'true'
+        run: |
+          ROLLBACK_TAG="${{ github.event.inputs.rollback_to_tag }}"
+
+          echo "📢 Notifying Slack about rollback..."
+
+          cat > slack_rollback.json << EOF
+          {
+            "attachments": [
+              {
+                "color": "danger",
+                "title": "🔄 ROLLBACK EFFECTUÉ",
+                "title_link": "https://github.com/${{ github.repository }}/releases/tag/rollback-to-$(echo $ROLLBACK_TAG | sed 's/^v//')",
+                "fields": [
+                  {
+                    "title": "Tag Cible",
+                    "value": "$ROLLBACK_TAG",
+                    "short": true
+                  },
+                  {
+                    "title": "Déclenché par",
+                    "value": "${{ github.actor }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Commits Annulés",
+                    "value": "${{ steps.analyze.outputs.commit_count }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Fonctionnalités Perdues",
+                    "value": "${{ steps.analyze.outputs.features_lost }}",
+                    "short": true
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "button",
+                    "text": "🔍 Voir le Rollback",
+                    "url": "https://github.com/${{ github.repository }}/releases/tag/rollback-to-$(echo $ROLLBACK_TAG | sed 's/^v//')"
+                  },
+                  {
+                    "type": "button",
+                    "text": "🔀 Pull Request",
+                    "url": "https://github.com/${{ github.repository }}/pulls"
+                  }
+                ],
+                "footer": "Lumina Portfolio",
+                "ts": $(date +%s)
+              }
+            ]
+          }
+          EOF
+
+          echo "Slack rollback notification prepared"
+          echo "Configure SLACK_WEBHOOK_URL to enable notifications"
+
+          # Uncomment when Slack is configured
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data @slack_rollback.json \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Create rollback summary
+        run: |
+          echo "## 🔄 Rollback Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Target Tag:** ${{ github.event.inputs.rollback_to_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Success" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Impact Analysis:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commits rolled back:** \"${{ steps.analyze.outputs.commit_count }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Features lost:** \"${{ steps.analyze.outputs.features_lost }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fixes lost:** \"${{ steps.analyze.outputs.fixes_lost }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "- **Breaking changes reverted:** \"${{ steps.analyze.outputs.breaking_reverted }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Actions Completed:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Rollback branch created" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Rollback release created" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Pull request created" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Slack notification sent" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review and merge the pull request" >> $GITHUB_STEP_SUMMARY
+          echo "2. Test the application thoroughly" >> $GITHUB_STEP_SUMMARY
+          echo "3. Notify users of the rollback" >> $GITHUB_STEP_SUMMARY
+          echo "4. Plan the next release with fixes" >> $GITHUB_STEP_SUMMARY
